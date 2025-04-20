@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новое объявление | WorkSwap</title>
+    <link href="/css/public/pages/listing/create-page.css" rel="stylesheet">
+    <link rel="shortcut icon" href="/favicon.ico">
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav class="navbar">
+            <a class="navbar-brand" href="/catalog">WorkSwap</a>
+            <button class="navbar-toggler">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse">
+                <div class="nav-buttons">
+                    <a href="/logout" class="logout-btn">Выйти</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="account-container">
+    <div class="account-layout">
+        <!-- Сайдбар -->
+        <aside class="account-sidebar">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <img th:src="@{${avatarPath}}" alt="Аватар">
+                </div>
+                <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
+                <p class="profile-rating">★★★★☆ (4.2)</p>
+                <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
+            </div>
+
+            <nav class="account-menu">
+                <a href="/secure/account" class="account-menu-item">Мои объявления</a>
+                <a href="#" class="account-menu-item">Избранное</a>
+                <a href="#" class="account-menu-item">Сообщения</a>
+                <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
+                <a href="#" class="account-menu-item">Платежи</a>
+                <a href="#" class="account-menu-item">Безопасность</a>
+            </nav>
+        </aside>
+
+        <!-- Основной контент -->
+        <main class="account-main">
+            <div class="account-header">
+                <h2>Создание объявления</h2>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+            <form action="/secure/listing/create" method="post" enctype="multipart/form-data" class="form-grid">
+
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                <div class="form-group">
+                    <label for="title">Заголовок</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Описание</label>
+                    <textarea id="description" name="description" class="form-control" rows="5" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Цена</label>
+                    <input type="number" id="price" name="price" class="form-control" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="priceType">Тип цены</label>
+                    <select id="priceType" name="priceType" class="form-control" required>
+                        <option value="per_hour">€/час</option>
+                        <option value="per_day">€/день</option>
+                        <option value="fixed">Фиксированная</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Категория</label>
+                    <select id="category" name="category" class="form-control" required>
+                        <option value="" disabled selected>Выберите категорию</option>
+                        <option th:each="entry : ${categories}"
+                                th:value="${entry.key}"
+                                th:text="${entry.value}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Местоположение</label>
+                    <select id="location" name="location" class="form-control" required>
+                        <option value="" disabled selected>Выберите местоположение</option>
+                        <option th:each="loc : ${locations}"
+                                th:value="${loc.name}"
+                                th:text="${loc.name}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Изображение</label>
+                    <div class="upload-controls">
+                        <input type="file" id="image" name="image" accept="image/*" required>
+                        <label for="image" class="btn btn-outline-primary">Выбрать файл</label>
+                        <span class="file-name">Файл не выбран</span>
+                    </div>
+                    <small class="form-text text-muted">Максимальный размер: 5MB (JPG, PNG, GIF)</small>
+                    <div th:if="${imageError}" class="invalid-feedback" th:text="${imageError}"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Опубликовать</button>
+                    <a href="/secure/account" class="btn btn-outline-secondary">Отмена</a>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
+
+<script>
+    document.querySelector('.navbar-toggler').addEventListener('click', function() {
+        document.querySelector('.navbar-collapse').classList.toggle('show');
+    });
+</script>
+</body>
+</html>

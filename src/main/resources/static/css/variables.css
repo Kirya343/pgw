@@ -1,0 +1,37 @@
+:root {
+    /* Основные цвета */
+    --primary-light: #9396ff;
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #a777e3;
+    --secondary-light: #e2d4f7;
+    --dark: #1f2937;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --gray: #6b7280;
+
+    /* Размеры */
+    --radius: 12px;
+    --header-height: 60px;
+
+    /* Размеры для каталога */
+    --listing-img-height: 180px;
+    --sidebar-width: 250px;
+
+    --light-background: #d8dfdf;
+
+    --rating-star: #ffc107;
+    --border-color: #e8e8ec;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+
+    --sticky-z-index: 1020;
+
+    /* Новые переменные, которых не хватало (смягчённые оттенки) */
+    --success-light: #e6f7f0;
+    --success-dark: #0f766e;
+
+    --warning-light: #fef9e7;
+    --warning-dark: #b45309;
+
+    --danger: #f87171;
+}

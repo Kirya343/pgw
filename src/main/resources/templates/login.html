@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | WorkSwap</title>
+    <link href="/css/public/pages/login-page.css" rel="stylesheet">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<div class="login-container">
+    <h2>Вход в систему</h2>
+
+    <!-- Обработка ошибок входа -->
+    <div th:if="${error}" class="alert alert-danger">
+        Неверные учетные данные
+    </div>
+
+    <!-- Форма для входа -->
+    <form th:action="@{/login}" method="post">
+        <!-- Скрытое поле для редиректа -->
+        <input type="hidden" name="redirect" th:value="${referer}">
+
+        <!-- Кнопка для входа через Google -->
+        <a href="/oauth2/authorization/google" class="btn btn-google">Войти через Google</a>
+    </form>
+</div>
+</body>
+</html>

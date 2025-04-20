@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkSwap — Площадка для подработок, услуг и секонд-хенда</title>
+    <link href="/css/public/pages/main-page.css" rel="stylesheet">
+    <link rel="icon" href="/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Шапка с навигацией -->
+<header class="sticky-top bg-white shadow-sm">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" href="/catalog">WorkSwap</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#features">Возможности</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#how-it-works">Как это работает?</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#listings">Объявления</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#faq">FAQ</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex">
+                        <a href="/secure/account" class="btn btn-outline-primary me-2">Вход</a>
+                        <a href="/secure/account" class="btn btn-primary">Регистрация</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<!-- Герой-блок -->
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">WorkSwap</h1>
+        <p class="lead mb-4">Найди подработку, предложи услугу или купи секонд-хенд — всё в одном месте!</p>
+        <a href="/catalog" class="btn btn-light btn-lg px-4 me-2">Начать использовать</a>
+        <a href="#how-it-works" class="btn btn-outline-light btn-lg px-4">Узнать больше</a>
+    </div>
+</section>
+
+<!-- Краткое описание (3 фичи) -->
+<section id="features" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Почему WorkSwap?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3 text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                            </svg>
+                        </div>
+                        <h3>Подработка</h3>
+                        <p>Найди временную работу или найми помощника для задач любой сложности.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3 text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M3 2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1 5 0v.006c0 .07 0 .27-.038.494H15a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h2.038A2.968 2.968 0 0 1 3 2.506V2.5zm1.068.5H7v-.5a1.5 1.5 0 1 0-3 0c0 .085.002.274.045.43a.522.522 0 0 0 .023.07zM9 3h2.932a.56.56 0 0 0 .023-.07c.043-.156.045-.345.045-.43a1.5 1.5 0 0 0-3 0V3zM1 5v1h14V5H1zm0 2v6.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5V7H1zm3 1.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm4 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+                            </svg>
+                        </div>
+                        <h3>Услуги</h3>
+                        <p>Предложи свои навыки или найми профессионала для решения задач.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3 text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                            </svg>
+                        </div>
+                        <h3>Секонд-хенд</h3>
+                        <p>Покупай и продавай б/у товары по выгодным ценам.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Популярные категории -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Популярные категории</h2>
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <a href="/catalog" class="btn btn-outline-primary w-100 py-3">Доставка</a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="/catalog" class="btn btn-outline-primary w-100 py-3">Ремонт</a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="/catalog" class="btn btn-outline-primary w-100 py-3">Одежда</a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="/catalog" class="btn btn-outline-primary w-100 py-3">Уборка</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Как это работает? -->
+<section id="how-it-works" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Как это работает?</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="how-it-works-step">
+                    <div class="step-icon">1</div>
+                    <h3>Размести</h3>
+                    <p>Создай объявление о подработке, услуге или товаре.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="how-it-works-step">
+                    <div class="step-icon">2</div>
+                    <h3>Найди</h3>
+                    <p>Исполнителя или покупателя через поиск или ленту.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="how-it-works-step">
+                    <div class="step-icon">3</div>
+                    <h3>Договорись</h3>
+                    <p>Обсуди детали через чат и согласуй условия.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="how-it-works-step">
+                    <div class="step-icon">4</div>
+                    <h3>Получи результат</h3>
+                    <p>Выполни задачу или соверши сделку безопасно.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Лента объявлений (превью) -->
+<section id="listings" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Последние объявления</h2>
+        <div class="row g-4">
+            <!-- Пример карточки объявления -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="/images/moving.jpeg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Помощь с переездом</h5>
+                        <p class="card-text">Нужны 2 человека для погрузки мебели. 20€/час.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Хельсинки</small>
+                            <span class="badge bg-primary">Подработка</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Ещё 2 аналогичные карточки -->
+        </div>
+        <div class="text-center mt-4">
+            <a href="/catalog" class="btn btn-primary">Смотреть все</a>
+        </div>
+    </div>
+</section>
+
+<!-- Отзывы -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Отзывы пользователей</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <p>"Нашел подработку на выходные — оплата сразу!"</p>
+                    <div class="d-flex align-items-center">
+                        <img src="/images/avatar-placeholder.png" class="img rounded-circle me-3" alt="...">
+                        <div>
+                            <h6 class="mb-0">Иван П.</h6>
+                            <small class="text-muted">Студент</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Ещё 2 отзыва -->
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Частые вопросы</h2>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h3 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                        Как создать объявление?
+                    </button>
+                </h3>
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Зарегистрируйтесь, нажмите "Разместить объявление" и заполните форму.
+                    </div>
+                </div>
+            </div>
+            <!-- Ещё 4-5 вопросов -->
+        </div>
+    </div>
+</section>
+
+<!-- CTA в конце -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Готовы начать?</h2>
+        <p class="lead mb-4">Присоединяйтесь к WorkSwap прямо сейчас!</p>
+        <a href="#" class="btn btn-light btn-lg px-4 me-2">Зарегистрироваться</a>
+        <a href="#" class="btn btn-outline-light btn-lg px-4">Узнать больше</a>
+    </div>
+</section>
+
+<!-- Подвал -->
+<footer class="py-4 bg-dark text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>WorkSwap</h5>
+                <p>© 2023 Все права защищены</p>
+            </div>
+            <div class="col-md-3">
+                <h5>Контакты</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-white">support@workswap.fi</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h5>Соцсети</h5>
+                <a href="#" class="text-white me-2">Facebook</a>
+                <a href="#" class="text-white">Instagram</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

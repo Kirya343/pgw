@@ -1,0 +1,98 @@
+package org.kirya343.main.services.impl;
+
+import lombok.RequiredArgsConstructor;
+import org.kirya343.main.model.Listing;
+import org.kirya343.main.model.User;
+import org.kirya343.main.services.StatService;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class StatServiceImpl implements StatService {
+
+    @Override
+    public int getTotalViews(User user) {
+        return user.getListings().stream()
+                .mapToInt(Listing::getViews)
+                .sum();
+    }
+
+    @Override
+    public int getTotalResponses(User user) {
+        // Заглушка — можно заменить логикой по сообщениям или откликам
+        return 5;
+    }
+
+    @Override
+    public int getCompletedDeals(User user) {
+        // Заглушка — если нет поля "сделка завершена", можно симулировать
+        return 3;
+    }
+
+    @Override
+    public double getAverageRating(User user) {
+        List<Listing> listings = user.getListings();
+        if (listings.isEmpty()) return 0.0;
+        return listings.stream()
+                .mapToDouble(Listing::getRating)
+                .average()
+                .orElse(0.0);
+    }
+    @Override
+    public int getMonthlyViews(User user) {
+        // Получаем текущую дату
+        LocalDate now = LocalDate.now();
+        int currentMonth = now.getMonthValue();
+        int currentYear = now.getYear();
+
+        List<Listing> listings = user.getListings() != null ? user.getListings() : Collections.emptyList();
+
+        // Считаем просмотры только за текущий месяц
+        return user.getListings().stream()
+                .filter(listing -> {
+                    // Проверяем, что дата создания объявления соответствует текущему месяцу и году
+                    LocalDate createdAt = listing.getCreatedAt().toLocalDate();
+                    return createdAt.getMonthValue() == currentMonth && createdAt.getYear() == currentYear;
+                })
+                .mapToInt(Listing::getViews)
+                .sum();
+    }
+    @Override
+    public int getMonthlyResponses(User user) {
+        // Получаем текущую дату
+        LocalDate now = LocalDate.now();
+        int currentMonth = now.getMonthValue();
+        int currentYear = now.getYear();
+
+        // Заглушка — логика подсчета откликов для текущего месяца (например, можно использовать сообщения или другие сущности)
+        return user.getListings().stream()
+                .filter(listing -> {
+                    // Проверяем, что дата создания объявления соответствует текущему месяцу и году
+                    LocalDate createdAt = listing.getCreatedAt().toLocalDate();
+                    return createdAt.getMonthValue() == currentMonth && createdAt.getYear() == currentYear;
+                })
+                .mapToInt(listing -> 1) // Условие — тут может быть другая логика для откликов
+                .sum();
+    }
+    @Override
+    public int getMonthlyDeals(User user) {
+        // Получаем текущую дату
+        LocalDate now = LocalDate.now();
+        int currentMonth = now.getMonthValue();
+        int currentYear = now.getYear();
+
+        // Заглушка — проверка завершенных сделок для текущего месяца
+        return user.getListings().stream()
+                .filter(listing -> {
+                    // Проверяем, что дата создания объявления соответствует текущему месяцу и году
+                    LocalDate createdAt = listing.getCreatedAt().toLocalDate();
+                    return createdAt.getMonthValue() == currentMonth && createdAt.getYear() == currentYear;
+                })
+                .mapToInt(listing -> listing.getRating() > 4.0 ? 1 : 0) // Пример: если рейтинг больше 4, считаем сделку завершенной
+                .sum();
+    }
+}

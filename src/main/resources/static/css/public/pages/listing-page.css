@@ -1,0 +1,456 @@
+@import url(../components/footer.css);
+@import url(../components/base.css);
+@import url(../components/header.css);
+@import url(../../variables.css);
+
+/* Основной контейнер */
+.listing-container {
+    padding: 2rem 0;
+    background-color: var(--light-background);
+}
+
+/* Макет страницы */
+.listing-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Хлебные крошки */
+.breadcrumbs {
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.breadcrumbs a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumbs span {
+    margin: 0 0.5rem;
+    color: var(--gray);
+}
+
+/* Заголовок объявления */
+.listing-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.listing-header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.listing-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+/* Галерея изображений */
+.listing-gallery {
+    margin-bottom: 2rem;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--white);
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.main-image {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+.main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: var(--light-background);
+}
+
+.thumbnail {
+    width: 80px;
+    height: 80px;
+    border-radius: calc(var(--radius) / 2);
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.thumbnail:hover {
+    border-color: var(--primary);
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Основное содержимое */
+.listing-content {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.listing-details {
+    flex: 1;
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.listing-description {
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    white-space: pre-line;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+    background: var(--light-background);
+    border-radius: calc(var(--radius) / 2);
+}
+
+.detail-label {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.25rem;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.price {
+    font-weight: 600;
+    color: var(--primary-dark);
+}
+
+.listing-features h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.features-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.5rem;
+    list-style: none;
+    padding-left: 0;
+}
+
+.features-list li {
+    padding: 0.5rem 0.75rem;
+    background: var(--light-background);
+    border-radius: calc(var(--radius) / 2);
+    font-size: 0.9rem;
+}
+
+/* Боковая панель */
+.listing-sidebar {
+    flex: 0 0 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.seller-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    text-align: center;
+}
+
+.seller-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 1rem;
+    border: 3px solid var(--primary-light);
+}
+
+.seller-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.seller-info h4 {
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.seller-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.rating-stars {
+    color: var(--rating-star);
+}
+
+.rating-value {
+    font-weight: 600;
+}
+
+.seller-stats {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+}
+
+.seller-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.contact-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.contact-card h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.contact-icon {
+    font-size: 1.2rem;
+}
+
+.contact-value {
+    font-size: 0.95rem;
+}
+
+/* Отзывы */
+.reviews-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    margin-bottom: 2rem;
+}
+
+.reviews-section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-card {
+    padding: 1.5rem;
+    background: var(--light-background);
+    border-radius: var(--radius);
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.reviewer-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.reviewer-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.reviewer-info h4 {
+    margin-bottom: 0.25rem;
+    font-size: 1.1rem;
+}
+
+.review-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.review-rating {
+    color: var(--rating-star);
+    font-weight: 600;
+}
+
+.review-content p {
+    line-height: 1.6;
+}
+
+/* Похожие объявления */
+.similar-listings {
+    margin-bottom: 2rem;
+}
+
+.similar-listings h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.listing-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.listing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.listing-img {
+    height: 180px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-title a {
+    color: var(--dark);
+    text-decoration: none;
+}
+
+.card-title a:hover {
+    color: var(--primary);
+}
+
+.card-text {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.price {
+    font-weight: 600;
+    color: var(--primary-dark);
+}
+
+.rating {
+    color: var(--rating-star);
+}
+
+.location {
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .listing-content {
+        flex-direction: column;
+    }
+
+    .listing-sidebar {
+        flex: 1;
+        width: 100%;
+    }
+
+    .main-image {
+        height: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-image {
+        height: 200px;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .listing-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .features-list {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,21 @@
+.footer {
+    padding: 2rem 0;
+    background: var(--dark);
+    color: var(--white);
+}
+
+.footer-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+}
+
+.footer a {
+    color: var(--white);
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.footer a:hover {
+    opacity: 1;
+}

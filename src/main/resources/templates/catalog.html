@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог объявлений | WorkSwap</title>
+    <link href="/css/public/pages/catalog-page.css" rel="stylesheet">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav class="navbar">
+            <a class="navbar-brand" href="/catalog">WorkSwap</a>
+            <button class="navbar-toggler">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse">
+                <div class="d-flex">
+                    <!-- Для неавторизованных пользователей -->
+                    <div th:unless="${isAuthenticated}">
+                        <a href="/login" class="btn btn-outline-primary">Вход</a>
+                        <a href="/register" class="btn btn-primary">Регистрация</a>
+                    </div>
+
+                    <!-- Для авторизованных пользователей -->
+                    <div th:if="${isAuthenticated}" class="account-info">
+                        <a th:href="@{/secure/account}" class="account-link">
+                            <img th:src="${avatarUrl}"
+                                 class="account-avatar"
+                                 alt="Аватар"
+                                 th:onerror="this.src='/images/avatar-placeholder.jpg'">
+                            <span th:text="${userName}">Пользователь</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<!-- Шапка каталога -->
+<div class="catalog-header py-3">
+    <div class="container">
+        <ul class="nav nav-pills justify-content-center">
+            <li th:each="tab : ${categories}"
+                th:class="${tab.active} ? 'nav-item active' : 'nav-item'">
+                <a th:href="@{/catalog(category=${tab.id})}"
+                   th:text="${tab.title}"
+                   class="nav-link"></a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Основной контент -->
+<div class="catalog-container">
+    <main class="catalog-layout">
+        <!-- Сайдбар сортировки -->
+        <aside class="catalog-sidebar">
+            <div class="sorting-sidebar">
+                <h5>Сортировка</h5>
+                <div class="list-group list-group-flush">
+                    <a th:href="@{/catalog(category=${category}, sortBy='date')}"
+                       th:class="${sortBy == 'date'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                        По дате
+                    </a>
+                    <a th:href="@{/catalog(category=${category}, sortBy='price')}"
+                       th:class="${sortBy == 'price'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                        По цене
+                    </a>
+                    <a th:href="@{/catalog(category=${category}, sortBy='rating')}"
+                       th:class="${sortBy == 'rating'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                        По рейтингу
+                    </a>
+                    <a th:href="@{/catalog(category=${category}, sortBy='popularity')}"
+                       th:class="${sortBy == 'popularity'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                        По популярности
+                    </a>
+                </div>
+
+                <h5 class="mt-4">Фильтры</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="filter1">
+                    <label class="form-check-label" for="filter1">Сейчас доступен</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="filter2">
+                    <label class="form-check-label" for="filter2">С отзывами</label>
+                </div>
+                <input type="checkbox"
+                       th:checked="${param.location != null}"
+                       onclick="location.href='?category=${category}&location=' + this.checked">
+                <label>Только с локацией</label>
+            </div>
+        </aside>
+
+        <!-- Список объявлений -->
+        <main class="catalog-main">
+            <div class="listings-grid">
+                <!-- Динамические карточки объявлений -->
+                <a th:each="listing : ${listings}"
+                   th:href="@{'/listing/' + ${listing.id}}"
+                   class="listing-link">
+                    <article class="listing-card">
+                        <img th:src="@{${listing.imagePath ?: '/images/default-listing.png'}}"
+                             class="listing-img"
+                             alt="Изображение объявления">
+
+                        <div class="card-body">
+                            <h3 class="card-title" th:text="${listing.title}">Название</h3>
+                            <p class="card-text"
+                               th:text="${#strings.length(listing.description) > 100} ? ${#strings.substring(listing.description, 0, 100)} + '...' : ${listing.description}">
+                                Описание
+                            </p>
+                            <div class="card-footer">
+                                <div>
+                            <span class="price" th:text="${listing.price} + (${listing.priceType == 'per_hour'} ? '€/час' :
+                                  (${listing.priceType == 'per_day'} ? '€/день' : '€'))">Цена</span>
+                                    <div class="rating">★★★★☆</div>
+                                </div>
+                                <span class="location" th:text="${listing.location ?: 'Хельсинки'}">Локация</span>
+                            </div>
+                        </div>
+                    </article>
+                </a>
+            </div>
+
+            <!-- Если нет объявлений -->
+            <div th:if="${#lists.isEmpty(listings)}" class="no-listings">
+                <p>Объявлений не найдено.</p>
+            </div>
+
+            <!-- Пагинация -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+                        <a th:href="@{/catalog(category=${category}, page=${currentPage - 1}, sortBy=${sortBy})}"
+                           class="page-link">Назад</a>
+                    </li>
+                    <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:class="${currentPage == i} ? 'page-item active' : 'page-item'">
+                        <a th:href="@{/catalog(category=${category}, page=${i}, sortBy=${sortBy})}"
+                           th:text="${i + 1}"
+                           class="page-link"></a>
+                    </li>
+                    <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
+                        <a th:href="@{/catalog(category=${category}, page=${currentPage + 1}, sortBy=${sortBy})}"
+                           class="page-link">Вперед</a>
+                    </li>
+                </ul>
+            </nav>
+        </main>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
