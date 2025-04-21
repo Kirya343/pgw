@@ -1,7 +1,7 @@
 package org.kirya343.main.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -11,12 +11,14 @@ import java.util.List;
 
 @Getter
 @Setter
-@Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -52,39 +54,38 @@ public class User {
     private String role;
 
     private boolean locked;
-
     private boolean accountNonLocked;
     private boolean accountNonExpired;
-
     private boolean credentialsNonExpired;
     private boolean accountNonLockingProtected;
-
     private boolean enabled;
     private boolean disabled;
-
     private boolean accountNonExpiredOrCredentialsNonExpired;
 
-    // Геттер и сеттер
-    @Setter
-    @Getter
     @Column(name = "avatar_type")
     private String avatarType; // "uploaded", "google", "default"
+
+    private Double rating;
+    private String phone;
+    private Integer completedJobs;
 
     public enum AuthProvider {
         LOCAL,
         GOOGLE
     }
 
-    private Double rating;
-    private String phone;
-    private Integer completedJobs;
-
     // Метод для создания пользователя из OAuth2 данных
     public static User fromOAuth2(OAuth2User oauth2User) {
         User user = new User();
         user.setSub(oauth2User.getAttribute("sub"));
-        // Не устанавливаем имя, если оно уже есть
         user.setEmail(oauth2User.getAttribute("email"));
+
+        String name = oauth2User.getAttribute("name");
+        if (name == null || name.isBlank()) {
+            name = oauth2User.getAttribute("email"); // запасной вариант
+        }
+        user.setName(name);
+
         user.setPicture(oauth2User.getAttribute("picture"));
         user.setProvider(AuthProvider.GOOGLE);
         user.setEnabled(true);

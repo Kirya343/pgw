@@ -6,6 +6,8 @@ import org.kirya343.main.services.AvatarService;
 import org.kirya343.main.services.ListingService;
 import org.kirya343.main.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,10 +32,24 @@ public class ListingsController {
     }
 
     @GetMapping("/{id}")
-    public String getListing(@PathVariable Long id, Model model) {
+    public String getListing(@PathVariable Long id, Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
         Listing listing = listingService.getListingById(id);
         if (listing == null) {
             return "redirect:/catalog";
+        }
+
+        if (oauth2User != null) {
+            User user = userService.findOrCreateUserFromOAuth2(oauth2User);
+            String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
+            String avatarPath = avatarService.resolveAvatarPath(user);
+
+            model.addAttribute("isAuthenticated", true);
+            model.addAttribute("userName", name != null ? name : "Пользователь");
+            model.addAttribute("avatarUrl", avatarPath);
+        } else {
+            model.addAttribute("isAuthenticated", false);
+            model.addAttribute("userName", "Пользователь");
+            model.addAttribute("avatarUrl", "/images/avatar-placeholder.jpg");
         }
 
         // Увеличиваем счетчик просмотров

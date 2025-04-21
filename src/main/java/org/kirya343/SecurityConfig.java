@@ -66,7 +66,7 @@ public class SecurityConfig {
     @Bean
     public SavedRequestAwareAuthenticationSuccessHandler savedRequestAuthenticationSuccessHandler() {
         SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler();
-        handler.setDefaultTargetUrl("/"); // URL по умолчанию, если не было сохраненного запроса
+        handler.setDefaultTargetUrl("/catalog"); // URL по умолчанию, если не было сохраненного запроса
         handler.setAlwaysUseDefaultTargetUrl(false); // Используем сохраненный запрос
         return handler;
     }
@@ -119,6 +119,7 @@ public class SecurityConfig {
                 .tokenUri("https://oauth2.googleapis.com/token")
                 .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
                 .redirectUri("http://localhost:8080/login/oauth2/code/google")
+                //disable  .redirectUri("https://test.globalworlds.net/login/oauth2/code/google")
                 .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .clientName("Google")

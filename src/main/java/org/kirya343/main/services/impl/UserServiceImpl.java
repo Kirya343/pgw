@@ -46,17 +46,23 @@ public class UserServiceImpl implements UserService {
             user = User.fromOAuth2(oauth2User);
         } else {
             // Обновляем только те поля, которые не были изменены пользователем
-            if (user.getName() == null || user.getName().equals(oauth2User.getAttribute("name"))) {
-                user.setName(oauth2User.getAttribute("name"));
+            String oauthName = oauth2User.getAttribute("name");
+            if ((user.getName() == null || user.getName().isBlank())
+                    && oauthName != null && !oauthName.isBlank()) {
+                user.setName(oauthName);
             }
-            if (user.getPicture() == null) {
-                user.setPicture(oauth2User.getAttribute("picture"));
+
+            String oauthPicture = oauth2User.getAttribute("picture");
+            if (user.getPicture() == null && oauthPicture != null && !oauthPicture.isBlank()) {
+                user.setPicture(oauthPicture);
             }
-            // Другие поля из Google, которые должны обновляться
+
+            // При необходимости здесь можно обновлять другие поля
         }
 
         return userRepository.save(user);
     }
+
     @Override
     @Transactional
     public void setAvatarUrl(Long userId, String avatarUrl) {
@@ -94,6 +100,10 @@ public class UserServiceImpl implements UserService {
 
         String email = authentication.getName();
         return findByEmail(email);
+    }
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 }
 

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сообщения | WorkSwap</title>
+    <link href="/css/public/pages/account-page.css" rel="stylesheet">
+    <link href="/css/public/pages/messenger-page.css" rel="stylesheet">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav class="navbar">
+            <a class="navbar-brand" href="/catalog">WorkSwap</a>
+            <button class="navbar-toggler">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse">
+                <div class="nav-buttons">
+                    <a href="/logout" class="logout-btn">Выйти</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<!-- Основной контент -->
+<div class="account-container">
+    <div class="account-layout">
+        <!-- Сайдбар меню -->
+        <aside class="account-sidebar">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <img th:src="@{${avatarPath}}" alt="Аватар">
+                </div>
+                <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
+                <p class="profile-rating">★★★★☆ (4.2)</p>
+                <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
+            </div>
+
+            <nav class="account-menu">
+                <a href="/secure/account" class="account-menu-item">Мои объявления</a>
+                <a href="#" class="account-menu-item">Избранное</a>
+                <a href="/secure/messenger" class="account-menu-item active">Сообщения</a>
+                <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
+                <a href="#" class="account-menu-item">Платежи</a>
+                <a href="#" class="account-menu-item">Безопасность</a>
+            </nav>
+        </aside>
+
+        <!-- Основное содержимое -->
+        <main class="messenger-main">
+            <div class="messenger-header">
+                <h2>Сообщения</h2>
+                <div class="search-container">
+                    <input type="text" placeholder="Поиск диалогов..." class="search-input">
+                    <button class="search-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="messenger-container">
+                <!-- Список диалогов -->
+                <div class="dialogs-list">
+                    <div class="dialog-item"
+                         th:each="conversation : ${conversations}"
+                         th:attr="data-conversation-id=${conversation.id}">
+
+                        <div class="dialog-avatar">
+                            <img th:src="@{${conversation.interlocutorAvatar}}"
+                                 th:onerror="this.src=@{/images/avatar-placeholder.png}"
+                                 alt="Аватар">
+                        </div>
+
+                        <div class="dialog-content">
+                            <div class="dialog-header">
+                                <h4 th:text="${conversation.interlocutorName}">Имя собеседника</h4>
+                                <span class="dialog-time" th:text="${conversation.lastMessageTime}">12:30</span>
+                            </div>
+
+                            <p class="dialog-preview" th:text="${conversation.lastMessagePreview}">
+                                Последнее сообщение...
+                            </p>
+
+                            <div class="dialog-meta">
+                                <span th:if="${conversation.unreadCount > 0}"
+                                      class="unread-count"
+                                      th:text="${conversation.unreadCount}">2</span>
+
+                                <span th:if="${conversation.listing != null}"
+                                      class="dialog-listing"
+                                      th:text="'Объявление: ' + ${conversation.listing.title}">
+                                    Объявление: Название
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Если нет диалогов -->
+                    <div th:if="${#lists.isEmpty(conversations)}" class="no-dialogs">
+                        <p>У вас пока нет сообщений.</p>
+                        <p>Начните общение, ответив на объявление или отправив сообщение пользователю.</p>
+                    </div>
+                </div>
+
+                <!-- Окно чата -->
+                <div class="chat-window">
+                    <div class="chat-container" th:if="${selectedConversation != null}"
+                         data-conversation-id="${selectedConversation.id}">
+                        <div class="chat-header">
+                            <div class="chat-user">
+                                <img th:src="@{${selectedConversation.interlocutorAvatar}}"
+                                     th:onerror="this.src=@{/images/avatar-placeholder.png}"
+                                     alt="Аватар" class="chat-avatar">
+                                <div>
+                                    <h4 th:text="${selectedConversation.interlocutorName}">Имя собеседника</h4>
+                                    <p class="user-status">online</p>
+                                </div>
+                            </div>
+                            <div class="chat-actions">
+                                <button class="btn btn-outline-primary btn-sm">Профиль</button>
+                                <button class="btn btn-outline-danger btn-sm">Заблокировать</button>
+                            </div>
+                        </div>
+
+                        <div th:fragment="messages-container" class="messages-container">
+                            <div class="message-date">Сегодня</div>
+
+                            <th:block th:if="${#lists.isEmpty(messages)}">
+                                <p class="no-messages">Нет сообщений</p>
+                            </th:block>
+
+                            <div th:each="message : ${messages}"
+                                 th:class="${message.isOwn(user)} ? 'message-out' : 'message-in'"
+                                 class="message">
+                                <div class="message-content">
+                                    <p th:text="${message.text}">Текст сообщения</p>
+                                    <span class="message-time"
+                                          th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:30
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="message-input-container">
+                            <textarea placeholder="Напишите сообщение..." class="message-input"></textarea>
+                            <button class="btn btn-primary send-btn">Отправить</button>
+                        </div>
+                    </div>
+
+                    <div th:if="${selectedConversation == null}" class="no-chat-selected">
+                        <div class="no-chat-content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                            <h3>Выберите диалог</h3>
+                            <p>Выберите диалог из списка слева или начните новый</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script th:inline="javascript">
+    const currentConversationId = [[${selectedConversation?.id}]];
+    const currentUserId = [[${user.id}]];
+</script>
+<script src="/js/messenger.js"></script>
+</body>
+</html>

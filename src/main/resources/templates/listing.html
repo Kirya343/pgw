@@ -17,8 +17,22 @@
             </button>
             <div class="navbar-collapse">
                 <div class="d-flex">
-                    <a href="/login" class="btn btn-outline-primary">Вход</a>
-                    <a href="#" class="btn btn-primary">Регистрация</a>
+                    <!-- Для неавторизованных пользователей -->
+                    <div th:unless="${isAuthenticated}">
+                        <a href="/login" class="btn btn-outline-primary">Вход</a>
+                        <a href="/register" class="btn btn-primary">Регистрация</a>
+                    </div>
+
+                    <!-- Для авторизованных пользователей -->
+                    <div th:if="${isAuthenticated}" class="account-info">
+                        <a th:href="@{/secure/account}" class="account-link">
+                            <img th:src="${avatarUrl}"
+                                 class="account-avatar"
+                                 alt="Аватар"
+                                 th:onerror="this.src='/images/avatar-placeholder.jpg'">
+                            <span th:text="${userName}">Пользователь</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -131,7 +145,15 @@
                             </div>
                         </div>
                         <div class="seller-actions">
-                            <a href="#" class="btn btn-primary">Написать сообщение</a>
+                            <div th:if="${isAuthenticated}">
+                                <form action="/secure/messenger/chat" method="get" class="d-inline">
+                                    <input type="hidden" name="sellerId" th:value="${listing.author.id}">
+                                    <button type="submit" class="btn btn-primary">Написать сообщение</button>
+                                </form>
+                            </div>
+                            <div th:unless="${isAuthenticated}">
+                                <a href="/login" class="btn btn-primary">Войти, чтобы написать</a>
+                            </div>
                             <a href="#" class="btn btn-outline-primary">Добавить в избранное</a>
                         </div>
                     </div>

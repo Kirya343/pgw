@@ -16,4 +16,5 @@ public interface UserService {
     User save(User user);
     void setRole(Long userId, String role);
     User getCurrentUser();
+    User findById(Long id);
 }
