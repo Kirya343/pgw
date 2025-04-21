@@ -9,6 +9,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('Initial conversationId:', currentConversationId);
 
+    // Инициализация при загрузке
+    if (currentConversationId) {
+        loadMessages(currentConversationId);
+        updateChatInfo(currentConversationId);
+    }
+
     // Делегирование событий для кликов по диалогам
     document.body.addEventListener('click', function(e) {
         const dialogItem = e.target.closest('.dialog-item');
@@ -22,16 +28,35 @@ document.addEventListener('DOMContentLoaded', function() {
         currentConversationId = newConvId;
         console.log('Switching to conversation:', currentConversationId);
 
-        // Обновляем URL без перезагрузки страницы
         window.history.pushState(
             { conversationId: currentConversationId },
             '',
             `/secure/messenger?conversationId=${currentConversationId}`
         );
 
-        // Загружаем сообщения
+        // Обновляем информацию о собеседнике перед загрузкой сообщений
+        updateChatInfo(currentConversationId);
         loadMessages(currentConversationId);
+        markMessagesAsRead(currentConversationId);
     });
+
+    // Функция обновления информации о собеседнике
+    function updateChatInfo(conversationId) {
+        if (!conversationId) return;
+
+        // Берем данные из выбранного диалога в списке
+        const dialogItem = document.querySelector(`.dialog-item[data-conversation-id="${conversationId}"]`);
+        if (!dialogItem) return;
+
+        const avatar = dialogItem.querySelector('.dialog-avatar img').src;
+        const name = dialogItem.querySelector('h4').textContent;
+
+        // Обновляем информацию в правой части чата
+        document.querySelector('.chat-avatar').src = avatar;
+        document.querySelector('.chat-user h4').textContent = name;
+
+        console.log('Chat info updated for conversation:', conversationId);
+    }
 
     // Функция загрузки сообщений
     async function loadMessages(convId) {
@@ -49,11 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Error loading messages:', error);
         }
-    }
-
-    // Инициализация при загрузке
-    if (currentConversationId) {
-        loadMessages(currentConversationId);
     }
 
     // ========== ДОБАВЛЯЕМ ОТПРАВКУ СООБЩЕНИЙ ==========
@@ -86,5 +106,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => console.error('Send error:', error));
+    }
+    // ========== ДОБАВЛЯЕМ ОТМЕТКУ ПРОЧИТАННЫХ СООБЩЕНИЙ ==========
+
+    // Функция отметки сообщений как прочитанных
+    function markMessagesAsRead(conversationId) {
+        if (!conversationId) return;
+
+        fetch('/secure/messenger/markAsRead', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+            },
+            body: `conversationId=${conversationId}`
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Messages marked as read');
+                    // Обновляем счетчик непрочитанных в UI
+                    const unreadBadge = document.querySelector(`.dialog-item[data-conversation-id="${conversationId}"] .unread-count`);
+                    if (unreadBadge) {
+                        unreadBadge.remove();
+                    }
+                }
+            })
+            .catch(error => console.error('Error marking messages as read:', error));
     }
 });

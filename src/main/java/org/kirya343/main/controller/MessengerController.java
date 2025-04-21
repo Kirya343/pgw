@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -165,6 +166,42 @@ public class MessengerController {
         model.addAttribute("messages", messages);
         model.addAttribute("user", currentUser);
         return "secure/messenger :: messages-container";
+    }
+    @PostMapping("/secure/messenger/markAsRead")
+    @ResponseBody
+    public ResponseEntity<String> markMessagesAsRead(
+            @RequestParam("conversationId") Long conversationId,
+            @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        if (oauth2User == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User currentUser = userService.findOrCreateUserFromOAuth2(oauth2User);
+        chatService.markMessagesAsRead(conversationId, currentUser);
+
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/secure/messenger/getChatInfo")
+    @ResponseBody
+    public Map<String, String> getChatInfo(
+            @RequestParam("conversationId") Long conversationId,
+            @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        User currentUser = userService.findOrCreateUserFromOAuth2(oauth2User);
+        Conversation conversation = chatService.getConversationById(conversationId);
+
+        if (conversation == null || !chatService.hasAccessToConversation(currentUser.getEmail(), conversationId)) {
+            throw new AccessDeniedException("No access to this conversation");
+        }
+
+        User interlocutor = conversation.getOtherParticipant(currentUser);
+        User freshInterlocutor = userService.findById(interlocutor.getId());
+
+        return Map.of(
+                "interlocutorName", freshInterlocutor.getName() != null ? freshInterlocutor.getName() : "Собеседник",
+                "interlocutorAvatar", avatarService.resolveAvatarPath(freshInterlocutor)
+        );
     }
 }
 
