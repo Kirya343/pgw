@@ -3,6 +3,54 @@
 @import url(../components/header.css);
 @import url(../../variables.css);
 
+.seller-actions .btn,
+.seller-actions form,
+.seller-actions a.btn {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+.seller-actions form button {
+    font-size: 1.2rem; /* Устанавливаем такой же размер, как у других кнопок */
+    font-weight: 500;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    margin-right: 0.5rem;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: var(--white);
+    border: 1px solid var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.seller-actions form {
+    margin: 0; /* Убираем отступы у формы */
+}
+
 .account-info {
     display: flex;
     align-items: center;
@@ -405,6 +453,7 @@
 
 .card-body {
     padding: 1rem;
+    background-color: var(--white);
 }
 
 .card-title {

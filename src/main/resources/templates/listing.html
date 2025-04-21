@@ -146,15 +146,23 @@
                         </div>
                         <div class="seller-actions">
                             <div th:if="${isAuthenticated}">
-                                <form action="/secure/messenger/chat" method="get" class="d-inline">
-                                    <input type="hidden" name="sellerId" th:value="${listing.author.id}">
-                                    <button type="submit" class="btn btn-primary">Написать сообщение</button>
-                                </form>
+                                <!-- Показываем кнопки только если пользователь не владелец -->
+                                <div th:unless="${isOwner}">
+                                    <form action="/secure/messenger/chat" method="get">
+                                        <input type="hidden" name="sellerId" th:value="${listing.author.id}">
+                                        <button type="submit" class="btn btn-primary">Написать сообщение</button>
+                                    </form>
+                                    <a href="#" class="btn btn-outline-primary">Добавить в избранное</a>
+                                </div>
+
+                                <!-- Можно добавить кнопки для владельца -->
+                                <a th:href="@{'/secure/listing/edit/' + ${listing.id}}"
+                                   class="btn btn-primary"
+                                   th:if="${isOwner}">Редактировать</a>
                             </div>
                             <div th:unless="${isAuthenticated}">
                                 <a href="/login" class="btn btn-primary">Войти, чтобы написать</a>
                             </div>
-                            <a href="#" class="btn btn-outline-primary">Добавить в избранное</a>
                         </div>
                     </div>
 

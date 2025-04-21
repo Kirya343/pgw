@@ -64,6 +64,16 @@ public class ListingsController {
             authorAvatarPath = avatarService.resolveAvatarPath(author);
         }
 
+        boolean isOwner = false;
+        if (oauth2User != null) {
+            User user = userService.findOrCreateUserFromOAuth2(oauth2User);
+            // Проверяем, является ли пользователь автором объявления
+            isOwner = listing.getAuthor() != null && listing.getAuthor().getId().equals(user.getId());
+
+            model.addAttribute("isOwner", isOwner);
+            // ... остальной код ...
+        }
+
         model.addAttribute("listing", listing);
         model.addAttribute("author", author != null ? author.getName() : "Неизвестный автор");
         model.addAttribute("authorAvatarPath", authorAvatarPath);
