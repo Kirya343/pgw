@@ -2,14 +2,14 @@
 FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Копируем pom.xml и зависимости
-COPY src/main/pom.xml .
+# Копируем только pom.xml для скачивания зависимостей
+COPY pom.xml .
 
 # Скачиваем зависимости (кэшируем этот шаг)
 RUN mvn dependency:go-offline
 
 # Копируем остальные исходники
-COPY src/main ./src/main
+COPY src ./src
 
 # Собираем jar-файл
 RUN mvn clean package -DskipTests
