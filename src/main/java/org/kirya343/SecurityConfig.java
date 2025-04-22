@@ -2,8 +2,10 @@ package org.kirya343;
 
 import jakarta.servlet.MultipartConfigElement;
 import org.kirya343.main.services.CustomOAuth2UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,6 +30,9 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService; // Важно!
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -35,18 +40,27 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/secure/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "OIDC_USER")
                         .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/register").permitAll()
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
-                        .successHandler(savedRequestAuthenticationSuccessHandler()) // Используем кастомный обработчик
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(oauth2UserService())
+                                .userService(customOAuth2UserService) // <-- Внедрён через @Autowired
                         )
+                        .successHandler(savedRequestAuthenticationSuccessHandler())
+                        .failureHandler((request, response, exception) -> {
+                            if (exception.getMessage().contains("user_not_registered")) {
+                                // Просто редирект на регистрацию
+                                response.sendRedirect("/register?oauth2_error=user_not_registered");
+                            } else {
+                                response.sendRedirect("/login?error");
+                            }
+                        })
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .successHandler(savedRequestAuthenticationSuccessHandler()) // Используем тот же обработчик
+                        .successHandler(savedRequestAuthenticationSuccessHandler())
                         .failureUrl("/login?error")
                         .permitAll()
                 )
@@ -66,17 +80,11 @@ public class SecurityConfig {
     @Bean
     public SavedRequestAwareAuthenticationSuccessHandler savedRequestAuthenticationSuccessHandler() {
         SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler();
-        handler.setDefaultTargetUrl("/catalog"); // URL по умолчанию, если не было сохраненного запроса
-        handler.setAlwaysUseDefaultTargetUrl(false); // Используем сохраненный запрос
+        handler.setDefaultTargetUrl("/catalog");
+        handler.setAlwaysUseDefaultTargetUrl(false);
         return handler;
     }
 
-    @Bean
-    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
-        return new CustomOAuth2UserService();
-    }
-
-    // Остальные бины остаются без изменений
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -85,10 +93,10 @@ public class SecurityConfig {
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         return new MultipartConfigElement(
-                "", // Место для временного хранения
-                5 * 1024 * 1024, // Макс. размер файла (5MB)
-                5 * 1024 * 1024, // Макс. размер запроса (5MB)
-                0 // Размер, после которого файл записывается на диск
+                "",
+                5 * 1024 * 1024,
+                5 * 1024 * 1024,
+                0
         );
     }
 
@@ -119,7 +127,6 @@ public class SecurityConfig {
                 .tokenUri("https://oauth2.googleapis.com/token")
                 .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
                 .redirectUri("http://localhost:8080/login/oauth2/code/google")
-                //disable  .redirectUri("https://test.globalworlds.net/login/oauth2/code/google")
                 .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .clientName("Google")

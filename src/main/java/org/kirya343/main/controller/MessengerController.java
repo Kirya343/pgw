@@ -4,14 +4,11 @@ import org.kirya343.main.model.*;
 import org.kirya343.main.repository.MessageRepository;
 import org.kirya343.main.services.AvatarService;
 import org.kirya343.main.services.ChatService;
+import org.kirya343.main.services.ListingService;
 import org.kirya343.main.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -41,6 +38,9 @@ public class MessengerController {
     @Autowired
     private MessageRepository messageRepository;
 
+    @Autowired
+    private ListingService listingService;
+
     public MessengerController(AvatarService avatarService) {
         this.avatarService = avatarService;
     }
@@ -53,7 +53,7 @@ public class MessengerController {
             return "redirect:/login";
         }
 
-        User currentUser = userService.findOrCreateUserFromOAuth2(oauth2User);
+        User currentUser = userService.findUserFromOAuth2(oauth2User);
         model.addAttribute("user", currentUser);
         model.addAttribute("avatarPath", avatarService.resolveAvatarPath(currentUser));
         model.addAttribute("userName", currentUser.getName() != null ? currentUser.getName() : "Пользователь");
@@ -127,7 +127,7 @@ public class MessengerController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        User currentUser = userService.findOrCreateUserFromOAuth2(oauth2User);
+        User currentUser = userService.findUserFromOAuth2(oauth2User);
         Conversation conversation = chatService.getConversationById(conversationId);
 
         if (conversation == null) {
@@ -144,7 +144,7 @@ public class MessengerController {
             @AuthenticationPrincipal OAuth2User oauth2User,
             Model model) {
 
-        User currentUser = userService.findOrCreateUserFromOAuth2(oauth2User);
+        User currentUser = userService.findUserFromOAuth2(oauth2User);
 
         // Проверка доступа к чату
         if (!chatService.hasAccessToConversation(currentUser.getEmail(), conversationId)) {
@@ -177,7 +177,7 @@ public class MessengerController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        User currentUser = userService.findOrCreateUserFromOAuth2(oauth2User);
+        User currentUser = userService.findUserFromOAuth2(oauth2User);
         chatService.markMessagesAsRead(conversationId, currentUser);
 
         return ResponseEntity.ok().build();
@@ -188,7 +188,7 @@ public class MessengerController {
             @RequestParam("conversationId") Long conversationId,
             @AuthenticationPrincipal OAuth2User oauth2User) {
 
-        User currentUser = userService.findOrCreateUserFromOAuth2(oauth2User);
+        User currentUser = userService.findUserFromOAuth2(oauth2User);
         Conversation conversation = chatService.getConversationById(conversationId);
 
         if (conversation == null || !chatService.hasAccessToConversation(currentUser.getEmail(), conversationId)) {
@@ -202,6 +202,26 @@ public class MessengerController {
                 "interlocutorName", freshInterlocutor.getName() != null ? freshInterlocutor.getName() : "Собеседник",
                 "interlocutorAvatar", avatarService.resolveAvatarPath(freshInterlocutor)
         );
+    }
+    @GetMapping("/secure/messenger/chat")
+    public String startNewChat(@RequestParam("sellerId") Long sellerId,
+                               @RequestParam("listingId") Long listingId,
+                               @AuthenticationPrincipal OAuth2User oauth2User) {
+        if (oauth2User == null) {
+            return "redirect:/login";
+        }
+
+        User currentUser = userService.findUserFromOAuth2(oauth2User);
+        User seller = userService.findById(sellerId);
+
+        if (seller == null || currentUser == null || currentUser.equals(seller)) {
+            return "redirect:/catalog";
+        }
+
+        Listing listing = listingService.getListingById(listingId);
+        Conversation conversation = chatService.getOrCreateConversation(currentUser, seller, listing);
+
+        return "redirect:/secure/messenger?conversationId=" + conversation.getId();
     }
 }
 

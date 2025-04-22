@@ -1,7 +1,6 @@
 package org.kirya343.main.services.impl;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.UserRepository;
 import org.kirya343.main.services.UserService;
@@ -38,29 +37,72 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User findOrCreateUserFromOAuth2(OAuth2User oauth2User) {
+    public void registerUserFromOAuth2(OAuth2User oauth2User) {
+        String email = oauth2User.getAttribute("email");
+        String sub = oauth2User.getAttribute("sub");
+
+        // Проверка наличия email
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("Email пользователя не найден.");
+        }
+
+        // Проверяем, существует ли пользователь с таким email
+        User existingUser = userRepository.findByEmail(email).orElse(null);
+
+        if (existingUser != null) {
+            throw new RuntimeException("Пользователь с таким email уже зарегистрирован.");
+        }
+
+        // Создаем нового пользователя
+        User newUser = new User();
+        newUser.setEmail(email);
+        newUser.setSub(sub);
+        newUser.setEnabled(true);
+        newUser.setRole("USER");
+
+        String oauthName = oauth2User.getAttribute("name");
+        if (oauthName != null && !oauthName.isBlank()) {
+            newUser.setName(oauthName);
+        }
+
+        String oauthPicture = oauth2User.getAttribute("picture");
+        if (oauthPicture != null && !oauthPicture.isBlank()) {
+            newUser.setPicture(oauthPicture);
+        }
+
+        // Дополнительно можно проверить наличие других обязательных атрибутов
+
+        // Сохраняем нового пользователя
+        newUser = userRepository.save(newUser);
+
+    }
+
+
+    @Override
+    @Transactional
+    public User findUserFromOAuth2(OAuth2User oauth2User) {
         String email = oauth2User.getAttribute("email");
         User user = userRepository.findByEmail(email).orElse(null);
 
+        // Возвращаем null вместо исключения, если пользователь не найден
         if (user == null) {
-            user = User.fromOAuth2(oauth2User);
-        } else {
-            // Обновляем только те поля, которые не были изменены пользователем
-            String oauthName = oauth2User.getAttribute("name");
-            if ((user.getName() == null || user.getName().isBlank())
-                    && oauthName != null && !oauthName.isBlank()) {
-                user.setName(oauthName);
-            }
-
-            String oauthPicture = oauth2User.getAttribute("picture");
-            if (user.getPicture() == null && oauthPicture != null && !oauthPicture.isBlank()) {
-                user.setPicture(oauthPicture);
-            }
-
-            // При необходимости здесь можно обновлять другие поля
+            System.out.println("Пытались найти пользователя, не нашли");
+            return null;
         }
 
-        return userRepository.save(user);
+        // Обновляем информацию, если пользователь найден
+        String oauthName = oauth2User.getAttribute("name");
+        if ((user.getName() == null || user.getName().isBlank())
+                && oauthName != null && !oauthName.isBlank()) {
+            user.setName(oauthName);
+        }
+
+        String oauthPicture = oauth2User.getAttribute("picture");
+        if (user.getPicture() == null && oauthPicture != null && !oauthPicture.isBlank()) {
+            user.setPicture(oauthPicture);
+        }
+
+        return user;
     }
 
     @Override
@@ -95,7 +137,13 @@ public class UserServiceImpl implements UserService {
         }
 
         if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
-            return findOrCreateUserFromOAuth2(oauth2User);
+            String email = oauth2User.getAttribute("email");
+            User user = findByEmail(email);
+            if (user == null) {
+                // Возвращаем null или пробрасываем флаг регистрации
+                throw new RuntimeException("Пользователь не найден. Пожалуйста, зарегистрируйтесь.");
+            }
+            return user;
         }
 
         String email = authentication.getName();

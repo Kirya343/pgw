@@ -55,7 +55,7 @@ public class ListingController {
         );
         model.addAttribute("categories", categories);
         // Получаем email из OAuth2 аутентификации
-        User user = userService.findOrCreateUserFromOAuth2(oauth2User);
+        User user = userService.findUserFromOAuth2(oauth2User);
         String name = user.getName();
         String avatarPath = avatarService.resolveAvatarPath(user);
 

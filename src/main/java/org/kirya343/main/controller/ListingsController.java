@@ -39,7 +39,7 @@ public class ListingsController {
         }
 
         if (oauth2User != null) {
-            User user = userService.findOrCreateUserFromOAuth2(oauth2User);
+            User user = userService.findUserFromOAuth2(oauth2User);
             String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
             String avatarPath = avatarService.resolveAvatarPath(user);
 
@@ -66,7 +66,7 @@ public class ListingsController {
 
         boolean isOwner = false;
         if (oauth2User != null) {
-            User user = userService.findOrCreateUserFromOAuth2(oauth2User);
+            User user = userService.findUserFromOAuth2(oauth2User);
             // Проверяем, является ли пользователь автором объявления
             isOwner = listing.getAuthor() != null && listing.getAuthor().getId().equals(user.getId());
 

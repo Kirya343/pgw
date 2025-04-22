@@ -10,7 +10,8 @@ public interface UserService {
     User findByEmail(String email);
     User findByUsername(String username);
     User findBySub(String sub);
-    User findOrCreateUserFromOAuth2(OAuth2User oauth2User);
+    User findUserFromOAuth2(OAuth2User oauth2User);
+    void registerUserFromOAuth2(OAuth2User oauth2User);
 
     // Добавляем новые методы
     User save(User user);

@@ -49,7 +49,7 @@ public class AccountController {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
         // Получаем или создаем пользователя
-        User user = userService.findOrCreateUserFromOAuth2(oauth2User);
+        User user = userService.findUserFromOAuth2(oauth2User);
 
         // Определяем URL аватара с приоритетом avatarUrl над picture
         String avatarPath = avatarService.resolveAvatarPath(user);

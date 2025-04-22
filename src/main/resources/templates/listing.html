@@ -150,6 +150,7 @@
                                 <div th:unless="${isOwner}">
                                     <form action="/secure/messenger/chat" method="get">
                                         <input type="hidden" name="sellerId" th:value="${listing.author.id}">
+                                        <input type="hidden" name="listingId" th:value="${listing.id}">
                                         <button type="submit" class="btn btn-primary">Написать сообщение</button>
                                     </form>
                                     <a href="#" class="btn btn-outline-primary">Добавить в избранное</a>

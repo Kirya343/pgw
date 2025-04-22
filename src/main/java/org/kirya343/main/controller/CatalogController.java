@@ -64,7 +64,7 @@ public class CatalogController {
 
         // Добавляем информацию о пользователе, если авторизован
         if (oauth2User != null) {
-            User user = userService.findOrCreateUserFromOAuth2(oauth2User);
+            User user = userService.findUserFromOAuth2(oauth2User);
             String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
             String avatarPath = avatarService.resolveAvatarPath(user);
 

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация | WorkSwap</title>
+    <link href="/css/public/pages/login-page.css" rel="stylesheet">
+    <link rel="icon" href="/favicon.ico">
+    <style>
+        .error-message {
+            color: #dc3545;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+        .terms-checkbox {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+        .terms-checkbox input {
+            margin-right: 10px;
+        }
+        .btn-google {
+            background: #4285F4;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-google:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h2>Регистрация</h2>
+
+    <!-- Отображение ошибок -->
+    <div th:if="${error}" class="error-message">
+        <p th:text="${error}">Ошибка регистрации</p>
+    </div>
+
+    <!-- Блок с данными пользователя -->
+    <div th:if="${name}" class="user-info">
+        <p th:text="'Добро пожаловать, ' + ${name}">Добро пожаловать!</p>
+        <img th:if="${picture}" th:src="${picture}" alt="Аватар" style="width: 64px; border-radius: 50%">
+        <p th:text="${email}">example@email.com</p>
+    </div>
+
+    <!-- Форма регистрации -->
+    <form th:action="@{/register}" method="post" onsubmit="return validateForm()">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+
+        <div class="terms-checkbox">
+            <input type="checkbox" id="terms" name="acceptTerms" required>
+            <label for="terms">Я принимаю <a href="/terms" target="_blank">условия пользования</a></label>
+        </div>
+        <div id="terms-error" class="error-message" style="display: none;">
+            Необходимо принять условия пользования
+        </div>
+
+        <div class="form-footer">
+            <p>После подтверждения регистрации вы будете перенаправлены в каталог.</p>
+            <button type="submit" class="btn-google" id="submitBtn">Завершить регистрацию</button>
+        </div>
+    </form>
+
+    <div class="login-link">
+        Уже зарегистрированы? <a href="/login">Войти</a>
+    </div>
+</div>
+
+<script>
+    // Валидация формы перед отправкой
+    function validateForm() {
+        const termsChecked = document.getElementById('terms').checked;
+        const termsError = document.getElementById('terms-error');
+
+        if (!termsChecked) {
+            termsError.style.display = 'block';
+            return false;
+        }
+        termsError.style.display = 'none';
+        return true;
+    }
+
+    // Блокировка/разблокировка кнопки при изменении чекбокса
+    document.getElementById('terms').addEventListener('change', function() {
+        document.getElementById('submitBtn').disabled = !this.checked;
+    });
+
+    // Инициализация состояния кнопки при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('submitBtn').disabled = true;
+    });
+</script>
+</body>
+</html>

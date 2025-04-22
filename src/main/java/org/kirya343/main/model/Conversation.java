@@ -38,6 +38,9 @@ public class Conversation {
 
 
     public User getOtherParticipant(User user) {
+        if (user == null || user1 == null || user2 == null) {
+            return null;
+        }
         if (user1.equals(user)) {
             return user2;
         } else if (user2.equals(user)) {
