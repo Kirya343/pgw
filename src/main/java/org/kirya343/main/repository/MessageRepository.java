@@ -2,8 +2,8 @@ package org.kirya343.main.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.kirya343.main.model.Conversation;
-import org.kirya343.main.model.Message;
+import org.kirya343.main.model.chat.Conversation;
+import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

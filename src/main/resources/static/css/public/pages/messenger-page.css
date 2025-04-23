@@ -54,8 +54,10 @@
     display: flex;
     flex: 1;
     gap: 1.5rem;
-    height: calc(100vh - 300px);
+    height: calc(100vh - 300px); /* Фиксированная высота */
     min-height: 500px;
+    max-height: 500px; /* Максимальная высота */
+    overflow: hidden; /* Скрываем переполнение */
 }
 
 .dialogs-list {
@@ -178,7 +180,7 @@
     flex-direction: column;
     background-color: var(--light-background);
     border-radius: var(--radius);
-    overflow: hidden;
+    overflow: hidden; /* Важно для вложенных скроллов */
 }
 
 .chat-container {

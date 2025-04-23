@@ -28,6 +28,7 @@
 </header>
 
 <!-- Основной контент -->
+<!-- Основной контент -->
 <div class="account-container">
     <div class="account-layout">
         <!-- Сайдбар меню -->
@@ -95,9 +96,7 @@
 
                                 <span th:if="${conversation.listing != null}"
                                       class="dialog-listing"
-                                      th:text="'Объявление: ' + ${conversation.listing.title}">
-                                    Объявление: Название
-                                </span>
+                                      th:text="'Объявление: ' + ${conversation.listing.title}">Объявление: Название</span>
                             </div>
                         </div>
                     </div>
@@ -115,11 +114,9 @@
                          data-conversation-id="${selectedConversation.id}">
                         <div class="chat-header">
                             <div class="chat-user">
-                                <img th:src="@{${selectedConversation.interlocutorAvatar}}"
-                                     th:onerror="this.src=@{/images/avatar-placeholder.png}"
-                                     alt="Аватар" class="chat-avatar">
+                                <img class="dialog-avatar" id="interlocutorAvatar" src="" alt="Avatar" />
                                 <div>
-                                    <h4 th:text="${selectedConversation.interlocutorName}">Имя собеседника</h4>
+                                    <h4 id="interlocutorName">Имя собеседника</h4>
                                     <p class="user-status">online</p>
                                 </div>
                             </div>
@@ -129,7 +126,7 @@
                             </div>
                         </div>
 
-                        <div th:fragment="messages-container" class="messages-container">
+                        <div th:fragment="messages-container" class="messages-container" id="messages-container">
                             <div class="message-date">Сегодня</div>
 
                             <th:block th:if="${#lists.isEmpty(messages)}">
@@ -142,15 +139,14 @@
                                 <div class="message-content">
                                     <p th:text="${message.text}">Текст сообщения</p>
                                     <span class="message-time"
-                                          th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:30
-                                    </span>
+                                          th:text="${#temporals.format(message.sentAt, 'HH:mm')}">12:30</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="message-input-container">
-                            <textarea placeholder="Напишите сообщение..." class="message-input"></textarea>
-                            <button class="btn btn-primary send-btn">Отправить</button>
+                            <textarea id="message-input" нуplaceholder="Напишите сообщение..." class="message-input"></textarea>
+                            <button id="send-btn" class="btn btn-primary send-btn">Отправить</button>
                         </div>
                     </div>
 
@@ -169,10 +165,18 @@
         </main>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 <script th:inline="javascript">
-    const currentConversationId = [[${selectedConversation?.id}]];
+    let currentConversationId = [[${selectedConversation?.id}]];
     const currentUserId = [[${user.id}]];
+
+    document.addEventListener("DOMContentLoaded", function () {
+        connect(); // Подключаем WebSocket после загрузки страницы
+    });
 </script>
-<script src="/js/messenger.js"></script>
+<!--<script src="/js/messenger.js"></script>-->
+<script src="/js/websocket-messenger.js"></script>
 </body>
 </html>

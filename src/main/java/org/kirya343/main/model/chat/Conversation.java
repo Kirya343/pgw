@@ -1,11 +1,12 @@
-package org.kirya343.main.model;
+package org.kirya343.main.model.chat;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.kirya343.main.model.Listing;
+import org.kirya343.main.model.User;
 import org.kirya343.main.services.AvatarService;
 import org.kirya343.main.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +30,7 @@ public class Conversation {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Message> messages;
 
     @ManyToOne

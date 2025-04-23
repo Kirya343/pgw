@@ -1,7 +1,8 @@
-package org.kirya343.main.model;
+package org.kirya343.main.model.chat;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.kirya343.main.model.Listing;
 
 // Новый DTO класс
 @Setter
@@ -13,5 +14,5 @@ public class ConversationDTO {
     private long unreadCount;
     private String lastMessagePreview;
     private String lastMessageTime;
-    private Listing listing;
+    private ListingDTO listing;
 }
