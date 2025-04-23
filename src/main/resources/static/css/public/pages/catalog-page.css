@@ -119,6 +119,27 @@
     box-shadow: 0 2px 8px var(--shadow-color);
 }
 
+/* Исправление для чекбоксов фильтров */
+.sorting-sidebar .form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    justify-content: flex-start; /* Добавьте эту строку */
+}
+
+.sorting-sidebar .form-check-input {
+    margin-right: 0.5rem; /* Отступ между чекбоксом и текстом */
+    margin-top: 15px;  /* Убираем стандартный отступ сверху */
+    margin-left: 1.25rem;
+    float: none; /* Отключаем обтекание */
+    white-space: nowrap; /* Запрещаем перенос текста */
+    max-width: 20px;
+}
+
+.sorting-sidebar .form-check-label {
+    margin-bottom: 0; /* Убираем отступ снизу */
+}
+
 .list-group {
     list-style: none;
 }

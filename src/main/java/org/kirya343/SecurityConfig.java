@@ -127,6 +127,7 @@ public class SecurityConfig {
                 .tokenUri("https://oauth2.googleapis.com/token")
                 .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
                 .redirectUri("http://localhost:8080/login/oauth2/code/google")
+                //.redirectUri("https://workswap.org/login/oauth2/code/google")
                 .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .clientName("Google")
