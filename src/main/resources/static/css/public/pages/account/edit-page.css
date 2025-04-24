@@ -277,13 +277,18 @@ h2 {
         flex-direction: column;
     }
 
+    .account-main {
+        padding: 1rem;
+    }
+
     .account-sidebar {
         position: static;
         width: 100%;
+        display: none;
     }
 
-    .account-main {
-        padding: 1rem;
+    .navbar-collapse {
+        top: 0;
     }
 }
 

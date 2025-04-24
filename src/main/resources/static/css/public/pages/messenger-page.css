@@ -343,28 +343,41 @@
     color: var(--dark);
 }
 
-/* Адаптивность */
-@media (max-width: 992px) {
+@media (max-width: 768px) {
+    .account-layout {
+        flex-direction: column;
+    }
+
+    .messages-container {
+        max-height: 600px;
+    }
+
+    .account-sidebar {
+        display: none;
+    }
+
     .messenger-container {
         flex-direction: column;
         height: auto;
+        max-height: none;
     }
 
     .dialogs-list {
-        flex: 0 0 auto;
+        flex: none;
+        width: 100%;
         border-right: none;
         border-bottom: 1px solid var(--border-color);
         padding-right: 0;
         padding-bottom: 1rem;
-        max-height: 300px;
+        max-height: 250px;
+        overflow-y: auto;
     }
 
     .chat-window {
-        min-height: 400px;
+        flex: none;
+        width: 100%;
     }
-}
 
-@media (max-width: 576px) {
     .messenger-header {
         flex-direction: column;
         align-items: flex-start;
@@ -375,14 +388,28 @@
         width: 100%;
     }
 
-    .chat-header {
+    .message-input-container {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
+    }
+
+    .message-input {
+        width: 100%;
+        margin-bottom: 0.5rem;
     }
 
     .chat-actions {
-        width: 100%;
-        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .chat-user {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .chat-user img {
+        width: 40px;
+        height: 40px;
+        margin-right: 0.5rem;
     }
 }

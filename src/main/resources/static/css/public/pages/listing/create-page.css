@@ -335,22 +335,12 @@
         flex-direction: column;
     }
 
-    .account-sidebar {
-        position: static;
-        width: 100%;
-    }
-
     .form-actions {
         justify-content: center;
     }
 
     .account-layout {
         flex-direction: column;
-    }
-
-    .account-sidebar {
-        position: static;
-        width: 100%;
     }
 
     .form-actions {
@@ -361,5 +351,15 @@
     .btn-outline-secondary {
         margin-left: 0;
         margin-top: 1rem;
+    }
+
+    .account-sidebar {
+        position: static;
+        width: 100%;
+        display: none;
+    }
+
+    .navbar-collapse {
+        top: 0;
     }
 }

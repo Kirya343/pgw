@@ -415,6 +415,16 @@ input:checked + .slider:before {
         flex-direction: column;
         align-items: flex-start;
     }
+
+    .account-sidebar {
+        position: static;
+        width: 100%;
+        display: none;
+    }
+
+    .navbar-collapse {
+        top: 0;
+    }
 }
 
 /* Анимации */

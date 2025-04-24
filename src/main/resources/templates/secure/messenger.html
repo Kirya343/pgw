@@ -12,19 +12,44 @@
 </head>
 <body>
 <header>
-    <div class="container">
+    <nav class="container">
         <nav class="navbar">
             <a class="navbar-brand" href="/catalog">WorkSwap</a>
             <button class="navbar-toggler">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="navbar-collapse">
+            <nav class="navbar-collapse">
+                <nav class="navbar-top">
+                    <a class="navbar-brand" href="/catalog">WorkSwap</a>
+                    <button id="navbar-toggler" class="navbar-toggler">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </nav>
+                <div class="account-manager">
+                    <div class="profile-card">
+                        <div class="profile-avatar">
+                            <img th:src="@{${avatarPath}}" alt="Аватар">
+                        </div>
+                        <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
+                        <p class="profile-rating">★★★★☆ (4.2)</p>
+                        <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
+                    </div>
+
+                    <nav class="account-menu">
+                        <a href="/secure/account" class="account-menu-item">Мои объявления</a>
+                        <a href="#" class="account-menu-item">Избранное</a>
+                        <a href="/secure/messenger" class="account-menu-item active">Сообщения</a>
+                        <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
+                        <a href="#" class="account-menu-item">Платежи</a>
+                        <a href="#" class="account-menu-item">Безопасность</a>
+                    </nav>
+                </div>
                 <div class="nav-buttons">
                     <a href="/logout" class="logout-btn">Выйти</a>
                 </div>
-            </div>
+            </nav>
         </nav>
-    </div>
+    </nav>
 </header>
 
 <!-- Основной контент -->
@@ -174,6 +199,15 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         connect(); // Подключаем WebSocket после загрузки страницы
+    });
+</script>
+<script>
+    // Мобильное меню
+    document.querySelector('.navbar-toggler').addEventListener('click', function() {
+        document.querySelector('.navbar-collapse').classList.toggle('show');
+    });
+    document.getElementById('navbar-toggler').addEventListener('click', function() {
+        document.querySelector('.navbar-collapse').classList.toggle('show');
     });
 </script>
 <!--<script src="/js/messenger.js"></script>-->
