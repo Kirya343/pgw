@@ -16,6 +16,37 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse">
+                <div class="sorting-sidebar-top">
+                    <h5>Сортировка</h5>
+                    <div class="list-group list-group-flush">
+                        <a th:href="@{/catalog(category=${category}, sortBy='date')}"
+                           th:class="${sortBy == 'date'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                            По дате
+                        </a>
+                        <a th:href="@{/catalog(category=${category}, sortBy='price')}"
+                           th:class="${sortBy == 'price'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                            По цене
+                        </a>
+                        <a th:href="@{/catalog(category=${category}, sortBy='rating')}"
+                           th:class="${sortBy == 'rating'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                            По рейтингу
+                        </a>
+                        <a th:href="@{/catalog(category=${category}, sortBy='popularity')}"
+                           th:class="${sortBy == 'popularity'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                            По популярности
+                        </a>
+                    </div>
+
+                    <h5 class="mt-4">Фильтры</h5>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="filter1">
+                        <label class="form-check-label" for="filter1">Сейчас доступен</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="filter2">
+                        <label class="form-check-label" for="filter2">С отзывами</label>
+                    </div>
+                </div>
                 <div class="d-flex">
                     <!-- Для неавторизованных пользователей -->
                     <div th:unless="${isAuthenticated}">
@@ -148,7 +179,12 @@
         </main>
     </main>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Мобильное меню
+    document.querySelector('.navbar-toggler').addEventListener('click', function() {
+        document.querySelector('.navbar-collapse').classList.toggle('show');
+    });
+</script>
 </body>
 </html>

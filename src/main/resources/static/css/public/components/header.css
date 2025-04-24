@@ -172,8 +172,8 @@ header {
         flex-direction: column;
         padding: 1rem;
         box-shadow: 0 2px 5px var(--shadow-color);
-        transform: translateY(-150%);
-        transition: transform 0.3s ease;
+        transform: translateY(-900px);
+        transition: transform 0.6s ease;
     }
 
     .navbar-collapse.show {

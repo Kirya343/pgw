@@ -140,6 +140,38 @@
     margin-bottom: 0; /* Убираем отступ снизу */
 }
 
+.sorting-sidebar-top {
+    width: var(--sidebar-width);
+    position: sticky;
+    top: calc(var(--header-height));
+    align-self: flex-start;
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    display: none;
+}
+
+/* Исправление для чекбоксов фильтров */
+.sorting-sidebar-top .form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    justify-content: flex-start; /* Добавьте эту строку */
+}
+
+.sorting-sidebar-top .form-check-input {
+    margin-right: 0.5rem; /* Отступ между чекбоксом и текстом */
+    margin-top: 15px;  /* Убираем стандартный отступ сверху */
+    margin-left: 1.25rem;
+    float: none; /* Отключаем обтекание */
+    white-space: nowrap; /* Запрещаем перенос текста */
+    max-width: 20px;
+}
+.sorting-sidebar-top .form-check-label {
+    margin-bottom: 0; /* Убираем отступ снизу */
+}
+
 .list-group {
     list-style: none;
 }
@@ -364,6 +396,20 @@
         padding: 0.5rem 0.75rem;
         font-size: 0.9rem;
     }
+    .listing-img {
+        height: 160px;
+    }
+    .catalog-header {
+        position: static;
+    }
+    .pagination {
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+    }
+
+    .page-link {
+        padding: 0.4rem 0.75rem;
+    }
 }
 @media (min-width: 768px) {
     .col-md-6 { flex: 0 0 50%; max-width: 50%; }
@@ -385,5 +431,42 @@
     .catalog-sidebar {
         position: static;
         width: 100%;
+    }
+}
+@media (max-width: 991px) and (min-width: 577px) {
+    .listings-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .sorting-sidebar-top {
+        display: inline-block;
+        min-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .catalog-layout {
+        flex-direction: column;
+        padding-left: 0;
+        gap: 2rem;
+    }
+
+    .catalog-sidebar {
+        display: none;
+    }
+
+    .catalog-main {
+        max-width: 90%;
+        padding-right: 0;
+        margin-left: 5%;
+    }
+
+    .catalog-sidebar {
+        padding: 1rem 0;
+    }
+
+    .pagination {
+        display: none;
     }
 }

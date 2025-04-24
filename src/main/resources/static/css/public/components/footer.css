@@ -4,6 +4,22 @@
     color: var(--white);
 }
 
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+}
+.footer-logo {
+    flex: 1;
+    min-width: 200px;
+}
+
+.links-column {
+    flex: 1;
+    min-width: 150px;
+}
+
 .footer-links {
     display: flex;
     gap: 1.5rem;
@@ -18,4 +34,11 @@
 
 .footer a:hover {
     opacity: 1;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.875rem;
+    opacity: 0.8;
 }

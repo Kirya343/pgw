@@ -1,0 +1,182 @@
+@import url(../components/footer.css);
+@import url(../components/base.css);
+@import url(../components/header.css);
+@import url(../components/bootstrap-demo.css);
+@import url(../../variables.css);
+
+.hero {
+    /*background: linear-gradient(rgba(0, 0, 0, 0.6), url('/images/hero-bg.jpg') no-repeat center;*/
+    background-size: cover;
+    color: var(--white);
+    padding: 4rem 1rem;
+    text-align: center;
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.feature-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px var(--shadow-color);
+    text-align: center;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 колонки */
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.category-card {
+    background: var(--white);
+    padding: 1rem;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px var(--shadow-color);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.lead {
+    font-size: 1.25rem;
+    color: var(--light);
+    margin-bottom: 1rem;
+}
+
+.feature-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.category-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.big-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    margin: 0.5rem;
+}
+
+.how-it-works {
+    margin: 3rem 0;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* два блока в ряд */
+    gap: 2rem;
+}
+
+.step {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.step-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+ol, ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    list-style-type: disc; /* для ul, или decimal — для ol */
+}
+
+
+.cta {
+    margin: 3rem 0;
+    text-align: center;
+}
+.cta-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 2rem 1rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr; /* одна колонка */
+    }
+
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr); /* две карточки в строку */
+    }
+
+    .big-btn {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+
+    .steps {
+        grid-template-columns: 1fr; /* одна колонка */
+    }
+
+    .step {
+        padding: 1rem;
+    }
+
+    .cta-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .lead {
+        font-size: 1.1rem;
+    }
+}
+
+/*@media (max-width: 480px) {
+    .categories-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .hero .lead {
+        font-size: 1rem;
+    }
+
+    .step-number {
+        font-size: 1.5rem;
+    }
+
+    .cta-card h2 {
+        font-size: 1.25rem;
+    }
+
+    .cta-card p {
+        font-size: 1rem;
+    }
+}*/
+

@@ -3,40 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkSwap — Площадка для подработок, услуг и секонд-хенда</title>
-    <link href="/css/public/pages/main-page.css" rel="stylesheet">
+    <title>WorkSwap - Платформа для подработок и услуг | Хельсинки</title>
+    <link href="/css/public/pages/home-page.css" rel="stylesheet">
     <link rel="icon" href="/favicon.ico">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-<!-- Шапка с навигацией -->
-<header class="sticky-top bg-white shadow-sm">
+<header>
     <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold" href="/catalog">WorkSwap</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#features">Возможности</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#how-it-works">Как это работает?</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#listings">Объявления</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#faq">FAQ</a>
-                        </li>
-                    </ul>
-                    <div class="d-flex">
-                        <a href="/login" class="btn btn-outline-primary me-2">Вход</a>
+        <nav class="navbar">
+            <a class="navbar-brand" href="/catalog">WorkSwap</a>
+            <button class="navbar-toggler">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse">
+                <div class="d-flex">
+                    <!-- Для неавторизованных пользователей -->
+                    <div th:unless="${isAuthenticated}">
+                        <a href="/login" class="btn btn-outline-primary">Вход</a>
                         <a href="/register" class="btn btn-primary">Регистрация</a>
+                    </div>
+
+                    <!-- Для авторизованных пользователей -->
+                    <div th:if="${isAuthenticated}" class="account-info">
+                        <a th:href="@{/secure/account}" class="account-link">
+                            <img th:src="${avatarUrl}"
+                                 class="account-avatar"
+                                 alt="Аватар"
+                                 th:onerror="this.src='/images/avatar-placeholder.jpg'">
+                            <span th:text="${userName}">Пользователь</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -44,227 +39,154 @@
     </div>
 </header>
 
-<!-- Герой-блок -->
-<section class="hero-section text-center">
-    <div class="container">
-        <h1 class="display-4 fw-bold mb-3">WorkSwap</h1>
-        <p class="lead mb-4">Найди подработку, предложи услугу или купи секонд-хенд — всё в одном месте!</p>
-        <a href="/catalog" class="btn btn-light btn-lg px-4 me-2">Начать использовать</a>
-        <a href="#how-it-works" class="btn btn-outline-light btn-lg px-4">Узнать больше</a>
-    </div>
-</section>
+<main class="container">
+    <!-- Герой-баннер -->
+    <section class="hero">
+        <h1>Находите подработку или предлагайте услуги</h1>
+        <p class="lead">Платформа для быстрого поиска подработок, услуг и качественных б/у товаров в Хельсинки</p>
+        <div class="cta-buttons">
+            <a href="/catalog" class="big-btn btn-primary">Найти услугу</a>
+            <a href="/secure/listing/create" class="big-btn btn-outline">Разместить объявление</a>
+        </div>
+    </section>
 
-<!-- Краткое описание (3 фичи) -->
-<section id="features" class="py-5">
+    <!-- Преимущества -->
+    <section class="features">
+        <h2 class="text-center">Почему выбирают WorkSwap</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3>Быстро и просто</h3>
+                <p>Регистрация через Google за 1 минуту. Начните зарабатывать уже сегодня.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💸</div>
+                <h3>Без комиссии</h3>
+                <p>Бесплатное размещение объявлений. Платите только за премиум-размещение.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⭐</div>
+                <h3>Надежно</h3>
+                <p>Система рейтингов и отзывов помогает выбрать проверенного исполнителя.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Для всех</h3>
+                <p>Студенты, специалисты, пенсионеры - каждый найдет подходящую подработку.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Популярные категории -->
+    <section class="categories">
+        <h2>Популярные категории</h2>
+        <div class="categories-grid">
+            <a href="/catalog?category=repair" class="category-card">
+                <div class="category-icon">🔧</div>
+                <h3>Ремонт и строительство</h3>
+            </a>
+            <a href="/catalog?category=delivery" class="category-card">
+                <div class="category-icon">🚚</div>
+                <h3>Доставка и перевозки</h3>
+            </a>
+            <a href="/catalog?category=it" class="category-card">
+                <div class="category-icon">💻</div>
+                <h3>IT и компьютерная помощь</h3>
+            </a>
+            <a href="/catalog?category=cleaning" class="category-card">
+                <div class="category-icon">🧹</div>
+                <h3>Уборка и помощь по хозяйству</h3>
+            </a>
+            <a href="/catalog?category=children" class="category-card">
+                <div class="category-icon">🧸</div>
+                <h3>Уход за детьми и животными</h3>
+            </a>
+            <a href="/catalog?category=beauty" class="category-card">
+                <div class="category-icon">💅</div>
+                <h3>Услуги красоты</h3>
+            </a>
+            <a href="/catalog?category=secondhand" class="category-card">
+                <div class="category-icon">👕</div>
+                <h3>Секонд-хенд товары</h3>
+            </a>
+            <a href="/catalog?category=electronics" class="category-card">
+                <div class="category-icon">📱</div>
+                <h3>Ремонт техники</h3>
+            </a>
+        </div>
+    </section>
+
+    <!-- Как это работает -->
+    <section class="how-it-works">
+        <h2 class="text-center">Как это работает</h2>
+        <div class="steps">
+            <div class="step">
+                <h3 class="step-number" >Для заказчиков</h3>
+                <ol>
+                    <li>Найдите нужную услугу в каталоге</li>
+                    <li>Свяжитесь с исполнителем через сообщения</li>
+                    <li>Оплатите после выполнения работы</li>
+                </ol>
+            </div>
+            <div class="step">
+                <h3 class="step-number" >Для исполнителей</h3>
+                <ol>
+                    <li>Разместите объявление о своих услугах</li>
+                    <li>Получайте заказы от клиентов</li>
+                    <li>Зарабатывайте на своих навыках</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- Призыв к действию -->
+    <section class="cta">
+        <div class="cta-card">
+            <h2>Начните прямо сейчас!</h2>
+            <p>Присоединяйтесь к тысячам пользователей, которые уже находят подработку и услуги на WorkSwap</p>
+            <a href="/register" class="btn btn-primary">Зарегистрироваться</a>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
     <div class="container">
-        <h2 class="text-center mb-5">Почему WorkSwap?</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card feature-card h-100 shadow">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3 text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
-                            </svg>
-                        </div>
-                        <h3>Подработка</h3>
-                        <p>Найди временную работу или найми помощника для задач любой сложности.</p>
-                    </div>
-                </div>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <a href="/" class="navbar-brand">WorkSwap</a>
+                <p>Платформа для подработок и услуг в Хельсинки</p>
             </div>
-            <div class="col-md-4">
-                <div class="card feature-card h-100 shadow">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3 text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M3 2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1 5 0v.006c0 .07 0 .27-.038.494H15a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h2.038A2.968 2.968 0 0 1 3 2.506V2.5zm1.068.5H7v-.5a1.5 1.5 0 1 0-3 0c0 .085.002.274.045.43a.522.522 0 0 0 .023.07zM9 3h2.932a.56.56 0 0 0 .023-.07c.043-.156.045-.345.045-.43a1.5 1.5 0 0 0-3 0V3zM1 5v1h14V5H1zm0 2v6.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5V7H1zm3 1.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm4 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
-                            </svg>
-                        </div>
-                        <h3>Услуги</h3>
-                        <p>Предложи свои навыки или найми профессионала для решения задач.</p>
-                    </div>
+            <div class="footer-links">
+                <div class="links-column">
+                    <h4>Компания</h4>
+                    <a href="/about">О нас</a>
+                    <a href="/blog">Блог</a>
+                    <a href="/careers">Вакансии</a>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card feature-card h-100 shadow">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3 text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
-                            </svg>
-                        </div>
-                        <h3>Секонд-хенд</h3>
-                        <p>Покупай и продавай б/у товары по выгодным ценам.</p>
-                    </div>
+                <div class="links-column">
+                    <h4>Помощь</h4>
+                    <a href="/help">Центр поддержки</a>
+                    <a href="/safety">Безопасность</a>
+                    <a href="/terms">Условия использования</a>
+                </div>
+                <div class="links-column">
+                    <h4>Контакты</h4>
+                    <a href="mailto:info@workswap.fi">info@workswap.fi</a>
+                    <a href="tel:+358401234567">+358 40 123 4567</a>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
-<!-- Популярные категории -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center mb-5">Популярные категории</h2>
-        <div class="row g-3">
-            <div class="col-6 col-md-3">
-                <a href="/catalog" class="btn btn-outline-primary w-100 py-3">Доставка</a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="/catalog" class="btn btn-outline-primary w-100 py-3">Ремонт</a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="/catalog" class="btn btn-outline-primary w-100 py-3">Одежда</a>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="/catalog" class="btn btn-outline-primary w-100 py-3">Уборка</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Как это работает? -->
-<section id="how-it-works" class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-5">Как это работает?</h2>
-        <div class="row g-4">
-            <div class="col-md-3">
-                <div class="how-it-works-step">
-                    <div class="step-icon">1</div>
-                    <h3>Размести</h3>
-                    <p>Создай объявление о подработке, услуге или товаре.</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="how-it-works-step">
-                    <div class="step-icon">2</div>
-                    <h3>Найди</h3>
-                    <p>Исполнителя или покупателя через поиск или ленту.</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="how-it-works-step">
-                    <div class="step-icon">3</div>
-                    <h3>Договорись</h3>
-                    <p>Обсуди детали через чат и согласуй условия.</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="how-it-works-step">
-                    <div class="step-icon">4</div>
-                    <h3>Получи результат</h3>
-                    <p>Выполни задачу или соверши сделку безопасно.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Лента объявлений (превью) -->
-<section id="listings" class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center mb-5">Последние объявления</h2>
-        <div class="row g-4">
-            <!-- Пример карточки объявления -->
-            <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="/images/moving.jpeg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Помощь с переездом</h5>
-                        <p class="card-text">Нужны 2 человека для погрузки мебели. 20€/час.</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">Хельсинки</small>
-                            <span class="badge bg-primary">Подработка</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Ещё 2 аналогичные карточки -->
-        </div>
-        <div class="text-center mt-4">
-            <a href="/catalog" class="btn btn-primary">Смотреть все</a>
-        </div>
-    </div>
-</section>
-
-<!-- Отзывы -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-5">Отзывы пользователей</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="testimonial-card">
-                    <p>"Нашел подработку на выходные — оплата сразу!"</p>
-                    <div class="d-flex align-items-center">
-                        <img src="/images/avatar-placeholder.png" class="img rounded-circle me-3" alt="...">
-                        <div>
-                            <h6 class="mb-0">Иван П.</h6>
-                            <small class="text-muted">Студент</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Ещё 2 отзыва -->
-        </div>
-    </div>
-</section>
-
-<!-- FAQ -->
-<section id="faq" class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center mb-5">Частые вопросы</h2>
-        <div class="accordion" id="faqAccordion">
-            <div class="accordion-item">
-                <h3 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
-                        Как создать объявление?
-                    </button>
-                </h3>
-                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Зарегистрируйтесь, нажмите "Разместить объявление" и заполните форму.
-                    </div>
-                </div>
-            </div>
-            <!-- Ещё 4-5 вопросов -->
-        </div>
-    </div>
-</section>
-
-<!-- CTA в конце -->
-<section class="py-5 bg-primary text-white">
-    <div class="container text-center">
-        <h2 class="mb-4">Готовы начать?</h2>
-        <p class="lead mb-4">Присоединяйтесь к WorkSwap прямо сейчас!</p>
-        <a href="/register" class="btn btn-light btn-lg px-4 me-2">Зарегистрироваться</a>
-        <a href="#" class="btn btn-outline-light btn-lg px-4">Узнать больше</a>
-    </div>
-</section>
-
-<!-- Подвал -->
-<footer class="py-4 bg-dark text-white">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h5>WorkSwap</h5>
-                <p>© 2023 Все права защищены</p>
-            </div>
-            <div class="col-md-3">
-                <h5>Контакты</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#" class="text-white">workswap@gmail.com</a></li>
-                </ul>
-            </div>
-            <div class="col-md-3">
-                <h5>Соцсети</h5>
-                <a href="#" class="text-white me-2">Facebook</a>
-                <a href="#" class="text-white">Instagram</a>
-            </div>
+        <div class="footer-bottom">
+            <p>© 2023 WorkSwap. Все права защищены.</p>
         </div>
     </div>
 </footer>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Мобильное меню
+    document.querySelector('.navbar-toggler').addEventListener('click', function() {
+        document.querySelector('.navbar-collapse').classList.toggle('show');
+    });
+</script>
 </body>
 </html>
