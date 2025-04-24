@@ -2,6 +2,8 @@ package org.kirya343.main.services.impl;
 
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.chat.Conversation;
+import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.ListingRepository;
 import org.kirya343.main.services.ListingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,12 @@ public class ListingServiceImpl implements ListingService {
 
     private final ListingRepository listingRepository;
 
+    private final ConversationRepository conversationRepository;
+
     @Autowired
-    public ListingServiceImpl(ListingRepository listingRepository) {
+    public ListingServiceImpl(ListingRepository listingRepository, ConversationRepository conversationRepository) {
         this.listingRepository = listingRepository;
+        this.conversationRepository = conversationRepository;
     }
 
     @Override
@@ -57,13 +62,17 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.findByCategoryAndIdNot(category, excludeId, PageRequest.of(0, 4));
     }
     public void deleteListing(Long id) {
-        if (!listingRepository.existsById(id)) {
-            throw new IllegalArgumentException("Объявление с ID " + id + " не найдено");
+        Listing listing = listingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Объявление не найдено"));
+
+        // Обнуляем связь listing у всех Conversation
+        List<Conversation> conversations = conversationRepository.findAllByListing(listing);
+        for (Conversation conversation : conversations) {
+            conversation.setListing(null);
         }
-        try {
-            listingRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException("Ошибка при удалении объявления: " + e.getMessage(), e);
-        }
+        conversationRepository.saveAll(conversations);
+
+        // Теперь можно удалить объявление
+        listingRepository.delete(listing);
     }
 }

@@ -98,6 +98,8 @@ public class AccountController {
             @ModelAttribute User updatedUser,
             @RequestParam(value = "avatar", required = false) MultipartFile avatarFile,
             @RequestParam("avatarType") String avatarType,
+            @RequestParam(value = "phoneVisible", defaultValue = "false") boolean phoneVisible,
+            @RequestParam(value = "emailVisible", defaultValue = "false") boolean emailVisible,
             @AuthenticationPrincipal OAuth2User principal,
             RedirectAttributes redirectAttributes) {
 
@@ -110,13 +112,19 @@ public class AccountController {
             currentUser.setBio(updatedUser.getBio() != null ? updatedUser.getBio() : currentUser.getBio());
             currentUser.setAvatarType(avatarType); // Сохраняем тип аватара
 
+            // Обновляем настройки конфиденциальности
+            currentUser.setPhoneVisible(phoneVisible); // Устанавливаем настройку отображения телефона
+            currentUser.setEmailVisible(emailVisible); // Устанавливаем настройку отображения email
+
             // Сохраняем новую аватарку, если загружена
             if (avatarFile != null && !avatarFile.isEmpty()) {
                 String fileName = storageService.storeImage(avatarFile);
                 currentUser.setAvatarUrl(fileName);
             }
 
+            // Сохраняем пользователя
             userService.save(currentUser);
+
             redirectAttributes.addFlashAttribute("success", "Профиль успешно обновлен");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Ошибка при обновлении профиля");
@@ -125,4 +133,5 @@ public class AccountController {
 
         return "redirect:/secure/account/edit";
     }
+
 }

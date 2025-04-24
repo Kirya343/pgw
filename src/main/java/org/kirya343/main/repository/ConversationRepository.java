@@ -25,4 +25,6 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
     Optional<Conversation> findByUser2AndUser1AndListing(User user1, User user2, Listing listing);
     boolean existsByUser1AndUser2(User user1, User user2);
     boolean existsByUser2AndUser1(User user1, User user2);
+
+    List<Conversation> findAllByListing(Listing listing);
 }

@@ -44,6 +44,12 @@ public class User {
     private boolean emailVerified;
     private String locale;
 
+    @Column(name = "phone_visible")
+    private boolean phoneVisible = true;  // Скрывать или отображать телефон
+
+    @Column(name = "email_visible")
+    private boolean emailVisible = true;  // Скрывать или отображать email
+
     @Enumerated(EnumType.STRING)
     private AuthProvider provider; // GOOGLE, LOCAL и т.д.
 

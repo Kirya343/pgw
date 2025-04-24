@@ -99,7 +99,30 @@
                     </div>
                 </div>
 
-                <!-- Аватар -->
+                <div class="form-section">
+                    <h3>Конфиденциальность</h3>
+                    <div class="form-group">
+                        <label>Отображение ваших контактных данных для других пользователей</label>
+                        <div class="status-toggle">
+                            <label class="switch">
+                                <input type="checkbox" name="phoneVisible" th:checked="${user.phoneVisible}" value="true">
+                                <span class="slider"></span>
+                            </label>
+                            <span th:text="${user.phoneVisible} ? 'Телефон' : 'Телефон'"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="status-toggle">
+                            <label class="switch">
+                                <input type="checkbox" name="emailVisible" th:checked="${user.emailVisible}" value="true">
+                                <span class="slider"></span>
+                            </label>
+                            <span th:text="${user.emailVisible} ? 'Email' : 'Email'"></span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Аватар -->
                 <div class="form-section">
                     <h3>Аватар</h3>
