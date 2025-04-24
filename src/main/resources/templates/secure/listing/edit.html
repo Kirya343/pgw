@@ -33,7 +33,7 @@
 
                     <nav class="account-menu">
                         <a href="/secure/account" class="account-menu-item">Мои объявления</a>
-                        <a href="#" class="account-menu-item">Избранное</a>
+                        <a href="/secure/favorites" class="account-menu-item">Избранное</a>
                         <a href="/secure/messenger" class="account-menu-item">Сообщения</a>
                         <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
                         <a href="#" class="account-menu-item">Платежи</a>
@@ -61,7 +61,7 @@
             </div>
             <nav class="account-menu">
                 <a href="/secure/account" class="account-menu-item">Мои объявления</a>
-                <a href="#" class="account-menu-item">Избранное</a>
+                <a href="/secure/favorites" class="account-menu-item">Избранное</a>
                 <a href="/secure/messenger" class="account-menu-item">Сообщения</a>
                 <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
                 <a href="#" class="account-menu-item">Платежи</a>
@@ -117,6 +117,7 @@
                         <option value="per_hour" th:selected="${listing.priceType == 'per_hour'}">€/час</option>
                         <option value="per_day" th:selected="${listing.priceType == 'per_day'}">€/день</option>
                         <option value="fixed" th:selected="${listing.priceType == 'fixed'}">Фиксированная</option>
+                        <option value="negotiable" th:selected="${listing.priceType == 'negotiable'}">Договорная</option>
                     </select>
                 </div>
 

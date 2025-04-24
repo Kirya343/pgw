@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/secure/listing")
-public class ListingController {
+public class OwnListingController {
 
 
     private final AvatarService avatarService;
@@ -41,7 +40,7 @@ public class ListingController {
     @Autowired
     private LocationRepository locationRepository;
 
-    public ListingController(AvatarService avatarService) {
+    public OwnListingController(AvatarService avatarService) {
         this.avatarService = avatarService;
     }
 

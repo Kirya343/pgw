@@ -90,12 +90,15 @@
                     <div class="details-grid">
                         <div class="detail-item">
                             <span class="detail-label">Цена:</span>
-                            <span class="detail-value price"
-                                  th:text="${listing.price} +
-                                  (${listing.priceType == 'per_hour'} ? '€/час' :
-                                  (${listing.priceType == 'per_day'} ? '€/день' : '€'))">
-                                50€/час
-                            </span>
+                            <span class="detail-value price" th:switch="${listing.priceType}">
+    <span th:case="'negotiable'">Договорная</span>
+    <span th:case="'per_hour'" th:text="${listing.price} + ' €/час'">50€/час</span>
+    <span th:case="'per_day'" th:text="${listing.price} + ' €/день'">50€/день</span>
+    <span th:case="'fixed'" th:text="${listing.price} + ' €'">50€</span>
+    <span th:case="*">Цена не указана</span>
+</span>
+
+
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Локация:</span>
@@ -153,7 +156,12 @@
                                         <input type="hidden" name="listingId" th:value="${listing.id}">
                                         <button type="submit" class="btn btn-primary">Написать сообщение</button>
                                     </form>
-                                    <a href="#" class="btn btn-outline-primary">Добавить в избранное</a>
+                                    <form th:action="@{/listing/{id}/favorite(id=${listing.id})}" method="post" style="display: inline;">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                        <button type="submit" class="btn btn-outline-primary"
+                                                th:text="${isFavorite ? 'Убрать из избранных' : 'Добавить в избранное'}">
+                                        </button>
+                                    </form>
                                 </div>
 
                                 <!-- Можно добавить кнопки для владельца -->
@@ -246,11 +254,12 @@
                             </p>
                             <div class="card-footer">
                                 <div>
-                                    <span class="price"
-                                          th:text="${similarListing.price} +
-                                          (${similarListing.priceType == 'per_hour'} ? '€/час' :
-                                          (${similarListing.priceType == 'per_day'} ? '€/день' : '€'))">
-                                          Цена
+                                    <span class="price" th:switch="${similarListing.priceType}">
+                                        <span th:case="'negotiable'">Договорная</span>
+                                        <span th:case="'per_hour'" th:text="${similarListing.price} + ' €/час'">Цена</span>
+                                        <span th:case="'per_day'" th:text="${similarListing.price} + ' €/день'">Цена</span>
+                                        <span th:case="'fixed'" th:text="${similarListing.price} + ' €'">Цена</span>
+                                        <span th:case="*">Цена не указана</span>
                                     </span>
                                     <div class="rating">★★★★☆</div>
                                 </div>

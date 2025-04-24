@@ -34,7 +34,7 @@
 
                     <nav class="account-menu">
                         <a href="/secure/account" class="account-menu-item">Мои объявления</a>
-                        <a href="#" class="account-menu-item">Избранное</a>
+                        <a href="/secure/favorites" class="account-menu-item">Избранное</a>
                         <a href="/secure/messenger" class="account-menu-item">Сообщения</a>
                         <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
                         <a href="#" class="account-menu-item">Платежи</a>
@@ -64,7 +64,7 @@
 
             <nav class="account-menu">
                 <a href="/secure/account" class="account-menu-item">Мои объявления</a>
-                <a href="#" class="account-menu-item">Избранное</a>
+                <a href="/secure/favorites" class="account-menu-item">Избранное</a>
                 <a href="/secure/messenger" class="account-menu-item">Сообщения</a>
                 <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
                 <a href="#" class="account-menu-item">Платежи</a>
@@ -97,7 +97,7 @@
 
                 <div class="form-group">
                     <label for="price">Цена</label>
-                    <input type="number" id="price" name="price" class="form-control" step="0.01" required>
+                    <input type="number" id="price" name="price" class="form-control" min="0" step="0.01" required>
                 </div>
 
                 <div class="form-group">
@@ -106,6 +106,7 @@
                         <option value="per_hour">€/час</option>
                         <option value="per_day">€/день</option>
                         <option value="fixed">Фиксированная</option>
+                        <option value="negotiable">Договорная</option>
                     </select>
                 </div>
 
@@ -134,7 +135,7 @@
                 <div class="form-group">
                     <label for="image">Изображение</label>
                     <div class="upload-controls">
-                        <input type="file" id="image" name="image" accept="image/*" required>
+                        <input type="file" id="image" name="image" accept="image/*" onchange="updateFileName()">
                         <label for="image" class="btn btn-outline-primary">Выбрать файл</label>
                         <span class="file-name">Файл не выбран</span>
                     </div>
@@ -158,6 +159,13 @@
     document.getElementById('navbar-toggler').addEventListener('click', function() {
         document.querySelector('.navbar-collapse').classList.toggle('show');
     });
+
+    function updateFileName() {
+        const input = document.getElementById('image');
+        const fileName = input.files.length > 0 ? input.files[0].name : 'Файл не выбран';
+        const fileNameSpan = document.querySelector('.file-name');
+        fileNameSpan.textContent = fileName;
+    }
 </script>
 </body>
 </html>

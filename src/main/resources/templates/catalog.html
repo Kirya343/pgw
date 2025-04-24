@@ -141,8 +141,13 @@
                             </p>
                             <div class="card-footer">
                                 <div>
-                            <span class="price" th:text="${listing.price} + (${listing.priceType == 'per_hour'} ? '€/час' :
-                                  (${listing.priceType == 'per_day'} ? '€/день' : '€'))">Цена</span>
+                                    <span class="price" th:switch="${listing.priceType}">
+                                        <span th:case="'negotiable'">Договорная</span>
+                                        <span th:case="'per_hour'" th:text="${listing.price} + ' €/час'">Цена</span>
+                                        <span th:case="'per_day'" th:text="${listing.price} + ' €/день'">Цена</span>
+                                        <span th:case="'fixed'" th:text="${listing.price} + ' €'">Цена</span>
+                                        <span th:case="*">Цена не указана</span>
+                                    </span>
                                     <div class="rating">★★★★☆</div>
                                 </div>
                                 <span class="location" th:text="${listing.location ?: 'Хельсинки'}">Локация</span>
