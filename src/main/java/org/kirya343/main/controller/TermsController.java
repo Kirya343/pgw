@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @Controller
-@RequestMapping("/terms")
+@RequestMapping
 public class TermsController {
 
     private final UserService userService;
@@ -22,7 +22,7 @@ public class TermsController {
         this.avatarService = avatarService;
     }
 
-    @GetMapping
+    @GetMapping("/terms")
     public String showTermsForm(@AuthenticationPrincipal OAuth2User oauth2User, Model model) {
 
         if (oauth2User != null) {
@@ -39,5 +39,24 @@ public class TermsController {
             model.addAttribute("avatarUrl", "/images/avatar-placeholder.jpg");
         }
         return "terms";
+    }
+
+    @GetMapping("/privacy-policy")
+    public String showPrivacyPolicyForm(@AuthenticationPrincipal OAuth2User oauth2User, Model model) {
+
+        if (oauth2User != null) {
+            User user = userService.findUserFromOAuth2(oauth2User);
+            String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
+            String avatarPath = avatarService.resolveAvatarPath(user);
+
+            model.addAttribute("isAuthenticated", true);
+            model.addAttribute("userName", name != null ? name : "Пользователь");
+            model.addAttribute("avatarUrl", avatarPath);
+        } else {
+            model.addAttribute("isAuthenticated", false);
+            model.addAttribute("userName", "Пользователь");
+            model.addAttribute("avatarUrl", "/images/avatar-placeholder.jpg");
+        }
+        return "privacy-policy";
     }
 }

@@ -25,7 +25,6 @@ public class ChatMapper {
     @Autowired
     private ChatService chatService;
 
-
     public ConversationDTO convertToDTO(Conversation conversation, User currentUser) {
         User interlocutor = conversation.getOtherParticipant(currentUser);
         User freshInterlocutor = userService.findById(interlocutor.getId());
@@ -36,8 +35,15 @@ public class ChatMapper {
         dto.setInterlocutorName(freshInterlocutor.getName());
         dto.setInterlocutorAvatar(avatarService.resolveAvatarPath(freshInterlocutor));
         dto.setUnreadCount(chatService.getUnreadMessageCount(conversation, currentUser));
-        dto.setListing(listingDTO.convertToListingDTO(conversation.getListing()));
 
+        // Проверка на наличие привязанного объявления
+        if (conversation.getListing() != null) {
+            dto.setListing(listingDTO.convertToListingDTO(conversation.getListing()));
+        } else {
+            dto.setListing(null);  // Если объявления нет, передаем null
+        }
+
+        // Обработка последнего сообщения
         if (!conversation.getMessages().isEmpty()) {
             Message lastMessage = conversation.getMessages().get(conversation.getMessages().size() - 1);
             dto.setLastMessagePreview(lastMessage.getText());
@@ -46,5 +52,5 @@ public class ChatMapper {
 
         return dto;
     }
-
 }
+

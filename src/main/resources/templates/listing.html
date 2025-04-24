@@ -48,10 +48,18 @@
             <nav class="breadcrumbs">
                 <a href="/catalog">Каталог</a>
                 <span> / </span>
-                <a th:href="@{/catalog(category=${listing.category})}" th:text="${listing.category ?: 'Категория'}">Категория</a>
+                <a th:href="@{/catalog(category=${listing.category})}">
+                    <span th:switch="${listing.category}">
+                        <span th:case="'category1'" th:text="'Вид категории 1'">Категория 1</span>
+                        <span th:case="'category2'" th:text="'Вид категории 2'">Категория 2</span>
+                        <span th:case="'category3'" th:text="'Вид категории 3'">Категория 3</span>
+                        <span th:default th:text="'Категория'">Категория</span>
+                    </span>
+                </a>
                 <span> / </span>
                 <span th:text="${listing.title}">Название объявления</span>
             </nav>
+
 
             <!-- Заголовок объявления -->
             <div class="listing-header">
@@ -67,15 +75,21 @@
                 <div class="main-image">
                     <img th:src="@{'/' + ${listing.imagePath}}"
                          th:onerror="this.src='/images/default-listing.png'"
-                         alt="Основное изображение">
+                         alt="Основное изображение"
+                         class="clickable-image" data-fullscreen="@{'/' + ${listing.imagePath}}">
                 </div>
                 <div class="thumbnails" th:if="${listing.images != null and !listing.images.isEmpty()}">
                     <div class="thumbnail" th:each="image : ${listing.images}">
                         <img th:src="@{'/' + ${image.path}}"
                              th:onerror="this.src='/images/default-listing.png'"
-                             alt="Дополнительное изображение">
+                             alt="Дополнительное изображение"
+                             class="clickable-image" data-fullscreen="@{'/' + ${image.path}}">
                     </div>
                 </div>
+            </div>
+            <div id="fullscreen-modal" class="fullscreen-modal">
+                <span class="close" id="close-modal">&times;</span>
+                <img id="fullscreen-image" src="" alt='/images/default-listing.png'>
             </div>
 
             <!-- Информация о предложении -->
@@ -282,6 +296,33 @@
     document.querySelector('.navbar-toggler').addEventListener('click', function() {
         document.querySelector('.navbar-collapse').classList.toggle('show');
     });
+    // Получаем все изображения, по которым будет открываться полный экран
+    const images = document.querySelectorAll('.clickable-image');
+    const modal = document.getElementById('fullscreen-modal');
+    const fullscreenImage = document.getElementById('fullscreen-image');
+    const closeModal = document.getElementById('close-modal');
+
+    // Функция для открытия модального окна
+    images.forEach(image => {
+        image.addEventListener('click', function() {
+            const imageUrl = this.getAttribute('data-fullscreen');
+            fullscreenImage.src = imageUrl;
+            modal.classList.add('show');
+        });
+    });
+
+    // Закрытие модального окна
+    closeModal.addEventListener('click', function() {
+        modal.classList.remove('show');
+    });
+
+    // Закрытие модального окна при клике за его пределами
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.classList.remove('show');
+        }
+    });
+
 </script>
 </body>
 </html>

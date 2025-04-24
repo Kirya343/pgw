@@ -22,6 +22,8 @@ public class Listing {
 
     @NotBlank
     private String title;
+
+    @Column(length = 2000)
     private String description;
     @PositiveOrZero
     private double price;
