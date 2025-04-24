@@ -73,7 +73,7 @@ public class User {
     @Column(name = "avatar_type")
     private String avatarType; // "uploaded", "google", "default"
 
-    private Double rating;
+    private Double averageRating;
     private String phone;
     private Integer completedJobs;
 

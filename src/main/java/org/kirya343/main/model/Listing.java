@@ -52,6 +52,8 @@ public class Listing {
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 
+    private double averageRating;
+
     private boolean availableNow;
 
     @Setter

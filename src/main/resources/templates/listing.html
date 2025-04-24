@@ -105,14 +105,12 @@
                         <div class="detail-item">
                             <span class="detail-label">Цена:</span>
                             <span class="detail-value price" th:switch="${listing.priceType}">
-    <span th:case="'negotiable'">Договорная</span>
-    <span th:case="'per_hour'" th:text="${listing.price} + ' €/час'">50€/час</span>
-    <span th:case="'per_day'" th:text="${listing.price} + ' €/день'">50€/день</span>
-    <span th:case="'fixed'" th:text="${listing.price} + ' €'">50€</span>
-    <span th:case="*">Цена не указана</span>
-</span>
-
-
+                                <span th:case="'negotiable'">Договорная</span>
+                                <span th:case="'per_hour'" th:text="${listing.price} + ' €/час'">50€/час</span>
+                                <span th:case="'per_day'" th:text="${listing.price} + ' €/день'">50€/день</span>
+                                <span th:case="'fixed'" th:text="${listing.price} + ' €'">50€</span>
+                                <span th:case="*">Цена не указана</span>
+                            </span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Локация:</span>
@@ -153,12 +151,11 @@
                         <div class="seller-info">
                             <h4 th:text="${listing.author.name ?: 'Неизвестный автор'}">Иван Иванов</h4>
                             <div class="seller-rating">
-                                <span class="rating-stars">★★★★☆</span>
-                                <span class="rating-value" th:text="${listing.author.rating != null ? listing.author.rating : '0'}">0</span>
+                                <span>Рейтинг: </span>
+                                <span th:text="${listing.author.averageRating}">4.5</span> ★
                             </div>
                             <div class="seller-stats">
                                 <span th:text="${listing.author.completedJobs != null ? listing.author.completedJobs : '0'}">0</span>
-
                             </div>
                         </div>
                         <div class="seller-actions">
@@ -214,32 +211,58 @@
                     <article th:each="review : ${listing.reviews}" class="review-card">
                         <div class="review-header">
                             <div class="reviewer-avatar">
-                                <img th:src="${review.author.avatarUrl}"
-                                     th:onerror="this.src='/images/default-avatar.png'"
-                                     alt="Аватар автора отзыва">
+                                <img th:src="@{${reviewAuthorAvatarPath}}"
+                                     th:onerror="this.src='/images/avatar-placeholder.jpg'"
+                                     alt='/images/avatar-placeholder.jpg'>
                             </div>
                             <div class="reviewer-info">
                                 <h4 th:text="${review.author.name ?: 'Аноним'}">Алексей Петров</h4>
                                 <div class="review-meta">
-                                    <span class="review-rating"
-                                          th:text="${review.rating ?: '0'} + ' ★'">
-                                          5 ★
-                                    </span>
+                        <span class="review-rating"
+                              th:text="${review.rating + ' ★'}">5 ★</span>
                                     <span class="review-date"
-                                          th:text="${#temporals.format(review.createdAt, 'dd.MM.yyyy')}">
-                                          15.03.2023
-                                    </span>
+                                          th:text="${#temporals.format(review.createdAt, 'dd.MM.yyyy')}">15.03.2023</span>
                                 </div>
                             </div>
                         </div>
                         <div class="review-content">
-                            <p th:text="${review.text ?: 'Нет текста отзыва'}">
-                                Отличный специалист, быстро и качественно выполнил работу. Рекомендую!
-                            </p>
+                            <p th:text="${review.text ?: 'Нет текста отзыва'}">Отличный специалист, быстро и качественно выполнил работу. Рекомендую!</p>
                         </div>
                     </article>
                 </div>
             </section>
+
+            <!-- Форма для добавления нового отзыва -->
+            <!-- Форма для добавления нового отзыва -->
+            <section class="review-form" th:if="${isAuthenticated}">
+                <h3>Оставьте свой отзыв</h3>
+                <form th:action="@{/listing/{id}/review(id=${listing.id})}" method="post">
+                    <div class="form-row">
+                        <div class="rating-group">
+                            <label for="rating">Оценка</label>
+                            <div class="rating">
+                                <span class="star" data-value="1">&#9733;</span>
+                                <span class="star" data-value="2">&#9733;</span>
+                                <span class="star" data-value="3">&#9733;</span>
+                                <span class="star" data-value="4">&#9733;</span>
+                                <span class="star" data-value="5">&#9733;</span>
+                                <input type="hidden" id="rating" name="rating" value="0"> <!-- скрытое поле для отправки значения -->
+                            </div>
+                        </div>
+                        <div class="text-group">
+                            <label for="text">Текст отзыва</label>
+                            <textarea id="text" name="text" required></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Оставить отзыв</button>
+                </form>
+            </section>
+
+            <!-- Если пользователь не аутентифицирован -->
+            <section class="login-prompt" th:if="${!isAuthenticated}">
+                <p>Чтобы оставить отзыв, необходимо <a href="/login">войти в систему</a>.</p>
+            </section>
+
 
             <!-- Похожие объявления -->
             <section class="similar-listings" th:if="${similarListings != null and !similarListings.isEmpty()}">
@@ -321,6 +344,33 @@
         if (event.target === modal) {
             modal.classList.remove('show');
         }
+    });
+    // Юхууу, звёздочки :)
+    document.querySelectorAll('.star').forEach(function(star) {
+        star.addEventListener('mouseover', function() {
+            let value = parseInt(star.getAttribute('data-value'));
+            document.querySelectorAll('.star').forEach(function(star) {
+                star.classList.remove('selected');
+                if (parseInt(star.getAttribute('data-value')) <= value) {
+                    star.classList.add('selected');
+                }
+            });
+        });
+
+        star.addEventListener('click', function() {
+            let value = parseInt(star.getAttribute('data-value'));
+            document.getElementById('rating').value = value;  // Сохраняем рейтинг в скрытое поле
+        });
+
+        star.addEventListener('mouseout', function() {
+            let value = document.getElementById('rating').value;
+            document.querySelectorAll('.star').forEach(function(star) {
+                star.classList.remove('selected');
+                if (parseInt(star.getAttribute('data-value')) <= value) {
+                    star.classList.add('selected');
+                }
+            });
+        });
     });
 
 </script>
