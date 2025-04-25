@@ -152,6 +152,13 @@
     display: none;
 }
 
+.rating {
+    display: flex;
+    gap: 2px;
+    color: #000000; /* Золотой цвет */
+    font-size: 16px; /* Или меньше, если нужно компактно */
+}
+
 /* Исправление для чекбоксов фильтров */
 .sorting-sidebar-top .form-check {
     display: flex;
@@ -268,10 +275,6 @@
     color: var(--primary-dark);
 }
 
-.listing-rating {
-    color: var(--rating-star);
-}
-
 .listing-location {
     color: var(--gray);
     font-size: 0.8rem;
@@ -321,11 +324,6 @@
     flex-grow: 1;
     padding: 1rem;
 }
-.card-title {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-}
 
 .card-text {
     flex-grow: 1;
@@ -334,16 +332,25 @@
     color: var(--gray);
 }
 
+.card-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
 .text-muted {
     color: var(--gray);
 }
 .fw-bold {
     font-weight: bold;
-}
-
-.rating-stars {
-    color: var(--rating-star, gold); /* Можно задать переменную или дефолтный цвет */
-    font-size: 0.9rem;
 }
 
 .row {

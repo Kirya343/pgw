@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Просмотр объявления | WorkSwap</title>
     <link href="/css/public/pages/listing-page.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="/favicon.ico">
 </head>
 <body>
@@ -50,10 +51,9 @@
                 <span> / </span>
                 <a th:href="@{/catalog(category=${listing.category})}">
                     <span th:switch="${listing.category}">
-                        <span th:case="'category1'" th:text="'Вид категории 1'">Категория 1</span>
-                        <span th:case="'category2'" th:text="'Вид категории 2'">Категория 2</span>
-                        <span th:case="'category3'" th:text="'Вид категории 3'">Категория 3</span>
-                        <span th:default th:text="'Категория'">Категория</span>
+                        <span th:case="'services'" th:text="'Услуга'">Услуга</span>
+                        <span th:case="'product'" th:text="'Товар'">Товар</span>
+                        <span th:case="'offer-service'" th:text="'Запрос на услугу'">Запрос на услугу3</span>
                     </span>
                 </a>
                 <span> / </span>
@@ -76,7 +76,7 @@
                     <img th:src="@{'/' + ${listing.imagePath}}"
                          th:onerror="this.src='/images/default-listing.png'"
                          alt="Основное изображение"
-                         class="clickable-image" data-fullscreen="@{'/' + ${listing.imagePath}}">
+                         class="clickable-image" th:data-fullscreen="@{'/' + ${listing.imagePath}}">
                 </div>
                 <div class="thumbnails" th:if="${listing.images != null and !listing.images.isEmpty()}">
                     <div class="thumbnail" th:each="image : ${listing.images}">
@@ -118,13 +118,28 @@
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Категория:</span>
-                            <span class="detail-value" th:text="${listing.category ?: 'Не указана'}">Ремонт техники</span>
+                            <span th:switch="${listing.category}">
+                                <span th:case="'services'" th:text="'Услуга'">Услуга</span>
+                                <span th:case="'product'" th:text="'Товар'">Товар</span>
+                                <span th:case="'offer-service'" th:text="'Запрос на услугу'">Запрос на услугу3</span>
+                            </span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Доступность:</span>
                             <span class="detail-value"
                                   th:text="${listing.availableNow ? 'Сейчас доступен' : 'По договорённости'}">
                                   Сейчас доступен
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Рейтинг:</span>
+                            <span class="detail-value rating">
+                                <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                                    <i class="fa"
+                                       th:classappend="${listing.averageRating >= i} ? 'fa-star' :
+                                       (${listing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')">
+                                    </i>
+                                </th:block>
                             </span>
                         </div>
                     </div>
@@ -218,8 +233,12 @@
                             <div class="reviewer-info">
                                 <h4 th:text="${review.author.name ?: 'Аноним'}">Алексей Петров</h4>
                                 <div class="review-meta">
-                        <span class="review-rating"
-                              th:text="${review.rating + ' ★'}">5 ★</span>
+                                    <span class="review-rating rating">
+                                        <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                                            <i class="fa"
+                                               th:classappend="${review.rating >= i} ? 'fa-star' : (${review.rating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                                        </th:block>
+                                    </span>
                                     <span class="review-date"
                                           th:text="${#temporals.format(review.createdAt, 'dd.MM.yyyy')}">15.03.2023</span>
                                 </div>
@@ -270,12 +289,10 @@
                 <div class="listings-grid">
                     <article th:each="similarListing : ${similarListings}" class="listing-card">
                         <a th:href="@{/listing/{id}(id=${similarListing.id})}">
-                            <img th:src="@{'/' + ${similarListing.imagePath}}"
-                                 th:onerror="this.src='/images/default-listing.png'"
+                            <img th:src="@{${similarListing.imagePath ?: '/images/default-listing.png'}}"
                                  class="listing-img"
                                  alt="Изображение объявления">
                         </a>
-
                         <div class="card-body">
                             <h3 class="card-title">
                                 <a th:href="@{/listing/{id}(id=${similarListing.id})}"
@@ -285,8 +302,8 @@
                             </h3>
                             <p class="card-text"
                                th:text="${#strings.length(similarListing.description) > 100} ?
-                                      ${#strings.substring(similarListing.description, 0, 100)} + '...' :
-                                      ${similarListing.description}">
+                               ${#strings.substring(similarListing.description, 0, 100)} + '...' :
+                                ${similarListing.description}">
                                 Описание
                             </p>
                             <div class="card-footer">
@@ -298,11 +315,17 @@
                                         <span th:case="'fixed'" th:text="${similarListing.price} + ' €'">Цена</span>
                                         <span th:case="*">Цена не указана</span>
                                     </span>
-                                    <div class="rating">★★★★☆</div>
+                                    <div class="rating">
+                                        <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                                            <i class="fa"
+                                               th:classappend="${similarListing.averageRating >= i} ? 'fa-star' :
+                                          (${similarListing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                                        </th:block>
+                                    </div>
                                 </div>
                                 <span class="location"
                                       th:text="${similarListing.location ?: 'Хельсинки'}">
-                                      Локация
+                                    Локация
                                 </span>
                             </div>
                         </div>

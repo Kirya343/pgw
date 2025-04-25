@@ -6,10 +6,7 @@ import org.kirya343.main.model.chat.ConversationDTO;
 import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.chat.MessageDTO;
 import org.kirya343.main.repository.MessageRepository;
-import org.kirya343.main.services.AvatarService;
-import org.kirya343.main.services.ChatService;
-import org.kirya343.main.services.ListingService;
-import org.kirya343.main.services.UserService;
+import org.kirya343.main.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +38,8 @@ public class MessengerController {
     private ListingService listingService;
     @Autowired
     private ChatMapper chatMapper;
+    @Autowired
+    private StatService statService;
 
     public MessengerController(AvatarService avatarService) {
         this.avatarService = avatarService;

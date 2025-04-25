@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личный кабинет | WorkSwap</title>
     <link href="/css/public/pages/account-page.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="/favicon.ico">
 </head>
 <body>
@@ -28,7 +29,14 @@
                             <img th:src="@{${avatarPath}}" alt="Аватар">
                         </div>
                         <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
-                        <p class="profile-rating">★★★★☆ (4.2)</p>
+                        <p class="profile-rating">
+                    <span th:each="i : ${#numbers.sequence(1,5)}">
+                        <i class="fa"
+                           th:classappend="${user.averageRating >= i} ? 'fa-star' :
+                          (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                    </span>
+                            (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
+                        </p>
                         <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
                     </div>
 
@@ -59,7 +67,14 @@
                     <img th:src="@{${avatarPath}}" alt="Аватар">
                 </div>
                 <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
-                <p class="profile-rating">★★★★☆ (4.2)</p>
+                <p class="profile-rating">
+                    <span th:each="i : ${#numbers.sequence(1,5)}">
+                        <i class="fa"
+                           th:classappend="${user.averageRating >= i} ? 'fa-star' :
+                          (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                    </span>
+                    (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
+                </p>
                 <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
             </div>
 
@@ -128,22 +143,26 @@
             </div>
             <!-- Статистика -->
             <div class="stats-section">
-                <h3>Статистика за месяц</h3>
+                <h3>Статистика</h3>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-value">24</div>
+                        <div class="stat-value">
+                            <span th:text="${views}">0</span></div>
                         <div class="stat-label">Просмотры</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">5</div>
+                        <div class="stat-value">
+                            <span th:text="${responses}">0</span></div>
                         <div class="stat-label">Отклики</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">3</div>
+                        <div class="stat-value">
+                            <span th:text="${deals}">0</span></div>
                         <div class="stat-label">Завершённые сделки</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">4.8</div>
+                        <div class="stat-value">
+                            <span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span></div>
                         <div class="stat-label">Средний рейтинг</div>
                     </div>
                 </div>
@@ -151,7 +170,6 @@
         </main>
     </div>
 </div>
-
 <script>
     // Мобильное меню
     document.querySelector('.navbar-toggler').addEventListener('click', function() {

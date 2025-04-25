@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог объявлений | WorkSwap</title>
     <link href="/css/public/pages/catalog-page.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="/favicon.ico">
 </head>
 <body>
@@ -148,9 +149,15 @@
                                         <span th:case="'fixed'" th:text="${listing.price} + ' €'">Цена</span>
                                         <span th:case="*">Цена не указана</span>
                                     </span>
-                                    <div class="rating">★★★★☆</div>
+                                    <div class="rating">
+                                        <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                                            <i class="fa"
+                                               th:classappend="${listing.averageRating >= i} ? 'fa-star' :
+                                                              (${listing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                                        </th:block>
+                                    </div>
                                 </div>
-                                <span class="location" th:text="${listing.location ?: 'Хельсинки'}">Локация</span>
+                                <span class="listing-location" th:text="${listing.location ?: 'Хельсинки'}">Локация</span>
                             </div>
                         </div>
                     </article>

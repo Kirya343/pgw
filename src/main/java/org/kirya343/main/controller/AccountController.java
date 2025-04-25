@@ -58,19 +58,19 @@ public class AccountController {
         String email = user.getEmail() != null ? user.getEmail() : oauth2User.getAttribute("email");
         String name = user.getName();
 
-        model.addAttribute("userEmail", email != null ? email : "Email не распознан");
-        model.addAttribute("userName", name != null ? name : "Пользователь");
-        model.addAttribute("avatarPath", avatarPath);
-        model.addAttribute("user", user);
-
         // Получаем список объявлений пользователя
         List<Listing> listings = listingService.getListingsByUser(user);
 
         // Получаем статистику
-        int views = statService.getMonthlyViews(user);
-        int responses = statService.getMonthlyResponses(user);
-        int deals = statService.getMonthlyDeals(user);
+        int views = statService.getTotalViews(user);
+        int responses = statService.getTotalResponses(user);
+        int deals = statService.getCompletedDeals(user);
         double averageRating = statService.getAverageRating(user);
+
+        model.addAttribute("userEmail", email != null ? email : "Email не распознан");
+        model.addAttribute("userName", name != null ? name : "Пользователь");
+        model.addAttribute("avatarPath", avatarPath);
+        model.addAttribute("user", user);
 
         // Передаем данные в модель
         model.addAttribute("listings", listings);
@@ -88,6 +88,10 @@ public class AccountController {
         String avatarUrlPath = (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty())
                 ? "/" + user.getAvatarUrl()
                 : "/images/upload-foto.png";
+
+        double averageRating = statService.getAverageRating(user);
+        model.addAttribute("rating", averageRating);
+
         model.addAttribute("user", user);
         model.addAttribute("avatarUrlPath", avatarUrlPath);
         model.addAttribute("avatarPath", avatarPath);

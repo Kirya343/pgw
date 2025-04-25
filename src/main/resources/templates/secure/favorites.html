@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личный кабинет | WorkSwap</title>
-    <link href="/css/public/pages/favorite-listings-page.css" rel="stylesheet">
+    <link href="/css/public/pages/account/favorite-listings-page.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="/favicon.ico">
 </head>
 <body>
@@ -28,7 +29,14 @@
                             <img th:src="@{${avatarPath}}" alt="Аватар">
                         </div>
                         <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
-                        <p class="profile-rating">★★★★☆ (4.2)</p>
+                        <p class="profile-rating">
+                    <span th:each="i : ${#numbers.sequence(1,5)}">
+                        <i class="fa"
+                           th:classappend="${user.averageRating >= i} ? 'fa-star' :
+                          (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                    </span>
+                            (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
+                        </p>
                         <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
                     </div>
 
@@ -60,7 +68,13 @@
                     <img th:src="@{${avatarPath}}" alt="Аватар">
                 </div>
                 <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
-                <p class="profile-rating">★★★★☆ (4.2)</p>
+                <p class="profile-rating">
+                    <span th:each="i : ${#numbers.sequence(1,5)}">
+                        <i class="fa"
+                           th:classappend="${user.averageRating >= i} ? 'fa-star' : (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                    </span>
+                    (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
+                </p>
                 <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
             </div>
 
@@ -115,7 +129,6 @@
 
             <!-- Если нет избранных -->
             <div class="no-listings">
-                <p>У вас нет избранных объявлений.</p>
                 <a href="/catalog" class="btn btn-outline-primary">Перейти к объявлениям</a>
             </div>
         </main>

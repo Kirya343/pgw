@@ -4,10 +4,7 @@ import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Location;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.LocationRepository;
-import org.kirya343.main.services.AvatarService;
-import org.kirya343.main.services.ListingService;
-import org.kirya343.main.services.StorageService;
-import org.kirya343.main.services.UserService;
+import org.kirya343.main.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -40,6 +37,9 @@ public class OwnListingController {
     @Autowired
     private LocationRepository locationRepository;
 
+    @Autowired
+    private StatService statService;
+
     public OwnListingController(AvatarService avatarService) {
         this.avatarService = avatarService;
     }
@@ -60,6 +60,9 @@ public class OwnListingController {
 
         List<Location> locations = locationRepository.findAllByOrderByNameAsc();
         model.addAttribute("locations", locations);
+
+        double averageRating = statService.getAverageRating(user);
+        model.addAttribute("rating", averageRating);
 
         // Передаём в шаблон
         model.addAttribute("userName", name != null ? name : "Пользователь");
@@ -135,6 +138,8 @@ public class OwnListingController {
             String name = currentUser.getName();
             String avatarPath = avatarService.resolveAvatarPath(currentUser);
 
+
+            model.addAttribute("user", currentUser);
             model.addAttribute("listing", listing);
             model.addAttribute("categories", categories);
             model.addAttribute("locations", locations);

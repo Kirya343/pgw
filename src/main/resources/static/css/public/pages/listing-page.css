@@ -565,22 +565,6 @@ textarea {
     min-height: 100px;
 }
 
-button[type="submit"] {
-    padding: 12px 20px;
-    font-size: 1.1em;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button[type="submit"]:hover {
-    background-color: #45a049;
-}
-
-
 /* Похожие объявления */
 .similar-listings {
     margin-bottom: 2rem;
@@ -618,6 +602,9 @@ button[type="submit"]:hover {
 .card-body {
     padding: 1rem;
     background-color: var(--white);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .card-title {
@@ -638,6 +625,7 @@ button[type="submit"]:hover {
     color: var(--gray);
     font-size: 0.9rem;
     margin-bottom: 1rem;
+    flex-grow: 1;
 }
 
 .card-footer {

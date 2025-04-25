@@ -24,13 +24,13 @@ public class StatServiceImpl implements StatService {
     @Override
     public int getTotalResponses(User user) {
         // Заглушка — можно заменить логикой по сообщениям или откликам
-        return 5;
+        return 0;
     }
 
     @Override
     public int getCompletedDeals(User user) {
         // Заглушка — если нет поля "сделка завершена", можно симулировать
-        return 3;
+        return 0;
     }
 
     @Override
