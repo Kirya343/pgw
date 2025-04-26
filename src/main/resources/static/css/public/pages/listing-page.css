@@ -530,14 +530,15 @@ form div {
 }
 
 /* Для отображения текущего рейтинга */
-.rating {
+.listing-rating {
     display: flex;
     flex-direction: row;
     justify-content: start;
     gap: 5px;
+    color: var(--rating-star);
 }
 
-.rating input[type="hidden"] {
+.listing-rating input[type="hidden"] {
     display: none;
 }
 
@@ -640,10 +641,6 @@ textarea {
 .price {
     font-weight: 600;
     color: var(--primary-dark);
-}
-
-.rating {
-    color: var(--rating-star);
 }
 
 .location {

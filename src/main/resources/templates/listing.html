@@ -219,14 +219,14 @@
                     <article th:each="review : ${listing.reviews}" class="review-card">
                         <div class="review-header">
                             <div class="reviewer-avatar">
-                                <img th:src="@{${reviewAuthorAvatarPath}}"
-                                     th:onerror="this.src='/images/avatar-placeholder.jpg'"
-                                     alt='/images/avatar-placeholder.jpg'>
+                                <img th:src="@{${reviewAuthorAvatars[review.id]}}"
+                                     onerror="this.src='/images/avatar-placeholder.jpg'"
+                                     alt="Reviewer Avatar">
                             </div>
                             <div class="reviewer-info">
                                 <h4 th:text="${review.author.name ?: 'Аноним'}">Алексей Петров</h4>
                                 <div class="review-meta">
-                                    <span class="review-rating rating">
+                                    <span class="review-rating listing-rating">
                                         <th:block th:each="i : ${#numbers.sequence(1,5)}">
                                             <i class="fa"
                                                th:classappend="${review.rating >= i} ? 'fa-star' : (${review.rating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
@@ -252,7 +252,7 @@
                     <div class="form-row">
                         <div class="rating-group">
                             <label for="rating" th:text="#{reviews.rating}">Оценка</label>
-                            <div class="rating">
+                            <div class="listing-rating">
                                 <span class="star" data-value="1">&#9733;</span>
                                 <span class="star" data-value="2">&#9733;</span>
                                 <span class="star" data-value="3">&#9733;</span>
@@ -279,7 +279,7 @@
 
 
             <!-- Похожие объявления -->
-            <section class="similar-listings" th:if="${similarListings != null and !similarListings.isEmpty()}">
+            <!--<section class="similar-listings" th:if="${similarListings != null and !similarListings.isEmpty()}">
                 <h2 th:text="#{similar_listings.title}">Похожие объявления</h2>
                 <div class="listings-grid">
                     <article th:each="similarListing : ${similarListings}" class="listing-card">
@@ -310,7 +310,7 @@
                                         <span th:case="'fixed'" th:text="${listing.price} + ' ' + #{price.fixed}">Цена</span>
                                         <span th:case="*">Цена не указана</span>
                                     </span>
-                                    <div class="rating">
+                                    <div class="listing-rating">
                                         <th:block th:each="i : ${#numbers.sequence(1,5)}">
                                             <i class="fa"
                                                th:classappend="${similarListing.averageRating >= i} ? 'fa-star' :
@@ -326,7 +326,7 @@
                         </div>
                     </article>
                 </div>
-            </section>
+            </section>-->
         </main>
     </div>
 </div>
@@ -387,29 +387,31 @@
             modal.classList.remove('show');
         }
     });
+</script>
+<script>
     // Юхууу, звёздочки :)
     document.querySelectorAll('.star').forEach(function(star) {
         star.addEventListener('mouseover', function() {
             let value = parseInt(star.getAttribute('data-value'));
-            document.querySelectorAll('.star').forEach(function(star) {
-                star.classList.remove('selected');
-                if (parseInt(star.getAttribute('data-value')) <= value) {
-                    star.classList.add('selected');
+            document.querySelectorAll('.star').forEach(function(s) {
+                s.classList.remove('selected');
+                if (parseInt(s.getAttribute('data-value')) <= value) {
+                    s.classList.add('selected');
                 }
             });
         });
 
         star.addEventListener('click', function() {
             let value = parseInt(star.getAttribute('data-value'));
-            document.getElementById('rating').value = value;  // Сохраняем рейтинг в скрытое поле
+            document.getElementById('rating').value = value;
         });
 
         star.addEventListener('mouseout', function() {
             let value = document.getElementById('rating').value;
-            document.querySelectorAll('.star').forEach(function(star) {
-                star.classList.remove('selected');
-                if (parseInt(star.getAttribute('data-value')) <= value) {
-                    star.classList.add('selected');
+            document.querySelectorAll('.star').forEach(function(s) {
+                s.classList.remove('selected');
+                if (parseInt(s.getAttribute('data-value')) <= value) {
+                    s.classList.add('selected');
                 }
             });
         });

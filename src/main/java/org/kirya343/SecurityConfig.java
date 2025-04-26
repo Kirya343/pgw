@@ -41,7 +41,6 @@ public class SecurityConfig {
                         .requestMatchers("/secure/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "OIDC_USER")
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()
-                        .requestMatchers("/terms", "/privacy-policy").permitAll()
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -128,8 +127,8 @@ public class SecurityConfig {
                 .authorizationUri("https://accounts.google.com/o/oauth2/auth")
                 .tokenUri("https://oauth2.googleapis.com/token")
                 .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
-                .redirectUri("http://localhost:8080/login/oauth2/code/google")
-                //.redirectUri("https://workswap.org/login/oauth2/code/google")
+                //.redirectUri("http://localhost:8080/login/oauth2/code/google")
+                .redirectUri("https://workswap.org/login/oauth2/code/google")
                 .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .clientName("Google")
