@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Редактирование профиля | WorkSwap</title>
+    <title th:text="#{title.profile.editing}">Редактирование профиля | WorkSwap</title>
     <link href="/css/public/pages/account/edit-page.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="/favicon.ico">
@@ -12,13 +12,13 @@
 <header>
     <nav class="container">
         <nav class="navbar">
-            <a class="navbar-brand" href="/catalog">WorkSwap</a>
+            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
             <button class="navbar-toggler">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <nav class="navbar-collapse">
                 <nav class="navbar-top">
-                    <a class="navbar-brand" href="/catalog">WorkSwap</a>
+                    <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
                     <button id="navbar-toggler" class="navbar-toggler">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -32,7 +32,8 @@
                         <p class="profile-rating">
                     <span th:each="i : ${#numbers.sequence(1,5)}">
                         <i class="fa"
-                           th:classappend="${user.averageRating >= i} ? 'fa-star' : (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                           th:classappend="${user.averageRating >= i} ? 'fa-star' :
+                          (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
                     </span>
                             (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
                         </p>
@@ -40,16 +41,15 @@
                     </div>
 
                     <nav class="account-menu">
-                        <a href="/secure/account" class="account-menu-item">Мои объявления</a>
-                        <a href="/secure/favorites" class="account-menu-item">Избранное</a>
-                        <a href="/secure/messenger" class="account-menu-item">Сообщения</a>
-                        <a href="/secure/account/edit" class="account-menu-item active">Настройки</a>
-                        <a href="#" class="account-menu-item">Платежи</a>
-                        <a href="#" class="account-menu-item">Безопасность</a>
+                        <a href="/secure/account" class="account-menu-item" th:text="#{link.account}">Мои объявления</a>
+                        <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
+                        <a href="/secure/messenger" class="account-menu-item" th:text="#{link.messenger}">Сообщения</a>
+                        <a href="/secure/account/edit" class="account-menu-item active" th:text="#{link.settings}">Настройки</a>
+                        <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
                     </nav>
                 </div>
                 <div class="nav-buttons">
-                    <a href="/logout" class="logout-btn">Выйти</a>
+                    <a href="/logout" class="logout-btn" th:text="#{logout.button}">Выйти</a>
                 </div>
             </nav>
         </nav>
@@ -65,63 +65,63 @@
                 <div class="profile-avatar">
                     <img th:src="@{${avatarPath}}" alt="Аватар">
                 </div>
-                <h4 class="profile-name" th:text="${user.name}">Иван Иванов</h4>
+                <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
                 <p class="profile-rating">
                     <span th:each="i : ${#numbers.sequence(1,5)}">
                         <i class="fa"
-                           th:classappend="${user.averageRating >= i} ? 'fa-star' : (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                           th:classappend="${user.averageRating >= i} ? 'fa-star' :
+                          (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
                     </span>
                     (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
                 </p>
-                <a href="/secure/account" class="btn btn-outline-primary btn-sm">Назад в профиль</a>
+                <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm" th:text="#{profile.edit}">Редактировать профиль</a>
             </div>
 
             <nav class="account-menu">
-                <a href="/secure/account" class="account-menu-item">Мои объявления</a>
-                <a href="/secure/favorites" class="account-menu-item">Избранное</a>
-                <a href="/secure/messenger" class="account-menu-item">Сообщения</a>
-                <a href="/secure/account/edit" class="account-menu-item active">Настройки</a>
-                <a href="#" class="account-menu-item">Платежи</a>
-                <a href="#" class="account-menu-item">Безопасность</a>
+                <a href="/secure/account" class="account-menu-item" th:text="#{link.account}">Мои объявления</a>
+                <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
+                <a href="/secure/messenger" class="account-menu-item" th:text="#{link.messenger}">Сообщения</a>
+                <a href="/secure/account/edit" class="account-menu-item active" th:text="#{link.settings}">Настройки</a>
+                <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
             </nav>
         </aside>
 
         <!-- Основное содержимое -->
         <main class="account-main">
             <div class="account-header">
-                <h2>Редактирование профиля</h2>
+                <h2 th:text="#{profile.editing}">Редактирование профиля</h2>
             </div>
 
             <form th:action="@{/secure/account/update}" method="post" enctype="multipart/form-data" class="edit-form">
                 <!-- Основная информация -->
                 <div class="form-section">
-                    <h3>Основная информация</h3>
+                    <h3 th:text="#{profile.editing.baseinfo}">Основная информация</h3>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="name">Имя</label>
+                            <label for="name" th:text="#{profile.editing.name}">Имя</label>
                             <input type="text" id="name" name="name" th:value="${user.name}" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email</label>
+                            <label for="email" th:text="#{profile.editing.email}">Email</label>
                             <input type="email" id="email" name="email" th:value="${user.email}" required>
                         </div>
                         <div class="form-group">
-                            <label for="phone">Телефон</label>
+                            <label for="phone" th:text="#{profile.editing.phone}">Телефон</label>
                             <input type="tel" id="phone" name="phone" th:value="${user.phone}">
                         </div>
                     </div>
                 </div>
 
                 <div class="form-section">
-                    <h3>Конфиденциальность</h3>
+                    <h3 th:text="#{profile.editing.privacy}">Конфиденциальность</h3>
                     <div class="form-group">
-                        <label>Отображение ваших контактных данных для других пользователей</label>
+                        <label th:text="#{profile.editing.contacts.visible}">Отображение ваших контактных данных для других пользователей</label>
                         <div class="status-toggle">
                             <label class="switch">
                                 <input type="checkbox" name="phoneVisible" th:checked="${user.phoneVisible}" value="true">
                                 <span class="slider"></span>
                             </label>
-                            <span th:text="${user.phoneVisible} ? 'Телефон' : 'Телефон'"></span>
+                            <span th:text="${user.phoneVisible} ? #{profile.editing.phone} : #{profile.editing.phone}"></span>
                         </div>
                     </div>
 
@@ -131,14 +131,14 @@
                                 <input type="checkbox" name="emailVisible" th:checked="${user.emailVisible}" value="true">
                                 <span class="slider"></span>
                             </label>
-                            <span th:text="${user.emailVisible} ? 'Email' : 'Email'"></span>
+                            <span th:text="${user.emailVisible} ? #{profile.editing.email} : #{profile.editing.email}"></span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Аватар -->
                 <div class="form-section">
-                    <h3>Аватар</h3>
+                    <h3 th:text="#{profile.editing.avatar}">Аватар</h3>
                     <div class="avatar-upload">
                         <!-- Три варианта аватара в кружочках -->
                         <div class="avatar-options">
@@ -148,7 +148,7 @@
                                     <img th:src="@{${avatarUrlPath}}" alt="Аватар">
                                     <img th:unless="${user.avatarUrl}" src="/images/upload-foto.png">
                                 </div>
-                                <span>Моя</span>
+                                <span th:text="#{profile.editing.avatar.my}">Моя</span>
                             </div>
 
                             <!-- Вариант 2: Google аватар -->
@@ -158,7 +158,7 @@
                                          onerror="this.src='/images/avatar-placeholder.png'">
                                     <img th:unless="${user.picture}" src="/images/avatar-placeholder.png">
                                 </div>
-                                <span>Google</span>
+                                <span th:text="#{profile.editing.avatar.google}">Google</span>
                             </div>
 
                             <!-- Вариант 3: Стандартная аватарка -->
@@ -166,7 +166,7 @@
                                 <div class="avatar-preview">
                                     <img src="/images/avatar-placeholder.png">
                                 </div>
-                                <span>Стандарт</span>
+                                <span th:text="#{profile.editing.avatar.standart}">Стандарт</span>
                             </div>
                         </div>
 
@@ -176,31 +176,55 @@
                         <!-- Блок загрузки (виден только при выборе "Моя") -->
                         <div class="upload-controls">
                             <input type="file" id="avatar" name="avatar" accept="image/*">
-                            <label for="avatar" class="btn btn-outline-primary">Загрузить новую</label>
-                            <span class="file-name">Файл не выбран</span>
+                            <label for="avatar" class="btn btn-outline-primary" th:text="#{profile.editing.avatar.upload}">Загрузить новую</label>
+                            <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- О себе -->
                 <div class="form-section">
-                    <h3>О себе</h3>
+                    <h3 th:text="#{profile.editing.bio}">О себе</h3>
                     <div class="form-group">
-                        <label for="bio">Краткая информация</label>
+                        <label for="bio" th:text="#{profile.editing.bio.short}">Краткая информация</label>
                         <textarea id="bio" name="bio" rows="4" th:text="${user.bio}"></textarea>
                     </div>
                 </div>
 
                 <!-- Кнопки -->
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                    <a href="/secure/account" class="btn btn-outline-primary">Отмена</a>
+                    <button type="submit" class="btn btn-primary" th:text="#{listing.editing.button.save}">Сохранить изменения</button>
+                    <a href="/secure/account" class="btn btn-outline-primary" th:text="#{listing.editing.button.exit}">Отмена</a>
                 </div>
             </form>
         </main>
     </div>
 </div>
+<div class="language-toggle">
+    <input type="checkbox" id="langToggle">
+    <label for="langToggle" class="lang-wrapper">
+        <!-- Основная кнопка с текущим языком -->
+        <div class="lang-button">
+            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
+        </div>
 
+        <!-- Выпадающий список языков -->
+        <div class="lang-dropdown">
+            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
+                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
+                <span>Русский</span>
+            </a>
+            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
+                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
+                <span>Suomi</span>
+            </a>
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
+                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
+                <span>English</span>
+            </a>
+        </div>
+    </label>
+</div>
 <script>
     // Мобильное меню
     document.querySelector('.navbar-toggler').addEventListener('click', function() {

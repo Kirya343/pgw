@@ -11,8 +11,12 @@ public class ListingMapper {
     public ListingDTO toDTO(Listing listing) {
         ListingDTO dto = new ListingDTO();
         dto.setId(listing.getId());
-        dto.setTitle(listing.getTitle());
-        dto.setDescription(listing.getDescription());
+        dto.setTitleRu(listing.getTitleRu());
+        dto.setTitleEn(listing.getTitleEn());
+        dto.setTitleFi(listing.getTitleFi());
+        dto.setDescriptionRu(listing.getDescriptionRu());
+        dto.setDescriptionEn(listing.getDescriptionEn());
+        dto.setDescriptionFi(listing.getDescriptionFi());
         dto.setPrice(listing.getPrice());
         dto.setPriceType(listing.getPriceType());
         dto.setCategory(listing.getCategory());

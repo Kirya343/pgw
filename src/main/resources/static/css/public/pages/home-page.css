@@ -2,12 +2,13 @@
 @import url(../components/base.css);
 @import url(../components/header.css);
 @import url(../components/bootstrap-demo.css);
+@import url(../components/lang-switcher.css);
 @import url(../../variables.css);
 
 .hero {
     /*background: linear-gradient(rgba(0, 0, 0, 0.6), url('/images/hero-bg.jpg') no-repeat center;*/
     background-size: cover;
-    color: var(--white);
+    color: var(--dark);
     padding: 4rem 1rem;
     text-align: center;
     border-radius: var(--radius);
@@ -52,7 +53,7 @@
 
 .lead {
     font-size: 1.25rem;
-    color: var(--light);
+    color: var(--dark);
     margin-bottom: 1rem;
 }
 

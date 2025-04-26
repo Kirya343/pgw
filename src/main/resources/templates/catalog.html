@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог объявлений | WorkSwap</title>
+    <title th:text="#{title.catalog}">Каталог объявлений | WorkSwap</title>
     <link href="/css/public/pages/catalog-page.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="/favicon.ico">
@@ -12,47 +12,47 @@
 <header>
     <div class="container">
         <nav class="navbar">
-            <a class="navbar-brand" href="/catalog">WorkSwap</a>
+            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
             <button class="navbar-toggler">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse">
                 <div class="sorting-sidebar-top">
-                    <h5>Сортировка</h5>
+                    <h5 th:text="#{catalog.sorting.title}">Сортировка</h5>
                     <div class="list-group list-group-flush">
                         <a th:href="@{/catalog(category=${category}, sortBy='date')}"
-                           th:class="${sortBy == 'date'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                           th:class="${sortBy == 'date'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.date}">
                             По дате
                         </a>
                         <a th:href="@{/catalog(category=${category}, sortBy='price')}"
-                           th:class="${sortBy == 'price'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                           th:class="${sortBy == 'price'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.price}">
                             По цене
                         </a>
                         <a th:href="@{/catalog(category=${category}, sortBy='rating')}"
-                           th:class="${sortBy == 'rating'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                           th:class="${sortBy == 'rating'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.rating}">
                             По рейтингу
                         </a>
                         <a th:href="@{/catalog(category=${category}, sortBy='popularity')}"
-                           th:class="${sortBy == 'popularity'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                           th:class="${sortBy == 'popularity'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.popularity}">
                             По популярности
                         </a>
                     </div>
 
-                    <h5 class="mt-4">Фильтры</h5>
+                    <h5 class="mt-4" th:text="#{catalog.sorting.filters}">Фильтры</h5>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="filter1">
+                        <input class="form-check-input" type="checkbox" id="filter1" th:text="#{catalog.sorting.avalible}">
                         <label class="form-check-label" for="filter1">Сейчас доступен</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="filter2">
+                        <input class="form-check-input" type="checkbox" id="filter2" th:text="#{catalog.sorting.reviews}">
                         <label class="form-check-label" for="filter2">С отзывами</label>
                     </div>
                 </div>
                 <div class="d-flex">
                     <!-- Для неавторизованных пользователей -->
                     <div th:unless="${isAuthenticated}">
-                        <a href="/login" class="btn btn-outline-primary">Вход</a>
-                        <a href="/register" class="btn btn-primary">Регистрация</a>
+                        <a href="/login" class="btn btn-outline-primary" th:text="#{header.login}">Вход</a>
+                        <a href="/register" class="btn btn-primary" th:text="#{header.register}">Регистрация</a>
                     </div>
 
                     <!-- Для авторизованных пользователей -->
@@ -135,29 +135,26 @@
                              alt="Изображение объявления">
 
                         <div class="card-body">
-                            <h3 class="card-title" th:text="${listing.title}">Название</h3>
-                            <p class="card-text"
-                               th:text="${#strings.length(listing.description) > 100} ? ${#strings.substring(listing.description, 0, 100)} + '...' : ${listing.description}">
-                                Описание
-                            </p>
+                            <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
+                            <p class="card-text" th:text="${#strings.length(listing.localizedDescription) > 100} ? ${#strings.substring(listing.localizedDescription, 0, 100)} + '...' : ${listing.localizedDescription}">Описание</p>
                             <div class="card-footer">
                                 <div>
-                                    <span class="price" th:switch="${listing.priceType}">
-                                        <span th:case="'negotiable'">Договорная</span>
-                                        <span th:case="'per_hour'" th:text="${listing.price} + ' €/час'">Цена</span>
-                                        <span th:case="'per_day'" th:text="${listing.price} + ' €/день'">Цена</span>
-                                        <span th:case="'fixed'" th:text="${listing.price} + ' €'">Цена</span>
-                                        <span th:case="*">Цена не указана</span>
-                                    </span>
+                            <span class="price" th:switch="${listing.priceType}">
+                                <span th:case="'negotiable'" th:text="#{price.negotiable}">Договорная</span>
+                                <span th:case="'per_hour'" th:text="${listing.price} + ' ' + #{price.per-hour}">Цена</span>
+                                <span th:case="'per_day'" th:text="${listing.price} + ' ' + #{price.per-day}">Цена</span>
+                                <span th:case="'fixed'" th:text="${listing.price} + ' ' + #{price.fixed}">Цена</span>
+                                <span th:case="*">Цена не указана</span>
+                            </span>
                                     <div class="rating">
                                         <th:block th:each="i : ${#numbers.sequence(1,5)}">
                                             <i class="fa"
                                                th:classappend="${listing.averageRating >= i} ? 'fa-star' :
-                                                              (${listing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                                                      (${listing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
                                         </th:block>
                                     </div>
                                 </div>
-                                <span class="listing-location" th:text="${listing.location ?: 'Хельсинки'}">Локация</span>
+                                <span class="listing-location" th:text="${listing.location ?: 'Finland'}">Локация</span>
                             </div>
                         </div>
                     </article>
@@ -166,7 +163,7 @@
 
             <!-- Если нет объявлений -->
             <div th:if="${#lists.isEmpty(listings)}" class="no-listings">
-                <p>Объявлений не найдено.</p>
+                <p th:text="#{no-listings}">Объявлений не найдено.</p>
             </div>
 
             <!-- Пагинация -->
@@ -174,7 +171,7 @@
                 <ul class="pagination">
                     <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
                         <a th:href="@{/catalog(category=${category}, page=${currentPage - 1}, sortBy=${sortBy})}"
-                           class="page-link">Назад</a>
+                           class="page-link" th:text="#{pagination.back}">Назад</a>
                     </li>
                     <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                         th:class="${currentPage == i} ? 'page-item active' : 'page-item'">
@@ -184,12 +181,37 @@
                     </li>
                     <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
                         <a th:href="@{/catalog(category=${category}, page=${currentPage + 1}, sortBy=${sortBy})}"
-                           class="page-link">Вперед</a>
+                           class="page-link" th:text="#{pagination.forward}">Вперед</a>
                     </li>
                 </ul>
             </nav>
         </main>
     </main>
+</div>
+<div class="language-toggle">
+    <input type="checkbox" id="langToggle">
+    <label for="langToggle" class="lang-wrapper">
+        <!-- Основная кнопка с текущим языком -->
+        <div class="lang-button">
+            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
+        </div>
+
+        <!-- Выпадающий список языков -->
+        <div class="lang-dropdown">
+            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
+                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
+                <span>Русский</span>
+            </a>
+            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
+                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
+                <span>Suomi</span>
+            </a>
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
+                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
+                <span>English</span>
+            </a>
+        </div>
+    </label>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>

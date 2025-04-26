@@ -75,4 +75,17 @@ public class ListingServiceImpl implements ListingService {
         // Теперь можно удалить объявление
         listingRepository.delete(listing);
     }
+    public Page<Listing> findActiveByCategoryAndCommunity(String community, String category, Pageable pageable) {
+        switch (community) {
+            case "fi":
+                return listingRepository.findByCategoryAndCommunityFiTrueAndActiveTrue(category, pageable);
+            case "ru":
+                return listingRepository.findByCategoryAndCommunityRuTrueAndActiveTrue(category, pageable);
+            case "en":
+                return listingRepository.findByCategoryAndCommunityEnTrueAndActiveTrue(category, pageable);
+            default:
+                return listingRepository.findByCategoryAndActiveTrue(category, pageable); // Для всех остальных языков
+        }
+    }
+
 }

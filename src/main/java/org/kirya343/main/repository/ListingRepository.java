@@ -26,4 +26,12 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
             @Param("category") String category,
             @Param("excludeId") Long excludeId,
             Pageable pageable);
+
+    List<Listing> findByCommunityRuTrueAndActiveTrue(); // Для русскоязычного комьюнити
+    List<Listing> findByCommunityFiTrueAndActiveTrue(); // Для финскоязычного комьюнити
+    List<Listing> findByCommunityEnTrueAndActiveTrue(); // Для англоязычного комьюнити
+
+    Page<Listing> findByCategoryAndCommunityRuTrueAndActiveTrue(String category, Pageable pageable);
+    Page<Listing> findByCategoryAndCommunityFiTrueAndActiveTrue(String category, Pageable pageable);
+    Page<Listing> findByCategoryAndCommunityEnTrueAndActiveTrue(String category, Pageable pageable);
 }

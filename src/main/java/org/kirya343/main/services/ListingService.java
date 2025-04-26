@@ -18,4 +18,5 @@ public interface ListingService {
     Listing getListingById(Long id);
     List<Listing> findSimilarListings(String category, Long excludeId);
     void deleteListing(Long id);
+    Page<Listing> findActiveByCategoryAndCommunity(String community, String category, Pageable pageable);
 }

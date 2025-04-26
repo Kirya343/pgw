@@ -58,10 +58,9 @@ spring:
             jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
             issuer-uri: https://accounts.google.com
   messages:
-    basename: messages
+    basename: lang/messages
     encoding: UTF-8
     cache-duration: 0
-
 logging:
   level:
     org:
@@ -78,5 +77,4 @@ logging:
         security.oauth2.core: TRACE
         security.oauth2.jwt: DEBUG
         security.oauth2.resource: DEBUG
-    com:
       kirya343: DEBUG # Замените на ваш основной пакет

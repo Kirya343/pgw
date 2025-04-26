@@ -16,31 +16,30 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class AccountController {
 
     private final UserService userService;
     private final AvatarService avatarService;
+    private final ListingService listingService;
+    private final StatService statService;
+    private final StorageService storageService;
+
 
     @Autowired
     public AccountController(UserService userService,
-                             AvatarService avatarService) {
+                             AvatarService avatarService, ListingService listingService, StatService statService, StorageService storageService) {
         this.userService = userService;
         this.avatarService = avatarService;
+        this.listingService = listingService;
+        this.statService = statService;
+        this.storageService = storageService;
     }
 
-    @Autowired
-    private ListingService listingService;
-
-    @Autowired
-    private StatService statService;
-
-    @Autowired
-    private StorageService storageService;
-
     @GetMapping("/secure/account")
-    public String getAccountPage(Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
+    public String getAccountPage(Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
         if (oauth2User == null) {
             return "redirect:/login";
         }
@@ -60,6 +59,41 @@ public class AccountController {
 
         // Получаем список объявлений пользователя
         List<Listing> listings = listingService.getListingsByUser(user);
+
+        // Обрабатываем каждый listing, чтобы задать title и description по нужному порядку языков
+        for (Listing listing : listings) {
+            String title = null;
+            String description = null;
+
+            if ("fi".equals(locale.getLanguage()) && listing.getCommunityFi()) {
+                title = listing.getTitleFi();
+                description = listing.getDescriptionFi();
+            } else if ("ru".equals(locale.getLanguage()) && listing.getCommunityRu()) {
+                title = listing.getTitleRu();
+                description = listing.getDescriptionRu();
+            } else if ("en".equals(locale.getLanguage()) && listing.getCommunityEn()) {
+                title = listing.getTitleEn();
+                description = listing.getDescriptionEn();
+            }
+
+            // Если нет значения для выбранного языка, пробуем другие языки
+            if (title == null || description == null) {
+                if (title == null) {
+                    title = listing.getTitleFi() != null ? listing.getTitleFi() :
+                            listing.getTitleRu() != null ? listing.getTitleRu() :
+                                    listing.getTitleEn();
+                }
+                if (description == null) {
+                    description = listing.getDescriptionFi() != null ? listing.getDescriptionFi() :
+                            listing.getDescriptionRu() != null ? listing.getDescriptionRu() :
+                                    listing.getDescriptionEn();
+                }
+            }
+
+            // Сохраняем в транзиентные поля
+            listing.setLocalizedTitle(title);
+            listing.setLocalizedDescription(description);
+        }
 
         // Получаем статистику
         int views = statService.getTotalViews(user);
@@ -81,6 +115,7 @@ public class AccountController {
 
         return "secure/account";
     }
+
     @GetMapping("/secure/account/edit")
     public String editProfile(@AuthenticationPrincipal OAuth2User principal, Model model) {
         User user = userService.findByEmail(principal.getAttribute("email"));
@@ -137,5 +172,4 @@ public class AccountController {
 
         return "redirect:/secure/account/edit";
     }
-
 }

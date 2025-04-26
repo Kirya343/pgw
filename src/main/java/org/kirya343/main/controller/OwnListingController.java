@@ -64,6 +64,8 @@ public class OwnListingController {
         double averageRating = statService.getAverageRating(user);
         model.addAttribute("rating", averageRating);
 
+        model.addAttribute("user", user);
+
         // Передаём в шаблон
         model.addAttribute("userName", name != null ? name : "Пользователь");
         model.addAttribute("avatarPath", avatarPath);
@@ -77,6 +79,12 @@ public class OwnListingController {
     public String createListing(
             @ModelAttribute Listing listing,
             @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "titleRu", required = false) String titleRu,
+            @RequestParam(value = "descriptionRu", required = false) String descriptionRu,
+            @RequestParam(value = "titleFi", required = false) String titleFi,
+            @RequestParam(value = "descriptionFi", required = false) String descriptionFi,
+            @RequestParam(value = "titleEn", required = false) String titleEn,
+            @RequestParam(value = "descriptionEn", required = false) String descriptionEn,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
@@ -88,6 +96,16 @@ public class OwnListingController {
             listing.setCreatedAt(LocalDateTime.now());
             listing.setViews(0);
             listing.setRating(0.0);
+
+            // Устанавливаем описание и название для каждого языка
+            listing.setTitleRu(titleRu);
+            listing.setDescriptionRu(descriptionRu);
+            listing.setTitleFi(titleFi);
+            listing.setDescriptionFi(descriptionFi);
+            listing.setTitleEn(titleEn);
+            listing.setDescriptionEn(descriptionEn);
+
+            // Здесь не нужно ничего отдельно устанавливать для communityRu/Fi/En — Spring сам их поставит!
 
             if (!image.isEmpty()) {
                 try {
@@ -109,6 +127,8 @@ public class OwnListingController {
             return "redirect:/secure/listing/create";
         }
     }
+
+
     @GetMapping("/edit/{id}")
     public String showEditForm(
             @PathVariable Long id,
@@ -158,6 +178,9 @@ public class OwnListingController {
     public String updateListing(
             @PathVariable Long id,
             @ModelAttribute Listing listingData,
+            @RequestParam(value = "communityRu", defaultValue = "false") boolean communityRu,
+            @RequestParam(value = "communityFi", defaultValue = "false") boolean communityFi,
+            @RequestParam(value = "communityEn", defaultValue = "false") boolean communityEn,
             @RequestParam(value = "image", required = false) MultipartFile image,
             @RequestParam(value = "active", defaultValue = "false") boolean active,
             @AuthenticationPrincipal OAuth2User oauth2User,
@@ -176,13 +199,21 @@ public class OwnListingController {
             }
 
             // Обновление полей
-            existingListing.setTitle(listingData.getTitle());
-            existingListing.setDescription(listingData.getDescription());
+            existingListing.setTitleRu(listingData.getTitleRu());
+            existingListing.setTitleEn(listingData.getTitleEn());
+            existingListing.setTitleFi(listingData.getTitleFi());
+            existingListing.setDescriptionRu(listingData.getDescriptionRu());
+            existingListing.setDescriptionEn(listingData.getDescriptionEn());
+            existingListing.setDescriptionFi(listingData.getDescriptionFi());
             existingListing.setPrice(listingData.getPrice());
             existingListing.setPriceType(listingData.getPriceType());
             existingListing.setCategory(listingData.getCategory());
             existingListing.setLocation(listingData.getLocation());
             existingListing.setActive(active);
+
+            existingListing.setCommunityRu(communityRu);
+            existingListing.setCommunityFi(communityFi);
+            existingListing.setCommunityEn(communityEn);
 
             // Обновление изображения, если загружено новое
             if (image != null && !image.isEmpty()) {

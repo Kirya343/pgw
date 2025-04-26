@@ -10,8 +10,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ListingDTO {
     private Long id;
-    private String title;
-    private String description;
+    private String titleRu;
+    private String titleEn;
+    private String titleFi;
+    private String descriptionRu;
+    private String descriptionEn;
+    private String descriptionFi;
     private double price;
     private String priceType;
     private String category;
@@ -27,8 +31,12 @@ public class ListingDTO {
     public ListingDTO convertToListingDTO(Listing listing) {
         ListingDTO dto = new ListingDTO();
         this.id = listing.getId();
-        this.title = listing.getTitle();
-        this.description = listing.getDescription();
+        this.titleRu = listing.getTitleRu();
+        this.titleEn = listing.getTitleEn();
+        this.titleFi = listing.getTitleEn();
+        this.descriptionRu = listing.getDescriptionRu();
+        this.descriptionEn = listing.getDescriptionEn();
+        this.descriptionFi = listing.getDescriptionFi();
         this.price = listing.getPrice();
         this.priceType = listing.getPriceType();
         this.category = listing.getCategory();

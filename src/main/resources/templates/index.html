@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkSwap - Платформа для подработок и услуг | Хельсинки</title>
+    <title th:text="#{title.main}">WorkSwap - Платформа для подработок и услуг | Хельсинки</title>
     <link href="/css/public/pages/home-page.css" rel="stylesheet">
     <link rel="icon" href="/favicon.ico">
 </head>
@@ -11,7 +11,7 @@
 <header>
     <div class="container">
         <nav class="navbar">
-            <a class="navbar-brand" href="/catalog">WorkSwap</a>
+            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
             <button class="navbar-toggler">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -19,8 +19,8 @@
                 <div class="d-flex">
                     <!-- Для неавторизованных пользователей -->
                     <div th:unless="${isAuthenticated}">
-                        <a href="/login" class="btn btn-outline-primary">Вход</a>
-                        <a href="/register" class="btn btn-primary">Регистрация</a>
+                        <a href="/login" class="btn btn-outline-primary" th:text="#{header.login}">Вход</a>
+                        <a href="/register" class="btn btn-primary" th:text="#{header.register}">Регистрация</a>
                     </div>
 
                     <!-- Для авторизованных пользователей -->
@@ -42,98 +42,98 @@
 <main class="container">
     <!-- Герой-баннер -->
     <section class="hero">
-        <h1>Находите подработку или предлагайте услуги</h1>
-        <p class="lead">Платформа для быстрого поиска подработок, услуг и качественных б/у товаров в Хельсинки</p>
+        <h1 th:text="#{hero.h1}">Находите подработку или предлагайте услуги</h1>
+        <p class="lead" th:text="#{hero.lead}">Платформа для быстрого поиска подработок, услуг и качественных б/у товаров в Хельсинки</p>
         <div class="cta-buttons">
-            <a href="/catalog" class="big-btn btn-primary">Найти услугу</a>
-            <a href="/secure/listing/create" class="big-btn btn-outline">Разместить объявление</a>
+            <a href="/catalog" class="big-btn btn-primary" th:text="#{hero.find_service_button}">Найти услугу</a>
+            <a href="/secure/listing/create" class="big-btn btn-outline" th:text="#{hero.post_listing_button}">Разместить объявление</a>
         </div>
     </section>
 
     <!-- Преимущества -->
     <section class="features">
-        <h2 class="text-center">Почему выбирают WorkSwap</h2>
+        <h2 class="text-center" th:text="#{features.title}">Почему выбирают WorkSwap</h2>
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">🚀</div>
-                <h3>Быстро и просто</h3>
-                <p>Регистрация через Google за 1 минуту. Начните зарабатывать уже сегодня.</p>
+                <h3 th:text="#{features.feature_1.title}">Быстро и просто</h3>
+                <p th:text="#{features.feature_1.description}">Регистрация через Google за 1 минуту. Начните зарабатывать уже сегодня.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">💸</div>
-                <h3>Без комиссии</h3>
-                <p>Бесплатное размещение объявлений. Платите только за премиум-размещение.</p>
+                <h3 th:text="#{features.feature_2.title}">Без комиссии</h3>
+                <p th:text="#{features.feature_2.description}">Бесплатное размещение объявлений. Платите только за премиум-размещение.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">⭐</div>
-                <h3>Надежно</h3>
-                <p>Система рейтингов и отзывов помогает выбрать проверенного исполнителя.</p>
+                <h3 th:text="#{features.feature_3.title}">Надежно</h3>
+                <p th:text="#{features.feature_3.description}">Система рейтингов и отзывов помогает выбрать проверенного исполнителя.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">👥</div>
-                <h3>Для всех</h3>
-                <p>Студенты, специалисты, пенсионеры - каждый найдет подходящую подработку.</p>
+                <h3 th:text="#{features.feature_4.title}">Для всех</h3>
+                <p th:text="#{features.feature_4.description}">Студенты, специалисты, пенсионеры - каждый найдет подходящую подработку.</p>
             </div>
         </div>
     </section>
 
     <!-- Популярные категории -->
     <section class="categories">
-        <h2>Популярные категории</h2>
+        <h2 th:text="#{categories.title}">Популярные категории</h2>
         <div class="categories-grid">
             <a href="/catalog?category=repair" class="category-card">
                 <div class="category-icon">🔧</div>
-                <h3>Ремонт и строительство</h3>
+                <h3 th:text="#{categories.repair}">Ремонт и строительство</h3>
             </a>
             <a href="/catalog?category=delivery" class="category-card">
                 <div class="category-icon">🚚</div>
-                <h3>Доставка и перевозки</h3>
+                <h3 th:text="#{categories.delivery}">Доставка и перевозки</h3>
             </a>
             <a href="/catalog?category=it" class="category-card">
                 <div class="category-icon">💻</div>
-                <h3>IT и компьютерная помощь</h3>
+                <h3 th:text="#{categories.it}">IT и компьютерная помощь</h3>
             </a>
             <a href="/catalog?category=cleaning" class="category-card">
                 <div class="category-icon">🧹</div>
-                <h3>Уборка и помощь по хозяйству</h3>
+                <h3 th:text="#{categories.cleaning}">Уборка и помощь по хозяйству</h3>
             </a>
             <a href="/catalog?category=children" class="category-card">
                 <div class="category-icon">🧸</div>
-                <h3>Уход за детьми и животными</h3>
+                <h3 th:text="#{categories.children}">Уход за детьми и животными</h3>
             </a>
             <a href="/catalog?category=beauty" class="category-card">
                 <div class="category-icon">💅</div>
-                <h3>Услуги красоты</h3>
+                <h3 th:text="#{categories.beauty}">Услуги красоты</h3>
             </a>
             <a href="/catalog?category=secondhand" class="category-card">
                 <div class="category-icon">👕</div>
-                <h3>Секонд-хенд товары</h3>
+                <h3 th:text="#{categories.secondhand}">Секонд-хенд товары</h3>
             </a>
             <a href="/catalog?category=electronics" class="category-card">
                 <div class="category-icon">📱</div>
-                <h3>Ремонт техники</h3>
+                <h3 th:text="#{categories.electronics}">Ремонт техники</h3>
             </a>
         </div>
     </section>
 
     <!-- Как это работает -->
     <section class="how-it-works">
-        <h2 class="text-center">Как это работает</h2>
+        <h2 class="text-center" th:text="#{how_it_works.title}">Как это работает</h2>
         <div class="steps">
             <div class="step">
-                <h3 class="step-number" >Для заказчиков</h3>
+                <h3 class="step-number" th:text="#{how_it_works.for_clients.title}">Для заказчиков</h3>
                 <ol>
-                    <li>Найдите нужную услугу в каталоге</li>
-                    <li>Свяжитесь с исполнителем через сообщения</li>
-                    <li>Оплатите после выполнения работы</li>
+                    <li th:text="#{how_it_works.for_clients.step_1}">Найдите нужную услугу в каталоге</li>
+                    <li th:text="#{how_it_works.for_clients.step_2}">Свяжитесь с исполнителем через сообщения</li>
+                    <li th:text="#{how_it_works.for_clients.step_3}">Оплатите после выполнения работы</li>
                 </ol>
             </div>
             <div class="step">
-                <h3 class="step-number" >Для исполнителей</h3>
+                <h3 class="step-number" th:text="#{how_it_works.for_service_providers.title}">Для исполнителей</h3>
                 <ol>
-                    <li>Разместите объявление о своих услугах</li>
-                    <li>Получайте заказы от клиентов</li>
-                    <li>Зарабатывайте на своих навыках</li>
+                    <li th:text="#{how_it_works.for_service_providers.step_1}">Разместите объявление о своих услугах</li>
+                    <li th:text="#{how_it_works.for_service_providers.step_2}">Получайте заказы от клиентов</li>
+                    <li th:text="#{how_it_works.for_service_providers.step_3}">Зарабатывайте на своих навыках</li>
                 </ol>
             </div>
         </div>
@@ -142,9 +142,9 @@
     <!-- Призыв к действию -->
     <section class="cta">
         <div class="cta-card">
-            <h2>Начните прямо сейчас!</h2>
-            <p>Присоединяйтесь к тысячам пользователей, которые уже находят подработку и услуги на WorkSwap</p>
-            <a href="/register" class="btn btn-primary">Зарегистрироваться</a>
+            <h2 th:text="#{cta.title}">Начните прямо сейчас!</h2>
+            <p th:text="#{cta.text}">Присоединяйтесь к тысячам пользователей, которые уже находят подработку и услуги на WorkSwap</p>
+            <a href="/register" class="btn btn-primary" th:text="#{cta.register_button}">Зарегистрироваться</a>
         </div>
     </section>
 </main>
@@ -153,35 +153,56 @@
     <div class="container">
         <div class="footer-content">
             <div class="footer-logo">
-                <a href="/" class="navbar-brand">WorkSwap</a>
-                <p>Платформа для подработок и услуг в Хельсинки</p>
+                <a href="/" class="navbar-brand" th:text="#{footer.company}">WorkSwap</a>
+                <p th:text="#{footer.company_description}">Платформа для подработок и услуг в Финляндии</p>
             </div>
             <div class="footer-links">
                 <div class="links-column">
-                    <h4>Компания</h4>
-                    <a href="/about">О нас</a>
-                    <a href="/blog">Блог</a>
-                    <a href="/careers">Вакансии</a>
+                    <h4 th:text="#{footer.company}">Компания</h4>
+                    <a href="/about" th:text="#{footer.about}">О нас</a>
+                    <a href="/blog" th:text="#{footer.blog}">Блог</a>
+                    <a href="/careers" th:text="#{footer.careers}">Вакансии</a>
                 </div>
                 <div class="links-column">
-                    <h4>Помощь</h4>
-                    <a href="/help">Центр поддержки</a>
-                    <a href="/safety">Безопасность</a>
-                    <a href="/terms">Условия использования</a>
+                    <h4 th:text="#{footer.help}">Помощь</h4>
+                    <a href="/help" th:text="#{footer.support_center}">Центр поддержки</a>
+                    <a href="/safety" th:text="#{footer.safety}">Безопасность</a>
+                    <a href="/terms" th:text="#{footer.terms}">Условия использования</a>
                 </div>
                 <div class="links-column">
-                    <h4>Контакты</h4>
-                    <a href="mailto:info@workswap.fi">info@workswap.fi</a>
-                    <a href="tel:+358401234567">+358 40 123 4567</a>
+                    <h4 th:text="#{footer.contacts}">Контакты</h4>
+                    <p th:text="#{footer.email}">info@workswap.fi</p>
+                    <p th:text="#{footer.phone}">+358 40 123 4567</p>
                 </div>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>© 2023 WorkSwap. Все права защищены.</p>
-        </div>
     </div>
 </footer>
+<div class="language-toggle">
+    <input type="checkbox" id="langToggle">
+    <label for="langToggle" class="lang-wrapper">
+        <!-- Основная кнопка с текущим языком -->
+        <div class="lang-button">
+            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
+        </div>
 
+        <!-- Выпадающий список языков -->
+        <div class="lang-dropdown">
+            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
+                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
+                <span>Русский</span>
+            </a>
+            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
+                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
+                <span>Suomi</span>
+            </a>
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
+                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
+                <span>English</span>
+            </a>
+        </div>
+    </label>
+</div>
 <script>
     // Мобильное меню
     document.querySelector('.navbar-toggler').addEventListener('click', function() {

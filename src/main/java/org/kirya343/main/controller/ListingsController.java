@@ -12,7 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/listing")
@@ -36,7 +39,7 @@ public class ListingsController {
     }
 
     @GetMapping("/{id}")
-    public String getListing(@PathVariable Long id, Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
+    public String getListing(@PathVariable Long id, Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
         Listing listing = listingService.getListingById(id);
         User user = null;
 
@@ -65,9 +68,41 @@ public class ListingsController {
         listing.setViews(listing.getViews() + 1);
         listingService.save(listing);
 
+        // Локализация названия и описания
+        String title = null;
+        String description = null;
+
+        if ("fi".equals(locale.getLanguage()) && listing.getCommunityFi()) {
+            title = listing.getTitleFi();
+            description = listing.getDescriptionFi();
+        } else if ("ru".equals(locale.getLanguage()) && listing.getCommunityRu()) {
+            title = listing.getTitleRu();
+            description = listing.getDescriptionRu();
+        } else if ("en".equals(locale.getLanguage()) && listing.getCommunityEn()) {
+            title = listing.getTitleEn();
+            description = listing.getDescriptionEn();
+        }
+
+        if (title == null || description == null) {
+            if (title == null) {
+                title = listing.getTitleFi() != null ? listing.getTitleFi() :
+                        listing.getTitleRu() != null ? listing.getTitleRu() :
+                                listing.getTitleEn();
+            }
+            if (description == null) {
+                description = listing.getDescriptionFi() != null ? listing.getDescriptionFi() :
+                        listing.getDescriptionRu() != null ? listing.getDescriptionRu() :
+                                listing.getDescriptionEn();
+            }
+        }
+
+        // Сохраняем в транзиентные поля
+        listing.setLocalizedTitle(title);
+        listing.setLocalizedDescription(description);
+
         // Получаем автора объявления и его аватар
         User author = listing.getAuthor();
-        String authorAvatarPath = "/images/avatar-placeholder.jpg"; // значение по умолчанию
+        String authorAvatarPath = "/images/avatar-placeholder.jpg";
 
         if (author != null) {
             authorAvatarPath = avatarService.resolveAvatarPath(author);
@@ -75,9 +110,7 @@ public class ListingsController {
 
         boolean isOwner = false;
         if (oauth2User != null) {
-            // Проверяем, является ли пользователь автором объявления
             isOwner = listing.getAuthor() != null && listing.getAuthor().getId().equals(user.getId());
-
             model.addAttribute("isOwner", isOwner);
         }
 
@@ -95,26 +128,24 @@ public class ListingsController {
 
         double newUserRating = reviewService.calculateAverageRatingForUser(author);
         author.setAverageRating(newUserRating);
-        userService.save(user);
+        userService.save(author);
 
-        // Получаем все отзывы для объявления
         List<Review> reviews = reviewService.getReviewsByListingId(id);
         model.addAttribute("reviews", reviews);
-        String reviewAuthorAvatarPath = "/images/avatar-placeholder.jpg"; // значение по умолчанию
+
+        Map<Long, String> reviewAuthorAvatars = new HashMap<>();
         for (Review review : reviews) {
             User reviewAuthor = review.getAuthor();
             if (reviewAuthor != null) {
-                reviewAuthorAvatarPath = avatarService.resolveAvatarPath(reviewAuthor);
+                reviewAuthorAvatars.put(review.getId(), avatarService.resolveAvatarPath(reviewAuthor));
+            } else {
+                reviewAuthorAvatars.put(review.getId(), "/images/avatar-placeholder.jpg");
             }
-            model.addAttribute("reviewAuthorAvatarPath", reviewAuthorAvatarPath);  // добавляем для каждого отзыва
         }
+        model.addAttribute("reviewAuthorAvatars", reviewAuthorAvatars);
 
-        // Добавляем похожие объявления
         model.addAttribute("similarListings", listingService.findSimilarListings(listing.getCategory(), id));
 
-        System.out.println("Listing features: " + listing.getFeatures());
-        System.out.println("Listing images: " + listing.getImages());
-        System.out.println("Listing reviews: " + listing.getReviews());
         return "listing";
     }
     @PostMapping("/{id}/favorite")

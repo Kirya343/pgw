@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация | WorkSwap</title>
+    <title th:text="#{title.register}">Регистрация | WorkSwap</title>
     <link href="/css/public/pages/login-page.css" rel="stylesheet">
     <link rel="icon" href="/favicon.ico">
     <style>
@@ -39,7 +39,7 @@
 </head>
 <body>
 <div class="login-container">
-    <h2>Регистрация</h2>
+    <h2 th:text="#{register.label}">Регистрация</h2>
 
     <!-- Отображение ошибок -->
     <div th:if="${error}" class="error-message">
@@ -48,7 +48,7 @@
 
     <!-- Блок с данными пользователя -->
     <div th:if="${name}" class="user-info">
-        <p th:text="'Добро пожаловать, ' + ${name}">Добро пожаловать!</p>
+        <p th:text="#{register.welcome} + ' ' + ${name}">Добро пожаловать!</p>
         <img th:if="${picture}" th:src="${picture}" alt="Аватар" style="width: 64px; border-radius: 50%">
         <p th:text="${email}">example@email.com</p>
     </div>
@@ -59,26 +59,48 @@
 
         <div class="terms-checkbox">
             <input type="checkbox" id="terms" name="acceptTerms" required>
-            <label for="terms">Я принимаю
-                <a href="/terms" target="_blank">условия пользования</a> и
-                <a href="/privacy-policy" target="_blank">политику конфиденциальности</a>
+            <label for="terms">
+                <span th:text="#{register.checkbox.acceptTerms}"></span>
+                <a href="/terms" target="_blank" th:text="#{register.checkbox.terms}"></a>
+                <span th:text="#{register.checkbox.and}"></span>
+                <a href="/privacy-policy" target="_blank" th:text="#{register.checkbox.privacyPolicy}"></a>
             </label>
         </div>
-        <div id="terms-error" class="error-message" style="display: none;">
+        <div id="terms-error" class="error-message" style="display: none;" th:text="#{register.need.agree}">
             Необходимо принять условия пользования
         </div>
 
         <div class="form-footer">
-            <p>После подтверждения регистрации вы будете перенаправлены в каталог.</p>
-            <button type="submit" class="btn-google" id="submitBtn">Завершить регистрацию</button>
+            <p th:text="#{register.after}">После подтверждения регистрации вы будете перенаправлены в каталог.</p>
+            <button type="submit" class="btn-google" id="submitBtn" th:text="#{register.finish}">Завершить регистрацию</button>
         </div>
     </form>
-
-    <div class="login-link">
-        Уже зарегистрированы? <a href="/login">Войти</a>
-    </div>
 </div>
+<div class="language-toggle">
+    <input type="checkbox" id="langToggle">
+    <label for="langToggle" class="lang-wrapper">
+        <!-- Основная кнопка с текущим языком -->
+        <div class="lang-button">
+            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
+        </div>
 
+        <!-- Выпадающий список языков -->
+        <div class="lang-dropdown">
+            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
+                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
+                <span>Русский</span>
+            </a>
+            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
+                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
+                <span>Suomi</span>
+            </a>
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
+                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
+                <span>English</span>
+            </a>
+        </div>
+    </label>
+</div>
 <script>
     // Валидация формы перед отправкой
     function validateForm() {

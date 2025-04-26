@@ -20,11 +20,21 @@ public class Listing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    private String title;
+    // Заголовки на разных языках
+    private String titleRu;
+    private String titleFi;
+    private String titleEn;
+
+    // Описания на разных языках
+    @Column(length = 2000)
+    private String descriptionRu;
 
     @Column(length = 2000)
-    private String description;
+    private String descriptionFi;
+
+    @Column(length = 2000)
+    private String descriptionEn;
+
     @PositiveOrZero
     private double price;
     private String priceType; // "час", "фиксированная" и т.д.
@@ -59,4 +69,25 @@ public class Listing {
     @Setter
     @Getter
     private String imagePath;
+
+    // Новые флаги для целевой аудитории
+    private boolean communityRu;
+    private boolean communityFi;
+    private boolean communityEn;
+
+    public boolean getCommunityFi() {
+        return communityFi;
+    }
+    public boolean getCommunityRu() {
+        return communityRu;
+    }
+    public boolean getCommunityEn() {
+        return communityEn;
+    }
+
+    @Transient
+    private String localizedTitle;
+
+    @Transient
+    private String localizedDescription;
 }

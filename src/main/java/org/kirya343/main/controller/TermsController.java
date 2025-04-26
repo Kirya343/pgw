@@ -27,12 +27,18 @@ public class TermsController {
 
         if (oauth2User != null) {
             User user = userService.findUserFromOAuth2(oauth2User);
-            String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
-            String avatarPath = avatarService.resolveAvatarPath(user);
+            if (user != null) {
+                String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
+                String avatarPath = avatarService.resolveAvatarPath(user);
 
-            model.addAttribute("isAuthenticated", true);
-            model.addAttribute("userName", name != null ? name : "Пользователь");
-            model.addAttribute("avatarUrl", avatarPath);
+                model.addAttribute("isAuthenticated", true);
+                model.addAttribute("userName", name != null ? name : "Пользователь");
+                model.addAttribute("avatarUrl", avatarPath);
+            } else {
+                model.addAttribute("isAuthenticated", false);
+                model.addAttribute("userName", "Пользователь");
+                model.addAttribute("avatarUrl", "/images/avatar-placeholder.jpg");
+            }
         } else {
             model.addAttribute("isAuthenticated", false);
             model.addAttribute("userName", "Пользователь");
@@ -46,12 +52,18 @@ public class TermsController {
 
         if (oauth2User != null) {
             User user = userService.findUserFromOAuth2(oauth2User);
-            String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
-            String avatarPath = avatarService.resolveAvatarPath(user);
+            if (user != null) {
+                String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
+                String avatarPath = avatarService.resolveAvatarPath(user);
 
-            model.addAttribute("isAuthenticated", true);
-            model.addAttribute("userName", name != null ? name : "Пользователь");
-            model.addAttribute("avatarUrl", avatarPath);
+                model.addAttribute("isAuthenticated", true);
+                model.addAttribute("userName", name != null ? name : "Пользователь");
+                model.addAttribute("avatarUrl", avatarPath);
+            } else {
+                model.addAttribute("isAuthenticated", false);
+                model.addAttribute("userName", "Пользователь");
+                model.addAttribute("avatarUrl", "/images/avatar-placeholder.jpg");
+            }
         } else {
             model.addAttribute("isAuthenticated", false);
             model.addAttribute("userName", "Пользователь");

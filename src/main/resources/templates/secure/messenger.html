@@ -15,13 +15,13 @@
 <header>
     <nav class="container">
         <nav class="navbar">
-            <a class="navbar-brand" href="/catalog">WorkSwap</a>
+            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
             <button class="navbar-toggler">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <nav class="navbar-collapse">
                 <nav class="navbar-top">
-                    <a class="navbar-brand" href="/catalog">WorkSwap</a>
+                    <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
                     <button id="navbar-toggler" class="navbar-toggler">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -40,20 +40,19 @@
                     </span>
                             (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
                         </p>
-                        <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
+                        <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm" th:text="#{profile.edit}">Редактировать профиль</a>
                     </div>
 
                     <nav class="account-menu">
-                        <a href="/secure/account" class="account-menu-item">Мои объявления</a>
-                        <a href="/secure/favorites" class="account-menu-item">Избранное</a>
-                        <a href="/secure/messenger" class="account-menu-item active">Сообщения</a>
-                        <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
-                        <a href="#" class="account-menu-item">Платежи</a>
-                        <a href="#" class="account-menu-item">Безопасность</a>
+                        <a href="/secure/account" class="account-menu-item" th:text="#{link.account}">Мои объявления</a>
+                        <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
+                        <a href="/secure/messenger" class="account-menu-item active" th:text="#{link.messenger}">Сообщения</a>
+                        <a href="/secure/account/edit" class="account-menu-item" th:text="#{link.settings}">Настройки</a>
+                        <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
                     </nav>
                 </div>
                 <div class="nav-buttons">
-                    <a href="/logout" class="logout-btn">Выйти</a>
+                    <a href="/logout" class="logout-btn" th:text="#{logout.button}">Выйти</a>
                 </div>
             </nav>
         </nav>
@@ -74,30 +73,28 @@
                 <p class="profile-rating">
                     <span th:each="i : ${#numbers.sequence(1,5)}">
                         <i class="fa"
-                           th:classappend="${user.averageRating >= i} ? 'fa-star' :
-                          (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                           th:classappend="${user.averageRating >= i} ? 'fa-star' : (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
                     </span>
                     (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
                 </p>
-                <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
+                <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm" th:text="#{profile.edit}">Редактировать профиль</a>
             </div>
 
             <nav class="account-menu">
-                <a href="/secure/account" class="account-menu-item">Мои объявления</a>
-                <a href="/secure/favorites" class="account-menu-item">Избранное</a>
-                <a href="/secure/messenger" class="account-menu-item active">Сообщения</a>
-                <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
-                <a href="#" class="account-menu-item">Платежи</a>
-                <a href="#" class="account-menu-item">Безопасность</a>
+                <a href="/secure/account" class="account-menu-item" th:text="#{link.account}">Мои объявления</a>
+                <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
+                <a href="/secure/messenger" class="account-menu-item active" th:text="#{link.messenger}">Сообщения</a>
+                <a href="/secure/account/edit" class="account-menu-item" th:text="#{link.settings}">Настройки</a>
+                <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
             </nav>
         </aside>
 
         <!-- Основное содержимое -->
         <main class="messenger-main">
             <div class="messenger-header">
-                <h2>Сообщения</h2>
+                <h2 th:text="#{my.messages}">Сообщения</h2>
                 <div class="search-container">
-                    <input type="text" placeholder="Поиск диалогов..." class="search-input">
+                    <input type="text" th:placeholder="#{my.messages.search}" class="search-input">
                     <button class="search-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
@@ -143,8 +140,8 @@
 
                     <!-- Если нет диалогов -->
                     <div th:if="${#lists.isEmpty(conversations)}" class="no-dialogs">
-                        <p>У вас пока нет сообщений.</p>
-                        <p>Начните общение, ответив на объявление или отправив сообщение пользователю.</p>
+                        <p th:text="#{my.messages.no-messages}">У вас пока нет сообщений.</p>
+                        <p th:text="#{my.messages.start.dialog}">Начните общение, ответив на объявление или отправив сообщение пользователю.</p>
                     </div>
                 </div>
 
@@ -161,8 +158,8 @@
                                 </div>
                             </div>
                             <div class="chat-actions">
-                                <button class="btn btn-outline-primary btn-sm">Профиль</button>
-                                <button class="btn btn-outline-danger btn-sm">Заблокировать</button>
+                                <button class="btn btn-outline-primary btn-sm" th:text="#{my.messages.button.profile}">Профиль</button>
+                                <button class="btn btn-outline-danger btn-sm" th:text="#{my.messages.button.block}">Заблокировать</button>
                             </div>
                         </div>
 
@@ -170,7 +167,7 @@
                             <div class="message-date">Сегодня</div>
 
                             <th:block th:if="${#lists.isEmpty(messages)}">
-                                <p class="no-messages">Нет сообщений</p>
+                                <p class="no-messages" th:text="#{my.messages.empty.dialog}">Нет сообщений</p>
                             </th:block>
 
                             <div th:each="message : ${messages}"
@@ -185,8 +182,8 @@
                         </div>
 
                         <div class="message-input-container">
-                            <textarea id="message-input" нуplaceholder="Напишите сообщение..." class="message-input"></textarea>
-                            <button id="send-btn" class="btn btn-primary send-btn">Отправить</button>
+                            <textarea id="message-input" th:placeholder="#{my.messages.send.placeholder}" class="message-input"></textarea>
+                            <button id="send-btn" class="btn btn-primary send-btn" th:text="#{my.messages.button.send}">Отправить</button>
                         </div>
                     </div>
 
@@ -196,8 +193,8 @@
                                 <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                                 <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
                             </svg>
-                            <h3>Выберите диалог</h3>
-                            <p>Выберите диалог из списка слева или начните новый</p>
+                            <h3 th:text="#{my.messages.select.dialog}">Выберите диалог</h3>
+                            <p th:text="#{my.messages.select.start.dialog}">Выберите диалог из списка слева или начните новый</p>
                         </div>
                     </div>
                 </div>
@@ -207,7 +204,31 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<div class="language-toggle">
+    <input type="checkbox" id="langToggle">
+    <label for="langToggle" class="lang-wrapper">
+        <!-- Основная кнопка с текущим языком -->
+        <div class="lang-button">
+            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
+        </div>
 
+        <!-- Выпадающий список языков -->
+        <div class="lang-dropdown">
+            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
+                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
+                <span>Русский</span>
+            </a>
+            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
+                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
+                <span>Suomi</span>
+            </a>
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
+                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
+                <span>English</span>
+            </a>
+        </div>
+    </label>
+</div>
 <script th:inline="javascript">
     let currentConversationId = [[${selectedConversation?.id}]];
     const currentUserId = [[${user.id}]];

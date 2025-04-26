@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Условия использования | WorkSwap</title>
+    <title th:text="#{title.privacy-policy}">Политика конфиденциальности | WorkSwap</title>
     <link href="/css/public/pages/terms-page.css" rel="stylesheet">
     <link rel="icon" href="/favicon.ico">
 </head>
@@ -41,87 +41,112 @@
 
 <!-- Основной контент -->
 <div class="container py-5">
-    <h1 class="text-center mb-4">Политика конфиденциальности</h1>
+    <h1 class="text-center mb-4" th:text="#{privacy.title}"></h1>
 
     <section>
-        <h2>1. Общая информация</h2>
-        <p>Настоящая Политика конфиденциальности определяет, как сайт WorkSwap (https://workswap.org) собирает, использует, хранит и защищает персональные данные пользователей.</p>
+        <h2 th:text="#{privacy.section1.title}"></h2>
+        <p th:text="#{privacy.section1.p1}"></p>
     </section>
 
     <section>
-        <h2>2. Контактная информация</h2>
-        <p>По всем вопросам, связанным с обработкой персональных данных, вы можете связаться с администрацией сайта по адресу электронной почты: kkodolov40@gmail.com.</p>
+        <h2 th:text="#{privacy.section2.title}"></h2>
+        <p th:text="#{privacy.section2.p1}"></p>
     </section>
 
     <section>
-        <h2>3. Какие данные мы собираем</h2>
-        <p>Мы собираем только следующие персональные данные:</p>
+        <h2 th:text="#{privacy.section3.title}"></h2>
+        <p th:text="#{privacy.section3.p1}"></p>
         <ul>
-            <li>Информация, предоставляемая через ваш Google-аккаунт при входе (имя, электронная почта, фото профиля);</li>
-            <li>Дополнительная информация, которую вы можете указать в своём профиле (номер телефона, описание и т.п.).</li>
+            <li th:text="#{privacy.section3.item1}"></li>
+            <li th:text="#{privacy.section3.item2}"></li>
         </ul>
     </section>
 
     <section>
-        <h2>4. Основание для обработки данных</h2>
-        <p>Обработка данных осуществляется на основании:</p>
+        <h2 th:text="#{privacy.section4.title}"></h2>
+        <p th:text="#{privacy.section4.p1}"></p>
         <ul>
-            <li>Необходимости для выполнения условий использования сайта;</li>
-            <li>Законного интереса (например, для обеспечения безопасности, предотвращения мошенничества);</li>
-            <li>Согласия пользователя (в случаях, когда это требуется).</li>
+            <li th:text="#{privacy.section4.item1}"></li>
+            <li th:text="#{privacy.section4.item2}"></li>
+            <li th:text="#{privacy.section4.item3}"></li>
         </ul>
     </section>
 
     <section>
-        <h2>5. Как мы используем данные</h2>
-        <p>Ваши данные используются для:</p>
+        <h2 th:text="#{privacy.section5.title}"></h2>
+        <p th:text="#{privacy.section5.p1}"></p>
         <ul>
-            <li>Предоставления доступа к функциям сайта;</li>
-            <li>Отображения информации в вашем профиле;</li>
-            <li>Обеспечения безопасности и модерации контента;</li>
-            <li>Связи с вами при необходимости.</li>
+            <li th:text="#{privacy.section5.item1}"></li>
+            <li th:text="#{privacy.section5.item2}"></li>
+            <li th:text="#{privacy.section5.item3}"></li>
+            <li th:text="#{privacy.section5.item4}"></li>
         </ul>
     </section>
 
     <section>
-        <h2>6. Хранение и защита данных</h2>
-        <p>Данные хранятся в базе данных MariaDB на хостинге qwer-host, расположенном в Германии. Мы принимаем технические и организационные меры для защиты ваших данных от утраты, неправомерного доступа и других угроз.</p>
+        <h2 th:text="#{privacy.section6.title}"></h2>
+        <p th:text="#{privacy.section6.p1}"></p>
     </section>
 
     <section>
-        <h2>7. Передача данных третьим лицам</h2>
-        <p>Мы не передаём ваши персональные данные третьим лицам, за исключением случаев, когда это необходимо по закону или в рамках предоставления услуг (например, авторизация через Google).</p>
+        <h2 th:text="#{privacy.section7.title}"></h2>
+        <p th:text="#{privacy.section7.p1}"></p>
     </section>
 
     <section>
-        <h2>8. Ваши права</h2>
-        <p>В соответствии с GDPR, вы имеете право:</p>
+        <h2 th:text="#{privacy.section8.title}"></h2>
+        <p th:text="#{privacy.section8.p1}"></p>
         <ul>
-            <li>Запросить доступ к своим данным;</li>
-            <li>Потребовать их исправления или удаления;</li>
-            <li>Ограничить обработку;</li>
-            <li>Возразить против обработки;</li>
-            <li>Перенести данные в другой сервис;</li>
-            <li>Подать жалобу в надзорный орган.</li>
+            <li th:text="#{privacy.section8.item1}"></li>
+            <li th:text="#{privacy.section8.item2}"></li>
+            <li th:text="#{privacy.section8.item3}"></li>
+            <li th:text="#{privacy.section8.item4}"></li>
+            <li th:text="#{privacy.section8.item5}"></li>
+            <li th:text="#{privacy.section8.item6}"></li>
         </ul>
     </section>
 
     <section>
-        <h2>9. Cookies</h2>
-        <p>На момент публикации мы не используем файлы cookie. В случае, если они будут внедрены в будущем, информация об этом будет добавлена в политику конфиденциальности.</p>
+        <h2 th:text="#{privacy.section9.title}"></h2>
+        <p th:text="#{privacy.section9.p1}"></p>
     </section>
 
     <section>
-        <h2>10. Изменения в политике</h2>
-        <p>Мы можем время от времени обновлять настоящую Политику конфиденциальности. Обо всех существенных изменениях будет сообщено на сайте.</p>
+        <h2 th:text="#{privacy.section10.title}"></h2>
+        <p th:text="#{privacy.section10.p1}"></p>
     </section>
 
     <section>
-        <h2>11. Юрисдикция</h2>
-        <p>Настоящая политика регулируется законодательством Финляндии и Европейского Союза (GDPR).</p>
+        <h2 th:text="#{privacy.section11.title}"></h2>
+        <p th:text="#{privacy.section11.p1}"></p>
     </section>
+
 </div>
+<div class="language-toggle">
+    <input type="checkbox" id="langToggle">
+    <label for="langToggle" class="lang-wrapper">
+        <!-- Основная кнопка с текущим языком -->
+        <div class="lang-button">
+            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
+        </div>
 
+        <!-- Выпадающий список языков -->
+        <div class="lang-dropdown">
+            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
+                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
+                <span>Русский</span>
+            </a>
+            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
+                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
+                <span>Suomi</span>
+            </a>
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
+                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
+                <span>English</span>
+            </a>
+        </div>
+    </label>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

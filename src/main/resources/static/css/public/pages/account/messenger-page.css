@@ -1,4 +1,4 @@
-
+@import url(../../components/lang-switcher.css);
 /* Основные стили мессенджера */
 .messenger-main {
     flex: 1;

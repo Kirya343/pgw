@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Личный кабинет | WorkSwap</title>
+    <title th:text="#{title.account}">Личный кабинет | WorkSwap</title>
     <link href="/css/public/pages/account-page.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="/favicon.ico">
@@ -12,13 +12,13 @@
 <header>
     <nav class="container">
         <nav class="navbar">
-            <a class="navbar-brand" href="/catalog">WorkSwap</a>
+            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
             <button class="navbar-toggler">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <nav class="navbar-collapse">
                 <nav class="navbar-top">
-                <a class="navbar-brand" href="/catalog">WorkSwap</a>
+                <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
                 <button id="navbar-toggler" class="navbar-toggler">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -41,16 +41,15 @@
                     </div>
 
                     <nav class="account-menu">
-                        <a href="/secure/account" class="account-menu-item active">Мои объявления</a>
-                        <a href="/secure/favorites" class="account-menu-item">Избранное</a>
-                        <a href="/secure/messenger" class="account-menu-item">Сообщения</a>
-                        <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
-                        <a href="#" class="account-menu-item">Платежи</a>
-                        <a href="#" class="account-menu-item">Безопасность</a>
+                        <a href="/secure/account" class="account-menu-item active" th:text="#{link.account}">Мои объявления</a>
+                        <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
+                        <a href="/secure/messenger" class="account-menu-item" th:text="#{link.messenger}">Сообщения</a>
+                        <a href="/secure/account/edit" class="account-menu-item" th:text="#{link.settings}">Настройки</a>
+                        <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
                     </nav>
                 </div>
                 <div class="nav-buttons">
-                    <a href="/logout" class="logout-btn">Выйти</a>
+                    <a href="/logout" class="logout-btn" th:text="#{logout.button}">Выйти</a>
                 </div>
             </nav>
         </nav>
@@ -75,16 +74,15 @@
                     </span>
                     (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
                 </p>
-                <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
+                <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm" th:text="#{profile.edit}">Редактировать профиль</a>
             </div>
 
             <nav class="account-menu">
-                <a href="/secure/account" class="account-menu-item active">Мои объявления</a>
-                <a href="/secure/favorites" class="account-menu-item">Избранное</a>
-                <a href="/secure/messenger" class="account-menu-item">Сообщения</a>
-                <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
-                <a href="#" class="account-menu-item">Платежи</a>
-                <a href="#" class="account-menu-item">Безопасность</a>
+                <a href="/secure/account" class="account-menu-item active" th:text="#{link.account}">Мои объявления</a>
+                <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
+                <a href="/secure/messenger" class="account-menu-item" th:text="#{link.messenger}">Сообщения</a>
+                <a href="/secure/account/edit" class="account-menu-item" th:text="#{link.settings}">Настройки</a>
+                <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
             </nav>
         </aside>
 
@@ -92,8 +90,8 @@
         <!-- Основное содержимое -->
         <main class="account-main">
             <div class="account-header">
-                <h2>Мои объявления</h2>
-                <a href="/secure/listing/create" class="btn btn-primary">Добавить новое</a>
+                <h2 th:text="#{my.listings}">Мои объявления</h2>
+                <a href="/secure/listing/create" class="btn btn-primary" th:text="#{my.listings.create}">Добавить новое</a>
             </div>
 
             <div class="listings-grid">
@@ -108,27 +106,30 @@
                          alt="Изображение объявления">
 
                     <div class="card-body">
-                        <h3 class="card-title" th:text="${listing.title}">Название</h3>
-                        <p class="card-text" th:text="${#strings.length(listing.description) > 100} ? ${#strings.substring(listing.description, 0, 100)} + '...' : ${listing.description}">Описание</p>
+                        <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
+                        <p class="card-text" th:text="${#strings.length(listing.localizedDescription) > 100} ? ${#strings.substring(listing.localizedDescription, 0, 100)} + '...' : ${listing.localizedDescription}">Описание</p>
                         <div class="card-footer">
                             <div>
                                 <span class="price" th:switch="${listing.priceType}">
-                                    <span th:case="'negotiable'">Договорная</span>
-                                    <span th:case="'per_hour'" th:text="${listing.price} + ' €/час'">Цена</span>
-                                    <span th:case="'per_day'" th:text="${listing.price} + ' €/день'">Цена</span>
-                                    <span th:case="'fixed'" th:text="${listing.price} + ' €'">Цена</span>
+                                    <span th:case="'negotiable'" th:text="#{price.negotiable}">Договорная</span>
+                                    <span th:case="'per_hour'" th:text="${listing.price} + ' ' + #{price.per-hour}">Цена</span>
+                                    <span th:case="'per_day'" th:text="${listing.price} + ' ' + #{price.per-day}">Цена</span>
+                                    <span th:case="'fixed'" th:text="${listing.price} + ' ' + #{price.fixed}">Цена</span>
                                     <span th:case="*">Цена не указана</span>
                                 </span>
-                                <div class="listing-views">Просмотры: <span th:text="${listing.views}">0</span></div>
+                                <div class="listing-views">
+                                    <span th:text="#{listings.views}">0</span>
+                                    <span th:text="${listing.views}">0</span>
+                                </div>
                             </div>
                             <div class="listing-actions">
                                 <a th:href="@{/secure/listing/edit/{id}(id=${listing.id})}"
-                                   class="btn btn-sm btn-outline-primary">Редактировать</a>
+                                   class="btn btn-sm btn-outline-primary" th:text="#{listing.edit}"></a>
                                 <form th:action="@{/secure/listing/delete/{id}(id=${listing.id})}"
                                       method="post"
                                       style="display: inline;">
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{my.listings.button.delete}"></button>
                                 </form>
                             </div>
                         </div>
@@ -138,37 +139,62 @@
 
             <!-- Если нет объявлений -->
             <div th:if="${#lists.isEmpty(listings)}" class="no-listings">
-                <p>У вас пока нет объявлений.</p>
-                <a href="/secure/listing/create" class="btn btn-primary">Создать первое объявление</a>
+                <p th:text="#{my.listings.no-listings}">У вас пока нет объявлений.</p>
+                <a href="/secure/listing/create" class="btn btn-primary" th:text="#{my.listings.create.new}">Создать первое объявление</a>
             </div>
             <!-- Статистика -->
             <div class="stats-section">
-                <h3>Статистика</h3>
+                <h3 th:text="#{statistic}">Статистика</h3>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-value">
                             <span th:text="${views}">0</span></div>
-                        <div class="stat-label">Просмотры</div>
+                        <div class="stat-label" th:text="#{statistic.views}">Просмотры</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value">
                             <span th:text="${responses}">0</span></div>
-                        <div class="stat-label">Отклики</div>
+                        <div class="stat-label" th:text="#{statistic.responses}">Отклики</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value">
                             <span th:text="${deals}">0</span></div>
-                        <div class="stat-label">Завершённые сделки</div>
+                        <div class="stat-label" th:text="#{statistic.deals}">Завершённые сделки</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value">
                             <span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span></div>
-                        <div class="stat-label">Средний рейтинг</div>
+                        <div class="stat-label" th:text="#{statistic.rating}">Средний рейтинг</div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
+</div>
+<div class="language-toggle">
+    <input type="checkbox" id="langToggle">
+    <label for="langToggle" class="lang-wrapper">
+        <!-- Основная кнопка с текущим языком -->
+        <div class="lang-button">
+            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
+        </div>
+
+        <!-- Выпадающий список языков -->
+        <div class="lang-dropdown">
+            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
+                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
+                <span>Русский</span>
+            </a>
+            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
+                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
+                <span>Suomi</span>
+            </a>
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
+                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
+                <span>English</span>
+            </a>
+        </div>
+    </label>
 </div>
 <script>
     // Мобильное меню

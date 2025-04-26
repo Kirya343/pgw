@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head> <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Редактирование объявления | WorkSwap</title>
+    <title th:text="#{title.listing.edit}">Редактирование объявления | WorkSwap</title>
     <link href="/css/public/pages/listing/edit-page.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="/favicon.ico">
@@ -11,13 +11,13 @@
 <header>
     <nav class="container">
         <nav class="navbar">
-            <a class="navbar-brand" href="/catalog">WorkSwap</a>
+            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
             <button class="navbar-toggler">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <nav class="navbar-collapse">
                 <nav class="navbar-top">
-                    <a class="navbar-brand" href="/catalog">WorkSwap</a>
+                    <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
                     <button id="navbar-toggler" class="navbar-toggler">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -31,24 +31,24 @@
                         <p class="profile-rating">
                     <span th:each="i : ${#numbers.sequence(1,5)}">
                         <i class="fa"
-                           th:classappend="${user.averageRating >= i} ? 'fa-star' : (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                           th:classappend="${user.averageRating >= i} ? 'fa-star' :
+                          (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
                     </span>
-                            (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 'POINT')}">0.0</span>)
+                            (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
                         </p>
                         <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
                     </div>
 
                     <nav class="account-menu">
-                        <a href="/secure/account" class="account-menu-item">Мои объявления</a>
-                        <a href="/secure/favorites" class="account-menu-item">Избранное</a>
-                        <a href="/secure/messenger" class="account-menu-item">Сообщения</a>
-                        <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
-                        <a href="#" class="account-menu-item">Платежи</a>
-                        <a href="#" class="account-menu-item">Безопасность</a>
+                        <a href="/secure/account" class="account-menu-item" th:text="#{link.account}">Мои объявления</a>
+                        <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
+                        <a href="/secure/messenger" class="account-menu-item" th:text="#{link.messenger}">Сообщения</a>
+                        <a href="/secure/account/edit" class="account-menu-item" th:text="#{link.settings}">Настройки</a>
+                        <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
                     </nav>
                 </div>
                 <div class="nav-buttons">
-                    <a href="/logout" class="logout-btn">Выйти</a>
+                    <a href="/logout" class="logout-btn" th:text="#{logout.button}">Выйти</a>
                 </div>
             </nav>
         </nav>
@@ -66,26 +66,27 @@
                 <p class="profile-rating">
                     <span th:each="i : ${#numbers.sequence(1,5)}">
                         <i class="fa"
-                           th:classappend="${user.averageRating >= i} ? 'fa-star' : (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                           th:classappend="${user.averageRating >= i} ? 'fa-star' :
+                          (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
                     </span>
                     (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
                 </p>
-                <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
+                <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm" th:text="#{profile.edit}">Редактировать профиль</a>
             </div>
+
             <nav class="account-menu">
-                <a href="/secure/account" class="account-menu-item">Мои объявления</a>
-                <a href="/secure/favorites" class="account-menu-item">Избранное</a>
-                <a href="/secure/messenger" class="account-menu-item">Сообщения</a>
-                <a href="/secure/account/edit" class="account-menu-item">Настройки</a>
-                <a href="#" class="account-menu-item">Платежи</a>
-                <a href="#" class="account-menu-item">Безопасность</a>
+                <a href="/secure/account" class="account-menu-item" th:text="#{link.account}">Мои объявления</a>
+                <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
+                <a href="/secure/messenger" class="account-menu-item" th:text="#{link.messenger}">Сообщения</a>
+                <a href="/secure/account/edit" class="account-menu-item" th:text="#{link.settings}">Настройки</a>
+                <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
             </nav>
         </aside>
 
         <!-- Основное содержимое -->
         <main class="edit-listing-main">
             <div class="edit-listing-header">
-                <h2>Редактирование объявления</h2>
+                <h2 th:text="#{listing.editing}">Редактирование объявления</h2>
             </div>
 
             <!-- Сообщения об ошибках/успехе -->
@@ -97,48 +98,114 @@
 
                 <!-- Статус объявления -->
                 <div class="form-group">
-                    <label>Статус объявления</label>
+                    <label th:text="#{listing.editing.status}">Статус объявления</label>
                     <div class="status-toggle">
                         <label class="switch">
                             <input type="checkbox" name="active" th:checked="${listing.active}" value="true">
                             <span class="slider"></span>
                         </label>
-                        <span th:text="${listing.active} ? 'Активно' : 'Не активно'"></span>
+                        <span th:text="${listing.active} ? #{listing.editing.status.enable} : #{listing.editing.status.disable}"></span>
                     </div>
                 </div>
 
                 <!-- Основная информация -->
+                <!-- Аудитория -->
+                <!-- Аудитория -->
                 <div class="form-group">
-                    <label for="title">Заголовок</label>
-                    <input type="text" id="title" name="title" th:value="${listing.title}" required>
+                    <label th:text="#{listing.editing.audience}">Аудитория</label>
+                    <div class="audience-switches" style="display: flex; gap: 20px; margin-top: 10px;">
+                        <!-- Русскоязычная аудитория -->
+                        <div class="status-toggle">
+                            <label class="switch">
+                                <input type="checkbox" id="audienceRussian" name="communityRu" value="true"
+                                       th:checked="${listing.communityRu}" onchange="toggleLanguageFields()">
+                                <span class="slider"></span>
+                            </label>
+                            <span th:text="#{audience.russian}">Русскоязычная аудитория</span>
+                        </div>
+
+                        <!-- Финноязычная аудитория -->
+                        <div class="status-toggle">
+                            <label class="switch">
+                                <input type="checkbox" id="audienceFinnish" name="communityFi" value="true"
+                                       th:checked="${listing.communityFi}" onchange="toggleLanguageFields()">
+                                <span class="slider"></span>
+                            </label>
+                            <span th:text="#{audience.finnish}">Финноязычная аудитория</span>
+                        </div>
+
+                        <!-- Англоязычная аудитория -->
+                        <div class="status-toggle">
+                            <label class="switch">
+                                <input type="checkbox" id="audienceEnglish" name="communityEn" value="true"
+                                       th:checked="${listing.communityEn}" onchange="toggleLanguageFields()">
+                                <span class="slider"></span>
+                            </label>
+                            <span th:text="#{audience.english}">Англоязычная аудитория</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="description">Описание</label>
-                    <textarea id="description" name="description" rows="5" required th:text="${listing.description}"></textarea>
-                </div>
+                <!-- Поля для ввода на разных языках -->
+                <div class="form-lang-grid">
+                    <div class="form-lang">
+                        <div class="form-group" id="titleRuField" style="display:none;">
+                            <label for="titleRu" th:text="#{listing.editing.title.russian}">Title (Russian)</label>
+                            <input type="text" id="titleRu" name="titleRu" class="form-control" th:value="${listing.titleRu}">
+                        </div>
 
+                        <div class="form-group" id="descriptionRuField" style="display:none;">
+                            <label for="descriptionRu" th:text="#{listing.editing.description.russian}">Description (Russian)</label>
+                            <textarea id="descriptionRu" name="descriptionRu" class="form-control" rows="5"
+                                      th:text="${listing.descriptionRu}"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-lang">
+                        <div class="form-group" id="titleFiField" style="display:none;">
+                            <label for="titleFi" th:text="#{listing.editing.title.finnish}">Title (Finnish)</label>
+                            <input type="text" id="titleFi" name="titleFi" class="form-control" th:value="${listing.titleFi}">
+                        </div>
+
+                        <div class="form-group" id="descriptionFiField" style="display:none;">
+                            <label for="descriptionFi" th:text="#{listing.editing.description.finnish}">Description (Finnish)</label>
+                            <textarea id="descriptionFi" name="descriptionFi" class="form-control" rows="5"
+                                      th:text="${listing.descriptionFi}"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-lang">
+                        <div class="form-group" id="titleEnField" style="display:none;">
+                            <label for="titleEn" th:text="#{listing.editing.title.english}">Title (English)</label>
+                            <input type="text" id="titleEn" name="titleEn" class="form-control" th:value="${listing.titleEn}">
+                        </div>
+
+                        <div class="form-group" id="descriptionEnField" style="display:none;">
+                            <label for="descriptionEn" th:text="#{listing.editing.description.english}">Description (English)</label>
+                            <textarea id="descriptionEn" name="descriptionEn" class="form-control" rows="5"
+                                      th:text="${listing.descriptionEn}"></textarea>
+                        </div>
+                    </div>
+                </div>
                 <!-- Цена -->
                 <div class="form-group">
-                    <label for="price">Цена</label>
+                    <label for="price" th:text="#{listing.editing.price}">Цена</label>
                     <input type="number" id="price" name="price" th:value="${listing.price}" step="0.01" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="priceType">Тип цены</label>
+                    <label for="priceType" th:text="#{listing.editing.pricetype}">Тип цены</label>
                     <select id="priceType" name="priceType" required>
-                        <option value="per_hour" th:selected="${listing.priceType == 'per_hour'}">€/час</option>
-                        <option value="per_day" th:selected="${listing.priceType == 'per_day'}">€/день</option>
-                        <option value="fixed" th:selected="${listing.priceType == 'fixed'}">Фиксированная</option>
-                        <option value="negotiable" th:selected="${listing.priceType == 'negotiable'}">Договорная</option>
+                        <option value="per_hour" th:selected="${listing.priceType == 'per_hour'}" th:text="#{price.per-hour}">€/час</option>
+                        <option value="per_day" th:selected="${listing.priceType == 'per_day'}" th:text="#{price.per-day}">€/день</option>
+                        <option value="fixed" th:selected="${listing.priceType == 'fixed'}" th:text="#{price.fixed}">Фиксированная</option>
+                        <option value="negotiable" th:selected="${listing.priceType == 'negotiable'}" th:text="#{price.negotiable}">Договорная</option>
                     </select>
                 </div>
 
                 <!-- Категория и местоположение -->
                 <div class="form-group">
-                    <label for="category">Категория</label>
+                    <label for="category" th:text="#{listing.editing.category}">Категория</label>
                     <select id="category" name="category" required>
-                        <option value="" disabled>Выберите категорию</option>
+                        <option value="" disabled th:text="#{listing.editing.category.select}">Выберите категорию</option>
                         <option th:each="entry : ${categories}"
                                 th:value="${entry.key}"
                                 th:selected="${entry.key == listing.category}"
@@ -148,9 +215,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="location">Местоположение</label>
+                    <label for="location" th:text="#{listing.editing.location}">Местоположение</label>
                     <select id="location" name="location" required>
-                        <option value="" disabled>Выберите местоположение</option>
+                        <option value="" disabled th:text="#{listing.editing.location.select}">Выберите местоположение</option>
                         <option th:each="loc : ${locations}"
                                 th:value="${loc.name}"
                                 th:selected="${loc.name == listing.location}"
@@ -161,7 +228,7 @@
 
                 <!-- Изображения -->
                 <div class="form-group">
-                    <label>Текущее изображение</label>
+                    <label th:text="#{listing.editing.image}">Текущее изображение</label>
                     <img th:src="@{'/' + ${listing.imagePath}}"
                          th:onerror="this.src='/images/default-listing.png'"
                          class="current-image"
@@ -169,24 +236,49 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Загрузить новое изображение</label>
+                    <label th:text="#{listing.editing.image.upload.new}">Загрузить новое изображение</label>
                     <div class="upload-controls">
                         <input type="file" id="image" name="image" accept="image/*">
-                        <label for="image" class="btn btn-outline-primary">Выбрать файл</label>
-                        <span class="file-name">Файл не выбран</span>
+                        <label for="image" class="btn btn-outline-primary" th:text="#{listing.editing.image.button.select}">Выбрать файл</label>
+                        <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
                     </div>
-                    <small class="form-text">Максимальный размер: 5MB (JPG, PNG, GIF)</small>
+                    <small class="form-text" th:text="#{listing.editing.image.maxsize}">Максимальный размер: 5MB (JPG, PNG, GIF)</small>
                     <div th:if="${imageError}" class="invalid-feedback" th:text="${imageError}"></div>
                 </div>
 
                 <!-- Кнопки -->
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                    <a th:href="@{/secure/account}" class="btn btn-outline-secondary">Отмена</a>
+                    <button type="submit" class="btn btn-primary" th:text="#{listing.editing.button.save}">Сохранить изменения</button>
+                    <a th:href="@{/secure/account}" class="btn btn-outline-secondary" th:text="#{listing.editing.button.exit}">Отмена</a>
                 </div>
             </form>
         </main>
     </div>
+</div>
+<div class="language-toggle">
+    <input type="checkbox" id="langToggle">
+    <label for="langToggle" class="lang-wrapper">
+        <!-- Основная кнопка с текущим языком -->
+        <div class="lang-button">
+            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
+        </div>
+
+        <!-- Выпадающий список языков -->
+        <div class="lang-dropdown">
+            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
+                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
+                <span>Русский</span>
+            </a>
+            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
+                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
+                <span>Suomi</span>
+            </a>
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
+                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
+                <span>English</span>
+            </a>
+        </div>
+    </label>
 </div>
 <script>
     // Мобильное меню
@@ -196,6 +288,26 @@
     document.getElementById('navbar-toggler').addEventListener('click', function() {
         document.querySelector('.navbar-collapse').classList.toggle('show');
     });
+</script>
+<!-- Скрипт управления отображением полей -->
+<script>
+    function toggleLanguageFields() {
+        const russianChecked = document.getElementById('audienceRussian').checked;
+        const finnishChecked = document.getElementById('audienceFinnish').checked;
+        const englishChecked = document.getElementById('audienceEnglish').checked;
+
+        document.getElementById('titleRuField').style.display = russianChecked ? 'block' : 'none';
+        document.getElementById('descriptionRuField').style.display = russianChecked ? 'block' : 'none';
+
+        document.getElementById('titleFiField').style.display = finnishChecked ? 'block' : 'none';
+        document.getElementById('descriptionFiField').style.display = finnishChecked ? 'block' : 'none';
+
+        document.getElementById('titleEnField').style.display = englishChecked ? 'block' : 'none';
+        document.getElementById('descriptionEnField').style.display = englishChecked ? 'block' : 'none';
+    }
+
+    // Автоматически показать нужные поля при загрузке страницы
+    document.addEventListener('DOMContentLoaded', toggleLanguageFields);
 </script>
 </body>
 </html>
