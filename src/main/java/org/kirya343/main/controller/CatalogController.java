@@ -3,6 +3,7 @@ package org.kirya343.main.controller;
 import lombok.RequiredArgsConstructor;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
+import org.kirya343.main.services.AuthService;
 import org.kirya343.main.services.AvatarService;
 import org.kirya343.main.services.ListingService;
 import org.kirya343.main.services.UserService;
@@ -31,6 +32,9 @@ public class CatalogController {
     private final ListingService listingService;
     private final UserService userService;
     private final AvatarService avatarService;
+
+    @Autowired
+    private final AuthService authService;
 
     @Autowired
     private MessageSource messageSource;
@@ -112,20 +116,12 @@ public class CatalogController {
         model.addAttribute("category", category);
         model.addAttribute("sortBy", sortBy);
 
-        // Добавляем информацию о пользователе, если авторизован
-        if (oauth2User != null) {
-            User user = userService.findUserFromOAuth2(oauth2User);
-            String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
-            String avatarPath = avatarService.resolveAvatarPath(user);
 
-            model.addAttribute("isAuthenticated", true);
-            model.addAttribute("userName", name != null ? name : "Пользователь");
-            model.addAttribute("avatarUrl", avatarPath);
-        } else {
-            model.addAttribute("isAuthenticated", false);
-            model.addAttribute("userName", "Пользователь");
-            model.addAttribute("avatarUrl", "/images/avatar-placeholder.jpg");
+        User user = null;
+        if (oauth2User != null) {
+            user = userService.findUserFromOAuth2(oauth2User);
         }
+        authService.addAuthenticationAttributes(model, oauth2User, user);
 
         List<CategoryTab> categories = List.of(
                 new CategoryTab("services", messageSource.getMessage("category.service", null, locale), category.equals("services")),

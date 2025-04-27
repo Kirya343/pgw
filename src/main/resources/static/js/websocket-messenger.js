@@ -49,6 +49,18 @@ function getInterlocutorInfo(conversationId) {
     stompClient.send("/app/conversations", {}, {});
 }*/
 
+// Функция для получения списка диалогов с сервера
+function loadConversations() {
+    fetch('/secure/messenger/conversations')
+        .then(response => response.json())
+        .then(conversations => {
+            renderConversations(conversations); // твоя функция для отображения
+        })
+        .catch(error => {
+            console.error('Ошибка при загрузке разговоров:', error);
+        });
+}
+
 function loadMessagesForConversation(conversationId) {
     const requestedConversationId = conversationId;
 

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/listing")
@@ -26,21 +27,71 @@ public class ListingsController {
     private final AvatarService avatarService;
     private final FavoriteListingService favoriteListingService;
     private final ReviewService reviewService;
+    private final AuthService authService;
 
     @Autowired
     public ListingsController(ListingService listingService,
                               UserService userService,
-                              AvatarService avatarService, FavoriteListingService favoriteListingService, ReviewService reviewService) {
+                              AvatarService avatarService, AuthService authService, FavoriteListingService favoriteListingService, ReviewService reviewService) {
         this.listingService = listingService;
         this.userService = userService;
         this.avatarService = avatarService;
         this.favoriteListingService = favoriteListingService;
         this.reviewService = reviewService;
+        this.authService = authService;
     }
+
+    private void setLocalizedTitleAndDescription(Listing listing, Locale locale) {
+        String title = null;
+        String description = null;
+        String language = locale.getLanguage();
+
+        if ("fi".equals(language) && listing.getCommunityFi()) {
+            title = listing.getTitleFi();
+            description = listing.getDescriptionFi();
+        } else if ("ru".equals(language) && listing.getCommunityRu()) {
+            title = listing.getTitleRu();
+            description = listing.getDescriptionRu();
+        } else if ("en".equals(language) && listing.getCommunityEn()) {
+            title = listing.getTitleEn();
+            description = listing.getDescriptionEn();
+        }
+
+        if (title == null || description == null) {
+            title = chooseTitle(listing);
+            description = chooseDescription(listing);
+        }
+
+        listing.setLocalizedTitle(title);
+        listing.setLocalizedDescription(description);
+    }
+
+    private String chooseTitle(Listing listing) {
+        return listing.getTitleFi() != null ? listing.getTitleFi() :
+                listing.getTitleRu() != null ? listing.getTitleRu() :
+                        listing.getTitleEn();
+    }
+
+    private String chooseDescription(Listing listing) {
+        return listing.getDescriptionFi() != null ? listing.getDescriptionFi() :
+                listing.getDescriptionRu() != null ? listing.getDescriptionRu() :
+                        listing.getDescriptionEn();
+    }
+
+    private void updateRatingForListingAndUser(Listing listing, User author) {
+        double newListingRating = reviewService.calculateAverageRatingForListing(listing.getId());
+        listing.setAverageRating(newListingRating);
+        listingService.save(listing);
+
+        double newUserRating = reviewService.calculateAverageRatingForUser(author);
+        author.setAverageRating(newUserRating);
+        userService.save(author);
+    }
+
 
     @GetMapping("/{id}")
     public String getListing(@PathVariable Long id, Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
-        Listing listing = listingService.getListingById(id);
+        Listing listing = listingService.getListingByIdWithAuthorAndReviews(id);
         User user = null;
 
         if (oauth2User != null) {
@@ -51,62 +102,19 @@ public class ListingsController {
             return "redirect:/catalog";
         }
 
-        if (oauth2User != null) {
-            String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
-            String avatarPath = avatarService.resolveAvatarPath(user);
-
-            model.addAttribute("isAuthenticated", true);
-            model.addAttribute("userName", name != null ? name : "Пользователь");
-            model.addAttribute("avatarUrl", avatarPath);
-        } else {
-            model.addAttribute("isAuthenticated", false);
-            model.addAttribute("userName", "Пользователь");
-            model.addAttribute("avatarUrl", "/images/avatar-placeholder.jpg");
-        }
+        authService.addAuthenticationAttributes(model, oauth2User, user);
 
         // Увеличиваем счетчик просмотров
         listing.setViews(listing.getViews() + 1);
         listingService.save(listing);
 
-        // Локализация названия и описания
-        String title = null;
-        String description = null;
-
-        if ("fi".equals(locale.getLanguage()) && listing.getCommunityFi()) {
-            title = listing.getTitleFi();
-            description = listing.getDescriptionFi();
-        } else if ("ru".equals(locale.getLanguage()) && listing.getCommunityRu()) {
-            title = listing.getTitleRu();
-            description = listing.getDescriptionRu();
-        } else if ("en".equals(locale.getLanguage()) && listing.getCommunityEn()) {
-            title = listing.getTitleEn();
-            description = listing.getDescriptionEn();
-        }
-
-        if (title == null || description == null) {
-            if (title == null) {
-                title = listing.getTitleFi() != null ? listing.getTitleFi() :
-                        listing.getTitleRu() != null ? listing.getTitleRu() :
-                                listing.getTitleEn();
-            }
-            if (description == null) {
-                description = listing.getDescriptionFi() != null ? listing.getDescriptionFi() :
-                        listing.getDescriptionRu() != null ? listing.getDescriptionRu() :
-                                listing.getDescriptionEn();
-            }
-        }
-
-        // Сохраняем в транзиентные поля
-        listing.setLocalizedTitle(title);
-        listing.setLocalizedDescription(description);
+        // 3. Локализация названия и описания
+        setLocalizedTitleAndDescription(listing, locale);
 
         // Получаем автора объявления и его аватар
         User author = listing.getAuthor();
-        String authorAvatarPath = "/images/avatar-placeholder.jpg";
 
-        if (author != null) {
-            authorAvatarPath = avatarService.resolveAvatarPath(author);
-        }
+        String authorAvatarPath = avatarService.resolveAvatarPath(author);
 
         boolean isOwner = false;
         if (oauth2User != null) {
@@ -117,34 +125,29 @@ public class ListingsController {
         boolean isFavorite = favoriteListingService.isFavorite(user, listing);
         model.addAttribute("isFavorite", isFavorite);
         model.addAttribute("listing", listing);
-        model.addAttribute("author", author != null ? author.getName() : "Неизвестный автор");
+        model.addAttribute("author", author.getName());
         model.addAttribute("authorAvatarPath", authorAvatarPath);
         model.addAttribute("createdAt", listing.getCreatedAt());
         model.addAttribute("category", listing.getCategory());
 
-        double newListingRating = reviewService.calculateAverageRatingForListing(listing.getId());
-        listing.setAverageRating(newListingRating);
-        listingService.save(listing);
+        // 7. Обновляем рейтинги
+        updateRatingForListingAndUser(listing, author);
 
-        double newUserRating = reviewService.calculateAverageRatingForUser(author);
-        author.setAverageRating(newUserRating);
-        userService.save(author);
-
-        List<Review> reviews = reviewService.getReviewsByListingId(id);
+        List<Review> reviews = reviewService.getReviewsByListingIdWithAuthors(id);
         model.addAttribute("reviews", reviews);
 
-        Map<Long, String> reviewAuthorAvatars = new HashMap<>();
-        for (Review review : reviews) {
-            User reviewAuthor = review.getAuthor();
-            if (reviewAuthor != null) {
-                reviewAuthorAvatars.put(review.getId(), avatarService.resolveAvatarPath(reviewAuthor));
-            } else {
-                reviewAuthorAvatars.put(review.getId(), "/images/avatar-placeholder.jpg");
-            }
-        }
+        Map<Long, String> reviewAuthorAvatars = reviews.stream()
+                .collect(Collectors.toMap(
+                        Review::getId,
+                        review -> {
+                            User reviewAuthor = review.getAuthor();
+                            return reviewAuthor != null ? avatarService.resolveAvatarPath(reviewAuthor) : "/images/avatar-placeholder.jpg";
+                        }
+                ));
         model.addAttribute("reviewAuthorAvatars", reviewAuthorAvatars);
 
-        model.addAttribute("similarListings", listingService.findSimilarListings(listing.getCategory(), id));
+
+        model.addAttribute("similarListings", listingService.findSimilarListings(listing.getCategory(), id, locale));
 
         return "listing";
     }

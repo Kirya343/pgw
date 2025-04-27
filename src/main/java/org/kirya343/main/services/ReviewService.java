@@ -49,6 +49,10 @@ public class ReviewService {
         return totalRating / reviews.size();  // Средний рейтинг
     }
 
+    public List<Review> getReviewsByListingIdWithAuthors(Long listingId) {
+        return reviewRepository.findByListingIdWithAuthors(listingId);
+    }
+
     public double calculateAverageRatingForUser(User user) {
         List<Listing> listings = listingService.getListingsByUser(user);  // Получаем все объявления пользователя
 

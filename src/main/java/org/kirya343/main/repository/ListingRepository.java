@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ListingRepository extends JpaRepository<Listing, Long> {
@@ -34,4 +35,11 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     Page<Listing> findByCategoryAndCommunityRuTrueAndActiveTrue(String category, Pageable pageable);
     Page<Listing> findByCategoryAndCommunityFiTrueAndActiveTrue(String category, Pageable pageable);
     Page<Listing> findByCategoryAndCommunityEnTrueAndActiveTrue(String category, Pageable pageable);
+
+    // 🔥 Новый метод для оптимизированной загрузки
+    @Query("SELECT DISTINCT l FROM Listing l " +
+            "LEFT JOIN FETCH l.author " +
+            "LEFT JOIN FETCH l.reviews " +
+            "WHERE l.id = :id")
+    Optional<Listing> findByIdWithAuthorAndReviews(@Param("id") Long id);
 }

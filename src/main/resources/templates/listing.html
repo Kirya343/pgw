@@ -279,10 +279,11 @@
 
 
             <!-- Похожие объявления -->
-            <!--<section class="similar-listings" th:if="${similarListings != null and !similarListings.isEmpty()}">
+            <section class="similar-listings" th:if="${similarListings != null and !similarListings.isEmpty()}">
                 <h2 th:text="#{similar_listings.title}">Похожие объявления</h2>
                 <div class="listings-grid">
-                    <article th:each="similarListing : ${similarListings}" class="listing-card">
+                    <article th:each="similarListing : ${similarListings}" class="listing-card"
+                             th:if="${similarListing.localizedTitle != null and similarListing.localizedDescription != null}">
                         <a th:href="@{/listing/{id}(id=${similarListing.id})}">
                             <img th:src="@{${similarListing.imagePath ?: '/images/default-listing.png'}}"
                                  class="listing-img"
@@ -297,36 +298,35 @@
                             </h3>
                             <p class="card-text"
                                th:text="${#strings.length(similarListing.localizedDescription) > 100} ?
-                               ${#strings.substring(similarListing.localizedDescription, 0, 100)} + '...' :
-                                ${similarListing.localizedDescription}">
+                            ${#strings.substring(similarListing.localizedDescription, 0, 100)} + '...' :
+                            ${similarListing.localizedDescription}">
                                 Описание
                             </p>
                             <div class="card-footer">
                                 <div>
-                                    <span class="price" th:switch="${listing.priceType}">
-                                        <span th:case="'negotiable'" th:text="#{price.negotiable}">Договорная</span>
-                                        <span th:case="'per_hour'" th:text="${listing.price} + ' ' + #{price.per-hour}">Цена</span>
-                                        <span th:case="'per_day'" th:text="${listing.price} + ' ' + #{price.per-day}">Цена</span>
-                                        <span th:case="'fixed'" th:text="${listing.price} + ' ' + #{price.fixed}">Цена</span>
-                                        <span th:case="*">Цена не указана</span>
-                                    </span>
+                        <span class="price" th:switch="${similarListing.priceType}">
+                            <span th:case="'negotiable'" th:text="#{price.negotiable}">Договорная</span>
+                            <span th:case="'per_hour'" th:text="${similarListing.price} + ' ' + #{price.per-hour}">Цена</span>
+                            <span th:case="'per_day'" th:text="${similarListing.price} + ' ' + #{price.per-day}">Цена</span>
+                            <span th:case="'fixed'" th:text="${similarListing.price} + ' ' + #{price.fixed}">Цена</span>
+                            <span th:case="*">Цена не указана</span>
+                        </span>
                                     <div class="listing-rating">
                                         <th:block th:each="i : ${#numbers.sequence(1,5)}">
                                             <i class="fa"
                                                th:classappend="${similarListing.averageRating >= i} ? 'fa-star' :
-                                          (${similarListing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                                                    (${similarListing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
                                         </th:block>
                                     </div>
                                 </div>
-                                <span class="location"
-                                      th:text="${similarListing.location ?: 'Хельсинки'}">
-                                    Локация
-                                </span>
+                                <span class="location" th:text="${similarListing.location ?: 'Хельсинки'}">
+                        Локация
+                    </span>
                             </div>
                         </div>
                     </article>
                 </div>
-            </section>-->
+            </section>
         </main>
     </div>
 </div>

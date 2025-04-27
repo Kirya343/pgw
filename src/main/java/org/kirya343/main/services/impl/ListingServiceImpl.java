@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Service
 public class ListingServiceImpl implements ListingService {
@@ -55,12 +57,35 @@ public class ListingServiceImpl implements ListingService {
     public List<Listing> getAllListings() {
         return listingRepository.findAll(); // Просто получаем все объявления
     }
+    // Новый метод с JOIN FETCH (оптимизированный)
+    public Listing getListingByIdWithAuthorAndReviews(Long id) {
+        return listingRepository.findByIdWithAuthorAndReviews(id).orElse(null);
+    }
+
+    // Оставляем стандартный тоже, если вдруг понадобится
     public Listing getListingById(Long id) {
         return listingRepository.findById(id).orElse(null);
     }
-    public List<Listing> findSimilarListings(String category, Long excludeId) {
-        return listingRepository.findByCategoryAndIdNot(category, excludeId, PageRequest.of(0, 4));
+    public List<Listing> findSimilarListings(String category, Long excludeId, Locale locale) {
+        List<Listing> listings = listingRepository.findByCategoryAndIdNot(category, excludeId, PageRequest.of(0, 4));
+
+        // Фильтруем по локали
+        String lang = locale.getLanguage();
+        return listings.stream()
+                .filter(listing -> {
+                    if ("fi".equals(lang)) {
+                        return Boolean.TRUE.equals(listing.getCommunityFi());
+                    } else if ("ru".equals(lang)) {
+                        return Boolean.TRUE.equals(listing.getCommunityRu());
+                    } else if ("en".equals(lang)) {
+                        return Boolean.TRUE.equals(listing.getCommunityEn());
+                    } else {
+                        return true; // если язык неизвестен — показываем всё
+                    }
+                })
+                .collect(Collectors.toList());
     }
+
     public void deleteListing(Long id) {
         Listing listing = listingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Объявление не найдено"));
