@@ -47,12 +47,8 @@ public class ChatWebSocketController {
         User sender = userService.findBySub(principal.getName());
         // Получаем беседу
         Conversation conversation = chatService.getConversationById(messageDTO.getConversationId());
-
-
-
         // Сохраняем сообщение в базу
         Message message = chatService.sendMessage(conversation, sender, messageDTO.getText());
-
         // Отправляем сообщение всем подписчикам
         messagingTemplate.convertAndSend("/topic/messages/" + messageDTO.getConversationId(),
                 new MessageDTO(
@@ -65,6 +61,8 @@ public class ChatWebSocketController {
                         message.isOwn(sender)
                 )
         );
+        chatService.notifyConversationUpdate(conversation.getId(), sender);
+        chatService.notifyConversationUpdate(conversation.getId(), message.getReceiver());
     }
 
     @MessageMapping("/chat.loadMessages/{conversationId}")
@@ -103,6 +101,8 @@ public class ChatWebSocketController {
         Long conversationId = markAsReadDTO.getConversationId();
 
         chatService.markMessagesAsRead(conversationId, user);
+        // Уведомляем об обновлении
+        chatService.notifyConversationUpdate(markAsReadDTO.getConversationId(), user);
     }
     @MessageMapping("/getConversations")
     @SendToUser("/queue/conversations")
@@ -132,5 +132,13 @@ public class ChatWebSocketController {
         }
 
         return new UserDTO(interlocutorName, interlocutorAvatar);
+    }
+
+    @MessageMapping("/chat.subscribeToConversations")
+    @SendToUser("/queue/conversations.updates")
+    public ConversationDTO subscribeToConversations(Principal principal) {
+        User user = userService.findBySub(principal.getName());
+        // Можно сразу вернуть текущий список или просто подтвердить подписку
+        return null; // Реальная логика будет в сервисе
     }
 }

@@ -36,9 +36,6 @@ function connect() {
 
         // Загружаем разговоры сразу после подключения
         loadConversations();
-
-        // Инициализация слушателей кликов по диалогам
-        initializeDialogClickListeners();
     }, function(error) {
         console.error('Ошибка WebSocket: ', error);
     });
@@ -115,7 +112,7 @@ function setupChatSubscription(conversationId) {
 
 
 // Пример функции для рендеринга списка разговоров:
-function renderConversations(conversations) {
+/*function renderConversations(conversations) {
     console.log('Рендерим разговоры');
     const container = document.querySelector(".dialogs-list");
 
@@ -164,9 +161,9 @@ function renderConversations(conversations) {
 
     // Инициализация слушателей кликов по диалогам
     initializeDialogClickListeners();
-}
+}*/
 
-/*function renderConversations(conversations) {
+function renderConversations(conversations) {
     console.log('Инициализация диалогов');
     const container = document.querySelector(".dialogs-list");
     container.innerHTML = "";
@@ -187,6 +184,9 @@ function renderConversations(conversations) {
 
     // Подписываемся на обновления
     subscribeToConversationsUpdates();
+
+    // Инициализируем обработчики кликов
+    initializeDialogClickListeners();
 
     // Автовыбор первого диалога
     if (conversations.length > 0) {
@@ -250,7 +250,7 @@ function updateSingleConversation(conversation) {
 
     // Переинициализируем обработчики кликов для этого диалога
     initializeDialogClickListeners(dialogItem);
-}*/
+}
 
 // Функция для отправки сообщения
 function sendMessage() {
@@ -306,7 +306,7 @@ function showMessage(message) {
 }
 
 // При подключении STOMP (после stompClient.connect)
-function initializeDialogClickListeners() {
+/*function initializeDialogClickListeners() {
     console.log('Инициализируем клики по диалогам');
     const dialogItems = document.querySelectorAll('.dialog-item');
 
@@ -368,6 +368,63 @@ function initializeDialogClickListeners() {
     if (dialogItems.length > 0) {
         dialogItems[0].click();  // Этот клик сработает сразу после рендера
     }
+}*/
+function initializeDialogClickListeners() {
+    console.log('Инициализируем клики по диалогам');
+    const dialogItems = document.querySelectorAll('.dialog-item');
+
+    dialogItems.forEach(item => {
+        // Удаляем предыдущие обработчики
+        item.removeEventListener('click', handleDialogClick);
+        item.addEventListener('click', handleDialogClick);
+    });
+}
+
+function handleDialogClick() {
+    const selectedId = this.getAttribute('data-conversation-id');
+
+    // Проверяем, что выбран новый разговор
+    if (currentConversationId !== selectedId) {
+        currentConversationId = selectedId;
+
+        // Снимаем выделение со всех, добавляем на выбранный
+        document.querySelectorAll('.dialog-item').forEach(d => d.classList.remove('active'));
+        this.classList.add('active');
+
+        // Очищаем контейнер сообщений
+        const messageContainer = document.getElementById('messages-container') ||
+            createMessageContainer();
+        messageContainer.innerHTML = '';
+
+        if (stompClient.connected) {
+            if (currentSubscription) {
+                currentSubscription.unsubscribe();
+            }
+
+            console.log('Подписываемся на новый канал для текущего разговора (' + currentConversationId + ')');
+            currentSubscription = stompClient.subscribe('/topic/messages/' + currentConversationId, function (messageOutput) {
+                showMessage(JSON.parse(messageOutput.body)); // Отображаем сообщение
+            });
+        }
+
+        // Подписываемся на новый канал
+        setupChatSubscription(currentConversationId);
+
+        // Отправляем на сервер, что мы прочитали сообщения
+        stompClient.send("/app/chat.markAsRead", {}, JSON.stringify({
+            conversationId: currentConversationId
+        }));
+
+        // Получаем информацию о собеседнике
+        getInterlocutorInfo(currentConversationId);
+    }
+}
+
+function createMessageContainer() {
+    const container = document.createElement('div');
+    container.id = 'messages-container';
+    document.body.appendChild(container);
+    return container;
 }
 
 function initializeEventHandlers() {

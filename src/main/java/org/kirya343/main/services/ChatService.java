@@ -11,6 +11,7 @@ import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.MessageRepository;
 import org.kirya343.main.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,6 +34,9 @@ public class ChatService {
 
     @Autowired
     private ChatMapper chatMapper;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public Conversation getOrCreateConversation(User user1, User user2, Listing listing) {
         if (listing != null) {
@@ -73,6 +77,18 @@ public class ChatService {
         return conversations.stream()
                 .map(conv -> chatMapper.convertToDTO(conv, user))
                 .collect(Collectors.toList());
+    }
+
+    public void notifyConversationUpdate(Long conversationId, User user) {
+        Conversation conversation = getConversationById(conversationId);
+        ConversationDTO dto = chatMapper.convertToDTO(conversation, user);
+
+        // Отправляем обновление конкретному пользователю
+        messagingTemplate.convertAndSendToUser(
+                user.getSub(),
+                "/queue/conversations.updates",
+                dto
+        );
     }
 
     public boolean conversationExists(User user1, User user2) {
