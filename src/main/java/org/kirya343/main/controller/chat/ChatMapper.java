@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Component
 public class ChatMapper {
@@ -42,17 +43,27 @@ public class ChatMapper {
         if (conversation.getListing() != null) {
             dto.setListing(listingDTO.convertToListingDTO(conversation.getListing()));
         } else {
-            dto.setListing(null);  // Если объявления нет, передаем null
+            dto.setListing(null);
         }
 
         // Обработка последнего сообщения
-        if (!conversation.getMessages().isEmpty()) {
-            Message lastMessage = conversation.getMessages().get(conversation.getMessages().size() - 1);
+        Message lastMessage = conversation.getLastMessage();
+        if (lastMessage != null) {
             dto.setLastMessagePreview(lastMessage.getText());
-            dto.setLastMessageTime(lastMessage.getSentAt().format(DateTimeFormatter.ofPattern("HH:mm")));
+            dto.setLastMessageTime(lastMessage.getSentAt());
+            dto.setFormattedLastMessageTime(
+                    lastMessage.getSentAt().format(DateTimeFormatter.ofPattern("HH:mm"))
+            );
+        } else {
+            dto.setLastMessageTime(conversation.getCreatedAt());
         }
+
+        // Определяем, есть ли новые сообщения
+        boolean hasNewMessage = conversation.getMessages().stream()
+                .filter(msg -> msg.getReceiver().equals(currentUser))
+                .anyMatch(msg -> !msg.isRead());
+        dto.setHasNewMessage(hasNewMessage);
 
         return dto;
     }
 }
-

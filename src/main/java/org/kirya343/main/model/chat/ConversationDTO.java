@@ -2,7 +2,8 @@ package org.kirya343.main.model.chat;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.kirya343.main.model.Listing;
+
+import java.time.LocalDateTime;
 
 // Новый DTO класс
 @Setter
@@ -13,6 +14,9 @@ public class ConversationDTO {
     private String interlocutorAvatar;
     private long unreadCount;
     private String lastMessagePreview;
-    private String lastMessageTime;
+    private LocalDateTime lastMessageTime;
+    private String formattedLastMessageTime;
     private ListingDTO listing;
+    private boolean hasNewMessage;
+
 }

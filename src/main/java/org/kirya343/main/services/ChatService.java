@@ -83,6 +83,13 @@ public class ChatService {
         Conversation conversation = getConversationById(conversationId);
         ConversationDTO dto = chatMapper.convertToDTO(conversation, user);
 
+        // Определяем, есть ли новые сообщения
+        boolean hasNewMessage = conversation.getMessages().stream()
+                .anyMatch(msg -> !msg.isRead() && msg.getReceiver().equals(user));
+
+        // Устанавливаем флаг нового сообщения
+        dto.setHasNewMessage(hasNewMessage);
+
         // Отправляем обновление конкретному пользователю
         messagingTemplate.convertAndSendToUser(
                 user.getSub(),

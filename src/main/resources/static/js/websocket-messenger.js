@@ -90,6 +90,7 @@ function setupChatSubscription(conversationId) {
             }
             // Обработка одиночного сообщения (новое сообщение)
             else if (data.id) {
+
                 console.log('Получено новое сообщение:', data);
                 if (conversationId === currentConversationId) {
                     showMessage(data);
@@ -112,56 +113,6 @@ function setupChatSubscription(conversationId) {
 
 
 // Пример функции для рендеринга списка разговоров:
-/*function renderConversations(conversations) {
-    console.log('Рендерим разговоры');
-    const container = document.querySelector(".dialogs-list");
-
-    // Очистить текущий список
-    container.innerHTML = "";
-
-    if (conversations.length === 0) {
-        container.innerHTML = `
-            <div class="no-dialogs">
-                <p>У вас пока нет сообщений.</p>
-                <p>Начните общение, ответив на объявление или отправив сообщение пользователю.</p>
-            </div>
-        `;
-        return;
-    }
-
-    conversations.forEach(conversation => {
-        const dialogItem = document.createElement("div");
-        dialogItem.classList.add("dialog-item");
-        dialogItem.setAttribute("data-conversation-id", conversation.id);
-
-        dialogItem.innerHTML = `
-            <div class="dialog-avatar">
-                <img src="${conversation.interlocutorAvatar}" 
-                     onerror="this.src='/images/avatar-placeholder.png'" 
-                     alt="Аватар">
-            </div>
-
-            <div class="dialog-content">
-                <div class="dialog-header">
-                    <h4>${conversation.interlocutorName}</h4>
-                    <span class="dialog-time">${conversation.lastMessageTime || ""}</span>
-                </div>
-
-                <p class="dialog-preview">${conversation.lastMessagePreview || ""}</p>
-
-                <div class="dialog-meta">
-                    ${conversation.unreadCount > 0 ? `<span class="unread-count">${conversation.unreadCount}</span>` : ""}
-                    ${conversation.listing ? `<span class="dialog-listing">Объявление: ${conversation.listing.localizedTitle}</span>` : ""}
-                </div>
-            </div>
-        `;
-
-        container.appendChild(dialogItem);
-    });
-
-    // Инициализация слушателей кликов по диалогам
-    initializeDialogClickListeners();
-}*/
 
 function renderConversations(conversations) {
     console.log('Инициализация диалогов');
@@ -177,8 +128,15 @@ function renderConversations(conversations) {
         return;
     }
 
-    // Рендерим каждый диалог по отдельности
-    conversations.forEach(conversation => {
+    // Сортируем диалоги по дате последнего сообщения (если frontend получает несортированные данные)
+    const sortedConversations = [...conversations].sort((a, b) => {
+        const dateA = a.lastMessageTime ? new Date(a.lastMessageTime) : new Date(a.createdAt);
+        const dateB = b.lastMessageTime ? new Date(b.lastMessageTime) : new Date(b.createdAt);
+        return dateB - dateA; // Сортировка по убыванию
+    });
+
+    // Рендерим отсортированные диалоги
+    sortedConversations.forEach(conversation => {
         updateSingleConversation(conversation);
     });
 
@@ -188,20 +146,18 @@ function renderConversations(conversations) {
     // Инициализируем обработчики кликов
     initializeDialogClickListeners();
 
-    // Автовыбор первого диалога
-    if (conversations.length > 0) {
+    // Автовыбор первого диалога (теперь это будет самый активный)
+    if (sortedConversations.length > 0) {
         const firstDialog = document.querySelector('.dialog-item');
         if (firstDialog) firstDialog.click();
     }
 }
 
 function subscribeToConversationsUpdates() {
-    // Отписываемся от предыдущей подписки, если есть
     if (conversationsSubscription) {
         conversationsSubscription.unsubscribe();
     }
 
-    // Подписываемся на обновления диалогов
     conversationsSubscription = stompClient.subscribe("/user/queue/conversations.updates", function(message) {
         const update = JSON.parse(message.body);
         console.log("Получено обновление диалога:", update);
@@ -212,6 +168,11 @@ function subscribeToConversationsUpdates() {
         // Если это текущий открытый диалог - обновляем его содержимое
         if (currentConversationId === update.id) {
             setupChatSubscription(update.id);
+        }
+
+        // Перемещаем наверх ТОЛЬКО если есть новое сообщение
+        if (update.hasNewMessage) { // Добавьте это поле в ConversationDTO на сервере
+            moveConversationToTop(update.id);
         }
     });
 }
@@ -305,70 +266,7 @@ function showMessage(message) {
     messageContainer.scrollTop = messageContainer.scrollHeight;
 }
 
-// При подключении STOMP (после stompClient.connect)
-/*function initializeDialogClickListeners() {
-    console.log('Инициализируем клики по диалогам');
-    const dialogItems = document.querySelectorAll('.dialog-item');
 
-    dialogItems.forEach(item => {
-        item.addEventListener('click', function () {
-            const selectedId = this.getAttribute('data-conversation-id');
-
-            // Проверяем, что выбран новый разговор
-            console.log('Проверяем, что выбран новый разговор');
-            if (currentConversationId !== selectedId) {
-                currentConversationId = selectedId;
-
-                // Снимаем выделение со всех, добавляем на выбранный
-                dialogItems.forEach(d => d.classList.remove('active'));
-                this.classList.add('active');
-
-                // Проверяем, существует ли контейнер для сообщений
-                let messageContainer = document.getElementById('messages-container');
-                if (!messageContainer) {
-                    messageContainer = document.createElement('div');
-                    messageContainer.id = 'messages-container';
-                    document.body.appendChild(messageContainer); // Или добавь в нужный контейнер на странице
-                }
-
-                // Очищаем текущие сообщения
-                messageContainer.innerHTML = '';
-
-                // Подписываемся на новый канал для текущего разговора
-                if (stompClient.connected) {
-                    if (currentSubscription) {
-                        currentSubscription.unsubscribe();
-                    }
-
-                    console.log('Подписываемся на новый канал для текущего разговора (' + currentConversationId + ')');
-                    currentSubscription = stompClient.subscribe('/topic/messages/' + currentConversationId, function (messageOutput) {
-                        showMessage(JSON.parse(messageOutput.body)); // Отображаем сообщение
-                    });
-                }
-
-                // Загружаем историю сообщений для текущего разговора
-                console.log('Загружаем историю сообщений для текущего разговора(' + currentConversationId + ')');
-                setupChatSubscription(currentConversationId);
-
-                // Отправляем на сервер, что мы прочитали сообщения
-                stompClient.send("/app/chat.markAsRead", {}, JSON.stringify({
-                    conversationId: currentConversationId
-                }));
-
-                // Получаем информацию о собеседнике
-                console.log('Получаем информацию о собеседнике после клика на диалог');
-                getInterlocutorInfo(currentConversationId);
-            } else {
-                console.log('Динахуй');
-            }
-        });
-    });
-
-    // 🔁 Автоматически нажать на первый элемент, если они есть
-    if (dialogItems.length > 0) {
-        dialogItems[0].click();  // Этот клик сработает сразу после рендера
-    }
-}*/
 function initializeDialogClickListeners() {
     console.log('Инициализируем клики по диалогам');
     const dialogItems = document.querySelectorAll('.dialog-item');
@@ -425,6 +323,18 @@ function createMessageContainer() {
     container.id = 'messages-container';
     document.body.appendChild(container);
     return container;
+}
+
+function moveConversationToTop(conversationId) {
+    const dialogItem = document.querySelector(`.dialog-item[data-conversation-id="${conversationId}"]`);
+    if (!dialogItem) return;
+
+    const dialogsList = document.querySelector(".dialogs-list");
+    if (dialogsList.firstChild !== dialogItem) {
+        dialogItem.classList.add('highlight');
+        setTimeout(() => dialogItem.classList.remove('highlight'), 300);
+        dialogsList.prepend(dialogItem);
+    }
 }
 
 function initializeEventHandlers() {

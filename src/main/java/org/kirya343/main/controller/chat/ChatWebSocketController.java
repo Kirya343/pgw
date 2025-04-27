@@ -18,6 +18,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -109,7 +110,14 @@ public class ChatWebSocketController {
     public List<ConversationDTO> getConversations(Principal principal) {
         User user = userService.findBySub(principal.getName());
         List<Conversation> conversations = chatService.getUserConversations(user);
+
+        // Сортируем по дате последнего сообщения (новые сверху)
         return conversations.stream()
+                .sorted((c1, c2) -> {
+                    LocalDateTime date1 = c1.getLastMessage() != null ? c1.getLastMessage().getSentAt() : c1.getCreatedAt();
+                    LocalDateTime date2 = c2.getLastMessage() != null ? c2.getLastMessage().getSentAt() : c2.getCreatedAt();
+                    return date2.compareTo(date1); // Сортировка по убыванию
+                })
                 .map(conv -> chatMapper.convertToDTO(conv, user))
                 .toList();
     }
