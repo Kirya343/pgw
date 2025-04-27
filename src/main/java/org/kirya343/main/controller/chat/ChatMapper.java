@@ -9,6 +9,7 @@ import org.kirya343.main.services.AvatarService;
 import org.kirya343.main.services.ChatService;
 import org.kirya343.main.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
@@ -23,6 +24,7 @@ public class ChatMapper {
     private AvatarService avatarService;
 
     @Autowired
+    @Lazy
     private ChatService chatService;
 
     public ConversationDTO convertToDTO(Conversation conversation, User currentUser) {

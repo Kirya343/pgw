@@ -37,8 +37,6 @@ public class MessengerController {
     @Autowired
     private ListingService listingService;
     @Autowired
-    private ChatMapper chatMapper;
-    @Autowired
     private StatService statService;
 
     public MessengerController(AvatarService avatarService) {
@@ -64,10 +62,8 @@ public class MessengerController {
         model.addAttribute("avatarPath", avatarService.resolveAvatarPath(currentUser));
         model.addAttribute("userName", currentUser.getName() != null ? currentUser.getName() : "Пользователь");
 
-        // Получаем список диалогов
-        List<ConversationDTO> conversationDTOs = chatService.getUserConversations(currentUser).stream()
-                .map(conv -> chatMapper.convertToDTO(conv, currentUser))
-                .collect(Collectors.toList());
+        // Получаем список диалогов через сервис
+        List<ConversationDTO> conversationDTOs = chatService.getConversationsForUser(currentUser);
         model.addAttribute("conversations", conversationDTOs);
 
         // Выбираем активный диалог

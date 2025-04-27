@@ -16,6 +16,8 @@ public class ListingDTO {
     private String descriptionRu;
     private String descriptionEn;
     private String descriptionFi;
+    private String localizedTitle;
+    private String localizedDescription;
     private double price;
     private String priceType;
     private String category;
@@ -30,24 +32,25 @@ public class ListingDTO {
     // Конструктор для преобразования Listing в ListingDTO
     public ListingDTO convertToListingDTO(Listing listing) {
         ListingDTO dto = new ListingDTO();
-        this.id = listing.getId();
-        this.titleRu = listing.getTitleRu();
-        this.titleEn = listing.getTitleEn();
-        this.titleFi = listing.getTitleEn();
-        this.descriptionRu = listing.getDescriptionRu();
-        this.descriptionEn = listing.getDescriptionEn();
-        this.descriptionFi = listing.getDescriptionFi();
-        this.price = listing.getPrice();
-        this.priceType = listing.getPriceType();
-        this.category = listing.getCategory();
-        this.location = listing.getLocation();
-        this.rating = listing.getRating();
-        this.views = listing.getViews();
-        this.createdAt = listing.getCreatedAt();
-        this.active = listing.isActive();
-        this.availableNow = listing.isAvailableNow();
-        this.imagePath = listing.getImagePath();
+        dto.setId(listing.getId());  // Используем объект dto для присваивания значений
+        dto.setTitleRu(listing.getTitleRu());
+        dto.setTitleEn(listing.getTitleEn());
+        dto.setTitleFi(listing.getTitleFi());  // Исправлено на titleFi
+        dto.setDescriptionRu(listing.getDescriptionRu());
+        dto.setDescriptionEn(listing.getDescriptionEn());
+        dto.setDescriptionFi(listing.getDescriptionFi());
+        dto.setLocalizedTitle(listing.getLocalizedTitle());
+        dto.setLocalizedDescription(listing.getLocalizedDescription());
+        dto.setPrice(listing.getPrice());
+        dto.setPriceType(listing.getPriceType());
+        dto.setCategory(listing.getCategory());
+        dto.setLocation(listing.getLocation());
+        dto.setRating(listing.getRating());
+        dto.setViews(listing.getViews());
+        dto.setCreatedAt(listing.getCreatedAt());
+        dto.setActive(listing.isActive());
+        dto.setAvailableNow(listing.isAvailableNow());
+        dto.setImagePath(listing.getImagePath());
         return dto;
-    } // Геттеры и сеттеры (сгенерированные Lombok)
+    }
 }
-

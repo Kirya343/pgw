@@ -1,8 +1,10 @@
 package org.kirya343.main.services;
 
 import jakarta.transaction.Transactional;
+import org.kirya343.main.controller.chat.ChatMapper;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.Listing;
+import org.kirya343.main.model.chat.ConversationDTO;
 import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ConversationRepository;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatService {
@@ -27,6 +30,9 @@ public class ChatService {
 
     @Autowired
     private MessageRepository messageRepository;
+
+    @Autowired
+    private ChatMapper chatMapper;
 
     public Conversation getOrCreateConversation(User user1, User user2, Listing listing) {
         if (listing != null) {
@@ -60,6 +66,13 @@ public class ChatService {
         // Добавить логирование для проверки
         System.out.println("Conversations found: " + conversations.size());
         return conversations;
+    }
+
+    public List<ConversationDTO> getConversationsForUser(User user) {
+        List<Conversation> conversations = conversationRepository.findByUser1OrUser2(user, user);
+        return conversations.stream()
+                .map(conv -> chatMapper.convertToDTO(conv, user))
+                .collect(Collectors.toList());
     }
 
     public boolean conversationExists(User user1, User user2) {
