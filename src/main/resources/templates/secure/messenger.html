@@ -29,7 +29,7 @@
                 <div class="account-manager">
                     <div class="profile-card">
                         <div class="profile-avatar">
-                            <img th:src="@{${avatarPath}}" alt="Аватар">
+                            <img th:src="@{${avatarPath}}" th:onerror="this.src='/images/default-listing.png'" alt="Аватар">
                         </div>
                         <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
                         <p class="profile-rating">
@@ -145,9 +145,9 @@
                     </div>
                 </div>
 
-                <!-- Окно чата -->
+                <!-- Окно чата --> <!--th:if="${selectedConversation != null}"-->
                 <div class="chat-window">
-                    <div class="chat-container" th:if="${selectedConversation != null}"
+                    <div class="chat-container"
                          data-conversation-id="${selectedConversation.id}">
                         <div class="chat-header">
                             <div class="chat-user">
@@ -187,7 +187,7 @@
                         </div>
                     </div>
 
-                    <div th:if="${selectedConversation == null}" class="no-chat-selected">
+                    <!--<div th:if="${selectedConversation == null}" class="no-chat-selected">
                         <div class="no-chat-content">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
@@ -196,7 +196,7 @@
                             <h3 th:text="#{my.messages.select.dialog}">Выберите диалог</h3>
                             <p th:text="#{my.messages.select.start.dialog}">Выберите диалог из списка слева или начните новый</p>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </main>

@@ -63,13 +63,13 @@ public class MessengerController {
         model.addAttribute("userName", currentUser.getName() != null ? currentUser.getName() : "Пользователь");
 
         // Получаем список диалогов через сервис
-        List<ConversationDTO> conversationDTOs = chatService.getConversationsForUser(currentUser);
+        /*List<ConversationDTO> conversationDTOs = chatService.getConversationsForUser(currentUser);
         model.addAttribute("conversations", conversationDTOs);
 
         // Выбираем активный диалог
         ConversationDTO selectedConversation = selectActiveConversation(conversationId, conversationDTOs);
         logger.debug("Selected conversation: {}", selectedConversation != null ? selectedConversation.getId() : "none");
-        model.addAttribute("selectedConversation", selectedConversation);
+        model.addAttribute("selectedConversation", selectedConversation);*/
 
         return "secure/messenger";
     }

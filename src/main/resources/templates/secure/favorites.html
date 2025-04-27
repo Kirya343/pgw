@@ -101,8 +101,8 @@
                          alt="Изображение объявления">
 
                     <div class="card-body">  <!--th:onclick="@{/listing/{id}(id=${listing.id})}-->
-                        <h3 class="card-title" th:text="${listing.title}">Название</h3>
-                        <p class="card-text" th:text="${#strings.length(listing.description) > 100} ? ${#strings.substring(listing.description, 0, 100)} + '...' : ${listing.description}">Описание</p>
+                        <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
+                        <p class="card-text" th:text="${#strings.length(listing.localizedDescription) > 100} ? ${#strings.substring(listing.localizedDescription, 0, 100)} + '...' : ${listing.localizedDescription}">Описание</p>
                         <div class="card-footer">
                             <div>
                                 <span class="price" th:switch="${listing.priceType}">
