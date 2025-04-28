@@ -2,16 +2,14 @@ package org.kirya343.main.controller.chat;
 
 import org.kirya343.main.model.*;
 import org.kirya343.main.model.chat.Conversation;
-import org.kirya343.main.model.chat.ConversationDTO;
+import org.kirya343.main.model.DTOs.ConversationDTO;
 import org.kirya343.main.model.chat.Message;
-import org.kirya343.main.model.chat.MessageDTO;
-import org.kirya343.main.repository.MessageRepository;
+import org.kirya343.main.model.DTOs.MessageDTO;
 import org.kirya343.main.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -20,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 public class MessengerController {

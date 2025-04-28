@@ -1,7 +1,7 @@
 package org.kirya343.main.controller.mappers;
 
 import org.kirya343.main.model.Listing;
-import org.kirya343.main.model.chat.ListingDTO;
+import org.kirya343.main.model.DTOs.ListingDTO;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 

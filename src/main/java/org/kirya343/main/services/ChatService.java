@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import org.kirya343.main.controller.mappers.ChatMapper;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.Listing;
-import org.kirya343.main.model.chat.ConversationDTO;
+import org.kirya343.main.model.DTOs.ConversationDTO;
 import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ConversationRepository;

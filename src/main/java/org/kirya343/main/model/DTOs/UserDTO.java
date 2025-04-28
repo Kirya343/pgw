@@ -1,4 +1,4 @@
-package org.kirya343.main.model.chat;
+package org.kirya343.main.model.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.transaction.Transactional;

@@ -1,8 +1,7 @@
-package org.kirya343.main.model.chat;
+package org.kirya343.main.model.DTOs;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.kirya343.main.model.Listing;
 
 import java.time.LocalDateTime;
 

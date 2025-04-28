@@ -2,7 +2,7 @@ package org.kirya343.main.controller.chat;
 
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.chat.Message;
-import org.kirya343.main.model.chat.MessageDTO;
+import org.kirya343.main.model.DTOs.MessageDTO;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.ChatService;
 import org.kirya343.main.services.UserService;

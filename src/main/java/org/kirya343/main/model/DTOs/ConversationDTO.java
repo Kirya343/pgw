@@ -1,4 +1,4 @@
-package org.kirya343.main.model.chat;
+package org.kirya343.main.model.DTOs;
 
 import lombok.Getter;
 import lombok.Setter;

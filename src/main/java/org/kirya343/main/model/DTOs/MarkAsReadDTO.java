@@ -1,4 +1,4 @@
-package org.kirya343.main.model.chat;
+package org.kirya343.main.model.DTOs;
 
 public class MarkAsReadDTO {
     private Long conversationId;

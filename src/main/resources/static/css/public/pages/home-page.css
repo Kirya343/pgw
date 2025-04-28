@@ -153,9 +153,6 @@ ol, ul {
     .lead {
         font-size: 1.1rem;
     }
-}
-
-/*@media (max-width: 480px) {
     .categories-grid {
         grid-template-columns: 1fr;
     }
@@ -179,5 +176,9 @@ ol, ul {
     .cta-card p {
         font-size: 1rem;
     }
+}
+
+/*@media (max-width: 480px) {
+
 }*/
 

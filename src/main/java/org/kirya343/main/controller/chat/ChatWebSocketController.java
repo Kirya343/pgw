@@ -2,21 +2,27 @@ package org.kirya343.main.controller.chat;
 
 import jakarta.transaction.Transactional;
 import org.kirya343.main.controller.mappers.ChatMapper;
+import org.kirya343.main.model.DTOs.*;
 import org.kirya343.main.model.chat.*;
 import org.kirya343.main.model.User;
+import org.kirya343.main.repository.NotificationRepository;
 import org.kirya343.main.services.AvatarService;
 import org.kirya343.main.services.ChatService;
+import org.kirya343.main.services.NotificationService;
 import org.kirya343.main.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -31,6 +37,9 @@ public class ChatWebSocketController {
     private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
+    private SimpUserRegistry simpUserRegistry;
+
+    @Autowired
     private ChatService chatService;
 
     @Autowired
@@ -41,6 +50,9 @@ public class ChatWebSocketController {
 
     @Autowired
     private AvatarService interlocutorAvatar;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @MessageMapping("/chat.send")
     public void sendMessage(MessageDTO messageDTO, Principal principal) throws AccessDeniedException {
@@ -62,8 +74,52 @@ public class ChatWebSocketController {
                         message.isOwn(sender)
                 )
         );
-        chatService.notifyConversationUpdate(conversation.getId(), sender);
-        chatService.notifyConversationUpdate(conversation.getId(), message.getReceiver());
+
+        // Отправка уведомления получателю
+        User receiver = message.getReceiver();
+        String receiverSub = receiver.getSub();
+
+        NotificationDTO notification = new NotificationDTO(
+                "Новое сообщение",
+                sender.getName() + ": " + message.getText(),
+                "/chat/" + conversation.getId(),
+                conversation.getId()
+        );
+
+        if (isUserOnline(receiverSub)) {
+            messagingTemplate.convertAndSendToUser(
+                    receiverSub,
+                    "/queue/notifications",
+                    notification
+            );
+        } else {
+            notificationService.saveOfflineNotification(receiverSub, notification);
+        }
+    }
+
+    // Проверка активности пользователя
+    private boolean isUserOnline(String userSub) {
+        return simpUserRegistry.getUser(userSub) != null;
+    }
+
+    @EventListener
+    public void handleWebSocketConnectListener(SessionConnectedEvent event) {
+        Principal principal = event.getUser();
+        if (principal != null) {
+            String username = principal.getName();
+            List<NotificationDTO> notifications = notificationService.loadPendingNotifications(username);
+
+            if (!notifications.isEmpty()) {
+                notifications.forEach(notification -> {
+                    messagingTemplate.convertAndSendToUser(
+                            username,
+                            "/queue/notifications",
+                            notification
+                    );
+                });
+                notificationService.clearNotifications(username);
+            }
+        }
     }
 
     @MessageMapping("/chat.loadMessages/{conversationId}")
@@ -148,5 +204,20 @@ public class ChatWebSocketController {
         User user = userService.findBySub(principal.getName());
         // Можно сразу вернуть текущий список или просто подтвердить подписку
         return null; // Реальная логика будет в сервисе
+    }
+
+    @MessageMapping("/notifications.requestPending")
+    public void requestPendingNotifications(Principal principal) {
+        String username = principal.getName();
+        List<NotificationDTO> pending = notificationService.loadPendingNotifications(username);
+
+        if (!pending.isEmpty()) {
+            messagingTemplate.convertAndSendToUser(
+                    username,
+                    "/queue/notifications",
+                    pending
+            );
+            notificationService.clearNotifications(username);
+        }
     }
 }
