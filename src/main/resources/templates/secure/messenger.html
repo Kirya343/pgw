@@ -151,16 +151,16 @@
                          data-conversation-id="${selectedConversation.id}">
                         <div class="chat-header">
                             <div class="chat-user">
-                                <img class="dialog-avatar" id="interlocutorAvatar" src="" alt="Avatar" />
+                                <img class="dialog-avatar" id="interlocutorAvatar" src="/images/avatar-placeholder.png" alt="Avatar" />
                                 <div>
-                                    <h4 id="interlocutorName">Имя собеседника</h4>
-                                    <p class="user-status">online</p>
+                                    <h4 id="interlocutorName"></h4>
+                                    <p class="user-status"></p>
                                 </div>
                             </div>
-                            <div class="chat-actions">
+                            <!--<div class="chat-actions">
                                 <button class="btn btn-outline-primary btn-sm" th:text="#{my.messages.button.profile}">Профиль</button>
                                 <button class="btn btn-outline-danger btn-sm" th:text="#{my.messages.button.block}">Заблокировать</button>
-                            </div>
+                            </div>-->
                         </div>
 
                         <div th:fragment="messages-container" class="messages-container" id="messages-container">
@@ -183,7 +183,9 @@
 
                         <div class="message-input-container">
                             <textarea id="message-input" th:placeholder="#{my.messages.send.placeholder}" class="message-input"></textarea>
-                            <button id="send-btn" class="btn btn-primary send-btn" th:text="#{my.messages.button.send}">Отправить</button>
+                            <button id="send-btn" class="img-send-btn"> <!--th:text="#{my.messages.button.send}"-->
+                                <img src="/images/send-btn.png" alt="Отправить">
+                            </button>
                         </div>
                     </div>
 

@@ -204,7 +204,7 @@ function updateSingleConversation(conversation) {
             <p class="dialog-preview">${conversation.lastMessagePreview || ""}</p>
             <div class="dialog-meta">
                 ${conversation.unreadCount > 0 ? `<span class="unread-count">${conversation.unreadCount}</span>` : ""}
-                ${conversation.listing ? `<span class="dialog-listing">Объявление: ${conversation.listing.localizedTitle}</span>` : ""}
+                ${conversation.listing ? `<span class="dialog-listing">${conversation.listing.localizedTitle}</span>` : ""}
             </div>
         </div>
     `;

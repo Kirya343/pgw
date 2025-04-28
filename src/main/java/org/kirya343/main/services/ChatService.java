@@ -1,7 +1,7 @@
 package org.kirya343.main.services;
 
 import jakarta.transaction.Transactional;
-import org.kirya343.main.controller.chat.ChatMapper;
+import org.kirya343.main.controller.mappers.ChatMapper;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.chat.ConversationDTO;

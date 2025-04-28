@@ -1,6 +1,7 @@
 package org.kirya343.main.controller.chat;
 
 import jakarta.transaction.Transactional;
+import org.kirya343.main.controller.mappers.ChatMapper;
 import org.kirya343.main.model.chat.*;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.AvatarService;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Controller;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller

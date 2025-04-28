@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Controller
@@ -36,6 +37,7 @@ public class FavoritesController {
     @GetMapping("/secure/favorites")
     public String getFavoritesPage(@AuthenticationPrincipal OAuth2User oauth2User,
                                    Model model,
+                                   Locale locale,
                                    HttpSession session) {
         if (oauth2User == null) {
             return "redirect:/login";
@@ -56,6 +58,40 @@ public class FavoritesController {
 
         String avatarPath = avatarService.resolveAvatarPath(user);
         String name = user.getName();
+
+        for (Listing listing : listings) {
+            String title = null;
+            String description = null;
+
+            if ("fi".equals(locale.getLanguage()) && listing.getCommunityFi()) {
+                title = listing.getTitleFi();
+                description = listing.getDescriptionFi();
+            } else if ("ru".equals(locale.getLanguage()) && listing.getCommunityRu()) {
+                title = listing.getTitleRu();
+                description = listing.getDescriptionRu();
+            } else if ("en".equals(locale.getLanguage()) && listing.getCommunityEn()) {
+                title = listing.getTitleEn();
+                description = listing.getDescriptionEn();
+            }
+
+            // Если нет значения для выбранного языка, пробуем другие языки
+            if (title == null || description == null) {
+                if (title == null) {
+                    title = listing.getTitleFi() != null ? listing.getTitleFi() :
+                            listing.getTitleRu() != null ? listing.getTitleRu() :
+                                    listing.getTitleEn();
+                }
+                if (description == null) {
+                    description = listing.getDescriptionFi() != null ? listing.getDescriptionFi() :
+                            listing.getDescriptionRu() != null ? listing.getDescriptionRu() :
+                                    listing.getDescriptionEn();
+                }
+            }
+
+            // Сохраняем в транзиентные поля
+            listing.setLocalizedTitle(title);
+            listing.setLocalizedDescription(description);
+        }
 
         model.addAttribute("listings", listings);
         model.addAttribute("userEmail", email != null ? email : "Email не распознан");

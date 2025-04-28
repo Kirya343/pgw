@@ -1,4 +1,4 @@
-package org.kirya343;
+package org.kirya343.config;
 
 import lombok.Getter;
 import lombok.Setter;

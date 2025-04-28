@@ -104,15 +104,17 @@ public class ListingsController {
 
         authService.addAuthenticationAttributes(model, oauth2User, user);
 
-        // Увеличиваем счетчик просмотров
-        listing.setViews(listing.getViews() + 1);
-        listingService.save(listing);
-
         // 3. Локализация названия и описания
         setLocalizedTitleAndDescription(listing, locale);
 
         // Получаем автора объявления и его аватар
         User author = listing.getAuthor();
+
+        if (user != author) {
+            // Увеличиваем счетчик просмотров
+            listing.setViews(listing.getViews() + 1);
+            listingService.save(listing);
+        }
 
         String authorAvatarPath = avatarService.resolveAvatarPath(author);
 

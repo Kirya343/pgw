@@ -1,4 +1,4 @@
-package org.kirya343;
+package org.kirya343.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;

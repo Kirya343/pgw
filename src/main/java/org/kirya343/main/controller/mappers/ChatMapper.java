@@ -1,4 +1,4 @@
-package org.kirya343.main.controller.chat;
+package org.kirya343.main.controller.mappers;
 
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.chat.Conversation;
@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 @Component
 public class ChatMapper {
@@ -23,6 +22,9 @@ public class ChatMapper {
 
     @Autowired
     private AvatarService avatarService;
+
+    @Autowired
+    private ListingMapper listingMapper;
 
     @Autowired
     @Lazy
@@ -41,7 +43,7 @@ public class ChatMapper {
 
         // Проверка на наличие привязанного объявления
         if (conversation.getListing() != null) {
-            dto.setListing(listingDTO.convertToListingDTO(conversation.getListing()));
+            dto.setListing(listingMapper.convertToDTO(conversation.getListing()));
         } else {
             dto.setListing(null);
         }
