@@ -342,6 +342,22 @@
 
 /* Адаптивность */
 @media (max-width: 992px) {
+    .form-lang-grid {
+        display: flex;
+        gap: 20px; /* расстояние между языками */
+        flex-wrap: wrap; /* чтобы на маленьком экране переносились вниз */
+        flex-direction: column;
+        margin-top: 20px;
+    }
+
+    .form-control {
+        width: 100%;
+    }
+
+    .audience-switches {
+        flex-direction: column;
+    }
+
     .edit-listing-layout {
         flex-direction: column;
     }

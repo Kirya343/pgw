@@ -47,6 +47,7 @@
                         <a href="/secure/account" class="account-menu-item" th:text="#{link.account}">Мои объявления</a>
                         <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
                         <a href="/secure/messenger" class="account-menu-item active" th:text="#{link.messenger}">Сообщения</a>
+                        <a href="/secure/resume" class="account-menu-item" th:text="#{link.resume}">Моё резюме</a>
                         <a href="/secure/account/edit" class="account-menu-item" th:text="#{link.settings}">Настройки</a>
                         <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
                     </nav>
@@ -84,6 +85,7 @@
                 <a href="/secure/account" class="account-menu-item" th:text="#{link.account}">Мои объявления</a>
                 <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
                 <a href="/secure/messenger" class="account-menu-item active" th:text="#{link.messenger}">Сообщения</a>
+                <a href="/secure/resume" class="account-menu-item" th:text="#{link.resume}">Моё резюме</a>
                 <a href="/secure/account/edit" class="account-menu-item" th:text="#{link.settings}">Настройки</a>
                 <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
             </nav>
@@ -101,6 +103,12 @@
                         </svg>
                     </button>
                 </div>
+            </div>
+
+            <div class="mobile-dialogs-toggle">
+                <button id="dialogsToggleBtn">
+                    <i class="fa fa-comments"></i>
+                </button>
             </div>
 
             <div class="messenger-container">
@@ -246,6 +254,28 @@
     });
     document.getElementById('navbar-toggler').addEventListener('click', function() {
         document.querySelector('.navbar-collapse').classList.toggle('show');
+    });
+</script>
+<script>
+    // Управление мобильным меню диалогов
+    document.addEventListener('DOMContentLoaded', function() {
+        const dialogsToggleBtn = document.getElementById('dialogsToggleBtn');
+        const dialogsList = document.querySelector('.dialogs-list');
+
+        if (dialogsToggleBtn && dialogsList) {
+            dialogsToggleBtn.addEventListener('click', function() {
+                dialogsList.classList.toggle('show');
+            });
+
+            // Закрытие меню при клике вне его области
+            document.addEventListener('click', function(e) {
+                if (!dialogsList.contains(e.target) &&
+                    e.target !== dialogsToggleBtn &&
+                    !dialogsToggleBtn.contains(e.target)) {
+                    dialogsList.classList.remove('show');
+                }
+            });
+        }
     });
 </script>
 <!--<script src="/js/websocket-global.js"></script>-->

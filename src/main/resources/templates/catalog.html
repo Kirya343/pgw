@@ -38,15 +38,15 @@
                         </a>
                     </div>
 
-                    <h5 class="mt-4" th:text="#{catalog.sorting.filters}">Фильтры</h5>
+                    <!--<h5 class="mt-4" th:text="#{catalog.sorting.filters}">Фильтры</h5>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="filter1" th:text="#{catalog.sorting.avalible}">
-                        <label class="form-check-label" for="filter1">Сейчас доступен</label>
+                        <input class="form-check-input" type="checkbox" id="filter1">
+                        <label class="form-check-label" for="filter1" th:text="#{catalog.sorting.available}">Сейчас доступен</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="filter2" th:text="#{catalog.sorting.reviews}">
-                        <label class="form-check-label" for="filter2">С отзывами</label>
-                    </div>
+                        <input class="form-check-input" type="checkbox" id="filter2">
+                        <label class="form-check-label" for="filter2" th:text="#{catalog.sorting.reviews}">С отзывами</label>
+                    </div>-->
                 </div>
                 <div class="d-flex">
                     <!-- Для неавторизованных пользователей -->
@@ -90,35 +90,46 @@
         <!-- Сайдбар сортировки -->
         <aside class="catalog-sidebar">
             <div class="sorting-sidebar">
-                <h5>Сортировка</h5>
+                <h5 th:text="#{catalog.sorting.title}">Сортировка</h5>
                 <div class="list-group list-group-flush">
                     <a th:href="@{/catalog(category=${category}, sortBy='date')}"
-                       th:class="${sortBy == 'date'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                       th:class="${sortBy == 'date'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.date}">
                         По дате
                     </a>
                     <a th:href="@{/catalog(category=${category}, sortBy='price')}"
-                       th:class="${sortBy == 'price'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                       th:class="${sortBy == 'price'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.price}">
                         По цене
                     </a>
                     <a th:href="@{/catalog(category=${category}, sortBy='rating')}"
-                       th:class="${sortBy == 'rating'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                       th:class="${sortBy == 'rating'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.rating}">
                         По рейтингу
                     </a>
                     <a th:href="@{/catalog(category=${category}, sortBy='popularity')}"
-                       th:class="${sortBy == 'popularity'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'">
+                       th:class="${sortBy == 'popularity'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.popularity}">
                         По популярности
                     </a>
                 </div>
 
-                <h5 class="mt-4">Фильтры</h5>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="filter1">
-                    <label class="form-check-label" for="filter1">Сейчас доступен</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="filter2">
-                    <label class="form-check-label" for="filter2">С отзывами</label>
-                </div>
+                <h5 class="mt-4" th:text="#{catalog.sorting.filters}">Фильтры</h5>
+                <form id="filterForm" method="get" action="/catalog">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="filter1" name="available"
+                               th:checked="${available}">
+                        <label class="form-check-label" for="filter1" th:text="#{catalog.sorting.available}">Сейчас доступен</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="filter2" name="hasReviews"
+                               th:checked="${hasReviews}">
+                        <label class="form-check-label" for="filter2" th:text="#{catalog.sorting.reviews}">С отзывами</label>
+                    </div>
+                </form>
+            </div>
+            <div class="sorting-sidebar">
+                <h5 th:text="#{catalog.sorting.links}">Полезные ссылки</h5>
+                <a href="info" class="catalog-sidebar-btn" th:text="#{links.info}"></a>
+                <a href="secure/account" class="catalog-sidebar-btn" th:text="#{links.account}"></a>
+                <a href="secure/listing/create" class="catalog-sidebar-btn" th:text="#{links.create.listing}"></a>
+                <a href="secure/messenger" class="catalog-sidebar-btn" th:text="#{links.create.messenger}"></a>
             </div>
         </aside>
 
@@ -218,6 +229,11 @@
     // Мобильное меню
     document.querySelector('.navbar-toggler').addEventListener('click', function() {
         document.querySelector('.navbar-collapse').classList.toggle('show');
+    });
+</script>
+<script>
+    document.getElementById('filterForm').addEventListener('change', function() {
+        this.submit();
     });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>

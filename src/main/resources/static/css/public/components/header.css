@@ -173,6 +173,10 @@ header {
         display: block;
     }
 
+    .logout-btn {
+        margin-top: 1rem;
+    }
+
     .navbar-top {
         justify-content: space-between;
         min-width: calc(100%);

@@ -1,0 +1,238 @@
+@import url(../components/footer.css);
+@import url(../components/base.css);
+@import url(../components/header.css);
+@import url(../components/account-rating.css);
+@import url(../components/lang-switcher.css);
+@import url(../../variables.css);
+
+.account-container {
+    padding: 2rem 0;
+    background-color: var(--light-background);
+}
+
+.account-layout {
+    display: flex;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.account-sidebar {
+    flex: 0 0 280px;
+    position: sticky;
+    top: calc(var(--header-height) + 20px);
+}
+
+.account-main {
+    flex: 1;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px var(--shadow-color);
+    padding: 2rem;
+}
+
+.account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+.resume-status {
+    display: flex;
+    align-items: center;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-badge.published {
+    background-color: var(--success-light);
+    color: var(--success-dark);
+}
+
+.status-badge.draft {
+    background-color: var(--warning-light);
+    color: var(--warning-dark);
+}
+
+.no-resume {
+    text-align: center;
+    padding: 3rem;
+    background: var(--light-background);
+    border-radius: var(--radius);
+    height: auto;
+}
+
+.no-resume p {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--dark);
+}
+
+.form-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    background-color: var(--light);
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.upload-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.upload-controls input[type="file"] {
+    display: none;
+}
+
+.upload-controls label {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background-color: var(--white);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.upload-controls label:hover {
+    background-color: var(--primary);
+    color: var(--white);
+    border-color: var(--primary-dark);
+}
+
+.file-name {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.form-text {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 0.5rem;
+}
+
+.invalid-feedback {
+    color: var(--danger);
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+.form-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+.language-item {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.language-item select {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .account-layout {
+        flex-direction: column;
+    }
+
+    .account-sidebar {
+        position: static;
+    }
+
+    .account-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .language-item {
+        flex-direction: column;
+    }
+
+    .language-item select {
+        width: 100%;
+    }
+}

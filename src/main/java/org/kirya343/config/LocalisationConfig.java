@@ -1,4 +1,4 @@
-package org.kirya343.main;
+package org.kirya343.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

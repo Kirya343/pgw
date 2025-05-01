@@ -15,10 +15,4 @@ public class WorkSwapApplication {
     public static void main(String[] args) {
         SpringApplication.run(WorkSwapApplication.class, args);
     }
-
-    @GetMapping("/")
-    public String home(HttpServletRequest request, Model model) {
-        model.addAttribute("requestURI", request.getRequestURI());
-        return "index"; // Вернёт index.html из templates/
-    }
 }

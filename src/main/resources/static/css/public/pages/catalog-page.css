@@ -205,6 +205,21 @@
     color: var(--white);
 }
 
+.catalog-sidebar-btn {
+    display: block;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s;
+    color: var(--dark);
+    text-decoration: none;
+}
+
+.catalog-sidebar-btn:hover {
+    border-color: var(--primary);
+}
+
 .form-check {
     margin-bottom: 0.75rem;
 }

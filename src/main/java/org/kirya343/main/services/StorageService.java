@@ -63,6 +63,41 @@ public class StorageService {
         return filename;
     }
 
+    public String storeFile(MultipartFile file) throws IOException {
+        // Проверка пустого файла
+        if (file.isEmpty()) {
+            throw new RuntimeException("Failed to store empty file");
+        }
+
+        // Проверка размера файла (5MB)
+        if (file.getSize() > 5 * 1024 * 1024) {
+            throw new RuntimeException("File size exceeds 5MB limit");
+        }
+
+        // Проверка расширения (только PDF)
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = originalFilename != null ?
+                originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase() : "";
+
+        if (!".pdf".equals(fileExtension)) {
+            throw new RuntimeException("Only PDF files are allowed");
+        }
+
+        // Создаем директорию для резюме, если не существует
+        Path resumeDir = this.rootLocation.resolve("resumes");
+        Files.createDirectories(resumeDir);
+
+        // Генерация уникального имени файла
+        String filename = UUID.randomUUID().toString() + fileExtension;
+
+        // Сохранение файла
+        Path destinationFile = resumeDir.resolve(filename).normalize();
+        Files.copy(file.getInputStream(), destinationFile);
+
+        // Возвращаем относительный путь (resumes/filename.pdf)
+        return "resumes/" + filename;
+    }
+
     public void deleteImage(String filename) throws IOException {
         Path filePath = rootLocation.resolve(filename).normalize();
         Files.deleteIfExists(filePath);

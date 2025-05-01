@@ -45,6 +45,8 @@ public class CatalogController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "date") String sortBy,
             @RequestParam(required = false) String location,
+            @RequestParam(required = false, defaultValue = "false") boolean available,
+            @RequestParam(required = false, defaultValue = "false") boolean hasReviews,
             Model model,
             Locale locale,
             @AuthenticationPrincipal OAuth2User oauth2User) {
@@ -109,12 +111,19 @@ public class CatalogController {
             listing.setLocalizedDescription(description);
         }
 
+        List<Listing> filteredListings = listingsPage.getContent().stream()
+                //.filter(listing -> !available || listing.isAvailable())
+                .filter(listing -> !hasReviews || (listing.getReviews() != null && !listing.getReviews().isEmpty()))
+                .toList();
+
         // Добавляем данные в модель
-        model.addAttribute("listings", listingsPage.getContent());
+        model.addAttribute("listings", filteredListings);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", listingsPage.getTotalPages());
         model.addAttribute("category", category);
         model.addAttribute("sortBy", sortBy);
+        model.addAttribute("available", available);
+        model.addAttribute("hasReviews", hasReviews);
 
 
         User user = null;
