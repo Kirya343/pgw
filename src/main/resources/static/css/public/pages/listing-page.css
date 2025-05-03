@@ -2,6 +2,7 @@
 @import url(../components/footer.css);
 @import url(../components/base.css);
 @import url(../components/header.css);
+@import url(../components/breadcrumbs.css);
 @import url(../../variables.css);
 
 .seller-actions .btn,
@@ -91,27 +92,6 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
-}
-
-/* Хлебные крошки */
-.breadcrumbs {
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
-    color: var(--gray);
-}
-
-.breadcrumbs a {
-    color: var(--primary);
-    text-decoration: none;
-}
-
-.breadcrumbs a:hover {
-    text-decoration: underline;
-}
-
-.breadcrumbs span {
-    margin: 0 0.5rem;
-    color: var(--gray);
 }
 
 /* Заголовок объявления */

@@ -94,6 +94,7 @@ header {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-align: center;
 }
 
 .btn-outline-primary {
@@ -165,6 +166,36 @@ header {
 
 .account-manager {
     display: none;
+}
+
+/* Стили для плашки аккаунта */
+.account-info {
+    display: flex;
+    align-items: center;
+}
+
+.account-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--dark);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    transition: all 0.2s;
+}
+
+.account-link:hover {
+    background-color: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+}
+
+.account-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
 }
 
 /* Адаптивность */

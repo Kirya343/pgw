@@ -81,7 +81,7 @@ public class MessengerController {
 
     @GetMapping("/secure/messenger/chat")
     public String startNewChat(@RequestParam("sellerId") Long sellerId,
-                               @RequestParam("listingId") Long listingId,
+                               @RequestParam(value = "listingId", required = false) Long listingId,
                                @AuthenticationPrincipal OAuth2User oauth2User) {
         if (oauth2User == null) {
             return "redirect:/login";
@@ -94,7 +94,11 @@ public class MessengerController {
             return "redirect:/catalog";
         }
 
-        Listing listing = listingService.getListingById(listingId);
+        Listing listing = null;
+        if (listingId != null) {
+            listing = listingService.getListingById(listingId);
+        }
+
         Conversation conversation = chatService.getOrCreateConversation(currentUser, seller, listing);
 
         return "redirect:/secure/messenger?conversationId=" + conversation.getId();

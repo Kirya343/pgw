@@ -392,6 +392,77 @@
 .col-2 { flex: 0 0 16.6666%; max-width: 16.6666%; }
 .col-1 { flex: 0 0 8.3333%;  max-width: 8.3333%;  }
 
+/* Стили для карточек резюме */
+.resumes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+}
+
+.resume-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    height: 100%;
+}
+
+.resume-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 15px;
+    background: var(--white);
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
+}
+
+.resume-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.resume-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.resume-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.resume-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    color: var(--dark);
+}
+
+.resume-meta {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.resume-skills {
+    margin: 10px 0;
+    color: #555;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.resume-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
 /* Адаптивность */
 @media (max-width: 992px) {
     .catalog-content {

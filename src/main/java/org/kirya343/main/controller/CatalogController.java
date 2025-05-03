@@ -2,11 +2,9 @@ package org.kirya343.main.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.kirya343.main.model.Listing;
+import org.kirya343.main.model.Resume;
 import org.kirya343.main.model.User;
-import org.kirya343.main.services.AuthService;
-import org.kirya343.main.services.AvatarService;
-import org.kirya343.main.services.ListingService;
-import org.kirya343.main.services.UserService;
+import org.kirya343.main.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,6 +31,7 @@ public class CatalogController {
     private final ListingService listingService;
     private final UserService userService;
     private final AvatarService avatarService;
+    private final ResumeService resumeService;
 
     @Autowired
     private final AuthService authService;
@@ -110,6 +110,36 @@ public class CatalogController {
             listing.setLocalizedTitle(title);
             listing.setLocalizedDescription(description);
         }
+
+        List<Resume> resumes = new ArrayList<>();
+
+        if ("find-help".equals(category)) {
+            // Получаем опубликованные резюме
+            resumes = resumeService.findPublishedResumes(pageable);
+
+            // Добавляем аватарки для каждого резюме
+            resumes.forEach(resume -> {
+                User user = resume.getUser();
+                // Устанавливаем аватар только если он еще не был установлен
+                if (user.getAvatarUrl() == null) {
+                    user.setAvatarUrl(avatarService.resolveAvatarPath(user));
+                }
+            });
+        } else {
+            // Остальной код для других категорий
+            switch (category) {
+                case "offer-service":
+                    listingsPage = findListingsByCategoryAndCommunity("offer-service", locale, pageable);
+                    break;
+                case "product":
+                    listingsPage = findListingsByCategoryAndCommunity("product", locale, pageable);
+                    break;
+                default:
+                    listingsPage = findListingsByCategoryAndCommunity("services", locale, pageable);
+            }
+        }
+
+        model.addAttribute("resumes", resumes);
 
         List<Listing> filteredListings = listingsPage.getContent().stream()
                 //.filter(listing -> !available || listing.isAvailable())

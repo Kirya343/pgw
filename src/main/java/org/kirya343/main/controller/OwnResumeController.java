@@ -4,7 +4,6 @@ import org.kirya343.main.model.Resume;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ResumeRepository;
 import org.kirya343.main.services.AvatarService;
-import org.kirya343.main.services.ListingService;
 import org.kirya343.main.services.StorageService;
 import org.kirya343.main.services.UserService;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,14 +20,14 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/secure/resume")
-public class ResumeController {
+public class OwnResumeController {
     private final ResumeRepository resumeRepository;
     private final UserService userService;
     private final StorageService storageService;
     private final AvatarService avatarService;
 
-    public ResumeController(ResumeRepository resumeRepository, UserService userService,
-                            StorageService storageService, AvatarService avatarService) {
+    public OwnResumeController(ResumeRepository resumeRepository, UserService userService,
+                               StorageService storageService, AvatarService avatarService) {
         this.resumeRepository = resumeRepository;
         this.userService = userService;
         this.storageService = storageService;

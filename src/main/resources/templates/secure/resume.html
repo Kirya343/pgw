@@ -170,7 +170,7 @@
                             <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.parentNode.remove()" th:text="#{button.delete}"></button>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addLanguageField()" th:text="#{resume.add.language}">Добавить язык</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addLanguageField('language-container')" th:text="#{resume.add.language}">Добавить язык</button>
                 </div>
 
                 <!-- Контакты -->
@@ -336,26 +336,26 @@
         fileNameSpan.textContent = fileName;
     }
 
-    function addLanguageField(containerId) {
+    function addLanguageField(containerId = 'language-container') {
         const container = document.getElementById(containerId);
         const newItem = document.createElement('div');
         newItem.className = 'language-item';
         newItem.innerHTML = `
         <select name="languages[]" class="form-control" style="margin-bottom: 10px;">
-            <option value="russian" th:text="#{language.russian}">Русский</option>
-            <option value="finnish" th:text="#{language.finnish}">Финский</option>
-            <option value="english" th:text="#{language.english}">Английский</option>
-            <option value="german" th:text="#{language.german}">Немецкий</option>
-            <option value="french" th:text="#{language.french}">Французский</option>
+            <option value="russian">Русский</option>
+            <option value="finnish">Финский</option>
+            <option value="english">Английский</option>
+            <option value="german">Немецкий</option>
+            <option value="french">Французский</option>
         </select>
         <select name="languageLevels[]" class="form-control">
-            <option value="beginner" th:text="#{language.level.beginner}">Начальный</option>
-            <option value="intermediate" th:text="#{language.level.intermediate}">Средний</option>
-            <option value="advanced" th:text="#{language.level.advanced}">Продвинутый</option>
-            <option value="fluent" th:text="#{language.level.fluent}">Свободный</option>
-            <option value="native" th:text="#{language.level.native}">Родной</option>
+            <option value="beginner">Начальный</option>
+            <option value="intermediate">Средний</option>
+            <option value="advanced">Продвинутый</option>
+            <option value="fluent">Свободный</option>
+            <option value="native">Родной</option>
         </select>
-        <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.parentNode.remove()" th:text="#{button.delete}"></button>
+        <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.parentNode.remove()">Удалить</button>
     `;
         container.appendChild(newItem);
     }
