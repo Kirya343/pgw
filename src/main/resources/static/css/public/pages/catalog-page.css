@@ -1,39 +1,8 @@
 @import url(../components/footer.css);
 @import url(../components/base.css);
 @import url(../components/header.css);
-@import url(../components/bootstrap-demo.css);
 @import url(../components/lang-switcher.css);
 @import url(../../variables.css);
-
-/* Стили для плашки аккаунта */
-.account-info {
-    display: flex;
-    align-items: center;
-}
-
-.account-link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: var(--dark);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius);
-    transition: all 0.2s;
-}
-
-.account-link:hover {
-    background-color: rgba(99, 102, 241, 0.1);
-    color: var(--primary);
-}
-
-.account-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    margin-right: 0.5rem;
-    object-fit: cover;
-    border: 1px solid var(--border-color);
-}
 
 .catalog-layout {
     display: flex;
@@ -52,7 +21,7 @@
     padding-top: 1rem;
     padding-right: 1rem;
     flex: 1;
-    min-width: 0; /* Ð¤Ð¸ÐºÑ Ð´Ð»Ñ Ð¿ÐµÑ€ÐµÐ¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ñ */
+    min-width: 0;
     max-width: 70%;
 }
 
@@ -129,12 +98,12 @@
 }
 
 .sorting-sidebar .form-check-input {
-    margin-right: 0.5rem; /* Отступ между чекбоксом и текстом */
-    margin-top: 15px;  /* Убираем стандартный отступ сверху */
-    margin-left: 1.25rem;
+    margin-right: 0.7rem; /* Отступ между чекбоксом и текстом */
+    /*margin-top: 0.5rem;  !* Убираем стандартный отступ сверху *!*/
+    margin-left: 1rem;
     float: none; /* Отключаем обтекание */
     white-space: nowrap; /* Запрещаем перенос текста */
-    max-width: 20px;
+    max-width: 30px;
 }
 
 .sorting-sidebar .form-check-label {
@@ -153,31 +122,24 @@
     display: none;
 }
 
-.rating {
-    display: flex;
-    gap: 2px;
-    color: #000000; /* Золотой цвет */
-    font-size: 16px; /* Или меньше, если нужно компактно */
-}
-
 /* Исправление для чекбоксов фильтров */
 .sorting-sidebar-top .form-check {
     display: flex;
     align-items: center;
     margin-bottom: 0.75rem;
-    justify-content: flex-start; /* Добавьте эту строку */
+    justify-content: flex-start;
 }
 
 .sorting-sidebar-top .form-check-input {
-    margin-right: 0.5rem; /* Отступ между чекбоксом и текстом */
-    margin-top: 15px;  /* Убираем стандартный отступ сверху */
+    margin-right: 0.5rem;
+    margin-top: 15px;
     margin-left: 1.25rem;
-    float: none; /* Отключаем обтекание */
-    white-space: nowrap; /* Запрещаем перенос текста */
+    float: none;
+    white-space: nowrap;
     max-width: 20px;
 }
 .sorting-sidebar-top .form-check-label {
-    margin-bottom: 0; /* Убираем отступ снизу */
+    margin-bottom: 0;
 }
 
 .list-group {
@@ -247,6 +209,7 @@
 
 .listing-card:hover {
     transform: translateY(-5px);
+    transition: transform 0.5s;
     box-shadow: 0 5px 15px var(--shadow-color);
 }
 
@@ -254,7 +217,7 @@
     height: 200px;
     width: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease;
 }
 
 .listing-card:hover .listing-img {

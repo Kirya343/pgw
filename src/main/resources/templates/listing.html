@@ -20,7 +20,7 @@
                 <div class="d-flex">
                     <!-- Для неавторизованных пользователей -->
                     <div th:unless="${isAuthenticated}">
-                        <a href="/login" class="btn btn-outline-primary" th:text="#{header.login}">Вход</a>
+                        <a href="/login" class="btn btn-outline-primary login-link" th:text="#{header.login}">Вход</a>
                         <a href="/register" class="btn btn-primary" th:text="#{header.register}">Регистрация</a>
                     </div>
 
@@ -420,5 +420,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="/js/websocket-global.js"></script>
+<script src="/js/components/login-back-redirect.js"></script>
 </body>
 </html>

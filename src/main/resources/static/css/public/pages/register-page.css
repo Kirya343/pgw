@@ -1,6 +1,15 @@
-
 @import url(../components/lang-switcher.css);
-/* Добавьте эти стили в login-page.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #8db5fb, #d25eff);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .form-group {
     margin-bottom: 20px;

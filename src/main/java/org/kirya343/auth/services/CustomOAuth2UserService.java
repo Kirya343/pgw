@@ -1,8 +1,9 @@
-package org.kirya343.main.services;
+package org.kirya343.auth.services;
 
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.UserRepository;
-import org.kirya343.main.services.impl.CustomOAuth2UserImpl;
+import org.kirya343.main.services.UserService;
+import org.kirya343.auth.services.impl.CustomOAuth2UserImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

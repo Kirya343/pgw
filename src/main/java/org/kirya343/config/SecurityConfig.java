@@ -1,7 +1,8 @@
 package org.kirya343.config;
 
 import jakarta.servlet.MultipartConfigElement;
-import org.kirya343.main.services.CustomOAuth2UserService;
+import org.kirya343.auth.CustomAuthenticationSuccessHandler;
+import org.kirya343.auth.services.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -82,9 +83,14 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
+    } // для кастомного обратного редирректа, не используется
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+    } // для кодировки паролей, не используется
 
     @Bean
     public MultipartConfigElement multipartConfigElement() {

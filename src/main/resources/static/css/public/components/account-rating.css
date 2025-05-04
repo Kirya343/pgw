@@ -1,6 +1,6 @@
 .rating {
     display: flex;
     gap: 2px;
-    color: #000000; /* Золотой цвет */
-    font-size: 16px; /* Или меньше, если нужно компактно */
+    color: #000000;
+    font-size: 16px;
 }

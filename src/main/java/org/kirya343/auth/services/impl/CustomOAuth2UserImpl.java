@@ -1,4 +1,4 @@
-package org.kirya343.main.services.impl;
+package org.kirya343.auth.services.impl;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
