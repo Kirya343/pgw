@@ -38,7 +38,12 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Кнопка Новостей -->
+                <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
+
                 <div class="d-flex">
+
                     <!-- Для неавторизованных пользователей -->
                     <div th:unless="${isAuthenticated}">
                         <a href="/login" class="btn btn-outline-primary" th:text="#{header.login}">Вход</a>

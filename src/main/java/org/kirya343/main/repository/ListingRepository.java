@@ -42,4 +42,10 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
             "LEFT JOIN FETCH l.reviews " +
             "WHERE l.id = :id")
     Optional<Listing> findByIdWithAuthorAndReviews(@Param("id") Long id);
+
+    @Query("SELECT SUM(l.views) FROM Listing l")
+    Integer sumViews();
+
+    @Query("SELECT COUNT(l) FROM Listing l WHERE l.active = true")
+    long countActiveListings();
 }

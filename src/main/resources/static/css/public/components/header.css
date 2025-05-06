@@ -198,6 +198,10 @@ header {
     border: 1px solid var(--border-color);
 }
 
+.d-flex {
+    flex-direction: row;
+}
+
 /* Адаптивность */
 @media (max-width: 992px) {
     .navbar-toggler {

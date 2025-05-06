@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{title.news}">Новости | WorkSwap</title>
+    <link href="/css/public/pages/news-page.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav class="navbar">
+            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
+            <button class="navbar-toggler">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse">
+                <!-- Кнопка Новостей (активная) -->
+                <a href="/news" class="nav-link active" th:text="#{header.news}">Новости</a>
+
+                <div class="d-flex">
+                    <!-- Для неавторизованных пользователей -->
+                    <div th:unless="${isAuthenticated}">
+                        <a href="/login" class="btn btn-outline-primary" th:text="#{header.login}">Вход</a>
+                        <a href="/register" class="btn btn-primary" th:text="#{header.register}">Регистрация</a>
+                    </div>
+
+                    <!-- Для авторизованных пользователей -->
+                    <div th:if="${isAuthenticated}" class="account-info">
+                        <a th:href="@{/secure/account}" class="account-link">
+                            <img th:src="${avatarUrl}"
+                                 class="account-avatar"
+                                 alt="Аватар"
+                                 th:onerror="this.src='/images/avatar-placeholder.jpg'">
+                            <span th:text="${userName}">Пользователь</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<!-- Основной контент -->
+<div class="news-container">
+    <div class="container">
+        <div class="news-layout">
+            <!-- Основная лента новостей -->
+            <main class="news-feed">
+                <h1 class="page-title" th:text="#{news.title}">Новости WorkSwap</h1>
+
+                <!-- Статистика сайта -->
+                <div class="site-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fa fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" th:text="${stats.usersCount}">10,000+</span>
+                            <span class="stat-label" th:text="#{stats.users}">Пользователей</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fa fa-list-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" th:text="${stats.listingsCount}">5,000+</span>
+                            <span class="stat-label" th:text="#{stats.listings}">Объявлений</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fa fa-eye"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" th:text="${stats.viewsCount}">1M+</span>
+                            <span class="stat-label" th:text="#{stats.views}">Просмотров</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Список новостей -->
+                <div class="news-list">
+                    <article th:each="newsItem : ${news}" class="news-card">
+                        <div class="news-header">
+                            <img th:src="@{${newsItem.imageUrl ?: '/images/default-news.jpg'}}"
+                                 alt="Изображение новости"
+                                 class="news-image">
+                            <div class="news-meta">
+                                <span class="news-date" th:text="${#temporals.format(newsItem.publishDate, 'dd.MM.yyyy')}">01.01.2023</span>
+                                <span class="news-author" th:text="${newsItem.author}">Администратор</span>
+                            </div>
+                        </div>
+                        <div class="news-body">
+                            <h2 class="news-title" th:text="${newsItem.title}">Заголовок новости</h2>
+                            <p class="news-excerpt" th:text="${newsItem.excerpt}">Краткое описание новости, которое будет отображаться в списке...</p>
+                            <a th:href="@{'/news/' + ${newsItem.id}}" class="news-read-more" th:text="#{news.read_more}">Читать далее</a>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Пагинация -->
+                <nav aria-label="Page navigation" th:if="${totalPages > 1}">
+                    <ul class="pagination">
+                        <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+                            <a th:href="@{/news(page=${currentPage - 1})}"
+                               class="page-link" th:text="#{pagination.back}">Назад</a>
+                        </li>
+                        <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:class="${currentPage == i} ? 'page-item active' : 'page-item'">
+                            <a th:href="@{/news(page=${i})}"
+                               th:text="${i + 1}"
+                               class="page-link"></a>
+                        </li>
+                        <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
+                            <a th:href="@{/news(page=${currentPage + 1})}"
+                               class="page-link" th:text="#{pagination.forward}">Вперед</a>
+                        </li>
+                    </ul>
+                </nav>
+            </main>
+
+            <!-- Боковая панель с чатом -->
+<!--            <aside class="news-sidebar">-->
+<!--                <div class="chat-container">-->
+<!--                    <h3 class="chat-title" th:text="#{news.chat.title}">Чат сообщества</h3>-->
+
+<!--                    &lt;!&ndash; Список сообщений &ndash;&gt;-->
+<!--                    <div class="chat-messages" id="chatMessages">-->
+<!--                        <div th:each="message : ${chatMessages}" class="message" th:classappend="${message.isCurrentUser} ? 'current-user' : 'other-user'">-->
+<!--                            <div class="message-header">-->
+<!--                                <img th:src="@{${message.avatarUrl}}"-->
+<!--                                     th:onerror="this.src='/images/avatar-placeholder.jpg'"-->
+<!--                                     class="message-avatar">-->
+<!--                                <span class="message-author" th:text="${message.author}">Пользователь</span>-->
+<!--                                <span class="message-time" th:text="${#temporals.format(message.timestamp, 'HH:mm')}">12:00</span>-->
+<!--                            </div>-->
+<!--                            <div class="message-content" th:text="${message.content}">Текст сообщения</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Форма отправки сообщения &ndash;&gt;-->
+<!--                    <form class="chat-form" id="chatForm" th:if="${isAuthenticated}">-->
+<!--                        <input type="text" class="chat-input" id="chatInput" placeholder="Введите сообщение..." th:attr="placeholder=#{news.chat.placeholder}">-->
+<!--                        <button type="submit" class="chat-send-btn" th:text="#{news.chat.send}">Отправить</button>-->
+<!--                    </form>-->
+<!--                    <div class="chat-login-prompt" th:unless="${isAuthenticated}">-->
+<!--                        <p th:text="#{news.chat.login_prompt}">Войдите, чтобы участвовать в чате</p>-->
+<!--                        <a href="/login" class="btn btn-primary" th:text="#{header.login}">Вход</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </aside>-->
+        </div>
+    </div>
+</div>
+
+<!-- Языковой переключатель -->
+<div class="language-toggle">
+    <input type="checkbox" id="langToggle">
+    <label for="langToggle" class="lang-wrapper">
+        <!-- Основная кнопка с текущим языком -->
+        <div class="lang-button">
+            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
+        </div>
+
+        <!-- Выпадающий список языков -->
+        <div class="lang-dropdown">
+            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
+                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
+                <span>Русский</span>
+            </a>
+            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
+                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
+                <span>Suomi</span>
+            </a>
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
+                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
+                <span>English</span>
+            </a>
+        </div>
+    </label>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Мобильное меню
+    document.querySelector('.navbar-toggler').addEventListener('click', function() {
+        document.querySelector('.navbar-collapse').classList.toggle('show');
+    });
+
+    // Чат - отправка сообщения
+    document.getElementById('chatForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+        if (message) {
+            // Здесь будет логика отправки сообщения через WebSocket
+            console.log('Отправка сообщения:', message);
+            input.value = '';
+        }
+    });
+
+    // Автопрокрутка чата вниз
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/js/websocket-global.js"></script>
+<script src="/js/components/login-back-redirect.js"></script>
+</body>
+</html>
