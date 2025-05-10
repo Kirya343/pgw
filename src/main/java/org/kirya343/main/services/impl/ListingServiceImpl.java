@@ -34,6 +34,12 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.findByCategory(category, pageable);
     }
 
+    public List<Listing> getRecentListings(int count) {
+        Pageable pageable = PageRequest.of(0, count);
+        return listingRepository.findAllByOrderByCreatedAtDesc(pageable).getContent();
+    }
+
+
     @Override
     public List<Listing> getListingsByUser(User user) {
         return listingRepository.findByAuthor(user);

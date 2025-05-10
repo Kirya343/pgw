@@ -1,4 +1,4 @@
-package org.kirya343.main.controller;
+package org.kirya343.main.controller.advice;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

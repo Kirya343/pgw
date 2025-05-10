@@ -3,8 +3,13 @@ package org.kirya343.main.controller;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.services.*;
+import org.kirya343.main.services.components.AdminCheckService;
+import org.kirya343.main.services.components.AvatarService;
+import org.kirya343.main.services.components.StatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,16 +31,18 @@ public class AccountController {
     private final ListingService listingService;
     private final StatService statService;
     private final StorageService storageService;
+    private final AdminCheckService adminCheckService;
 
 
     @Autowired
     public AccountController(UserService userService,
-                             AvatarService avatarService, ListingService listingService, StatService statService, StorageService storageService) {
+                             AvatarService avatarService, ListingService listingService, StatService statService, StorageService storageService, AdminCheckService adminCheckService) {
         this.userService = userService;
         this.avatarService = avatarService;
         this.listingService = listingService;
         this.statService = statService;
         this.storageService = storageService;
+        this.adminCheckService = adminCheckService;
     }
 
     @GetMapping("/secure/account")
@@ -44,8 +51,8 @@ public class AccountController {
             return "redirect:/login";
         }
 
-        boolean isAdmin = oauth2User.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        boolean isAdmin = adminCheckService.isAdmin(oauth2User);
+        model.addAttribute("isAdmin", isAdmin);
 
         // Получаем или создаем пользователя
         User user = userService.findUserFromOAuth2(oauth2User);

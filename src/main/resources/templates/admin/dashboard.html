@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панель | WorkSwap</title>
+    <link href="/css/admin/pages/main-admin-page.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<div class="admin-layout">
+    <!-- Сайдбар -->
+    <aside class="admin-sidebar">
+        <div class="text-center mb-4">
+            <h2 class="admin-logo">WorkSwap Admin</h2>
+        </div>
+
+        <nav class="admin-nav">
+            <div class="admin-nav-title">Основное</div>
+            <a href="#" class="admin-nav-item active">
+                <i class="fas fa-tachometer-alt"></i> Панель управления
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-list"></i> Объявления
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-file-alt"></i> Резюме
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-users"></i> Пользователи
+            </a>
+
+            <div class="admin-nav-title">Контент</div>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-newspaper"></i> Новости
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-comments"></i> Отзывы
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-question-circle"></i> Вопросы
+            </a>
+
+            <div class="admin-nav-title">Настройки</div>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-cog"></i> Системные
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-language"></i> Локализация
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Основной контент -->
+    <main class="admin-main">
+
+        <header class="admin-header">
+            <div>
+                <h1>Панель управления</h1>
+            </div>
+            <div class="admin-user">
+                <span>Администратор</span>
+                <img src="/images/avatar-placeholder.png" alt="Аватар" class="admin-user-avatar">
+            </div>
+        </header>
+
+        <!-- Статистика -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-title">Пользователи</div>
+                <div class="stat-card-value">1,245</div>
+                <div class="stat-card-change positive">
+                    <i class="fas fa-arrow-up"></i> 12% за месяц
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">Объявления</div>
+                <div class="stat-card-value">568</div>
+                <div class="stat-card-change positive">
+                    <i class="fas fa-arrow-up"></i> 5% за месяц
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">Резюме</div>
+                <div class="stat-card-value">324</div>
+                <div class="stat-card-change negative">
+                    <i class="fas fa-arrow-down"></i> 2% за месяц
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">Доход</div>
+                <div class="stat-card-value">€2,450</div>
+                <div class="stat-card-change positive">
+                    <i class="fas fa-arrow-up"></i> 18% за месяц
+                </div>
+            </div>
+        </div>
+
+        <!-- Последние объявления -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Последние объявления</h2>
+            </div>
+            <div class="card-body">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название</th>
+                        <th>Автор</th>
+                        <th>Цена</th>
+                        <th>Дата</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>#1254</td>
+                        <td>Ремонт компьютеров</td>
+                        <td>Иван Петров</td>
+                        <td>€25/час</td>
+                        <td>12.05.2023</td>
+                        <td>
+                            <button class="btn-admin btn-admin-secondary mr-1">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-admin btn-admin-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#1253</td>
+                        <td>Уборка квартиры</td>
+                        <td>Мария Сидорова</td>
+                        <td>€50</td>
+                        <td>11.05.2023</td>
+                        <td>
+                            <button class="btn-admin btn-admin-secondary mr-1">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-admin btn-admin-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#1252</td>
+                        <td>Уроки английского</td>
+                        <td>Алексей Иванов</td>
+                        <td>€30/час</td>
+                        <td>10.05.2023</td>
+                        <td>
+                            <button class="btn-admin btn-admin-secondary mr-1">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-admin btn-admin-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Последние пользователи -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Новые пользователи</h2>
+            </div>
+            <div class="card-body">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя</th>
+                        <th>Email</th>
+                        <th>Регистрация</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>#5421</td>
+                        <td>Ольга Кузнецова</td>
+                        <td>olga@example.com</td>
+                        <td>12.05.2023</td>
+                        <td><span class="badge bg-success">Активен</span></td>
+                        <td>
+                            <button class="btn-admin btn-admin-primary">
+                                <i class="fas fa-user-cog"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#5420</td>
+                        <td>Дмитрий Смирнов</td>
+                        <td>dmitry@example.com</td>
+                        <td>11.05.2023</td>
+                        <td><span class="badge bg-warning">На проверке</span></td>
+                        <td>
+                            <button class="btn-admin btn-admin-primary">
+                                <i class="fas fa-user-cog"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#5419</td>
+                        <td>Анна Васнецова</td>
+                        <td>anna@example.com</td>
+                        <td>10.05.2023</td>
+                        <td><span class="badge bg-danger">Заблокирован</span></td>
+                        <td>
+                            <button class="btn-admin btn-admin-primary">
+                                <i class="fas fa-user-cog"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Инициализация tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+</body>
+</html>

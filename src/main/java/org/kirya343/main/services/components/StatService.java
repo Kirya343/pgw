@@ -1,6 +1,9 @@
-package org.kirya343.main.services;
+package org.kirya343.main.services.components;
 
 import org.kirya343.main.model.User;
+
+import java.util.Locale;
+import java.util.Map;
 
 public interface StatService {
     int getMonthlyViews(User user);
@@ -10,4 +13,5 @@ public interface StatService {
     int getTotalResponses(User user); // Можно под фейковые данные
     int getCompletedDeals(User user); // Тоже можно имитировать
     double getAverageRating(User user);
+    Map<String, Object> getSiteStats(Locale locale);
 }

@@ -1,7 +1,7 @@
 package org.kirya343.main.controller;
 
 import org.kirya343.main.model.User;
-import org.kirya343.main.services.AvatarService;
+import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -15,60 +15,24 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 public class TermsController {
 
     private final UserService userService;
-    private final AvatarService avatarService;
+    private final AuthService authService;
 
-    public TermsController(UserService userService, AvatarService avatarService) {
+    public TermsController(UserService userService, AuthService authService ) {
         this.userService = userService;
-        this.avatarService = avatarService;
+        this.authService  = authService ;
     }
 
     @GetMapping("/terms")
     public String showTermsForm(@AuthenticationPrincipal OAuth2User oauth2User, Model model) {
-
-        if (oauth2User != null) {
-            User user = userService.findUserFromOAuth2(oauth2User);
-            if (user != null) {
-                String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
-                String avatarPath = avatarService.resolveAvatarPath(user);
-
-                model.addAttribute("isAuthenticated", true);
-                model.addAttribute("userName", name != null ? name : "Пользователь");
-                model.addAttribute("avatarUrl", avatarPath);
-            } else {
-                model.addAttribute("isAuthenticated", false);
-                model.addAttribute("userName", "Пользователь");
-                model.addAttribute("avatarUrl", "/images/avatar-placeholder.jpg");
-            }
-        } else {
-            model.addAttribute("isAuthenticated", false);
-            model.addAttribute("userName", "Пользователь");
-            model.addAttribute("avatarUrl", "/images/avatar-placeholder.jpg");
-        }
+        User user = oauth2User != null ? userService.findUserFromOAuth2(oauth2User) : null;
+        authService.addAuthenticationAttributes(model, oauth2User, user);
         return "terms";
     }
 
     @GetMapping("/privacy-policy")
     public String showPrivacyPolicyForm(@AuthenticationPrincipal OAuth2User oauth2User, Model model) {
-
-        if (oauth2User != null) {
-            User user = userService.findUserFromOAuth2(oauth2User);
-            if (user != null) {
-                String name = user.getName() != null ? user.getName() : oauth2User.getAttribute("name");
-                String avatarPath = avatarService.resolveAvatarPath(user);
-
-                model.addAttribute("isAuthenticated", true);
-                model.addAttribute("userName", name != null ? name : "Пользователь");
-                model.addAttribute("avatarUrl", avatarPath);
-            } else {
-                model.addAttribute("isAuthenticated", false);
-                model.addAttribute("userName", "Пользователь");
-                model.addAttribute("avatarUrl", "/images/avatar-placeholder.jpg");
-            }
-        } else {
-            model.addAttribute("isAuthenticated", false);
-            model.addAttribute("userName", "Пользователь");
-            model.addAttribute("avatarUrl", "/images/avatar-placeholder.jpg");
-        }
+        User user = oauth2User != null ? userService.findUserFromOAuth2(oauth2User) : null;
+        authService.addAuthenticationAttributes(model, oauth2User, user);
         return "privacy-policy";
     }
 }

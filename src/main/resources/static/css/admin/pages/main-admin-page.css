@@ -1,0 +1,266 @@
+@import url(../../public/components/footer.css);
+@import url(../../public/components/base.css);
+@import url(../../public/components/header.css);
+@import url(../../variables.css);
+
+/* Основные стили админки */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    flex: 0 0 250px;
+    background-color: var(--primary-dark);
+    color: var(--white);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.admin-main {
+    flex: 1;
+    padding: 2rem;
+    background-color: #f8f9fa;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: var(--white);
+    box-shadow: 0 2px 4px var(--shadow-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    margin-bottom: 2rem;
+}
+
+.admin-logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Навигация в сайдбаре */
+.admin-nav {
+    margin-top: 2rem;
+}
+
+.admin-nav-title {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 1px;
+}
+
+.admin-nav-item {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: var(--white);
+    text-decoration: none;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.admin-nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: var(--primary-light);
+}
+
+.admin-nav-item.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-left-color: var(--white);
+}
+
+.admin-nav-item i {
+    margin-right: 0.75rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Карточки статистики */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.stat-card-title {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+}
+
+.stat-card-value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.stat-card-change {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+.stat-card-change.positive {
+    color: #10b981;
+}
+
+.stat-card-change.negative {
+    color: #ef4444;
+}
+
+/* Таблицы */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.admin-table th {
+    background-color: var(--primary-light);
+    color: var(--white);
+    padding: 1rem;
+    text-align: left;
+}
+
+.admin-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table tr:hover {
+    background-color: rgba(99, 102, 241, 0.05);
+}
+
+/* Кнопки */
+.btn-admin {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.btn-admin-primary {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+.btn-admin-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-admin-danger {
+    background-color: #ef4444;
+    color: var(--white);
+}
+
+.btn-admin-danger:hover {
+    background-color: #dc2626;
+}
+
+.btn-admin-secondary {
+    background-color: var(--border-color);
+    color: var(--dark);
+}
+
+.btn-admin-secondary:hover {
+    background-color: #d1d5db;
+}
+
+/* Формы */
+.admin-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.admin-form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.admin-form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+}
+
+.admin-form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .admin-layout {
+        flex-direction: column;
+    }
+
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+    }
+
+    .admin-nav {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .admin-nav-item {
+        flex: 1 0 auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+}

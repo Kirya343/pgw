@@ -3,6 +3,8 @@ package org.kirya343.main.controller;
 import org.kirya343.main.model.Resume;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.*;
+import org.kirya343.main.services.components.AuthService;
+import org.kirya343.main.services.components.AvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;

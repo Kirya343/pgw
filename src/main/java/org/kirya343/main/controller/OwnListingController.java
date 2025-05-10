@@ -5,6 +5,9 @@ import org.kirya343.main.model.Location;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.LocationRepository;
 import org.kirya343.main.services.*;
+import org.kirya343.main.services.components.AdminCheckService;
+import org.kirya343.main.services.components.AvatarService;
+import org.kirya343.main.services.components.StatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -24,28 +27,28 @@ public class OwnListingController {
 
 
     private final AvatarService avatarService;
+    private final ListingService listingService;
+    private final UserService userService;
+    private final StorageService storageService;
+    private final LocationRepository locationRepository;
+    private final StatService statService;
+    private final AdminCheckService adminCheckService;
 
-    @Autowired
-    private ListingService listingService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private StorageService storageService;
-
-    @Autowired
-    private LocationRepository locationRepository;
-
-    @Autowired
-    private StatService statService;
-
-    public OwnListingController(AvatarService avatarService) {
+    public OwnListingController(AvatarService avatarService, ListingService listingService, UserService userService, StorageService storageService, LocationRepository locationRepository, StatService statService, AdminCheckService adminCheckService) {
         this.avatarService = avatarService;
+        this.listingService = listingService;
+        this.userService = userService;
+        this.storageService = storageService;
+        this.locationRepository = locationRepository;
+        this.statService = statService;
+        this.adminCheckService = adminCheckService;
     }
 
     @GetMapping("/create")
     public String showCreateForm(Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        boolean isAdmin = adminCheckService.isAdmin(oauth2User);
+        model.addAttribute("isAdmin", isAdmin);
 
         Map<String, String> categories = Map.of(
                 "services", "Услуга",
@@ -142,6 +145,9 @@ public class OwnListingController {
             User currentUser = userService.findByEmail(email);
             Listing listing = listingService.getListingById(id);
 
+            boolean isAdmin = adminCheckService.isAdmin(oauth2User);
+            model.addAttribute("isAdmin", isAdmin);
+
             if (!listing.getAuthor().getId().equals(currentUser.getId())) {
                 redirectAttributes.addFlashAttribute("error", "Вы не можете редактировать это объявление");
                 return "redirect:/secure/account";
@@ -186,6 +192,7 @@ public class OwnListingController {
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
+
         try {
             Listing existingListing = listingService.getListingById(id);
 

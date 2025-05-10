@@ -1,4 +1,4 @@
-package org.kirya343.main.services;
+package org.kirya343.main.services.components;
 
 import org.kirya343.main.model.User;
 import org.springframework.stereotype.Service;

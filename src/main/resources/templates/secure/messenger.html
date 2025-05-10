@@ -27,6 +27,8 @@
                     </button>
                 </nav>
 
+                <a th:if="${isAdmin}" href="/admin/dashboard" class="nav-link" th:text="#{header.admin}">Админка</a>
+
                 <!-- Кнопка Новостей -->
                 <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
 

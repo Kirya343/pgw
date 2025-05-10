@@ -21,4 +21,5 @@ public interface ListingService {
     List<Listing> findSimilarListings(String category, Long excludeId, Locale locale);
     void deleteListing(Long id);
     Page<Listing> findActiveByCategoryAndCommunity(String community, String category, Pageable pageable);
+    List<Listing> getRecentListings(int count);
 }

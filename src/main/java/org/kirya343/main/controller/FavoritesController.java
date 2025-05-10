@@ -3,9 +3,10 @@ package org.kirya343.main.controller;
 import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
-import org.kirya343.main.services.AvatarService;
+import org.kirya343.main.services.components.AdminCheckService;
+import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.services.FavoriteListingService;
-import org.kirya343.main.services.StatService;
+import org.kirya343.main.services.components.StatService;
 import org.kirya343.main.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,14 @@ public class FavoritesController {
     private final FavoriteListingService favoriteListingService;
     private final UserService userService;
     private final AvatarService avatarService;
-    private StatService statService;
+    private final AdminCheckService adminCheckService;
 
     @Autowired
-    public FavoritesController(FavoriteListingService favoriteListingService, UserService userService, AvatarService avatarService) {
+    public FavoritesController(FavoriteListingService favoriteListingService, UserService userService, AvatarService avatarService, AdminCheckService adminCheckService) {
         this.favoriteListingService = favoriteListingService;
         this.userService = userService;
         this.avatarService = avatarService;
+        this.adminCheckService = adminCheckService;
     }
 
     @GetMapping("/secure/favorites")
@@ -42,6 +44,9 @@ public class FavoritesController {
         if (oauth2User == null) {
             return "redirect:/login";
         }
+
+        boolean isAdmin = adminCheckService.isAdmin(oauth2User);
+        model.addAttribute("isAdmin", isAdmin);
 
         String email = oauth2User.getAttribute("email");
         User user = userService.findUserFromOAuth2(oauth2User);

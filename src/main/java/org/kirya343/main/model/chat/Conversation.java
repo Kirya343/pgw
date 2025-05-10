@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
-import org.kirya343.main.services.AvatarService;
+import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.services.UserService;
 
 import java.time.LocalDateTime;

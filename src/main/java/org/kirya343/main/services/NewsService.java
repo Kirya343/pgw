@@ -35,29 +35,6 @@ public class NewsService {
         );
     }
 
-    public Map<String, Object> getSiteStats(Locale locale) {
-        Map<String, Object> stats = new HashMap<>();
-
-        // Получаем реальные данные из репозиториев
-        long usersCount = userRepository.count();
-        long activeListingsCount = listingRepository.findByActiveTrue().size();
-        long totalViews = listingRepository.findAll().stream()
-                .mapToInt(Listing::getViews)
-                .sum();
-
-        // Форматируем числа в зависимости от локали
-        NumberFormat numberFormat = NumberFormat.getInstance(locale);
-
-        stats.put("usersCount", formatNumber(usersCount, locale));
-        stats.put("listingsCount", formatNumber(activeListingsCount, locale));
-        stats.put("viewsCount", formatNumber(totalViews, locale));
-
-        // Пока используем фиктивные данные для сделок
-        stats.put("dealsCount", "2,000+");
-
-        return stats;
-    }
-
     private String formatNumber(long number, Locale locale) {
         NumberFormat nf = NumberFormat.getInstance(locale);
         if (number >= 1_000_000) {

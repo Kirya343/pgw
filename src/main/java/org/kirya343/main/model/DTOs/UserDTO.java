@@ -3,7 +3,7 @@ package org.kirya343.main.model.DTOs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.transaction.Transactional;
 import org.kirya343.main.model.User;
-import org.kirya343.main.services.AvatarService;
+import org.kirya343.main.services.components.AvatarService;
 
 @Transactional
 public class UserDTO {

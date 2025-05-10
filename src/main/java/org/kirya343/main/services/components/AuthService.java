@@ -1,6 +1,7 @@
-package org.kirya343.main.services;
+package org.kirya343.main.services.components;
 
 import org.kirya343.main.model.User;
+import org.kirya343.main.services.UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;

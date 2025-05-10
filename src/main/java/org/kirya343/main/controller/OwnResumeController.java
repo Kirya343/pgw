@@ -3,9 +3,12 @@ package org.kirya343.main.controller;
 import org.kirya343.main.model.Resume;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ResumeRepository;
-import org.kirya343.main.services.AvatarService;
+import org.kirya343.main.services.components.AdminCheckService;
+import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.services.StorageService;
 import org.kirya343.main.services.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -25,13 +28,15 @@ public class OwnResumeController {
     private final UserService userService;
     private final StorageService storageService;
     private final AvatarService avatarService;
+    private final AdminCheckService adminCheckService;
 
     public OwnResumeController(ResumeRepository resumeRepository, UserService userService,
-                               StorageService storageService, AvatarService avatarService) {
+                               StorageService storageService, AvatarService avatarService, AdminCheckService adminCheckService) {
         this.resumeRepository = resumeRepository;
         this.userService = userService;
         this.storageService = storageService;
         this.avatarService = avatarService;
+        this.adminCheckService = adminCheckService;
     }
 
     @InitBinder
@@ -40,9 +45,13 @@ public class OwnResumeController {
     }
 
     @GetMapping
-    public String showResume(Model model) {
+    public String showResume(Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
+
         User user = userService.getCurrentUser();
         Optional<Resume> resumeOpt = resumeRepository.findByUser(user);
+
+        boolean isAdmin = adminCheckService.isAdmin(oauth2User);
+        model.addAttribute("isAdmin", isAdmin);
 
         if (resumeOpt.isEmpty()) {
             model.addAttribute("hasResume", false);

@@ -1,4 +1,4 @@
-package org.kirya343.main.services;
+package org.kirya343.main.services.chat;
 
 import jakarta.transaction.Transactional;
 import org.kirya343.main.controller.mappers.ChatMapper;

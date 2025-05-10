@@ -6,6 +6,10 @@ import org.kirya343.main.model.DTOs.ConversationDTO;
 import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.DTOs.MessageDTO;
 import org.kirya343.main.services.*;
+import org.kirya343.main.services.chat.ChatService;
+import org.kirya343.main.services.components.AdminCheckService;
+import org.kirya343.main.services.components.AvatarService;
+import org.kirya343.main.services.components.StatService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +28,18 @@ import java.util.List;
 public class MessengerController {
     private static final Logger logger = LoggerFactory.getLogger(MessengerController.class);
 
-    @Autowired
-    private ChatService chatService;
+    private final ChatService chatService;
     private final AvatarService avatarService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ListingService listingService;
-    @Autowired
-    private StatService statService;
+    private final UserService userService;
+    private final ListingService listingService;
+    private final AdminCheckService adminCheckService;
 
-    public MessengerController(AvatarService avatarService) {
+    public MessengerController(ChatService chatService, AvatarService avatarService, UserService userService, ListingService listingService, AdminCheckService adminCheckService) {
+        this.chatService = chatService;
         this.avatarService = avatarService;
+        this.userService = userService;
+        this.listingService = listingService;
+        this.adminCheckService = adminCheckService;
     }
 
     @GetMapping("/secure/messenger")
@@ -47,6 +51,10 @@ public class MessengerController {
             logger.warn("User is not authenticated, redirecting to login.");
             return "redirect:/login";  // Редирект должен быть первым
         }
+
+        boolean isAdmin = adminCheckService.isAdmin(oauth2User);
+        model.addAttribute("isAdmin", isAdmin);
+
 
         // Авторизованный пользователь
         User currentUser = userService.findUserFromOAuth2(oauth2User);

@@ -5,10 +5,13 @@ import org.kirya343.main.model.User;
 import org.kirya343.main.repository.UserRepository;
 import org.kirya343.main.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -152,6 +155,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+    @Override
+    public List<User> getRecentUsers(int count) {
+        return userRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, count)).getContent();
     }
 }
 

@@ -46,15 +46,16 @@ spring:
               - openid
               - profile
               - email
-            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            #redirect-uri: https://workswap.org/login/oauth2/code/google http://localhost:8080/login/oauth2/code/google
             authorization-grant-type: authorization_code
             client-name: Google
         provider:
           google:
-            #authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
-            #token-uri: https://oauth2.googleapis.com/token
-            #user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
-            #user-name-attribute: sub
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
             jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
             issuer-uri: https://accounts.google.com
   messages:
@@ -77,4 +78,7 @@ logging:
         security.oauth2.core: TRACE
         security.oauth2.jwt: DEBUG
         security.oauth2.resource: DEBUG
-      kirya343: DEBUG # Замените на ваш основной пакет
+      kirya343:
+        auth:
+          services: DEBUG
+        config: DEBUG

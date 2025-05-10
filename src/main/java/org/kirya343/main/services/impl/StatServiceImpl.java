@@ -3,16 +3,21 @@ package org.kirya343.main.services.impl;
 import lombok.RequiredArgsConstructor;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
-import org.kirya343.main.services.StatService;
+import org.kirya343.main.repository.ListingRepository;
+import org.kirya343.main.repository.UserRepository;
+import org.kirya343.main.services.components.StatService;
 import org.springframework.stereotype.Service;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class StatServiceImpl implements StatService {
+
+    private final UserRepository userRepository;
+    private final ListingRepository listingRepository;
 
     @Override
     public int getTotalViews(User user) {
@@ -94,5 +99,28 @@ public class StatServiceImpl implements StatService {
                 })
                 .mapToInt(listing -> listing.getRating() > 4.0 ? 1 : 0) // Пример: если рейтинг больше 4, считаем сделку завершенной
                 .sum();
+    }
+
+    public Map<String, Object> getSiteStats(Locale locale) {
+        Map<String, Object> stats = new HashMap<>();
+
+        // Получаем реальные данные из репозиториев
+        long usersCount = userRepository.count();
+        long activeListingsCount = listingRepository.findByActiveTrue().size();
+        long totalViews = listingRepository.findAll().stream()
+                .mapToInt(Listing::getViews)
+                .sum();
+
+        // Форматируем числа в зависимости от локали
+        NumberFormat numberFormat = NumberFormat.getInstance(locale);
+
+        stats.put("usersCount", numberFormat.format(usersCount));
+        stats.put("listingsCount", numberFormat.format(activeListingsCount));
+        stats.put("viewsCount", numberFormat.format(totalViews));
+
+        // Пока используем фиктивные данные для сделок
+        stats.put("dealsCount", "2,000+");
+
+        return stats;
     }
 }

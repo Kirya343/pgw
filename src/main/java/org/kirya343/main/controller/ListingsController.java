@@ -4,6 +4,8 @@ import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Review;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.*;
+import org.kirya343.main.services.components.AuthService;
+import org.kirya343.main.services.components.AvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -12,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;

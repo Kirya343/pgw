@@ -3,6 +3,8 @@ package org.kirya343.main.services;
 import org.kirya343.main.model.User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.util.List;
+
 public interface UserService {
     // Удаляем дублирующийся метод
     void setAvatarUrl(Long userId, String avatarUrl);
@@ -18,4 +20,6 @@ public interface UserService {
     void setRole(Long userId, String role);
     User getCurrentUser();
     User findById(Long id);
+
+    List<User> getRecentUsers(int count);
 }

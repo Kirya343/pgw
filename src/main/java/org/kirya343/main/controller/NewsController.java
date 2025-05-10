@@ -2,6 +2,7 @@ package org.kirya343.main.controller;
 
 import org.kirya343.main.model.News;
 import org.kirya343.main.services.NewsService;
+import org.kirya343.main.services.components.StatService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,9 +15,11 @@ import java.util.Map;
 @Controller
 public class NewsController {
     private final NewsService newsService;
+    private final StatService statService;
 
-    public NewsController(NewsService newsService) {
+    public NewsController(NewsService newsService, StatService statService) {
         this.newsService = newsService;
+        this.statService = statService;
     }
 
     @GetMapping("/news")
@@ -24,7 +27,7 @@ public class NewsController {
                           Locale locale,
                           Model model) {
         Page<News> newsPage = newsService.getPublishedNews(page);
-        Map<String, Object> siteStats = newsService.getSiteStats(locale);
+        Map<String, Object> siteStats = statService.getSiteStats(locale);
 
         model.addAttribute("news", newsPage.getContent());
         model.addAttribute("currentPage", page);
