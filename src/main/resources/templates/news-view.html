@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${news.title} + ' | WorkSwap'">Новость | WorkSwap</title>
+    <link href="/css/public/pages/news-page.css" rel="stylesheet">
+    <link href="/css/public/pages/news-view.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav class="navbar">
+            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
+            <button class="navbar-toggler">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse">
+                <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
+                <div class="d-flex">
+                    <div th:unless="${isAuthenticated}">
+                        <a href="/login" class="btn btn-outline-primary login-link" th:text="#{header.login}">Вход</a>
+                        <a href="/register" class="btn btn-primary" th:text="#{header.register}">Регистрация</a>
+                    </div>
+                    <div th:if="${isAuthenticated}" class="account-info">
+                        <a th:href="@{/secure/account}" class="account-link">
+                            <img th:src="${avatarUrl}"
+                                 class="account-avatar"
+                                 alt="Аватар"
+                                 th:onerror="this.src='/images/avatar-placeholder.jpg'">
+                            <span th:text="${userName}">Пользователь</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<!-- Основной контент -->
+<div class="news-container">
+    <div class="news-layout">
+        <main class="news-main">
+            <!-- Хлебные крошки -->
+            <nav class="breadcrumbs">
+                <a href="/news" th:text="#{header.news}">Новости</a>
+                <span> / </span>
+                <span th:text="${news.title}">Название новости</span>
+            </nav>
+
+            <!-- Заголовок новости -->
+            <div class="news-header">
+                <h1 th:text="${news.title}">Название новости</h1>
+                <div class="news-image" th:if="${news.imageUrl != null}">
+                    <img th:src="@{'/' + ${news.imageUrl}}"
+                         th:onerror="this.src='/images/default-listing.png'"
+                         alt="Изображение новости"
+                         class="clickable-image" th:data-fullscreen="@{'/' + ${news.imageUrl}}">
+                    <div class="news-meta">
+                        <span class="news-date" th:text="${#temporals.format(news.publishDate, 'dd.MM.yyyy')}">01.01.2023</span>
+                        <span class="news-author" th:if="${news.author != null}" th:text="'Автор: ' + ${news.author}">Автор: Администратор</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Полноэкранное модальное окно для изображения -->
+            <div id="fullscreen-modal" class="fullscreen-modal">
+                <span class="close" id="close-modal">&times;</span>
+                <img id="fullscreen-image" src="" alt="Изображение новости">
+            </div>
+
+            <!-- Содержимое новости -->
+            <div class="news-content">
+                <div class="news-excerpt" th:if="${news.excerpt != null}">
+                    <p th:text="${news.excerpt}" class="lead">Краткое описание новости</p>
+                </div>
+                
+                <div class="news-text" th:utext="${news.content}">
+                    Полное содержание новости. Может содержать HTML разметку.
+                </div>
+            </div>
+
+            <!-- Кнопки для админа -->
+            <div class="news-actions" th:if="${isAdmin}">
+                <a th:href="@{'/admin/news/edit/' + ${news.id}}" class="btn btn-primary" th:text="#{news.edit}">Редактировать</a>
+                <a th:href="@{'/admin/news/delete/' + ${news.id}}" 
+                   class="btn btn-outline-primary" 
+                   th:text="#{news.delete}"
+                   onclick="return confirm('Вы уверены, что хотите удалить эту новость?');">
+                    Удалить
+                </a>
+            </div>
+
+            <!-- Похожие новости -->
+            <section class="similar-news" th:if="${similarNews != null and !similarNews.isEmpty()}">
+                <h2 th:text="#{similar.news.title}">Похожие новости</h2>
+                <div class="news-grid">
+                    <article th:each="similar : ${similarNews}" class="news-card">
+                        <a th:href="@{'/news/' + ${similar.id}}">
+                            <img th:src="@{${similar.imageUrl ?: '/images/default-news.png'}}"
+                                 class="news-img"
+                                 alt="Изображение новости">
+                        </a>
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <a th:href="@{'/news/' + ${similar.id}}" th:text="${similar.title}">
+                                    Название новости
+                                </a>
+                            </h3>
+                            <p class="card-text" th:text="${#strings.abbreviate(similar.excerpt, 100)}">
+                                Краткое описание новости...
+                            </p>
+                            <div class="card-footer">
+                                <span class="news-date" th:text="${#temporals.format(similar.publishDate, 'dd.MM.yyyy')}">
+                                    01.01.2023
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<!-- Языковой переключатель -->
+<div class="language-toggle">
+    <input type="checkbox" id="langToggle">
+    <label for="langToggle" class="lang-wrapper">
+        <div class="lang-button">
+            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
+        </div>
+        <div class="lang-dropdown">
+            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
+                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
+                <span>Русский</span>
+            </a>
+            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
+                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
+                <span>Suomi</span>
+            </a>
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
+                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
+                <span>English</span>
+            </a>
+        </div>
+    </label>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Мобильное меню
+    document.querySelector('.navbar-toggler').addEventListener('click', function() {
+        document.querySelector('.navbar-collapse').classList.toggle('show');
+    });
+
+    // Полноэкранное изображение
+    const images = document.querySelectorAll('.clickable-image');
+    const modal = document.getElementById('fullscreen-modal');
+    const fullscreenImage = document.getElementById('fullscreen-image');
+    const closeModal = document.getElementById('close-modal');
+
+    images.forEach(image => {
+        image.addEventListener('click', function() {
+            const imageUrl = this.getAttribute('data-fullscreen');
+            fullscreenImage.src = imageUrl;
+            modal.classList.add('show');
+        });
+    });
+
+    closeModal.addEventListener('click', function() {
+        modal.classList.remove('show');
+    });
+
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.classList.remove('show');
+        }
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/js/websocket-global.js"></script>
+<script src="/js/components/login-back-redirect.js"></script>
+</body>
+</html>

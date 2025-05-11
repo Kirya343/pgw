@@ -1,12 +1,21 @@
 @import url(../../public/components/footer.css);
 @import url(../../public/components/base.css);
 @import url(../../public/components/header.css);
+@import url(../../admin/components/buttons.css);
 @import url(../../variables.css);
 
 /* Основные стили админки */
 .admin-layout {
     display: flex;
     min-height: 100vh;
+}
+
+h1 {
+    margin-bottom: 0;
+}
+
+h2 {
+    text-align: center;
 }
 
 .admin-sidebar {
@@ -43,6 +52,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--primary);
+    text-align: center;
 }
 
 .admin-user {
@@ -146,6 +156,7 @@
     border-radius: var(--radius);
     overflow: hidden;
     box-shadow: 0 2px 4px var(--shadow-color);
+    margin-bottom: 1rem;
 }
 
 .admin-table th {
@@ -168,41 +179,8 @@
     background-color: rgba(99, 102, 241, 0.05);
 }
 
-/* Кнопки */
-.btn-admin {
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius);
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-}
-
-.btn-admin-primary {
-    background-color: var(--primary);
-    color: var(--white);
-}
-
-.btn-admin-primary:hover {
-    background-color: var(--primary-dark);
-}
-
 .btn-admin-danger {
-    background-color: #ef4444;
-    color: var(--white);
-}
-
-.btn-admin-danger:hover {
-    background-color: #dc2626;
-}
-
-.btn-admin-secondary {
-    background-color: var(--border-color);
-    color: var(--dark);
-}
-
-.btn-admin-secondary:hover {
-    background-color: #d1d5db;
+    margin-left: 1rem;
 }
 
 /* Формы */

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ListingRepository;
+import org.kirya343.main.repository.ResumeRepository;
 import org.kirya343.main.repository.UserRepository;
 import org.kirya343.main.services.components.StatService;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class StatServiceImpl implements StatService {
 
     private final UserRepository userRepository;
     private final ListingRepository listingRepository;
+    private final ResumeRepository resumeRepository;
 
     @Override
     public int getTotalViews(User user) {
@@ -106,6 +108,7 @@ public class StatServiceImpl implements StatService {
 
         // Получаем реальные данные из репозиториев
         long usersCount = userRepository.count();
+        long resumesCount = resumeRepository.countByPublishedTrue();
         long activeListingsCount = listingRepository.findByActiveTrue().size();
         long totalViews = listingRepository.findAll().stream()
                 .mapToInt(Listing::getViews)
@@ -117,6 +120,7 @@ public class StatServiceImpl implements StatService {
         stats.put("usersCount", numberFormat.format(usersCount));
         stats.put("listingsCount", numberFormat.format(activeListingsCount));
         stats.put("viewsCount", numberFormat.format(totalViews));
+        stats.put("resumesCount", numberFormat.format(resumesCount));
 
         // Пока используем фиктивные данные для сделок
         stats.put("dealsCount", "2,000+");

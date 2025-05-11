@@ -1,0 +1,36 @@
+/* Кнопки */
+.btn-admin {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.btn-admin-primary {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+.btn-admin-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-admin-danger {
+    background-color: #ef4444;
+    color: var(--white);
+}
+
+.btn-admin-danger:hover {
+    background-color: #dc2626;
+}
+
+.btn-admin-secondary {
+    background-color: var(--border-color);
+    color: var(--dark);
+}
+
+.btn-admin-secondary:hover {
+    background-color: #d1d5db;
+}

@@ -18,7 +18,7 @@
 
         <nav class="admin-nav">
             <div class="admin-nav-title">Основное</div>
-            <a href="#" class="admin-nav-item active">
+            <a href="/admin/dashboard" class="admin-nav-item active">
                 <i class="fas fa-tachometer-alt"></i> Панель управления
             </a>
             <a href="#" class="admin-nav-item">
@@ -32,7 +32,7 @@
             </a>
 
             <div class="admin-nav-title">Контент</div>
-            <a href="#" class="admin-nav-item">
+            <a href="/admin/news" class="admin-nav-item">
                 <i class="fas fa-newspaper"></i> Новости
             </a>
             <a href="#" class="admin-nav-item">
@@ -69,28 +69,28 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-card-title">Пользователи</div>
-                <div class="stat-card-value">1,245</div>
+                <div class="stat-card-value" th:text="${stats.usersCount}">000</div>
                 <div class="stat-card-change positive">
                     <i class="fas fa-arrow-up"></i> 12% за месяц
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-card-title">Объявления</div>
-                <div class="stat-card-value">568</div>
+                <div class="stat-card-value" th:text="${stats.listingsCount}">000</div>
                 <div class="stat-card-change positive">
                     <i class="fas fa-arrow-up"></i> 5% за месяц
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-card-title">Резюме</div>
-                <div class="stat-card-value">324</div>
+                <div class="stat-card-value" ${stats.resumeCount}>000</div>
                 <div class="stat-card-change negative">
                     <i class="fas fa-arrow-down"></i> 2% за месяц
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-card-title">Доход</div>
-                <div class="stat-card-value">€2,450</div>
+                <div class="stat-card-value">€000</div>
                 <div class="stat-card-change positive">
                     <i class="fas fa-arrow-up"></i> 18% за месяц
                 </div>
@@ -115,50 +115,24 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>#1254</td>
-                        <td>Ремонт компьютеров</td>
-                        <td>Иван Петров</td>
-                        <td>€25/час</td>
-                        <td>12.05.2023</td>
+                    <tr th:each="listing : ${recentListings}">
+                        <td th:text="'#' + ${listing.id}">#0000</td>
+                        <td th:text="${listing.localizedTitle}">Название</td>
+                        <td th:text="${listing.author.name}">Автор</td>
+                        <td th:text="${listing.price} + (listing.priceType != null ? ' / ' + listing.priceType : '')">€0</td>
+                        <td th:text="${#temporals.format(listing.createdAt, 'dd.MM.yyyy')}">дд.мм.гггг</td>
                         <td>
-                            <button class="btn-admin btn-admin-secondary mr-1">
+                            <a th:href="@{/listing/{id}(id=${listing.id})}" class="btn-admin btn-admin-secondary mr-1">
                                 <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-admin btn-admin-danger">
+                            </a>
+                            <a th:href="@{/admin/listing/delete/{id}(id=${listing.id})}" class="btn-admin btn-admin-danger"
+                            onclick="return confirm('Удалить это объявление?');">
                                 <i class="fas fa-trash"></i>
-                            </button>
+                            </a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>#1253</td>
-                        <td>Уборка квартиры</td>
-                        <td>Мария Сидорова</td>
-                        <td>€50</td>
-                        <td>11.05.2023</td>
-                        <td>
-                            <button class="btn-admin btn-admin-secondary mr-1">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-admin btn-admin-danger">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#1252</td>
-                        <td>Уроки английского</td>
-                        <td>Алексей Иванов</td>
-                        <td>€30/час</td>
-                        <td>10.05.2023</td>
-                        <td>
-                            <button class="btn-admin btn-admin-secondary mr-1">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-admin btn-admin-danger">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
+                    <tr th:if="${#lists.isEmpty(recentListings)}">
+                        <td colspan="6" class="text-center">Нет объявлений</td>
                     </tr>
                     </tbody>
                 </table>
@@ -183,41 +157,26 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>#5421</td>
-                        <td>Ольга Кузнецова</td>
-                        <td>olga@example.com</td>
-                        <td>12.05.2023</td>
-                        <td><span class="badge bg-success">Активен</span></td>
+                    <tr th:each="user : ${recentUsers}">
+                        <td th:text="'#' + ${user.id}">#0000</td>
+                        <td th:text="${user.name}">Имя</td>
+                        <td th:text="${user.email}">email@example.com</td>
+                        <td th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy')}">дд.мм.гггг</td>
                         <td>
-                            <button class="btn-admin btn-admin-primary">
+                            <span class="badge"
+                                th:classappend="${user.enabled} ? ' bg-success' : ' bg-danger'"
+                                th:text="${user.enabled} ? 'Активен' : 'Заблокирован'">
+                                Статус
+                            </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/user/{id}(id=${user.id})}" class="btn-admin btn-admin-primary">
                                 <i class="fas fa-user-cog"></i>
-                            </button>
+                            </a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>#5420</td>
-                        <td>Дмитрий Смирнов</td>
-                        <td>dmitry@example.com</td>
-                        <td>11.05.2023</td>
-                        <td><span class="badge bg-warning">На проверке</span></td>
-                        <td>
-                            <button class="btn-admin btn-admin-primary">
-                                <i class="fas fa-user-cog"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#5419</td>
-                        <td>Анна Васнецова</td>
-                        <td>anna@example.com</td>
-                        <td>10.05.2023</td>
-                        <td><span class="badge bg-danger">Заблокирован</span></td>
-                        <td>
-                            <button class="btn-admin btn-admin-primary">
-                                <i class="fas fa-user-cog"></i>
-                            </button>
-                        </td>
+                    <tr th:if="${#lists.isEmpty(recentUsers)}">
+                        <td colspan="6" class="text-center">Нет пользователей</td>
                     </tr>
                     </tbody>
                 </table>

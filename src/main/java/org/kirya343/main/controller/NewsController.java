@@ -1,14 +1,25 @@
 package org.kirya343.main.controller;
 
 import org.kirya343.main.model.News;
+import org.kirya343.main.model.User;
 import org.kirya343.main.services.NewsService;
+import org.kirya343.main.services.UserService;
+import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.StatService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -16,18 +27,32 @@ import java.util.Map;
 public class NewsController {
     private final NewsService newsService;
     private final StatService statService;
+    private final AuthService authService;
+    private final UserService userService;
 
-    public NewsController(NewsService newsService, StatService statService) {
+    public NewsController(NewsService newsService, 
+                        StatService statService, 
+                        AuthService authService,
+                        UserService userService) {
         this.newsService = newsService;
         this.statService = statService;
+        this.authService = authService;
+        this.userService = userService;
     }
 
     @GetMapping("/news")
     public String getNews(@RequestParam(defaultValue = "0") int page,
-                          Locale locale,
-                          Model model) {
+                         Locale locale,
+                         Model model, 
+                         @AuthenticationPrincipal OAuth2User oauth2User) {
         Page<News> newsPage = newsService.getPublishedNews(page);
         Map<String, Object> siteStats = statService.getSiteStats(locale);
+
+        User user = null;
+        if (oauth2User != null) {
+            user = userService.findUserFromOAuth2(oauth2User);
+        }
+        authService.addAuthenticationAttributes(model, oauth2User, user);
 
         model.addAttribute("news", newsPage.getContent());
         model.addAttribute("currentPage", page);
@@ -35,5 +60,35 @@ public class NewsController {
         model.addAttribute("stats", siteStats);
 
         return "news";
+    }
+
+    @GetMapping("/news/{id}")
+    public String viewNews(@PathVariable Long id,
+                         @AuthenticationPrincipal OAuth2User oauth2User,
+                         Model model) {
+        // Получаем новость по ID
+        News news = newsService.findById(id)
+            .orElseThrow();
+
+        // Проверяем, является ли пользователь администратором
+        boolean isAdmin = oauth2User != null && 
+                        oauth2User.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        
+        // Получаем 3 похожие новости
+        Page<News> similarNews = newsService.findSimilarNews(news, PageRequest.of(0, 3));
+
+        // Добавляем атрибуты в модель
+        model.addAttribute("news", news);
+        model.addAttribute("similarNews", similarNews);
+        model.addAttribute("isAdmin", isAdmin);
+        
+        // Обработка аутентификации через AuthService
+        User user = null;
+        if (oauth2User != null) {
+            user = userService.findUserFromOAuth2(oauth2User);
+        }
+        authService.addAuthenticationAttributes(model, oauth2User, user);
+
+        return "news-view";
     }
 }

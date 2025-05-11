@@ -19,4 +19,5 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
 
     @Query("SELECT r FROM Resume r LEFT JOIN FETCH r.user WHERE r.id = :id")
     Optional<Resume> findByIdWithUser(@Param("id") Long id);
+    long countByPublishedTrue();
 }

@@ -33,48 +33,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-//@Configuration
-//@EnableWebSecurity
-//public class SecurityConfig {
-//
-//    private final ForcedOAuth2UserService forcedOAuth2UserService;
-//
-//    public SecurityConfig(ForcedOAuth2UserService forcedOAuth2UserService) {
-//        this.forcedOAuth2UserService = forcedOAuth2UserService;
-//        System.out.println("SecurityConfig initialized with ForcedOAuth2UserService");
-//    }
-//
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/admin/**").hasRole("ADMIN")
-//                        .requestMatchers("/secure/**").authenticated()
-//                        .anyRequest().permitAll()
-//                )
-//                .oauth2Login(oauth2 -> {
-//                    oauth2.loginPage("/login");
-//                    oauth2.userInfoEndpoint(userInfo -> {
-//                        System.out.println("EXPLICITLY SETTING ForcedOAuth2UserService");
-//                        userInfo.userService(forcedOAuth2UserService);
-//                    });
-//                    oauth2.successHandler((request, response, authentication) -> {
-//                        System.out.println("AUTHENTICATION SUCCESS. AUTHORITIES: " + authentication.getAuthorities());
-//                        response.sendRedirect("/secure/account");
-//                    });
-//                });
-//
-//        return http.build();
-//    }
-//}
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private static final String ADMIN_EMAIL = "kkodolov40@gmail.com";
 
-    private static final String RED = "\u001B[31m";
+    private static final String GREEN = "\u001B[32m";
     private static final String RESET = "\u001B[0m";
 
     private final ForcedOAuth2UserService forcedOAuth2UserService;
@@ -85,16 +50,16 @@ public class SecurityConfig {
         this.forcedOAuth2UserService = forcedOAuth2UserService;
         this.userService = userService;
         this.userRepository = userRepository;
-        System.out.println(RED + "SecurityConfig initialized" + RESET);
+        //System.out.println(GREEN + "SecurityConfig initialized" + RESET);
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println(RED + "Configuring SecurityFilterChain" + RESET);
+        //System.out.println(GREEN + "Configuring SecurityFilterChain" + RESET);
 
         http
                 .authorizeHttpRequests(auth -> {
-                    System.out.println(RED + "Setting authorization rules" + RESET);
+                    //System.out.println(GREEN + "Setting authorization rules" + RESET);
                     auth.requestMatchers("/admin/**").hasRole("ADMIN")
                             .requestMatchers("/secure/**").authenticated()
                             .requestMatchers("/uploads/**").permitAll()
@@ -102,7 +67,7 @@ public class SecurityConfig {
                             .anyRequest().permitAll();
                 })
                 .oauth2Login(oauth2 -> {
-                    System.out.println(RED + "Configuring OAuth2 login" + RESET);
+                    //System.out.println(GREEN + "Configuring OAuth2 login" + RESET);
                     oauth2.loginPage("/login")
                             .userInfoEndpoint(userInfo -> userInfo
                                     .userService(createOAuth2UserService())
@@ -125,7 +90,7 @@ public class SecurityConfig {
                                 savedRequestAuthenticationSuccessHandler().onAuthenticationSuccess(request, response, authentication);
                             })
                             .failureHandler((request, response, exception) -> {
-                                System.out.println(RED + "OAuth2 login failed: " + exception.getMessage() + RESET);
+                                //System.out.println(GREEN + "OAuth2 login failed: " + exception.getMessage() + RESET);
                                 if (exception.getMessage().contains("user_not_registered")) {
                                     response.sendRedirect("/register?oauth2_error=user_not_registered");
                                 } else {
@@ -134,13 +99,13 @@ public class SecurityConfig {
                             });
                 })
                 .formLogin(form -> {
-                    System.out.println(RED + "Configuring form login" + RESET);
+                    //System.out.println(GREEN + "Configuring form login" + RESET);
                     form.loginPage("/login")
                             .successHandler((request, response, authentication) -> {
                                 // Проверяем, является ли пользователь админом
                                 if (authentication.getAuthorities().stream()
                                         .anyMatch(g -> g.getAuthority().equals("ROLE_ADMIN"))) {
-                                    System.out.println(RED + "админ авторизовался" + RESET);
+                                    System.out.println(GREEN + "админ авторизовался" + RESET);
                                 }
                                 savedRequestAuthenticationSuccessHandler().onAuthenticationSuccess(request, response, authentication);
                             })
@@ -148,14 +113,14 @@ public class SecurityConfig {
                             .permitAll();
                 })
                 .logout(logout -> {
-                    System.out.println(RED + "Configuring logout" + RESET);
+                    //System.out.println(GREEN + "Configuring logout" + RESET);
                     logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                             .logoutSuccessUrl("/")
                             .invalidateHttpSession(true)
                             .deleteCookies("JSESSIONID");
                 })
                 .csrf(csrf -> {
-                    System.out.println(RED + "Configuring CSRF ignoring for /api/applications/** and /ws/**" + RESET);
+                    //System.out.println(GREEN + "Configuring CSRF ignoring for /api/applications/** and /ws/**" + RESET);
                     csrf.ignoringRequestMatchers("/api/applications/**", "/ws/**");
                 });
 
@@ -170,13 +135,13 @@ public class SecurityConfig {
             OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
             String email = oAuth2User.getAttribute("email");
-            System.out.println("Processing OAuth2 login for: " + email);
+            //System.out.println("Processing OAuth2 login for: " + email);
 
             // Форсированно назначаем роль для админского email
             Set<GrantedAuthority> authorities = new HashSet<>(oAuth2User.getAuthorities());
             if (ADMIN_EMAIL.equalsIgnoreCase(email)) {
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-                System.out.println("Granted ADMIN role to: " + email);
+                //System.out.println("Granted ADMIN role to: " + email);
             } else {
                 authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
             }
@@ -191,7 +156,7 @@ public class SecurityConfig {
 
     @Bean
     public SavedRequestAwareAuthenticationSuccessHandler savedRequestAuthenticationSuccessHandler() {
-        System.out.println(RED + "Creating SavedRequestAwareAuthenticationSuccessHandler" + RESET);
+        //System.out.println(GREEN + "Creating SavedRequestAwareAuthenticationSuccessHandler" + RESET);
         SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler();
         handler.setDefaultTargetUrl("/catalog");
         handler.setAlwaysUseDefaultTargetUrl(false);
@@ -200,19 +165,19 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        System.out.println(RED + "Creating PasswordEncoder (BCrypt)" + RESET);
+        //System.out.println(GREEN + "Creating PasswordEncoder (BCrypt)" + RESET);
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public MultipartConfigElement multipartConfigElement() {
-        System.out.println(RED + "Creating MultipartConfigElement" + RESET);
+        //System.out.println(GREEN + "Creating MultipartConfigElement" + RESET);
         return new MultipartConfigElement("", 5 * 1024 * 1024, 5 * 1024 * 1024, 0);
     }
 
     @Bean
     public InMemoryUserDetailsManager userDetailsService(PasswordEncoder encoder) {
-        System.out.println(RED + "Creating InMemoryUserDetailsManager with admins" + RESET);
+        //System.out.println(GREEN + "Creating InMemoryUserDetailsManager with admins" + RESET);
         UserDetails admin1 = User.builder()
                 .username("kirya343")
                 .password(encoder.encode("PGW353"))
@@ -230,7 +195,7 @@ public class SecurityConfig {
 
     @Bean
     public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
-        System.out.println(RED + "Creating CustomAuthenticationSuccessHandler" + RESET);
+        //System.out.println(GREEN + "Creating CustomAuthenticationSuccessHandler" + RESET);
         return new CustomAuthenticationSuccessHandler();
     }
 }

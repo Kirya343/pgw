@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новости | WorkSwap Admin</title>
+    <link href="/css/admin/pages/news/news-list.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<div class="admin-layout">
+    <!-- Сайдбар -->
+    <aside class="admin-sidebar">
+        <div class="text-center mb-4">
+            <h2 class="admin-logo">WorkSwap Admin</h2>
+        </div>
+
+        <nav class="admin-nav">
+            <div class="admin-nav-title">Основное</div>
+            <a href="/admin/dashboard" class="admin-nav-item">
+                <i class="fas fa-tachometer-alt"></i> Панель управления
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-list"></i> Объявления
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-file-alt"></i> Резюме
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-users"></i> Пользователи
+            </a>
+
+            <div class="admin-nav-title">Контент</div>
+            <a href="/admin/news" class="admin-nav-item active">
+                <i class="fas fa-newspaper"></i> Новости
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-comments"></i> Отзывы
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-question-circle"></i> Вопросы
+            </a>
+
+            <div class="admin-nav-title">Настройки</div>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-cog"></i> Системные
+            </a>
+            <a href="#" class="admin-nav-item">
+                <i class="fas fa-language"></i> Локализация
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Основной контент -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1>Управление новостями</h1>
+            <div class="admin-user">
+                <span>Администратор</span>
+                <img src="/images/avatar-placeholder.png" alt="Аватар" class="admin-user-avatar">
+            </div>
+        </header>
+        <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard">Главная</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Новости</li>
+                    </ol>
+                </nav>
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2>Список новостей</h2>
+                    <a href="/admin/news/create" class="btn-admin btn-admin-primary">
+                        <i class="fas fa-plus"></i> Добавить новость
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Заголовок</th>
+                        <th>Автор</th>
+                        <th>Дата публикации</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="news : ${newsList}">
+                        <td th:text="${news.id}">#0000</td>
+                        <td th:text="${news.title}">Заголовок новости</td>
+                        <td th:text="${news.author}">Автор</td>
+                        <td th:text="${#temporals.format(news.publishDate, 'dd.MM.yyyy HH:mm')}">дд.мм.гггг</td>
+                        <td>
+                            <span class="badge" 
+                                  th:classappend="${news.published} ? 'bg-success' : 'bg-secondary'"
+                                  th:text="${news.published} ? 'Опубликовано' : 'Черновик'">
+                                Статус
+                            </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/news/edit/{id}(id=${news.id})}" 
+                               class="btn-admin btn-admin-primary mr-1">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a th:href="@{/admin/news/delete/{id}(id=${news.id})}" 
+                               class="btn-admin btn-admin-danger"
+                               onclick="return confirm('Удалить эту новость?');">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(newsList)}">
+                        <td colspan="6" class="text-center">Нет новостей</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
