@@ -1,4 +1,4 @@
-package org.kirya343.main.controller;
+package org.kirya343.main.controller.secure;
 
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Location;

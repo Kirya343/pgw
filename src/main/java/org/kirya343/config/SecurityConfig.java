@@ -172,7 +172,7 @@ public class SecurityConfig {
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         //System.out.println(GREEN + "Creating MultipartConfigElement" + RESET);
-        return new MultipartConfigElement("", 5 * 1024 * 1024, 5 * 1024 * 1024, 0);
+        return new MultipartConfigElement("", 10 * 1024 * 1024, 10 * 1024 * 1024, 0);
     }
 
     @Bean

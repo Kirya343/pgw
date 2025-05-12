@@ -1,4 +1,4 @@
-package org.kirya343.main.controller;
+package org.kirya343.main.controller.secure;
 
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.Listing;
@@ -120,6 +120,9 @@ public class AccountController {
         model.addAttribute("deals", deals);
         model.addAttribute("rating", averageRating);
 
+        // Переменная для отображения активной страницы
+        model.addAttribute("activePage", "account");
+
         return "secure/account";
     }
 
@@ -137,6 +140,10 @@ public class AccountController {
         model.addAttribute("user", user);
         model.addAttribute("avatarUrlPath", avatarUrlPath);
         model.addAttribute("avatarPath", avatarPath);
+
+        // Переменная для отображения активной страницы
+        model.addAttribute("activePage", "edit");
+
         return "secure/account/edit";
     }
     @PostMapping("/secure/account/update")

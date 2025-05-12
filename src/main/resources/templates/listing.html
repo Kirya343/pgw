@@ -334,37 +334,11 @@
         </main>
     </div>
 </div>
-<div class="language-toggle">
-    <input type="checkbox" id="langToggle">
-    <label for="langToggle" class="lang-wrapper">
-        <!-- Основная кнопка с текущим языком -->
-        <div class="lang-button">
-            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
-        </div>
-
-        <!-- Выпадающий список языков -->
-        <div class="lang-dropdown">
-            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
-                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
-                <span>Русский</span>
-            </a>
-            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
-                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
-                <span>Suomi</span>
-            </a>
-            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
-                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
-                <span>English</span>
-            </a>
-        </div>
-    </label>
-</div>
+<!-- Языковой переключатель -->
+<div th:replace="fragments/language-switch :: langSwitcher"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/components/mobile-menu.js"></script>
 <script>
-    // Мобильное меню
-    document.querySelector('.navbar-toggler').addEventListener('click', function() {
-        document.querySelector('.navbar-collapse').classList.toggle('show');
-    });
     // Получаем все изображения, по которым будет открываться полный экран
     const images = document.querySelectorAll('.clickable-image');
     const modal = document.getElementById('fullscreen-modal');

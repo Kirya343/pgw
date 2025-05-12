@@ -2,6 +2,7 @@ package org.kirya343.main.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import net.coobird.thumbnailator.Thumbnails;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,7 +15,7 @@ import java.util.UUID;
 public class StorageService {
     private final Path rootLocation = Paths.get("uploads").toAbsolutePath().normalize();
     private final Set<String> allowedExtensions = Set.of(".jpg", ".jpeg", ".png", ".gif");
-    private final long maxFileSize = 5 * 1024 * 1024; // 5MB
+    private final long maxFileSize = 10 * 1024 * 1024; // 5MB
 
 
     public StorageService() {
@@ -26,17 +27,14 @@ public class StorageService {
     }
 
     public String storeImage(MultipartFile file) throws IOException {
-        // Проверка пустого файла
         if (file.isEmpty()) {
             throw new RuntimeException("Failed to store empty file");
         }
 
-        // Проверка размера файла
         if (file.getSize() > maxFileSize) {
-            throw new RuntimeException("File size exceeds 5MB limit");
+            throw new RuntimeException("File size exceeds 10MB limit");
         }
 
-        // Проверка расширения файла
         String originalFilename = file.getOriginalFilename();
         String fileExtension = originalFilename != null ?
                 originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase() : "";
@@ -45,21 +43,21 @@ public class StorageService {
             throw new RuntimeException("Only JPG, JPEG, PNG, GIF images are allowed");
         }
 
-        // Генерация уникального имени файла + кодировка
         String filename = UUID.randomUUID().toString() + fileExtension;
-
-        // Путь до конечной папки (можно использовать rootLocation, если путь настраивается)
         Path destinationFile = this.rootLocation.resolve(filename).normalize();
 
-        // Проверка безопасности пути
         if (!destinationFile.getParent().equals(this.rootLocation)) {
             throw new RuntimeException("Cannot store file outside the target directory");
         }
 
-        // Сохранение файла
-        Files.copy(file.getInputStream(), destinationFile);
+        // Автосжатие с качеством 80%
+        try (var inputStream = file.getInputStream()) {
+            Thumbnails.of(inputStream)
+                    .size(1920, 1920)               // Максимальный размер (если нужно уменьшить)
+                    .outputQuality(0.8)             // Сжатие JPEG (0.0 - 1.0)
+                    .toFile(destinationFile.toFile());
+        }
 
-        // Возвращаем путь, который можно вставить в <img src="/uploads/filename">
         return filename;
     }
 
@@ -70,8 +68,8 @@ public class StorageService {
         }
 
         // Проверка размера файла (5MB)
-        if (file.getSize() > 5 * 1024 * 1024) {
-            throw new RuntimeException("File size exceeds 5MB limit");
+        if (file.getSize() > maxFileSize) {
+            throw new RuntimeException("File size exceeds 10MB limit");
         }
 
         // Проверка расширения (только PDF)

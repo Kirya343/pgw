@@ -1,0 +1,33 @@
+<div th:fragment="listingCard(listing)">
+    <a th:href="@{'/listing/' + ${listing.id}}" class="listing-link">
+        <article class="listing-card">
+            <img th:src="@{${listing.imagePath ?: '/images/default-listing.png'}}"
+                 class="listing-img" th:onerror="this.src='/images/default-listing.png'"
+                 alt="Изображение объявления">
+
+            <div class="card-body">
+                <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
+                <p class="card-text" th:text="${#strings.length(listing.localizedDescription) > 100} ? ${#strings.substring(listing.localizedDescription, 0, 100)} + '...' : ${listing.localizedDescription}">Описание</p>
+                <div class="card-footer">
+                    <div>
+                        <span class="price" th:switch="${listing.priceType}">
+                            <span th:case="'negotiable'" th:text="#{price.negotiable}">Договорная</span>
+                            <span th:case="'per_hour'" th:text="${listing.price} + ' ' + #{price.per-hour}">Цена</span>
+                            <span th:case="'per_day'" th:text="${listing.price} + ' ' + #{price.per-day}">Цена</span>
+                            <span th:case="'fixed'" th:text="${listing.price} + ' ' + #{price.fixed}">Цена</span>
+                            <span th:case="*">Цена не указана</span>
+                        </span>
+                        <div class="rating">
+                            <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                                <i class="fa"
+                                   th:classappend="${listing.averageRating >= i} ? 'fa-star' :
+                                          (${listing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                            </th:block>
+                        </div>
+                    </div>
+                    <span class="listing-location" th:text="${listing.location ?: 'Finland'}">Локация</span>
+                </div>
+            </div>
+        </article>
+    </a>
+</div>

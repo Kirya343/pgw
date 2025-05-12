@@ -1,4 +1,4 @@
-package org.kirya343.main.controller;
+package org.kirya343.main.controller.secure;
 
 import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
@@ -103,6 +103,9 @@ public class FavoritesController {
         model.addAttribute("userName", name != null ? name : "Пользователь");
         model.addAttribute("avatarPath", avatarPath);
         model.addAttribute("user", user);
+
+        // Переменная для отображения активной страницы
+        model.addAttribute("activePage", "favorites");
 
         return "secure/favorites";
     }

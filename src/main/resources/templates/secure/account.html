@@ -10,91 +10,16 @@
 </head>
 <body>
 <header>
-    <nav class="container">
-        <nav class="navbar">
-            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
-            <button class="navbar-toggler">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <nav class="navbar-collapse">
-
-                <a th:if="${isAdmin}" href="/admin/dashboard" class="nav-link" th:text="#{header.admin}">Админка</a>
-
-                <!-- Кнопка Новостей -->
-                <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
-
-                <nav class="navbar-top">
-                <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
-                <button id="navbar-toggler" class="navbar-toggler">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                </nav>
-                <div class="account-manager">
-                    <div class="profile-card">
-                        <div class="profile-avatar">
-                            <img th:src="@{${avatarPath}}" alt="Аватар">
-                        </div>
-                        <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
-                        <p class="profile-rating">
-                    <span th:each="i : ${#numbers.sequence(1,5)}">
-                        <i class="fa"
-                           th:classappend="${user.averageRating >= i} ? 'fa-star' :
-                          (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
-                    </span>
-                            (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
-                        </p>
-                        <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
-                    </div>
-
-                    <nav class="account-menu">
-                        <a href="/secure/account" class="account-menu-item active" th:text="#{link.account}">Мои объявления</a>
-                        <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
-                        <a href="/secure/messenger" class="account-menu-item" th:text="#{link.messenger}">Сообщения</a>
-                        <a href="/secure/resume" class="account-menu-item" th:text="#{link.resume}">Моё резюме</a>
-                        <a href="/secure/account/edit" class="account-menu-item" th:text="#{link.settings}">Настройки</a>
-                        <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
-                    </nav>
-                </div>
-                <div class="nav-buttons">
-                    <a href="/logout" class="logout-btn" th:text="#{logout.button}">Выйти</a>
-                </div>
-            </nav>
-        </nav>
-    </nav>
+    <!-- Хедер страниц аккаунта -->
+    <div th:replace="fragments/account/account-header :: accountHeader"></div>
 </header>
 
 <!-- Основной контент -->
 <div class="account-container">
     <div class="account-layout">
         <!-- Сайдбар меню -->
-        <aside class="account-sidebar">
-            <div class="profile-card">
-                <div class="profile-avatar">
-                    <img th:src="@{${avatarPath}}" alt="Аватар">
-                </div>
-                <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
-                <p class="profile-rating">
-                    <span th:each="i : ${#numbers.sequence(1,5)}">
-                        <i class="fa"
-                           th:classappend="${user.averageRating >= i} ? 'fa-star' :
-                          (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
-                    </span>
-                    (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
-                </p>
-                <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm" th:text="#{profile.edit}">Редактировать профиль</a>
-            </div>
+        <div th:replace="fragments/account/account-sidebar :: sidebar"></div>
 
-            <nav class="account-menu">
-                <a href="/secure/account" class="account-menu-item active" th:text="#{link.account}">Мои объявления</a>
-                <a href="/secure/favorites" class="account-menu-item" th:text="#{link.favorite}">Избранное</a>
-                <a href="/secure/messenger" class="account-menu-item" th:text="#{link.messenger}">Сообщения</a>
-                <a href="/secure/resume" class="account-menu-item" th:text="#{link.resume}">Моё резюме</a>
-                <a href="/secure/account/edit" class="account-menu-item" th:text="#{link.settings}">Настройки</a>
-                <a href="#" class="account-menu-item" th:text="#{link.safety}">Безопасность</a>
-            </nav>
-        </aside>
-
-        <!-- Основное содержимое -->
         <!-- Основное содержимое -->
         <main class="account-main">
             <div class="account-header">
@@ -179,40 +104,9 @@
         </main>
     </div>
 </div>
-<div class="language-toggle">
-    <input type="checkbox" id="langToggle">
-    <label for="langToggle" class="lang-wrapper">
-        <!-- Основная кнопка с текущим языком -->
-        <div class="lang-button">
-            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
-        </div>
-
-        <!-- Выпадающий список языков -->
-        <div class="lang-dropdown">
-            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
-                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
-                <span>Русский</span>
-            </a>
-            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
-                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
-                <span>Suomi</span>
-            </a>
-            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
-                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
-                <span>English</span>
-            </a>
-        </div>
-    </label>
-</div>
-<script>
-    // Мобильное меню
-    document.querySelector('.navbar-toggler').addEventListener('click', function() {
-        document.querySelector('.navbar-collapse').classList.toggle('show');
-    });
-    document.getElementById('navbar-toggler').addEventListener('click', function() {
-        document.querySelector('.navbar-collapse').classList.toggle('show');
-    });
-</script>
+<!-- Языковой переключатель -->
+<div th:replace="fragments/language-switch :: langSwitcher"></div>
+<script src="/js/components/mobile-menu.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="/js/websocket-global.js"></script>

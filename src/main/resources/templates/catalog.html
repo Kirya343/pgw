@@ -148,39 +148,8 @@
             </div>
 
             <div th:unless="${category == 'find-help'}" class="listings-grid">
-                <a th:each="listing : ${listings}"
-                   th:href="@{'/listing/' + ${listing.id}}"
-                   class="listing-link">
-                    <article class="listing-card">
-                        <img th:src="@{${listing.imagePath ?: '/images/default-listing.png'}}"
-                             class="listing-img"
-                             alt="Изображение объявления">
-
-                        <div class="card-body">
-                            <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
-                            <p class="card-text" th:text="${#strings.length(listing.localizedDescription) > 100} ? ${#strings.substring(listing.localizedDescription, 0, 100)} + '...' : ${listing.localizedDescription}">Описание</p>
-                            <div class="card-footer">
-                                <div>
-                            <span class="price" th:switch="${listing.priceType}">
-                                <span th:case="'negotiable'" th:text="#{price.negotiable}">Договорная</span>
-                                <span th:case="'per_hour'" th:text="${listing.price} + ' ' + #{price.per-hour}">Цена</span>
-                                <span th:case="'per_day'" th:text="${listing.price} + ' ' + #{price.per-day}">Цена</span>
-                                <span th:case="'fixed'" th:text="${listing.price} + ' ' + #{price.fixed}">Цена</span>
-                                <span th:case="*">Цена не указана</span>
-                            </span>
-                                    <div class="rating">
-                                        <th:block th:each="i : ${#numbers.sequence(1,5)}">
-                                            <i class="fa"
-                                               th:classappend="${listing.averageRating >= i} ? 'fa-star' :
-                                                      (${listing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
-                                        </th:block>
-                                    </div>
-                                </div>
-                                <span class="listing-location" th:text="${listing.location ?: 'Finland'}">Локация</span>
-                            </div>
-                        </div>
-                    </article>
-                </a>
+                <th:block th:each="listing : ${listings}" th:insert="fragments/cards/listing-card :: listingCard(${listing})">
+                </th:block>
             </div>
 
             <!-- Если нет объявлений -->
@@ -213,38 +182,10 @@
         </main>
     </main>
 </div>
-<div class="language-toggle">
-    <input type="checkbox" id="langToggle">
-    <label for="langToggle" class="lang-wrapper">
-        <!-- Основная кнопка с текущим языком -->
-        <div class="lang-button">
-            <img th:src="@{/images/flags/__${#locale.language}__.png}" alt="Current language" class="flag-icon">
-        </div>
-
-        <!-- Выпадающий список языков -->
-        <div class="lang-dropdown">
-            <a href="?lang=ru" th:classappend="${#locale.language == 'ru'} ? 'active'">
-                <img src="/images/flags/ru.png" alt="RU" class="flag-icon">
-                <span>Русский</span>
-            </a>
-            <a href="?lang=fi" th:classappend="${#locale.language == 'fi'} ? 'active'">
-                <img src="/images/flags/fi.png" alt="FI" class="flag-icon">
-                <span>Suomi</span>
-            </a>
-            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? 'active'">
-                <img src="/images/flags/en.png" alt="EN" class="flag-icon">
-                <span>English</span>
-            </a>
-        </div>
-    </label>
-</div>
+<!-- Языковой переключатель -->
+<div th:replace="fragments/language-switch :: langSwitcher"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Мобильное меню
-    document.querySelector('.navbar-toggler').addEventListener('click', function() {
-        document.querySelector('.navbar-collapse').classList.toggle('show');
-    });
-</script>
+<script src="/js/components/mobile-menu.js"></script>
 <script>
     document.getElementById('filterForm').addEventListener('change', function() {
         this.submit();

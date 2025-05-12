@@ -1,4 +1,4 @@
-package org.kirya343.main.controller.chat;
+package org.kirya343.main.controller.secure;
 
 import org.kirya343.main.model.*;
 import org.kirya343.main.model.chat.Conversation;
@@ -65,26 +65,10 @@ public class MessengerController {
         model.addAttribute("avatarPath", avatarService.resolveAvatarPath(currentUser));
         model.addAttribute("userName", currentUser.getName() != null ? currentUser.getName() : "Пользователь");
 
-        // Получаем список диалогов через сервис
-        /*List<ConversationDTO> conversationDTOs = chatService.getConversationsForUser(currentUser);
-        model.addAttribute("conversations", conversationDTOs);
-
-        // Выбираем активный диалог
-        ConversationDTO selectedConversation = selectActiveConversation(conversationId, conversationDTOs);
-        logger.debug("Selected conversation: {}", selectedConversation != null ? selectedConversation.getId() : "none");
-        model.addAttribute("selectedConversation", selectedConversation);*/
+        // Переменная для отображения активной страницы
+        model.addAttribute("activePage", "messenger");
 
         return "secure/messenger";
-    }
-
-    private ConversationDTO selectActiveConversation(Long requestedId, List<ConversationDTO> conversations) {
-        if (requestedId != null) {
-            return conversations.stream()
-                    .filter(c -> c.getId().equals(requestedId))
-                    .findFirst()
-                    .orElseGet(() -> !conversations.isEmpty() ? conversations.get(0) : null);
-        }
-        return !conversations.isEmpty() ? conversations.get(0) : null;
     }
 
     @GetMapping("/secure/messenger/chat")

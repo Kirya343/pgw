@@ -1,4 +1,4 @@
-package org.kirya343.main.controller;
+package org.kirya343.main.controller.secure;
 
 import org.kirya343.main.model.Resume;
 import org.kirya343.main.model.User;
@@ -67,6 +67,10 @@ public class OwnResumeController {
         model.addAttribute("userName", name != null ? name : "Пользователь");
         model.addAttribute("avatarPath", avatarPath);
         model.addAttribute("user", user);
+
+        // Переменная для отображения активной страницы
+        model.addAttribute("activePage", "resume");
+
         return "secure/resume";
     }
 
