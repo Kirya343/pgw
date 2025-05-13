@@ -10,38 +10,7 @@
 </head>
 <body>
 <header>
-    <div class="container">
-        <nav class="navbar">
-            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
-            <button class="navbar-toggler">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse">
-
-                <!-- Кнопка Новостей -->
-                <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
-
-                <div class="d-flex">
-                    <!-- Для неавторизованных пользователей -->
-                    <div th:unless="${isAuthenticated}">
-                        <a href="/login" class="btn btn-outline-primary" th:text="#{header.login}">Вход</a>
-                        <a href="/register" class="btn btn-primary" th:text="#{header.register}">Регистрация</a>
-                    </div>
-
-                    <!-- Для авторизованных пользователей -->
-                    <div th:if="${isAuthenticated}" class="account-info">
-                        <a th:href="@{/secure/account}" class="account-link">
-                            <img th:src="${avatarUrl}"
-                                 class="account-avatar"
-                                 alt="Аватар"
-                                 th:onerror="this.src='/images/avatar-placeholder.jpg'">
-                            <span th:text="${userName}">Пользователь</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </div>
+    <div th:replace="fragments/public/header :: header(${activePage})"></div>
 </header>
 
 <!-- Основной контент -->
@@ -127,15 +96,15 @@
 
                 <!-- Боковая панель с информацией о кандидате -->
                 <aside class="resume-sidebar">
-                    <div class="candidate-card">
-                        <div class="candidate-avatar">
-                            <img th:src="@{${candidateAvatarPath}}"
-                                 th:onerror="this.src='/images/avatar-placeholder.jpg'"
+                    <div class="seller-card">
+                        <div class="seller-avatar">
+                            <img th:src="@{${sellerAvatarPath}}"
+                                 th:onerror="this.src='/images/avatar-placeholder.png'"
                                  alt="Аватар кандидата">
                         </div>
-                        <div class="candidate-info">
+                        <div class="seller-info">
                             <h3 th:text="${resume.user.name}">Иван Иванов</h3>
-                            <div class="candidate-rating">
+                            <div class="seller-rating">
                                 <span class="rating">
                                     <th:block th:each="i : ${#numbers.sequence(1,5)}">
                                         <i class="fa"
@@ -145,7 +114,7 @@
                                 </span>
                                 <span th:text="'(' + ${#numbers.formatDecimal(resume.user.averageRating, 1, 1)} + ')'">(4.5)</span>
                             </div>
-                            <div class="candidate-stats">
+                            <div class="seller-stats">
                                 <span th:text="${resume.user.completedJobs != null ? resume.user.completedJobs : '0'} + ' ' + #{resume.completed.jobs}">10 выполненных работ</span>
                             </div>
                         </div>
@@ -195,36 +164,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/components/mobile-menu.js"></script>
-<script>
-
-    // Обработка звёзд рейтинга
-    document.querySelectorAll('.star').forEach(function(star) {
-        star.addEventListener('mouseover', function() {
-            let value = parseInt(star.getAttribute('data-value'));
-            document.querySelectorAll('.star').forEach(function(s) {
-                s.classList.remove('selected');
-                if (parseInt(s.getAttribute('data-value')) <= value) {
-                    s.classList.add('selected');
-                }
-            });
-        });
-
-        star.addEventListener('click', function() {
-            let value = parseInt(star.getAttribute('data-value'));
-            document.querySelector('input[name="rating"]').value = value;
-        });
-
-        star.addEventListener('mouseout', function() {
-            let value = document.querySelector('input[name="rating"]').value;
-            document.querySelectorAll('.star').forEach(function(s) {
-                s.classList.remove('selected');
-                if (parseInt(s.getAttribute('data-value')) <= value) {
-                    s.classList.add('selected');
-                }
-            });
-        });
-    });
-</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="/js/websocket-global.js"></script>

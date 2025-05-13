@@ -1,0 +1,15 @@
+<!-- Компонент типов цен -->
+<span class="price" th:switch="${listing.priceType}" th:fragment="priceTypes">
+    <span th:case="'negotiable'" th:text="#{price.negotiable}">Договорная</span>
+    <span th:case="'per_hour'" th:text="${listing.price} + ' ' + #{price.per-hour}">Цена</span>
+    <span th:case="'per_day'" th:text="${listing.price} + ' ' + #{price.per-day}">Цена</span>
+    <span th:case="'fixed'" th:text="${listing.price} + ' ' + #{price.fixed}">Цена</span>
+    <span th:case="*">Цена не указана</span>
+</span>
+
+<!-- Компонент типов категорий объявления -->
+<span th:switch="${listing.category}" th:fragment="categoryTypes">
+    <span th:case="'services'" th:text="#{category.service}">Услуга</span>
+    <span th:case="'product'" th:text="#{category.product}">Товар</span>
+    <span th:case="'offer-service'" th:text="#{category.offer-service}">Запрос на услугу3</span>
+</span>

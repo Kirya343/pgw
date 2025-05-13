@@ -10,60 +10,7 @@
 </head>
 <body>
 <header>
-    <div class="container">
-        <nav class="navbar">
-            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
-            <button class="navbar-toggler">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse">
-                <div class="sorting-sidebar-top">
-                    <h5 th:text="#{catalog.sorting.title}">Сортировка</h5>
-                    <div class="list-group list-group-flush">
-                        <a th:href="@{/catalog(category=${category}, sortBy='date')}"
-                           th:class="${sortBy == 'date'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.date}">
-                            По дате
-                        </a>
-                        <a th:href="@{/catalog(category=${category}, sortBy='price')}"
-                           th:class="${sortBy == 'price'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.price}">
-                            По цене
-                        </a>
-                        <a th:href="@{/catalog(category=${category}, sortBy='rating')}"
-                           th:class="${sortBy == 'rating'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.rating}">
-                            По рейтингу
-                        </a>
-                        <a th:href="@{/catalog(category=${category}, sortBy='popularity')}"
-                           th:class="${sortBy == 'popularity'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.popularity}">
-                            По популярности
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Кнопка Новостей -->
-                <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
-
-                <div class="d-flex">
-
-                    <!-- Для неавторизованных пользователей -->
-                    <div th:unless="${isAuthenticated}">
-                        <a href="/login" class="btn btn-outline-primary" th:text="#{header.login}">Вход</a>
-                        <a href="/register" class="btn btn-primary" th:text="#{header.register}">Регистрация</a>
-                    </div>
-
-                    <!-- Для авторизованных пользователей -->
-                    <div th:if="${isAuthenticated}" class="account-info">
-                        <a th:href="@{/secure/account}" class="account-link">
-                            <img th:src="${avatarUrl}"
-                                 class="account-avatar"
-                                 alt="Аватар"
-                                 th:onerror="this.src='/images/avatar-placeholder.jpg'">
-                            <span th:text="${userName}">Пользователь</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </div>
+    <div th:replace="fragments/public/header :: header(${activePage})"></div>
 </header>
 <!-- Шапка каталога -->
 <div class="catalog-header py-3">
@@ -107,11 +54,11 @@
 
                 <h5 class="mt-4" th:text="#{catalog.sorting.filters}">Фильтры</h5>
                 <form id="filterForm" method="get" action="/catalog">
-                    <div class="form-check">
+                    <!-- <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="filter1" name="available"
                                th:checked="${available}">
                         <label class="form-check-label" for="filter1" th:text="#{catalog.sorting.available}">Сейчас доступен</label>
-                    </div>
+                    </div> -->
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="filter2" name="hasReviews"
                                th:checked="${hasReviews}">
@@ -136,7 +83,7 @@
                         <img th:src="@{${resume.user.avatarUrl}}"
                              class="resume-avatar"
                              alt="Аватар"
-                             th:onerror="this.src='/images/avatar-placeholder.jpg'">
+                             th:onerror="this.src='/images/avatar-placeholder.png'">
                         <div class="resume-info">
                             <h3 th:text="${resume.profession}">Специальность</h3>
                             <div class="resume-meta">
@@ -147,9 +94,16 @@
                 </div>
             </div>
 
-            <div th:unless="${category == 'find-help'}" class="listings-grid">
+            <!-- <div th:unless="${category == 'find-help'}" class="listings-grid">
                 <th:block th:each="listing : ${listings}" th:insert="fragments/cards/listing-card :: listingCard(${listing})">
                 </th:block>
+            </div> -->
+            <div th:unless="${category == 'find-help'}" class="listings-grid">
+                <a th:each="listing : ${listings}"
+                   th:href="@{'/listing/' + ${listing.id}}"
+                   class="listing-link">
+                    <article th:replace="fragments/cards/listing-card :: listingCard(${listing})"></article>
+                </a>
             </div>
 
             <!-- Если нет объявлений -->

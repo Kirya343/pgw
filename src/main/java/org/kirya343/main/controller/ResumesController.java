@@ -61,7 +61,7 @@ public class ResumesController {
         }
 
         model.addAttribute("resume", resume);
-        model.addAttribute("candidateAvatarPath", candidateAvatarPath);
+        model.addAttribute("sellerAvatarPath", candidateAvatarPath);
 
         return "resume";
     }

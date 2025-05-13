@@ -1,0 +1,61 @@
+<aside class="listing-sidebar" th:fragment="authorInfoSidebar">
+    <div class="seller-card" th:if="${listing.author != null}">
+        <div class="seller-avatar">
+            <img th:src="@{${authorAvatarPath}}"
+                    th:onerror="this.src='/images/default-avatar.png'"
+                    alt="Аватар продавца">
+        </div>
+        <div class="seller-info">
+            <h4 th:text="${listing.author.name ?: 'Неизвестный автор'}">Иван Иванов</h4>
+            <div class="seller-rating">
+                <span th:text="#{listing.rating}">Рейтинг: </span>
+                <span th:text="${listing.author.averageRating}">4.5</span> ★
+            </div>
+            <div class="seller-stats">
+                <span th:text="${listing.author.completedJobs != null ? listing.author.completedJobs : '0'}">0</span>
+            </div>
+        </div>
+        <div class="seller-actions">
+            <div th:if="${isAuthenticated}">
+                <!-- Показываем кнопки только если пользователь не владелец -->
+                <div th:unless="${isOwner}">
+                    <form action="/secure/messenger/chat" method="get">
+                        <input type="hidden" name="sellerId" th:value="${listing.author.id}">
+                        <input type="hidden" name="listingId" th:value="${listing.id}">
+                        <button type="submit" class="btn btn-primary" th:text="#{listing.write}">Написать сообщение</button>
+                    </form>
+                    <form th:action="@{/listing/{id}/favorite(id=${listing.id})}" method="post" style="display: inline;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="btn btn-outline-primary"
+                                th:text="${isFavorite} ? #{listing.favorite.remove} : #{listing.favorite.add}">
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Можно добавить кнопки для владельца -->
+                <a th:href="@{'/secure/listing/edit/' + ${listing.id}}"
+                    class="btn btn-primary"
+                    th:if="${isOwner}" th:text="#{listing.edit}">Редактировать</a>
+            </div>
+            <div th:unless="${isAuthenticated}">
+                <a href="/login" class="btn btn-primary" th:text="#{login.to.write}">Войти, чтобы написать</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-card" th:if="${listing.author != null}">
+        <h3 th:text="#{listing.author.contacts}">Контактная информация</h3>
+        <div class="contact-methods">
+            <div class="contact-item">
+                <span class="contact-icon">📱</span>
+                <span th:text="${listing.author.phoneVisible ? (listing.author.phone != null ? listing.author.phone : 'Не указан') : 'Скрыто'}">Не указан</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-icon">✉️</span>
+                <span class="contact-value"
+                        th:text="${listing.author.emailVisible ? (listing.author.email != null ? listing.author.email : 'Не указан') : 'Скрыто'}">Не указан</span>
+            </div>
+        </div>
+    </div>
+
+</aside>
