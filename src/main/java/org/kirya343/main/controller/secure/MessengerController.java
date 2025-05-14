@@ -2,17 +2,14 @@ package org.kirya343.main.controller.secure;
 
 import org.kirya343.main.model.*;
 import org.kirya343.main.model.chat.Conversation;
-import org.kirya343.main.model.DTOs.ConversationDTO;
 import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.DTOs.MessageDTO;
 import org.kirya343.main.services.*;
 import org.kirya343.main.services.chat.ChatService;
 import org.kirya343.main.services.components.AdminCheckService;
 import org.kirya343.main.services.components.AvatarService;
-import org.kirya343.main.services.components.StatService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;

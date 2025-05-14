@@ -6,7 +6,6 @@ import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.ListingRepository;
 import org.kirya343.main.services.ListingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +22,6 @@ public class ListingServiceImpl implements ListingService {
 
     private final ConversationRepository conversationRepository;
 
-    @Autowired
     public ListingServiceImpl(ListingRepository listingRepository, ConversationRepository conversationRepository) {
         this.listingRepository = listingRepository;
         this.conversationRepository = conversationRepository;

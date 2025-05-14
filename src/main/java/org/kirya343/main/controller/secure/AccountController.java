@@ -6,10 +6,7 @@ import org.kirya343.main.services.*;
 import org.kirya343.main.services.components.AdminCheckService;
 import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.services.components.StatService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,8 +30,6 @@ public class AccountController {
     private final StorageService storageService;
     private final AdminCheckService adminCheckService;
 
-
-    @Autowired
     public AccountController(UserService userService,
                              AvatarService avatarService, ListingService listingService, StatService statService, StorageService storageService, AdminCheckService adminCheckService) {
         this.userService = userService;

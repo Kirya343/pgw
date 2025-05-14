@@ -6,10 +6,8 @@ import org.kirya343.main.model.User;
 import org.kirya343.main.services.components.AdminCheckService;
 import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.services.FavoriteListingService;
-import org.kirya343.main.services.components.StatService;
 import org.kirya343.main.services.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -28,7 +26,6 @@ public class FavoritesController {
     private final AvatarService avatarService;
     private final AdminCheckService adminCheckService;
 
-    @Autowired
     public FavoritesController(FavoriteListingService favoriteListingService, UserService userService, AvatarService avatarService, AdminCheckService adminCheckService) {
         this.favoriteListingService = favoriteListingService;
         this.userService = userService;
