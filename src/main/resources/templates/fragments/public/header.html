@@ -1,0 +1,54 @@
+<div class="container" th:fragment="header(activePage)">
+    <nav class="navbar">
+        <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
+        <button class="navbar-toggler">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse">
+
+            <div class="sorting-sidebar-top" th:if="${activePage == 'catalog'}" th:unless="${category == 'find-help'}">
+                <h5 th:text="#{catalog.sorting.title}">Сортировка</h5>
+                <div class="list-group list-group-flush">
+                    <a th:href="@{/catalog(category=${category}, sortBy='date')}"
+                        th:class="${sortBy == 'date'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.date}">
+                        По дате
+                    </a>
+                    <a th:href="@{/catalog(category=${category}, sortBy='price')}"
+                        th:class="${sortBy == 'price'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.price}">
+                        По цене
+                    </a>
+                    <a th:href="@{/catalog(category=${category}, sortBy='rating')}"
+                        th:class="${sortBy == 'rating'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.rating}">
+                        По рейтингу
+                    </a>
+                    <a th:href="@{/catalog(category=${category}, sortBy='popularity')}"
+                        th:class="${sortBy == 'popularity'} ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'" th:text="#{catalog.sorting.popularity}">
+                        По популярности
+                    </a>
+                </div>
+            </div>
+
+            <!-- Кнопка Новостей (активная) -->
+            <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
+
+            <div class="d-flex">
+                <!-- Для неавторизованных пользователей -->
+                <div th:unless="${isAuthenticated}">
+                    <a href="/login" class="btn btn-outline-primary" th:text="#{header.login}">Вход</a>
+                    <a href="/register" class="btn btn-primary" th:text="#{header.register}">Регистрация</a>
+                </div>
+
+                <!-- Для авторизованных пользователей -->
+                <div th:if="${isAuthenticated}" class="account-info">
+                    <a th:href="@{/secure/account}" class="account-link">
+                        <img th:src="${avatarUrl}"
+                                class="account-avatar"
+                                alt="Аватар"
+                                th:onerror="this.src='/images/avatar-placeholder.jpg'">
+                        <span th:text="${userName}">Пользователь</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>

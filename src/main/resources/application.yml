@@ -5,6 +5,8 @@ app:
   upload:
     dir: /home/WorkSwap/uploads
 spring:
+  config:
+    import: optional:file:/app/oauth.yml
   web:
     resources:
       static-locations: classpath:/static/,classpath:/images/,file:./uploads/

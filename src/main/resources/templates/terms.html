@@ -9,38 +9,7 @@
 </head>
 <body>
 <header>
-    <div class="container">
-        <nav class="navbar">
-            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
-            <button class="navbar-toggler">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse">
-
-                <!-- Кнопка Новостей -->
-                <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
-
-                <div class="d-flex">
-                    <!-- Для неавторизованных пользователей -->
-                    <div th:unless="${isAuthenticated}">
-                        <a href="/login" class="btn btn-outline-primary">Вход</a>
-                        <a href="/register" class="btn btn-primary">Регистрация</a>
-                    </div>
-
-                    <!-- Для авторизованных пользователей -->
-                    <div th:if="${isAuthenticated}" class="account-info">
-                        <a th:href="@{/templates/secure/account}" class="account-link">
-                            <img th:src="${avatarUrl}"
-                                 class="account-avatar"
-                                 alt="Аватар"
-                                 th:onerror="this.src='/images/avatar-placeholder.jpg'">
-                            <span th:text="${userName}">Пользователь</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </div>
+    <div th:replace="fragments/public/header :: header(${activePage})"></div>
 </header>
 
 <!-- Основной контент -->

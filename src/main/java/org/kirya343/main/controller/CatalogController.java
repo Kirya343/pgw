@@ -157,6 +157,9 @@ public class CatalogController {
         model.addAttribute("available", available);
         model.addAttribute("hasReviews", hasReviews);
 
+        // Переменная для отображения активной страницы
+        model.addAttribute("activePage", "catalog");
+
 
         User user = null;
         if (oauth2User != null) {
