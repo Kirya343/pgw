@@ -62,16 +62,13 @@
             </div>
         </header>
 
-        <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard">Главная</a></li>
-                        <li class="breadcrumb-item"><a href="/admin/news">Новости</a></li>
-                        <li class="breadcrumb-item active" aria-current="page" 
-                            th:text="${news.id != null} ? 'Редактирование' : 'Создание'">
-                            Редактирование
-                        </li>
-                    </ol>
-                </nav>
+        <nav class="breadcrumbs">
+            <a href="/admin/dashboard">Панель управления</a>
+            <span> / </span>
+            <a href="/admin/news">Новости</a>
+            <span> / </span>
+            <span aria-current="page" th:text="${news.id != null} ? 'Редактирование' : 'Создание'">Название новости</span>
+        </nav>
 
         <div class="card">
             <div class="card-body">
