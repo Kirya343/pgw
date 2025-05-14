@@ -4,7 +4,6 @@ import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Review;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ReviewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -13,8 +12,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ListingService listingService;
-
-    @Autowired
+    
     public ReviewService(ReviewRepository reviewRepository, ListingService listingService) {
         this.reviewRepository = reviewRepository;
         this.listingService = listingService;

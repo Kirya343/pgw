@@ -56,8 +56,6 @@ public class StatServiceImpl implements StatService {
         int currentMonth = now.getMonthValue();
         int currentYear = now.getYear();
 
-        List<Listing> listings = user.getListings() != null ? user.getListings() : Collections.emptyList();
-
         // Считаем просмотры только за текущий месяц
         return user.getListings().stream()
                 .filter(listing -> {

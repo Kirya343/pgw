@@ -6,7 +6,6 @@ import org.kirya343.main.model.User;
 import org.kirya343.main.services.*;
 import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.AvatarService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -30,7 +29,6 @@ public class ListingsController {
     private final ReviewService reviewService;
     private final AuthService authService;
 
-    @Autowired
     public ListingsController(ListingService listingService,
                               UserService userService,
                               AvatarService avatarService, AuthService authService, FavoriteListingService favoriteListingService, ReviewService reviewService) {

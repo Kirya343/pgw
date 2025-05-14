@@ -23,7 +23,6 @@ public class ResumesController {
     private final AvatarService avatarService;
     private final AuthService authService;
 
-    @Autowired
     public ResumesController(ResumeService resumeService,
                             UserService userService,
                             AvatarService avatarService,

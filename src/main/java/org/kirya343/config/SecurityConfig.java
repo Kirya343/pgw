@@ -38,6 +38,7 @@ import java.util.Set;
 public class SecurityConfig {
 
     private static final String ADMIN_EMAIL = "kkodolov40@gmail.com";
+    private static final String ADMIN2_EMAIL = "maryglotova09@gmail.com";
 
     private static final String GREEN = "\u001B[32m";
     private static final String RESET = "\u001B[0m";
@@ -76,7 +77,7 @@ public class SecurityConfig {
                                 // Принудительно проверяем и обновляем роль после аутентификации
                                 OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
                                 String email = oauthUser.getAttribute("email");
-                                if (ADMIN_EMAIL.equalsIgnoreCase(email)) {
+                                if (ADMIN_EMAIL.equalsIgnoreCase(email) || ADMIN2_EMAIL.equalsIgnoreCase(email)) {
                                     Collection<? extends GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(
                                             "ROLE_ADMIN", "ROLE_USER"
                                     );

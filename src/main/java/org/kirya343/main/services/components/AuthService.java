@@ -1,7 +1,6 @@
 package org.kirya343.main.services.components;
 
 import org.kirya343.main.model.User;
-import org.kirya343.main.services.UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -10,11 +9,9 @@ import org.springframework.ui.Model;
 public class AuthService {
 
     private final AvatarService avatarService;
-    private final UserService userService;
 
-    public AuthService(AvatarService avatarService, UserService userService) {
+    public AuthService(AvatarService avatarService) {
         this.avatarService = avatarService;
-        this.userService = userService;
     }
 
     public void addAuthenticationAttributes(Model model, OAuth2User oauth2User, User user) {

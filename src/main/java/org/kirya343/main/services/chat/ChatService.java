@@ -9,7 +9,6 @@ import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.MessageRepository;
-import org.kirya343.main.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -22,9 +21,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ChatService {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private ConversationRepository conversationRepository;
