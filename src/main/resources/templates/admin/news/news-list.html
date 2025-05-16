@@ -90,7 +90,7 @@
                     <tbody>
                     <tr th:each="news : ${newsList}">
                         <td th:text="${news.id}">#0000</td>
-                        <td th:text="${news.title}">Заголовок новости</td>
+                        <td th:text="${news.titleRu}">Заголовок новости</td>
                         <td th:text="${news.author}">Автор</td>
                         <td th:text="${#temporals.format(news.publishDate, 'dd.MM.yyyy HH:mm')}">дд.мм.гггг</td>
                         <td>

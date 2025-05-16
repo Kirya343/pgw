@@ -56,7 +56,7 @@
                 <div class="news-list">
                     <article th:each="newsItem : ${news}" class="news-card">
                         <div class="news-header">
-                            <img th:src="@{${newsItem.imageUrl ?: '/images/default-news.jpg'}}"
+                            <img th:src="@{${newsItem.imageUrl ?: '/images/default-listing.png'}}"
                                  alt="Изображение новости"
                                  class="news-image">
                             <div class="news-meta">
@@ -65,8 +65,8 @@
                             </div>
                         </div>
                         <div class="news-body">
-                            <h2 class="news-title" th:text="${newsItem.title}">Заголовок новости</h2>
-                            <p class="news-excerpt" th:text="${newsItem.excerpt}">Краткое описание новости, которое будет отображаться в списке...</p>
+                            <h2 class="news-title" th:text="${newsItem.localizedTitle}">Заголовок новости</h2>
+                            <p class="news-excerpt" th:text="${newsItem.localizedExcerpt}">Краткое описание новости, которое будет отображаться в списке...</p>
                             <a th:href="@{'/news/' + ${newsItem.id}}" class="news-read-more" th:text="#{news.read_more}">Читать далее</a>
                         </div>
                     </article>

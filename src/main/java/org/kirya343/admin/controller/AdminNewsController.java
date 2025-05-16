@@ -2,6 +2,8 @@ package org.kirya343.admin.controller;
 
 import org.kirya343.main.model.News;
 import org.kirya343.main.services.NewsService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,16 +39,47 @@ public class AdminNewsController {
     }
 
     @PostMapping("/create")
-    public String createNews(@ModelAttribute News news,
-                           @RequestParam(required = false) MultipartFile imageFile,
-                           @RequestParam(required = false, defaultValue = "false") boolean removeImage,
-                           RedirectAttributes redirectAttributes) {
+    public String createNews(
+        @ModelAttribute News news,
+        @RequestParam(value = "titleRu", required = false) String titleRu,
+        @RequestParam(value = "titleFi", required = false) String titleFi,
+        @RequestParam(value = "titleEn", required = false) String titleEn,
+        @RequestParam(value = "contentRu", required = false) String contentRu,
+        @RequestParam(value = "contentFi", required = false) String contentFi,
+        @RequestParam(value = "contentEn", required = false) String contentEn,
+        @RequestParam(value = "excerptRu", required = false) String excerptRu,
+        @RequestParam(value = "excerptFi", required = false) String excerptFi,
+        @RequestParam(value = "excerptEn", required = false) String excerptEn,
+        @RequestParam(required = false) MultipartFile imageFile,
+        @RequestParam(required = false, defaultValue = "false") boolean removeImage,
+        @AuthenticationPrincipal OAuth2User oauth2User,
+        RedirectAttributes redirectAttributes
+    ) {
         try {
+            // Устанавливаем данные на основе параметров
+            news.setTitleRu(titleRu);
+            news.setTitleFi(titleFi);
+            news.setTitleEn(titleEn);
+            news.setContentRu(contentRu);
+            news.setContentFi(contentFi);
+            news.setContentEn(contentEn);
+            news.setExcerptRu(excerptRu);
+            news.setExcerptFi(excerptFi);
+            news.setExcerptEn(excerptEn);
+
+            news.setPublishDate(LocalDateTime.now());
+            news.setPublished(true); // Или false, если ты хочешь добавить модерацию
+
+            // Получаем имя автора
+            String authorName = oauth2User.getAttribute("name");
+            news.setAuthor(authorName != null ? authorName : "Админ");
+
             newsService.save(news, imageFile, removeImage);
             redirectAttributes.addFlashAttribute("successMessage", "Новость успешно создана");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при создании новости");
+            redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при создании новости: " + e.getMessage());
         }
+
         return "redirect:/admin/news";
     }
 

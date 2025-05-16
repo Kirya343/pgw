@@ -26,11 +26,11 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     // Для админ-панели
     Page<News> findAllByOrderByPublishDateDesc(Pageable pageable);
     
-    Page<News> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+    Page<News> findByTitleRuContainingIgnoreCase(String titleRu, Pageable pageable);
     
-    @Query("SELECT n FROM News n WHERE LOWER(n.title) LIKE LOWER(concat('%', :query, '%')) OR " +
+    /* @Query("SELECT n FROM News n WHERE LOWER(n.title) LIKE LOWER(concat('%', :query, '%')) OR " +
            "LOWER(n.content) LIKE LOWER(concat('%', :query, '%')) ORDER BY n.publishDate DESC")
-    Page<News> searchNews(@Param("query") String query, Pageable pageable);
+    Page<News> searchNews(@Param("query") String query, Pageable pageable); */
 
     // Статистика
     long countByPublishedTrue();

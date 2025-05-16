@@ -28,7 +28,6 @@ public class ForcedOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     public ForcedOAuth2UserService(UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
-        System.out.println("FORCED OAUTH2 USER SERVICE INITIALIZED!");
     }
 
     @Override

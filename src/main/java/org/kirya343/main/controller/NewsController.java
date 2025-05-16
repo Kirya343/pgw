@@ -1,5 +1,6 @@
 package org.kirya343.main.controller;
 
+import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.News;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.NewsService;
@@ -45,6 +46,32 @@ public class NewsController {
         Page<News> newsPage = newsService.getPublishedNews(page);
         Map<String, Object> siteStats = statService.getSiteStats(locale);
 
+        // Интегрируем логику локализации описания и названия
+        for (News news : newsPage.getContent()) {
+            String title = null;
+            String excerpt = null;
+            String content = null;
+
+            if ("fi".equals(locale.getLanguage())) {
+                title = news.getTitleFi();
+                excerpt = news.getExcerptFi();
+                content = news.getContentFi();
+            } else if ("ru".equals(locale.getLanguage())) {
+                title = news.getTitleRu();
+                excerpt = news.getExcerptRu();
+                content = news.getContentRu();
+            } else if ("en".equals(locale.getLanguage())) {
+                title = news.getTitleEn();
+                excerpt = news.getExcerptEn();
+                content = news.getContentEn();
+            }
+
+            // Сохраняем в транзиентные поля
+            news.setLocalizedTitle(title);
+            news.setLocalizedExcerpt(excerpt);
+            news.setLocalizedContent(content);
+        }
+
         User user = null;
         if (oauth2User != null) {
             user = userService.findUserFromOAuth2(oauth2User);
@@ -62,6 +89,7 @@ public class NewsController {
     @GetMapping("/news/{id}")
     public String viewNews(@PathVariable Long id,
                          @AuthenticationPrincipal OAuth2User oauth2User,
+                         Locale locale,
                          Model model) {
         // Получаем новость по ID
         News news = newsService.findById(id)
@@ -73,6 +101,9 @@ public class NewsController {
         
         // Получаем 3 похожие новости
         Page<News> similarNews = newsService.findSimilarNews(news, PageRequest.of(0, 3));
+
+        // 3. Локализация названия и описания
+        setLocalizedTitleAndExcerptAndContent(news, locale);
 
         // Добавляем атрибуты в модель
         model.addAttribute("news", news);
@@ -87,5 +118,29 @@ public class NewsController {
         authService.addAuthenticationAttributes(model, oauth2User, user);
 
         return "news-view";
+    }
+
+    private void setLocalizedTitleAndExcerptAndContent(News news, Locale locale) {
+        String title = null;
+        String excerpt = null;
+        String content = null;
+
+        if ("fi".equals(locale.getLanguage())) {
+            title = news.getTitleFi();
+            excerpt = news.getExcerptFi();
+            content = news.getContentFi();
+        } else if ("ru".equals(locale.getLanguage())) {
+            title = news.getTitleRu();
+            excerpt = news.getExcerptRu();
+            content = news.getContentRu();
+        } else if ("en".equals(locale.getLanguage())) {
+            title = news.getTitleEn();
+            excerpt = news.getExcerptEn();
+            content = news.getContentEn();
+        }
+
+        news.setLocalizedTitle(title);
+        news.setLocalizedExcerpt(excerpt);
+        news.setLocalizedContent(content);
     }
 }
