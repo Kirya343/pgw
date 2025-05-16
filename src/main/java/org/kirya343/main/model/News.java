@@ -16,14 +16,29 @@ public class News {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Заголовки на разных языках
     @Column(nullable = false)
-    private String title;
+    private String titleRu;
+    @Column(nullable = false)
+    private String titleFi;
+    @Column(nullable = false)
+    private String titleEn;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
+    // контент на разных языках
+    @Column(length = 2000, columnDefinition = "TEXT")
+    private String contentRu;
+    @Column(length = 2000, columnDefinition = "TEXT")
+    private String contentFi;
+    @Column(length = 2000, columnDefinition = "TEXT")
+    private String contentEn;
 
-    @Column(columnDefinition = "TEXT")
-    private String excerpt;
+    // контент на разных языках
+    @Column(length = 2000, columnDefinition = "TEXT")
+    private String excerptRu;
+    @Column(length = 2000, columnDefinition = "TEXT")
+    private String excerptFi;
+    @Column(length = 2000, columnDefinition = "TEXT")
+    private String excerptEn;
 
     @Column
     private String imageUrl;
@@ -37,4 +52,12 @@ public class News {
     @Column(nullable = false)
     private boolean published;
 
+    @Transient
+    private String localizedTitle;
+
+    @Transient
+    private String localizedExcerpt;
+
+    @Transient
+    private String localizedContent;
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${news.title} + ' | WorkSwap'">Новость | WorkSwap</title>
+    <title th:text="${news.localizedTitle} + ' | WorkSwap'">Новость | WorkSwap</title>
     <link href="/css/public/pages/news-page.css" rel="stylesheet">
     <link href="/css/public/pages/news-view.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -22,15 +22,14 @@
             <nav class="breadcrumbs">
                 <a href="/news" th:text="#{header.news}">Новости</a>
                 <span> / </span>
-                <span th:text="${news.title}">Название новости</span>
+                <span th:text="${news.localizedTitle}">Название новости</span>
             </nav>
 
             <!-- Заголовок новости -->
             <div class="news-header">
-                <h1 th:text="${news.title}">Название новости</h1>
+                <h1 th:text="${news.localizedTitle}">Название новости</h1>
                 <div class="news-image" th:if="${news.imageUrl != null}">
-                    <img th:src="@{'/' + ${news.imageUrl}}"
-                         th:onerror="this.src='/images/default-listing.png'"
+                    <img th:src="@{${newsItem.imageUrl ?: '/images/default-listing.png'}}"
                          alt="Изображение новости"
                          class="clickable-image" th:data-fullscreen="@{'/' + ${news.imageUrl}}">
                     <div class="news-meta">
@@ -48,11 +47,11 @@
 
             <!-- Содержимое новости -->
             <div class="news-content">
-                <div class="news-excerpt" th:if="${news.excerpt != null}">
-                    <p th:text="${news.excerpt}" class="lead">Краткое описание новости</p>
+                <div class="news-excerpt" th:if="${news.localizedExcerpt != null}">
+                    <p th:text="${news.localizedExcerpt}" class="lead">Краткое описание новости</p>
                 </div>
                 
-                <div class="news-text" th:utext="${news.content}">
+                <div class="news-text" th:utext="${news.localizedContent}">
                     Полное содержание новости. Может содержать HTML разметку.
                 </div>
             </div>
@@ -70,7 +69,7 @@
 
             <!-- Похожие новости -->
             <section class="similar-news" th:if="${similarNews != null and !similarNews.isEmpty()}">
-                <h2 th:text="#{similar.news.title}">Похожие новости</h2>
+                <h2 th:text="#{similar.news.localizedTitle}">Похожие новости</h2>
                 <div class="news-grid">
                     <article th:each="similar : ${similarNews}" class="news-card">
                         <a th:href="@{'/news/' + ${similar.id}}">
@@ -80,11 +79,11 @@
                         </a>
                         <div class="card-body">
                             <h3 class="card-title">
-                                <a th:href="@{'/news/' + ${similar.id}}" th:text="${similar.title}">
+                                <a th:href="@{'/news/' + ${similar.id}}" th:text="${similar.localizedTitle}">
                                     Название новости
                                 </a>
                             </h3>
-                            <p class="card-text" th:text="${#strings.abbreviate(similar.excerpt, 100)}">
+                            <p class="card-text" th:text="${#strings.abbreviate(similar.localizedExcerpt, 100)}">
                                 Краткое описание новости...
                             </p>
                             <div class="card-footer">

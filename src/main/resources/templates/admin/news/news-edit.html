@@ -74,19 +74,46 @@
             <div class="card-body">
                 <form th:action="${news.id != null} ? @{/admin/news/edit/{id}(id=${news.id})} : @{/admin/news/create}" 
                       method="post" th:object="${news}" enctype="multipart/form-data">
+                    <!-- Заголовки -->
                     <div class="admin-form-group">
-                        <label for="title" class="admin-form-label">Заголовок</label>
-                        <input type="text" id="title" class="admin-form-control" th:field="*{title}" required>
+                        <label class="admin-form-label">Заголовок (русский)</label>
+                        <input type="text" class="admin-form-control" name="titleRu" th:value="*{titleRu}" required>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Заголовок (финский)</label>
+                        <input type="text" class="admin-form-control" name="titleFi" th:value="*{titleFi}">
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Заголовок (английский)</label>
+                        <input type="text" class="admin-form-control" name="titleEn" th:value="*{titleEn}">
                     </div>
 
+                    <!-- Краткое описание -->
                     <div class="admin-form-group">
-                        <label for="excerpt" class="admin-form-label">Краткое описание</label>
-                        <textarea id="excerpt" class="admin-form-control" th:field="*{excerpt}" rows="3"></textarea>
+                        <label class="admin-form-label">Краткое описание (русский)</label>
+                        <textarea class="admin-form-control" name="excerptRu" rows="2" th:text="*{excerptRu}"></textarea>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Краткое описание (финский)</label>
+                        <textarea class="admin-form-control" name="excerptFi" rows="2" th:text="*{excerptFi}"></textarea>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Краткое описание (английский)</label>
+                        <textarea class="admin-form-control" name="excerptEn" rows="2" th:text="*{excerptEn}"></textarea>
                     </div>
 
+                    <!-- Контент -->
                     <div class="admin-form-group">
-                        <label for="content" class="admin-form-label">Содержание</label>
-                        <textarea id="content" class="admin-form-control" th:field="*{content}" rows="10" required></textarea>
+                        <label class="admin-form-label">Содержание (русский)</label>
+                        <textarea class="admin-form-control" name="contentRu" rows="6" th:text="*{contentRu}"></textarea>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Содержание (финский)</label>
+                        <textarea class="admin-form-control" name="contentFi" rows="6" th:text="*{contentFi}"></textarea>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Содержание (английский)</label>
+                        <textarea class="admin-form-control" name="contentEn" rows="6" th:text="*{contentEn}"></textarea>
                     </div>
 
                     <div class="admin-form-group">

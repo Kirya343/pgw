@@ -39,6 +39,7 @@ public class Listing {
     private String location;
     private double rating;
     private int views;
+    
     @PastOrPresent
     private LocalDateTime createdAt;
 
