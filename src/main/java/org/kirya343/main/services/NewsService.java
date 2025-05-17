@@ -67,7 +67,7 @@ public class NewsService {
                 storageService.deleteImage(news.getImageUrl());
             }
             // Сохраняем новое изображение
-            String imageUrl = storageService.storeImage(imageFile);
+            String imageUrl = storageService.storeNewsImage(imageFile, news.getId());
             news.setImageUrl(imageUrl);
         } else if (removeImage && news.getImageUrl() != null) {
             storageService.deleteImage(news.getImageUrl());

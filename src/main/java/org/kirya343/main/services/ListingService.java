@@ -12,6 +12,7 @@ public interface ListingService {
     Page<Listing> findByCategory(String category, Pageable pageable);
     List<Listing> getListingsByUser(User user); // добавили метод
     void save(Listing listing);
+    Listing saveAndReturn(Listing listing);
     List<Listing> findByUserEmail(String email);
     List<Listing> getAllActiveListings(); // Предполагая, что у вас есть поле `active`
     List<Listing> getAllListings();// в сущности

@@ -26,15 +26,43 @@ public class StorageService {
         }
     }
 
-    public String storeImage(MultipartFile file) throws IOException {
+    public enum ImageType {
+        LISTING_IMAGE("listing-images", "image-for-listing_", 1920, 1920, 0.8),
+        NEWS_IMAGE("news-images", "image-for-news_", 1920, 1920, 0.8),
+        AVATAR("avatars", "avatar_", 300, 300, 0.8);
+
+        private final String directory;
+        private final String prefix;
+        private final int width;
+        private final int height;
+        private final double quality;
+
+        // Конструктор и геттеры
+        ImageType(String directory, String prefix, int width, int height, double quality) {
+            this.directory = directory;
+            this.prefix = prefix;
+            this.width = width;
+            this.height = height;
+            this.quality = quality;
+        }
+
+        public String getDirectory() { return directory; }
+        public String getPrefix() { return prefix; }
+        public int getWidth() { return width; }
+        public int getHeight() { return height; }
+        public double getQuality() { return quality; }
+    }
+
+    public String storeImage(MultipartFile file, ImageType imageType, Long entityId) throws IOException {
+        // Базовые проверки
         if (file.isEmpty()) {
             throw new RuntimeException("Failed to store empty file");
         }
-
         if (file.getSize() > maxFileSize) {
             throw new RuntimeException("File size exceeds 10MB limit");
         }
 
+        // Проверка расширения файла
         String originalFilename = file.getOriginalFilename();
         String fileExtension = originalFilename != null ?
                 originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase() : "";
@@ -43,22 +71,44 @@ public class StorageService {
             throw new RuntimeException("Only JPG, JPEG, PNG, GIF images are allowed");
         }
 
-        String filename = UUID.randomUUID().toString() + fileExtension;
-        Path destinationFile = this.rootLocation.resolve(filename).normalize();
+        // Создаем подпапку, если ее нет
+        Path targetPath = this.rootLocation.resolve(imageType.getDirectory());
+        if (!Files.exists(targetPath)) {
+            Files.createDirectories(targetPath);
+        }
 
-        if (!destinationFile.getParent().equals(this.rootLocation)) {
+        // Формируем имя файла
+        String filename = imageType.getPrefix() + 
+                        (entityId != null ? entityId + "_" : "") + 
+                        UUID.randomUUID().toString() + fileExtension;
+        
+        Path destinationFile = targetPath.resolve(filename).normalize();
+
+        if (!destinationFile.getParent().equals(targetPath)) {
             throw new RuntimeException("Cannot store file outside the target directory");
         }
 
-        // Автосжатие с качеством 80%
+        // Обработка изображения
         try (var inputStream = file.getInputStream()) {
             Thumbnails.of(inputStream)
-                    .size(1920, 1920)               // Максимальный размер (если нужно уменьшить)
-                    .outputQuality(0.8)             // Сжатие JPEG (0.0 - 1.0)
+                    .size(imageType.getWidth(), imageType.getHeight())
+                    .outputQuality(imageType.getQuality())
                     .toFile(destinationFile.toFile());
         }
 
-        return filename;
+        return imageType.getDirectory() + "/" + filename;
+    }
+
+    public String storeListingImage(MultipartFile file, Long listingId) throws IOException {
+        return storeImage(file, ImageType.LISTING_IMAGE, listingId);
+    }
+
+    public String storeAvatar(MultipartFile file, Long userId) throws IOException {
+        return storeImage(file, ImageType.AVATAR, userId);
+    }
+
+    public String storeNewsImage(MultipartFile file, Long newsId) throws IOException {
+        return storeImage(file, ImageType.NEWS_IMAGE, newsId);
     }
 
     public String storeFile(MultipartFile file) throws IOException {

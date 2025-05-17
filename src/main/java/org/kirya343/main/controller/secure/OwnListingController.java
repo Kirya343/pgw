@@ -5,6 +5,7 @@ import org.kirya343.main.model.Location;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.LocationRepository;
 import org.kirya343.main.services.*;
+import org.kirya343.main.services.StorageService.ImageType;
 import org.kirya343.main.services.components.AdminCheckService;
 import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.services.components.StatService;
@@ -99,7 +100,7 @@ public class OwnListingController {
             listing.setViews(0);
             listing.setRating(0.0);
 
-            // Устанавливаем описание и название для каждого языка
+            // Устанавливаем локализованные данные
             listing.setTitleRu(titleRu);
             listing.setDescriptionRu(descriptionRu);
             listing.setTitleFi(titleFi);
@@ -107,12 +108,15 @@ public class OwnListingController {
             listing.setTitleEn(titleEn);
             listing.setDescriptionEn(descriptionEn);
 
-            // Здесь не нужно ничего отдельно устанавливать для communityRu/Fi/En — Spring сам их поставит!
+            // Сначала сохраняем объявление, чтобы получить ID
+            Listing savedListing = listingService.saveAndReturn(listing);
 
             if (!image.isEmpty()) {
                 try {
-                    String imagePath = storageService.storeImage(image);
-                    listing.setImagePath(imagePath);
+                    // Теперь передаем ID сохраненного объявления
+                    String imagePath = storageService.storeListingImage(image, savedListing.getId());
+                    savedListing.setImagePath(imagePath);
+                    listingService.save(savedListing); // Обновляем с путем к изображению
                 } catch (Exception e) {
                     redirectAttributes.addFlashAttribute("error",
                             "Ошибка загрузки изображения: " + e.getMessage());
@@ -120,7 +124,6 @@ public class OwnListingController {
                 }
             }
 
-            listingService.save(listing);
             redirectAttributes.addFlashAttribute("success", "Объявление успешно создано!");
             return "redirect:/secure/account";
         } catch (Exception e) {
@@ -221,15 +224,19 @@ public class OwnListingController {
             existingListing.setCommunityFi(communityFi);
             existingListing.setCommunityEn(communityEn);
 
-            // Обновление изображения, если загружено новое
-            if (image != null && !image.isEmpty()) {
+            // Сначала сохраняем объявление, чтобы получить ID
+            Listing savedListing = listingService.saveAndReturn(existingListing);
+
+            if (!image.isEmpty()) {
                 try {
-                    String imagePath = storageService.storeImage(image);
-                    existingListing.setImagePath(imagePath);
+                    // Теперь передаем ID сохраненного объявления
+                    String imagePath = storageService.storeListingImage(image, savedListing.getId());
+                    savedListing.setImagePath(imagePath);
+                    listingService.save(savedListing); // Обновляем с путем к изображению
                 } catch (Exception e) {
                     redirectAttributes.addFlashAttribute("error",
                             "Ошибка загрузки изображения: " + e.getMessage());
-                    return "redirect:/secure/listing/edit/" + id;
+                    return "redirect:/secure/listing/create";
                 }
             }
 
