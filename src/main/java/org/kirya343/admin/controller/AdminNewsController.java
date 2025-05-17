@@ -100,9 +100,12 @@ public class AdminNewsController {
                            @ModelAttribute News news,
                            @RequestParam(required = false) MultipartFile imageFile,
                            @RequestParam(required = false, defaultValue = "false") boolean removeImage,
+                           @AuthenticationPrincipal OAuth2User oauth2User,
                            RedirectAttributes redirectAttributes) {
         try {
             news.setId(id);
+            String authorName = oauth2User.getAttribute("name");
+            news.setAuthor(authorName != null ? authorName : "Админ");
             newsService.save(news, imageFile, removeImage);
             redirectAttributes.addFlashAttribute("successMessage", "Новость успешно обновлена");
         } catch (Exception e) {

@@ -32,7 +32,8 @@ public class LoginController {
             model.addAttribute("error", "Неверные учетные данные");
         }
 
-        return "login";
+        return "redirect:/oauth2/authorization/google";
+        //return "login";
     }
 
     @GetMapping("/loginSuccess")
