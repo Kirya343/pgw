@@ -76,33 +76,36 @@ public class OwnResumeController {
 
     @PostMapping("/save")
     public String saveResume(@ModelAttribute Resume resume,
-                             @RequestParam(value = "resumeFile", required = false) MultipartFile file,
-                             @RequestParam("languages[]") List<String> languages,
-                             @RequestParam("languageLevels[]") List<String> levels,
-                             @RequestParam(value = "publish", defaultValue = "false") boolean publish,
-                             RedirectAttributes redirectAttributes) {
+                            @RequestParam(value = "resumeFile", required = false) MultipartFile file,
+                            @RequestParam("languages[]") List<String> languages,
+                            @RequestParam("languageLevels[]") List<String> levels,
+                            @RequestParam(value = "publish", defaultValue = "false") boolean publish,
+                            RedirectAttributes redirectAttributes) {
         try {
             User user = userService.getCurrentUser();
             Optional<Resume> existingResume = resumeRepository.findByUser(user);
 
-            Resume resumeToSave;
-            if (existingResume.isPresent()) {
-                resumeToSave = existingResume.get();
-                // Обновляем поля
-                resumeToSave.setProfession(resume.getProfession());
-                resumeToSave.setExperience(resume.getExperience());
-                resumeToSave.setEducation(resume.getEducation());
-                resumeToSave.setSkills(resume.getSkills());
-                resumeToSave.setAbout(resume.getAbout());
-                resumeToSave.setContacts(resume.getContacts());
-            } else {
-                resumeToSave = resume;
-                resumeToSave.setUser(user);
-            }
+            Resume resumeToSave = existingResume.orElseGet(() -> {
+                resume.setUser(user);
+                return resume;
+            });
+
+            // Обновляем поля
+            resumeToSave.setProfession(resume.getProfession());
+            resumeToSave.setExperience(resume.getExperience());
+            resumeToSave.setEducation(resume.getEducation());
+            resumeToSave.setSkills(resume.getSkills());
+            resumeToSave.setAbout(resume.getAbout());
+            resumeToSave.setContacts(resume.getContacts());
 
             // Обновляем файл если загружен новый
             if (file != null && !file.isEmpty()) {
-                String fileName = storageService.storeFile(file);
+                // Удаляем старый файл, если он существует
+                if (resumeToSave.getFilePath() != null) {
+                    storageService.deleteFile(resumeToSave.getFilePath());
+                }
+                
+                String fileName = storageService.storeResume(file, user.getId());
                 resumeToSave.setFilePath(fileName);
             }
 
@@ -116,24 +119,15 @@ public class OwnResumeController {
                 languageMap.put(languages.get(i), levels.get(i));
             }
 
-            // Очищаем старые данные и добавляем новые
             resumeToSave.getLanguages().clear();
             resumeToSave.getLanguages().putAll(languageMap);
-
-            // (по желанию)
-            //resumeToSave.setLanguagesForm(languages);
-            //resumeToSave.setLanguageLevelsForm(levels);
-
-            // Устанавливаем статус публикации
             resumeToSave.setPublished(publish);
 
             resumeRepository.save(resumeToSave);
 
-            if (publish) {
-                redirectAttributes.addFlashAttribute("success", "Резюме успешно опубликовано");
-            } else {
-                redirectAttributes.addFlashAttribute("success", "Резюме успешно сохранено");
-            }
+            redirectAttributes.addFlashAttribute("success", 
+                publish ? "Резюме успешно опубликовано" : "Резюме успешно сохранено");
+                
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Ошибка: " + e.getMessage());
         }

@@ -5,7 +5,6 @@ import org.kirya343.main.model.Location;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.LocationRepository;
 import org.kirya343.main.services.*;
-import org.kirya343.main.services.StorageService.ImageType;
 import org.kirya343.main.services.components.AdminCheckService;
 import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.services.components.StatService;
