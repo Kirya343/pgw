@@ -14,7 +14,6 @@ import java.util.UUID;
 @Service
 public class StorageService {
     private final Path rootLocation = Paths.get("uploads").toAbsolutePath().normalize();
-    private final Set<String> allowedExtensions = Set.of(".jpg", ".jpeg", ".png", ".gif");
     private final long maxFileSize = 10 * 1024 * 1024; // 5MB
 
 
@@ -26,40 +25,44 @@ public class StorageService {
         }
     }
 
-    public enum ImageType {
-        LISTING_IMAGE("listing-images", "image-for-listing_", 1920, 1920, 0.8),
-        NEWS_IMAGE("news-images", "image-for-news_", 1920, 1920, 0.8),
-        AVATAR("avatars", "avatar_", 300, 300, 0.8);
+    public enum FileType {
+        LISTING_IMAGE("listing-images", "image-for-listing_", 1920, 1920, 0.8, Set.of(".jpg", ".jpeg", ".png", ".gif")),
+        NEWS_IMAGE("news-images", "image-for-news_", 1920, 1920, 0.8, Set.of(".jpg", ".jpeg", ".png", ".gif")),
+        AVATAR("avatars", "avatar_", 300, 300, 0.8, Set.of(".jpg", ".jpeg", ".png", ".gif")),
+        RESUME("resumes", "resume_", null, null, null, Set.of(".pdf"));
 
         private final String directory;
         private final String prefix;
-        private final int width;
-        private final int height;
-        private final double quality;
+        private final Integer width;  // null для не-изображений
+        private final Integer height; // null для не-изображений
+        private final Double quality; // null для не-изображений
+        private final Set<String> allowedExtensions;
 
         // Конструктор и геттеры
-        ImageType(String directory, String prefix, int width, int height, double quality) {
+        FileType(String directory, String prefix, Integer width, Integer height, Double quality, Set<String> allowedExtensions) {
             this.directory = directory;
             this.prefix = prefix;
             this.width = width;
             this.height = height;
             this.quality = quality;
+            this.allowedExtensions = allowedExtensions;
         }
 
         public String getDirectory() { return directory; }
         public String getPrefix() { return prefix; }
-        public int getWidth() { return width; }
-        public int getHeight() { return height; }
+        public Integer getWidth() { return width; }
+        public Integer getHeight() { return height; }
         public double getQuality() { return quality; }
+        public Set<String> getAllowedExtensions() { return allowedExtensions; }
     }
 
-    public String storeImage(MultipartFile file, ImageType imageType, Long entityId) throws IOException {
+    public String storeFile(MultipartFile file, FileType fileType, Long entityId) throws IOException {
         // Базовые проверки
         if (file.isEmpty()) {
             throw new RuntimeException("Failed to store empty file");
         }
         if (file.getSize() > maxFileSize) {
-            throw new RuntimeException("File size exceeds 10MB limit");
+            throw new RuntimeException("File size exceeds size limit");
         }
 
         // Проверка расширения файла
@@ -67,18 +70,18 @@ public class StorageService {
         String fileExtension = originalFilename != null ?
                 originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase() : "";
 
-        if (!allowedExtensions.contains(fileExtension)) {
-            throw new RuntimeException("Only JPG, JPEG, PNG, GIF images are allowed");
+        if (!fileType.getAllowedExtensions().contains(fileExtension)) {
+            throw new RuntimeException("Only " + fileType.getAllowedExtensions() + " files are allowed");
         }
 
-        // Создаем подпапку, если ее нет
-        Path targetPath = this.rootLocation.resolve(imageType.getDirectory());
+        // Создаем подпапку
+        Path targetPath = this.rootLocation.resolve(fileType.getDirectory());
         if (!Files.exists(targetPath)) {
             Files.createDirectories(targetPath);
         }
 
         // Формируем имя файла
-        String filename = imageType.getPrefix() + 
+        String filename = fileType.getPrefix() + 
                         (entityId != null ? entityId + "_" : "") + 
                         UUID.randomUUID().toString() + fileExtension;
         
@@ -88,62 +91,40 @@ public class StorageService {
             throw new RuntimeException("Cannot store file outside the target directory");
         }
 
-        // Обработка изображения
-        try (var inputStream = file.getInputStream()) {
-            Thumbnails.of(inputStream)
-                    .size(imageType.getWidth(), imageType.getHeight())
-                    .outputQuality(imageType.getQuality())
-                    .toFile(destinationFile.toFile());
+        // Обработка файла
+        if (fileType.getWidth() != null) { // Это изображение
+            try (var inputStream = file.getInputStream()) {
+                Thumbnails.of(inputStream)
+                        .size(fileType.getWidth(), fileType.getHeight())
+                        .outputQuality(fileType.getQuality())
+                        .toFile(destinationFile.toFile());
+            }
+        } else { // Не изображение (например, PDF)
+            Files.copy(file.getInputStream(), destinationFile);
         }
 
-        return imageType.getDirectory() + "/" + filename;
+        return fileType.getDirectory() + "/" + filename;
     }
 
     public String storeListingImage(MultipartFile file, Long listingId) throws IOException {
-        return storeImage(file, ImageType.LISTING_IMAGE, listingId);
+        return storeFile(file, FileType.LISTING_IMAGE, listingId);
     }
 
     public String storeAvatar(MultipartFile file, Long userId) throws IOException {
-        return storeImage(file, ImageType.AVATAR, userId);
+        return storeFile(file, FileType.AVATAR, userId);
     }
 
     public String storeNewsImage(MultipartFile file, Long newsId) throws IOException {
-        return storeImage(file, ImageType.NEWS_IMAGE, newsId);
+        return storeFile(file, FileType.NEWS_IMAGE, newsId);
     }
 
-    public String storeFile(MultipartFile file) throws IOException {
-        // Проверка пустого файла
-        if (file.isEmpty()) {
-            throw new RuntimeException("Failed to store empty file");
-        }
+    public String storeResume(MultipartFile file, Long userId) throws IOException {
+        return storeFile(file, FileType.RESUME, userId);
+    }
 
-        // Проверка размера файла (5MB)
-        if (file.getSize() > maxFileSize) {
-            throw new RuntimeException("File size exceeds 10MB limit");
-        }
-
-        // Проверка расширения (только PDF)
-        String originalFilename = file.getOriginalFilename();
-        String fileExtension = originalFilename != null ?
-                originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase() : "";
-
-        if (!".pdf".equals(fileExtension)) {
-            throw new RuntimeException("Only PDF files are allowed");
-        }
-
-        // Создаем директорию для резюме, если не существует
-        Path resumeDir = this.rootLocation.resolve("resumes");
-        Files.createDirectories(resumeDir);
-
-        // Генерация уникального имени файла
-        String filename = UUID.randomUUID().toString() + fileExtension;
-
-        // Сохранение файла
-        Path destinationFile = resumeDir.resolve(filename).normalize();
-        Files.copy(file.getInputStream(), destinationFile);
-
-        // Возвращаем относительный путь (resumes/filename.pdf)
-        return "resumes/" + filename;
+    public void deleteFile(String filePath) throws IOException {
+        Path fileToDelete = rootLocation.resolve(filePath).normalize();
+        Files.deleteIfExists(fileToDelete);
     }
 
     public void deleteImage(String filename) throws IOException {
