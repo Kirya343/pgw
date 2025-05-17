@@ -47,6 +47,12 @@ public class ListingServiceImpl implements ListingService {
     public void save(Listing listing) {
         listingRepository.save(listing);
     }
+    
+    @Override
+    public Listing saveAndReturn(Listing listing) {
+        return listingRepository.save(listing);
+    }
+
     @Override
     public Page<Listing> findActiveByCategory(String category, Pageable pageable) {
         return listingRepository.findActiveByCategory(category, pageable);
