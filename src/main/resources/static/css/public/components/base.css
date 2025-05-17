@@ -53,4 +53,10 @@ img {
     padding: 0 0.75rem;
 }
 
+li {
+    margin-left: 2.5rem;
+}
 
+.admin-form-control input[type="file"] {
+    display: none;
+}

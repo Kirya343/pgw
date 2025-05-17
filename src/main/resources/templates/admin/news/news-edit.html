@@ -117,21 +117,14 @@
                     </div>
 
                     <div class="admin-form-group">
-                        <label for="author" class="admin-form-label">Автор</label>
-                        <input type="text" id="author" class="admin-form-control" th:field="*{author}" required>
-                    </div>
-
-                    <div class="admin-form-group">
-                        <label for="publishDate" class="admin-form-label">Дата публикации</label>
-                        <input type="datetime-local" id="publishDate" class="admin-form-control" 
-                        th:field="*{publishDate}">
-                    </div>
-
-                    <div class="admin-form-group">
-                        <label for="image" class="admin-form-label">Изображение</label>
-                        <input type="file" id="image" class="admin-form-control" name="imageFile" accept="image/*">
+                        <label class="admin-form-label">Изображение</label>
+                        <div class="admin-form-control">
+                            <input type="file" id="image" name="imageFile" accept="image/*" onchange="updateFileName()">
+                            <label for="image" class="btn btn-outline-primary" th:text="#{listing.editing.image.button.select}">Выбрать файл</label>
+                            <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
+                        </div>
                         <div th:if="${news.imageUrl != null}" class="mt-2">
-                            <img th:src="${news.imageUrl}" alt="Текущее изображение" style="max-height: 200px;">
+                            <img th:src="@{'/' + ${news.imageUrl}}" alt="Текущее изображение" style="max-height: 200px;">
                             <div class="form-check mt-2">
                                 <input class="form-check-input" type="checkbox" id="removeImage" name="removeImage">
                                 <label class="form-check-label" for="removeImage">Удалить текущее изображение</label>
@@ -160,6 +153,7 @@
     </main>
 </div>
 
+<script src="/js/components/update-filename.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

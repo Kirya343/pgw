@@ -119,7 +119,9 @@
                         <td th:text="'#' + ${listing.id}">#0000</td>
                         <td th:text="${listing.localizedTitle}">Название</td>
                         <td th:text="${listing.author.name}">Автор</td>
-                        <td th:text="${listing.price} + (listing.priceType != null ? ' / ' + listing.priceType : '')">€0</td>
+                        <td>
+                            <!-- компонент для отображение типа цены -->
+                            <span th:replace="fragments/small-components :: priceTypes">€0</span></td>
                         <td th:text="${#temporals.format(listing.createdAt, 'dd.MM.yyyy')}">дд.мм.гггг</td>
                         <td>
                             <a th:href="@{/listing/{id}(id=${listing.id})}" class="btn-admin btn-admin-secondary mr-1">
