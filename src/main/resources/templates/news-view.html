@@ -30,7 +30,8 @@
                 <h1 th:text="${news.localizedTitle}">Название новости</h1>
                 <!-- Выносим .news-image ОТДЕЛЬНО от .news-meta -->
                 <div class="news-image" th:if="${news.imageUrl != null}">
-                    <img th:src="@{'/' + ${news.imageUrl}}" alt="Изображение новости" class="clickable-image">
+                    <img th:src="@{'/' + ${news.imageUrl ?: '/images/default-listing.png'}}" alt="Изображение новости" class="clickable-image"
+                    th:onerror="this.src='/images/default-listing.png'">
                 </div>
                 <!-- Мета-данные теперь после изображения -->
                 <div class="news-meta">
@@ -47,11 +48,7 @@
 
             <!-- Содержимое новости -->
             <div class="news-content">
-                <div class="news-excerpt" th:if="${news.localizedExcerpt != null}">
-                    <p th:text="${news.localizedExcerpt}" class="lead">Краткое описание новости</p>
-                </div>
-                
-                <div class="news-text" th:utext="${news.localizedContent}">
+                <div  class="news-text" th:text="${news.localizedContent}">
                     Полное содержание новости. Может содержать HTML разметку.
                 </div>
             </div>
@@ -69,25 +66,25 @@
 
             <!-- Похожие новости -->
             <section class="similar-news" th:if="${similarNews != null and !similarNews.isEmpty()}">
-                <h2 th:text="#{similar.news.localizedTitle}">Похожие новости</h2>
+                <h2 th:text="#{similar.news.title}">Похожие новости</h2>
                 <div class="news-grid">
-                    <article th:each="similar : ${similarNews}" class="news-card">
-                        <a th:href="@{'/news/' + ${similar.id}}">
-                            <img th:src="@{${similar.imageUrl ?: '/images/default-news.png'}}"
-                                 class="news-img"
+                    <article th:each="similarNews : ${similarNews}" class="news-card">
+                        <a th:href="@{'/news/' + ${similarNews.id}}">
+                            <img th:src="@{${similarNews.imageUrl ?: '/images/default-listing.png'}}"
+                                 class="news-img" th:onerror="this.src='/images/default-listing.png'"
                                  alt="Изображение новости">
                         </a>
                         <div class="card-body">
                             <h3 class="card-title">
-                                <a th:href="@{'/news/' + ${similar.id}}" th:text="${similar.localizedTitle}">
+                                <a th:href="@{'/' + ${similarNews.id}}" th:text="${similarNews.localizedTitle}">
                                     Название новости
                                 </a>
                             </h3>
-                            <p class="card-text" th:text="${#strings.abbreviate(similar.localizedExcerpt, 100)}">
+                            <p class="card-text" th:text="${#strings.abbreviate(similarNews.localizedExcerpt, 100)}">
                                 Краткое описание новости...
                             </p>
                             <div class="card-footer">
-                                <span class="news-date" th:text="${#temporals.format(similar.publishDate, 'dd.MM.yyyy')}">
+                                <span class="news-date" th:text="${#temporals.format(similarNews.publishDate, 'dd.MM.yyyy')}">
                                     01.01.2023
                                 </span>
                             </div>

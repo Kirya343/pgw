@@ -70,6 +70,8 @@
 .news-text {
     line-height: 1.8;
     font-size: 1.1rem;
+    white-space: pre-wrap; /* сохраняет переносы строк из текста, но позволяет переносить строки по ширине */
+    word-wrap: break-word; /* принудительный перенос длинных слов */
 }
 
 .news-text p {

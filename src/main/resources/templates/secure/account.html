@@ -11,14 +11,14 @@
 <body>
 <header>
     <!-- Хедер страниц аккаунта -->
-    <div th:replace="fragments/account/account-header :: accountHeader"></div>
+    <div th:replace="~{fragments/account/account-header :: accountHeader}"></div>
 </header>
 
 <!-- Основной контент -->
 <div class="account-container">
     <div class="account-layout">
         <!-- Сайдбар меню -->
-        <div th:replace="fragments/account/account-sidebar :: sidebar"></div>
+        <div th:replace="~{fragments/account/account-sidebar :: sidebar}"></div>
 
         <!-- Основное содержимое -->
         <main class="account-main">
@@ -29,7 +29,7 @@
 
             <div class="listings-grid">
                 <!-- Динамические карточки объявлений -->
-                <article th:replace="fragments/cards/listing-card :: listingCardAccount(${listing}, ${activePage})"></article>
+                <article th:replace="~{fragments/cards/listing-card :: listingCardAccount(${listing}, ${activePage})}"></article>
             </div>
 
             <!-- Если нет объявлений -->

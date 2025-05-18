@@ -102,6 +102,8 @@ public class NewsController {
         // Получаем 3 похожие новости
         Page<News> similarNews = newsService.findSimilarNews(news, PageRequest.of(0, 3));
 
+        similarNews.forEach(similar -> setLocalizedTitleAndExcerptAndContent(similar, locale));
+
         // 3. Локализация названия и описания
         setLocalizedTitleAndExcerptAndContent(news, locale);
 
