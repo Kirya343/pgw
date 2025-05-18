@@ -426,6 +426,33 @@
     margin-top: 10px;
 }
 
+/* Стили для формы поиска */
+.input-group {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+}
+
+.form-control {
+    border-radius: var(--radius) 0 0 var(--radius);
+    border-right: none;
+    width: 100%;
+    padding: 0.5rem 0.5rem;
+}
+
+.btn-outline-secondary {
+    border-radius: 0 var(--radius) var(--radius) 0;
+    border-left: none;
+    background-color: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
 /* Адаптивность */
 @media (max-width: 992px) {
     .catalog-content {
@@ -497,6 +524,18 @@
 }
 
 @media (max-width: 768px) {
+    .form-control {
+        border-radius: var(--radius);
+        border-right: 1px solid var(--border-color);
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn-outline-secondary {
+        border-radius: var(--radius);
+        border-left: 1px solid var(--border-color);
+        width: 100%;
+    }
+
     .sorting-sidebar-top {
         display: inline-block;
         min-width: 100%;
