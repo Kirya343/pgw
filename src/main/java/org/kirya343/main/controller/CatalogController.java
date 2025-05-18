@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Resume;
 import org.kirya343.main.model.User;
+import org.kirya343.main.repository.ListingRepository;
+import org.kirya343.main.repository.ResumeRepository;
 import org.kirya343.main.services.*;
+import org.kirya343.main.services.components.AdminCheckService;
 import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.AvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,7 @@ public class CatalogController {
     private final UserService userService;
     private final AvatarService avatarService;
     private final ResumeService resumeService;
+    private final ListingRepository listingRepository;
 
     @Autowired
     private final AuthService authService;
@@ -47,6 +51,7 @@ public class CatalogController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "date") String sortBy,
             @RequestParam(required = false) String location,
+            @RequestParam(required = false) String searchQuery,
             @RequestParam(required = false, defaultValue = "false") boolean available,
             @RequestParam(required = false, defaultValue = "false") boolean hasReviews,
             Model model,
@@ -64,18 +69,22 @@ public class CatalogController {
 
         // Получаем объявления по категории и языку
         Page<Listing> listingsPage;
-        switch (category) {
-            case "offer-service":
-                listingsPage = findListingsByCategoryAndCommunity("offer-service", locale, pageable);
-                break;
-            case "find-help":
-                listingsPage = findListingsByCategoryAndCommunity("find-help", locale, pageable);
-                break;
-            case "product":
-                listingsPage = findListingsByCategoryAndCommunity("product", locale, pageable);
-                break;
-            default:
-                listingsPage = findListingsByCategoryAndCommunity("services", locale, pageable);
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            listingsPage = searchListings(searchQuery, locale, pageable);
+        } else {
+            switch (category) {
+                case "offer-service":
+                    listingsPage = findListingsByCategoryAndCommunity("offer-service", locale, pageable);
+                    break;
+                case "find-help":
+                    listingsPage = findListingsByCategoryAndCommunity("find-help", locale, pageable);
+                    break;
+                case "product":
+                    listingsPage = findListingsByCategoryAndCommunity("product", locale, pageable);
+                    break;
+                default:
+                    listingsPage = findListingsByCategoryAndCommunity("services", locale, pageable);
+            }
         }
 
         // Интегрируем логику локализации описания и названия
@@ -158,6 +167,7 @@ public class CatalogController {
         model.addAttribute("hasReviews", hasReviews);
 
         // Переменная для отображения активной страницы
+        model.addAttribute("searchQuery", searchQuery);
         model.addAttribute("activePage", "catalog");
 
 
@@ -194,4 +204,20 @@ public class CatalogController {
 
     // Вспомогательный класс для представления вкладок категорий
     private record CategoryTab(String id, String title, boolean active) {}
+
+    private Page<Listing> searchListings(String searchQuery, Locale locale, Pageable pageable) {
+    String lang = locale.getLanguage();
+    String query = "%" + searchQuery.toLowerCase() + "%";
+    
+    switch (lang) {
+        case "fi":
+            return listingRepository.searchAllFields(query, pageable);
+        case "ru":
+            return listingRepository.searchAllFields(query, pageable);
+        case "en":
+            return listingRepository.searchAllFields(query, pageable);
+        default:
+            return listingRepository.searchAllFields(query, pageable);
+    }
+}
 }

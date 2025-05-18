@@ -50,4 +50,36 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     long countActiveListings();
 
     Page<Listing> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    @Query("SELECT l FROM Listing l WHERE " +
+       "(LOWER(l.titleRu) LIKE LOWER(:query) OR " +
+       "LOWER(l.descriptionRu) LIKE LOWER(:query) OR " +
+       "LOWER(l.titleFi) LIKE LOWER(:query) OR " +
+       "LOWER(l.descriptionFi) LIKE LOWER(:query) OR " +
+       "LOWER(l.titleEn) LIKE LOWER(:query) OR " +
+       "LOWER(l.descriptionEn) LIKE LOWER(:query) OR " +
+       "LOWER(l.location) LIKE LOWER(:query)) " +
+       "AND l.active = true")
+        Page<Listing> searchAllFields(@Param("query") String query, Pageable pageable);
+
+        @Query("SELECT l FROM Listing l WHERE " +
+        "((LOWER(l.titleRu) LIKE LOWER(:query) OR " +
+        "LOWER(l.descriptionRu) LIKE LOWER(:query)) " +
+        "AND l.communityRu = true " +
+        "AND l.active = true)")
+        Page<Listing> searchAllFieldsRu(@Param("query") String query, Pageable pageable);
+
+        @Query("SELECT l FROM Listing l WHERE " +
+        "((LOWER(l.titleFi) LIKE LOWER(:query) OR " +
+        "LOWER(l.descriptionFi) LIKE LOWER(:query))) " +
+        "AND l.communityFi = true " +
+        "AND l.active = true")
+        Page<Listing> searchAllFieldsFi(@Param("query") String query, Pageable pageable);
+
+        @Query("SELECT l FROM Listing l WHERE " +
+        "((LOWER(l.titleEn) LIKE LOWER(:query) OR " +
+        "LOWER(l.descriptionEn) LIKE LOWER(:query))) " +
+        "AND l.communityEn = true " +
+        "AND l.active = true")
+        Page<Listing> searchAllFieldsEn(@Param("query") String query, Pageable pageable);
 }

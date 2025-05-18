@@ -28,7 +28,7 @@ public class Error404 implements ErrorController {
         }
         
         // По умолчанию возвращаем общую страницу ошибки
-        return "error/generic";
+        return "error-pages/404-fallback";
     }
 
     public String getErrorPath() {
