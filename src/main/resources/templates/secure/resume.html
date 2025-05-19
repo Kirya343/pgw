@@ -214,11 +214,8 @@
                 <!-- Файл резюме -->
                 <div class="form-group">
                     <label th:text="#{resume.file}">Файл резюме (PDF)</label>
-                    <div class="upload-controls">
-                        <input type="file" id="resumeFileCreate" name="resumeFile" accept=".pdf" onchange="updateFileName('resumeFileCreate', 'file-name-create')">
-                        <label for="resumeFileCreate" class="btn btn-outline-primary" th:text="#{resume.file.select}">Выбрать файл</label>
-                        <span id="file-name-create" class="file-name" th:text="#{resume.file.not.selected}">Файл не выбран</span>
-                    </div>
+                    <!-- Блок загрузки (виден только при выборе "Моя") -->
+                    <div th:replace="~{fragments/small-components :: uploadControls}"></div>
                     <small class="form-text text-muted" th:text="#{resume.file.maxsize}">Максимальный размер: 5MB (PDF)</small>
                 </div>
 
@@ -237,13 +234,6 @@
     function showForm() {
         document.querySelector('.no-resume').style.display = 'none';
         document.getElementById('createForm').style.display = 'block';
-    }
-
-    function updateFileName(inputId, fileNameSpanId) {
-        const input = document.getElementById(inputId);
-        const fileNameSpan = document.getElementById(fileNameSpanId);
-        const fileName = input.files.length > 0 ? input.files[0].name : 'Файл не выбран';
-        fileNameSpan.textContent = fileName;
     }
 
     function addLanguageField(containerId = 'language-container') {
@@ -270,6 +260,7 @@
         container.appendChild(newItem);
     }
 </script>
+<script src="/js/components/update-filename.js"></script>
 <script src="/js/components/mobile-menu.js"></script>
 <script src="/js/websocket-global.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

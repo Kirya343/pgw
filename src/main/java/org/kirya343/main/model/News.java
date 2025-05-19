@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 @Setter
 @Getter
 @Entity
@@ -46,7 +48,8 @@ public class News {
     @Column(nullable = false)
     private String author;
 
-    @Column(nullable = false)
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime publishDate;
 
     @Column(nullable = false)

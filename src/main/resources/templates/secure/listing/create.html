@@ -11,14 +11,14 @@
 <body>
 <header>
     <!-- Хедер страниц аккаунта -->
-    <div th:replace="fragments/account/account-header :: accountHeader"></div>
+    <div th:replace="~{fragments/account/account-header :: accountHeader}"></div>
 </header>
 
 <!-- Основной контент -->
 <div class="account-container">
     <div class="account-layout">
         <!-- Сайдбар меню -->
-        <div th:replace="fragments/account/account-sidebar :: sidebar"></div>
+        <div th:replace="~{fragments/account/account-sidebar :: sidebar"}></div>
 
         <!-- Основной контент -->
         <main class="account-main">
@@ -141,11 +141,8 @@
 
                 <div class="form-group">
                     <label for="image" th:text="#{listing.creating.image}">Изображение</label>
-                    <div class="upload-controls">
-                        <input type="file" id="image" name="image" accept="image/*" onchange="updateFileName()">
-                        <label for="image" class="btn btn-outline-primary" th:text="#{listing.editing.image.button.select}">Выбрать файл</label>
-                        <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
-                    </div>
+                    <!-- Блок загрузки (виден только при выборе "Моя") -->
+                    <div th:replace="~{fragments/small-components :: uploadControls}"></div>
                     <small class="form-text text-muted" th:text="#{listing.editing.image.maxsize}">Максимальный размер: 5MB (JPG, PNG, GIF)</small>
                     <div th:if="${imageError}" class="invalid-feedback" th:text="${imageError}"></div>
                 </div>
@@ -159,7 +156,7 @@
     </div>
 </div>
 <!-- Языковой переключатель -->
-<div th:replace="fragments/language-switch :: langSwitcher"></div>
+<div th:replace="~{fragments/language-switch :: langSwitcher}"></div>
 <script src="/js/components/mobile-menu.js"></script>
 <script src="/js/components/update-filename.js"></script>
 <script src="/js/components/toggle-language-fields.js"></script>

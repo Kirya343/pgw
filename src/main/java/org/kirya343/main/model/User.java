@@ -82,13 +82,18 @@ public class User {
     @Column(name = "avatar_type")
     private String avatarType; // "uploaded", "google", "default"
 
-    private Double averageRating;
+    private Double averageRating = 0.0; // Средний рейтинг пользователя
     private String phone;
     private Integer completedJobs;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    private boolean termsAccepted = false; // Приняты ли условия использования
+
+    @Column(nullable = false)
+    private LocalDateTime termsAcceptanceDate;
 
     public enum AuthProvider {
         LOCAL,

@@ -1,4 +1,5 @@
 @import url(notification.css);
+@import url(buttons.css);
 /* Базовые сбросы */
 *, *::before, *::after {
     box-sizing: border-box;

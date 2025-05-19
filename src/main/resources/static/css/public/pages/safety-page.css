@@ -5,6 +5,10 @@
 @import url(../components/lang-switcher.css);
 @import url(../../variables.css);
 
+.security-section {
+    margin-bottom: 1.5rem;
+}
+
 /* Основной контейнер */
 .account-container {
     padding: 2rem 0;
@@ -259,6 +263,16 @@
 
 .listing-actions form button {
     width: 100%;
+}
+
+.btn-outline-danger {
+    border: 1px solid var(--danger);
+    color: var(--danger);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--danger);
+    color: var(--white);
 }
 
 /* Статистика */

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="${_csrf.token}">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
     <title th:text="#{title.account}">Личный кабинет | WorkSwap</title>
     <link href="/css/public/pages/account-page.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -66,6 +68,8 @@
         </main>
     </div>
 </div>
+<!-- Подтверждение термса -->
+<div th:replace="fragments/terms-modal :: termsModal(${user})"></div>
 <!-- Языковой переключатель -->
 <div th:replace="fragments/language-switch :: langSwitcher"></div>
 <script src="/js/components/mobile-menu.js"></script>

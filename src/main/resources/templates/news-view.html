@@ -70,8 +70,8 @@
                 <div class="news-grid">
                     <article th:each="similarNews : ${similarNews}" class="news-card">
                         <a th:href="@{'/news/' + ${similarNews.id}}">
-                            <img th:src="@{${similarNews.imageUrl ?: '/images/default-listing.png'}}"
-                                 class="news-img" th:onerror="this.src='/images/default-listing.png'"
+                            <img th:src="@{'/' + ${similarNews.imageUrl ?: '/images/default-listing.png'}}"
+                                 class="news-img"
                                  alt="Изображение новости">
                         </a>
                         <div class="card-body">

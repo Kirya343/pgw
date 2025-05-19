@@ -47,6 +47,9 @@ public class ResumesController {
             return "redirect:/catalog";
         }
 
+        // Получаем автора объявления и его аватар
+        User author = resume.getUser();
+
         authService.addAuthenticationAttributes(model, oauth2User, user);
 
         // Получаем пользователя резюме
@@ -60,6 +63,7 @@ public class ResumesController {
         }
 
         model.addAttribute("resume", resume);
+        model.addAttribute("author", author.getName());
         model.addAttribute("sellerAvatarPath", candidateAvatarPath);
 
         return "resume";

@@ -25,6 +25,4 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "listing_id")
     private Listing listing;
-
-    // Геттеры и сеттеры
 }

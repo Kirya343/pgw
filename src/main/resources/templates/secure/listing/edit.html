@@ -173,11 +173,8 @@
 
                 <div class="form-group">
                     <label for="image" th:text="#{listing.creating.image}">Изображение</label>
-                    <div class="upload-controls">
-                        <input type="file" id="image" name="image" accept="image/*" onchange="updateFileName()">
-                        <label for="image" class="btn btn-outline-primary" th:text="#{listing.editing.image.button.select}">Выбрать файл</label>
-                        <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
-                    </div>
+                    <!-- Блок загрузки (виден только при выборе "Моя") -->
+                    <div th:replace="~{fragments/small-components :: uploadControls}"></div>
                     <small class="form-text text-muted" th:text="#{listing.editing.image.maxsize}">Максимальный размер: 5MB (JPG, PNG, GIF)</small>
                     <div th:if="${imageError}" class="invalid-feedback" th:text="${imageError}"></div>
                 </div>
