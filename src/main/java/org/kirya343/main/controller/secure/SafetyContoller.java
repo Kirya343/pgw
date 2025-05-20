@@ -59,8 +59,7 @@ public class SafetyContoller {
 
         model.addAttribute("activePage", "safety");
 
-        model.addAttribute("policyUpdateDate", "01.01.2023"); // Заменить на реальную дату
-        model.addAttribute("termsAcceptanceDate", "15.05.2023"); // Заменить на дату принятия пользователем
+        model.addAttribute("policyUpdateDate", "01.05.2025"); // Заменить на реальную дату
         
         return "secure/safety";
     }

@@ -1,5 +1,6 @@
 @import url(notification.css);
 @import url(buttons.css);
+@import url(terms-modal.css);
 /* Базовые сбросы */
 *, *::before, *::after {
     box-sizing: border-box;

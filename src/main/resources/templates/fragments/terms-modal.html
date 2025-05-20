@@ -3,77 +3,60 @@
     <div id="termsModal" class="modal" style="display: none;">
         <div class="modal-content">
             <h2 th:text="#{terms.modal.title}">Условия использования</h2>
-            <p th:text="#{terms.modal.text}">Чтобы продолжить, примите условия использования.</p>
-            <button id="acceptTermsBtn" th:text="#{terms.modal.accept}">Принять</button>
+            <p th:text="#{terms.modal.text}">Мы обновили наши условия использования.</p>
+            <p th:text="#{terms.modal.text2}">Пожалуйста, ознакомьтесь с ними и подтвердите, что вы согласны с новыми условиями.</p>
+            <div class="modal-links">
+                <a href="/terms" target="_blank" th:text="#{terms}"></a>
+                <a href="/privacy-policy" target="_blank" th:text="#{privacy.title}"></a>
+            </div>
+            <button class="btn btn-primary terms-accept"  id="acceptTermsBtn" th:text="#{terms.modal.accept}">Принять</button>
         </div>
     </div>
 
-    <style>
-    .modal {
-        position: fixed;
-        z-index: 9999;
-        left: 0; top: 0;
-        width: 100%; height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-    .modal-content {
-        background: white;
-        padding: 20px;
-        max-width: 400px;
-        margin: 15% auto;
-        border-radius: 10px;
-        text-align: center;
-    }
-    </style>
-
     <script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        /*<![CDATA[*/
-        const termsAccepted = [[${user != null and user.termsAccepted == 1}]];
-        /*]]>*/
+        document.addEventListener('DOMContentLoaded', function () {
+            /*<![CDATA[*/
+            const termsAccepted = /*[[${user.termsAccepted}]]*/ false;
+            const user = /*[[${user != null}]]*/ false;
+            /*]]>*/
 
-        if (!termsAccepted) {
-            const modal = document.getElementById('termsModal');
-            const acceptBtn = document.getElementById('acceptTermsBtn');
+            if (user && !termsAccepted) {
+                const modal = document.getElementById('termsModal');
+                const acceptBtn = document.getElementById('acceptTermsBtn');
 
-            modal.style.display = 'block';
+                modal.style.display = 'block';
 
-            const csrfTokenMeta = document.querySelector('meta[name="_csrf"]');
-            const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+                acceptBtn.addEventListener('click', function () {
+                    // Получаем CSRF токен из мета-тегов
+                    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-            if (!csrfTokenMeta || !csrfHeaderMeta) {
-                console.error("CSRF токен или заголовок не найдены в мета-тегах.");
-                return;
-            }
-
-            const csrfToken = csrfTokenMeta.getAttribute('content');
-            const csrfHeader = csrfHeaderMeta.getAttribute('content');
-
-            acceptBtn.addEventListener('click', function () {
-                const currentDate = new Date().toISOString();
-
-                fetch('/api/users/accept-terms', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken  // Используйте стандартное имя
-                    },
-                    body: JSON.stringify({ termsAcceptanceDate: currentDate, termsAccepted: true })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        modal.style.display = 'none';
-                        location.reload();
-                    } else {
-                        alert('Ошибка при принятии условий.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    alert('Ошибка подключения к серверу.');
+                    fetch('/api/users/accept-terms', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            [csrfHeader]: csrfToken
+                        },
+                        credentials: 'same-origin', // важно для передачи cookie сессии
+                        body: JSON.stringify({
+                            termsAcceptanceDate: new Date().toISOString(), // исправлено
+                            termsAccepted: true
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            modal.style.display = 'none';
+                            location.reload();
+                        } else {
+                            alert('Ошибка при принятии условий.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                        alert('Ошибка подключения к серверу.');
+                    });
                 });
-            });
-        }
-    });
+            }
+        });
     </script>
 </div>

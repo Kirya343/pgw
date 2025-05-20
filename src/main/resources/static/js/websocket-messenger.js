@@ -189,6 +189,12 @@ function updateSingleConversation(conversation) {
         document.querySelector(".dialogs-list").appendChild(dialogItem);
     }
 
+    let formattedDate = "";
+    if (conversation.lastMessageTime) {
+        const date = new Date(conversation.lastMessageTime);
+        formattedDate = date.toLocaleDateString('ru-RU'); // формат: 20.05.2025
+    }
+
     // Обновляем содержимое диалога
     dialogItem.innerHTML = `
         <div class="dialog-avatar">
@@ -199,7 +205,7 @@ function updateSingleConversation(conversation) {
         <div class="dialog-content">
             <div class="dialog-header">
                 <h4>${conversation.interlocutorName}</h4>
-                <span class="dialog-time">${conversation.lastMessageTime || ""}</span>
+                <span class="dialog-time">${formattedDate}</span>
             </div>
             <p class="dialog-preview">${conversation.lastMessagePreview || ""}</p>
             <div class="dialog-meta">
@@ -253,11 +259,16 @@ function showMessage(message) {
     // Создаем новый элемент сообщения
     const messageContainer = document.getElementById("messages-container");
     const messageElement = document.createElement("div");
+    const date = new Date(message.sentAt);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const formattedTime = `${hours}:${minutes}`;
+    
     messageElement.className = message.senderId === currentUserId ? 'message-out' : 'message-in'; // Определяем, собственное ли сообщение
     messageElement.innerHTML = `
         <div class="message-content">
             <p>${message.text}</p>
-            <span class="message-time">${new Date(message.sentAt).toLocaleTimeString()}</span>
+            <span class="message-time">${formattedTime}</span>
         </div>
     `;
     messageContainer.appendChild(messageElement);

@@ -64,6 +64,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/admin/**").hasRole("ADMIN")
                             .requestMatchers("/secure/**").authenticated()
                             .requestMatchers("/uploads/**").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/users/accept-terms").authenticated()
                             .requestMatchers(HttpMethod.POST, "/register").permitAll()
                             .anyRequest().permitAll();
                 })
@@ -121,10 +122,12 @@ public class SecurityConfig {
                             .deleteCookies("JSESSIONID");
                 })
                 .csrf(csrf -> {
-                    //System.out.println(GREEN + "Configuring CSRF ignoring for /api/applications/** and /ws/**" + RESET);
-                    csrf.ignoringRequestMatchers("/api/applications/**", "/ws/**");
+                    csrf.ignoringRequestMatchers(
+                        "/api/applications/**",
+                        "/ws/**",
+                        "/api/users/accept-terms" // 🔹 добавлено
+                    );
                 });
-
         return http.build();
     }
 

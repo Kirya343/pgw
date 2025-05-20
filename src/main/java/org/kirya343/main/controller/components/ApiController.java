@@ -26,14 +26,23 @@ public class ApiController {
 
     @PostMapping("/api/users/accept-terms")
     public ResponseEntity<?> acceptTerms(Principal principal) {
-        System.out.println("Запрос на принятие условий получен");
-        User user = userService.findByUsername(principal.getName());
-        if (user != null) {
-            user.setTermsAcceptanceDate(LocalDateTime.now());
-            user.setTermsAccepted(true);
-            userRepository.save(user);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        String sub = principal.getName();
+        System.out.println("Principal: " + (principal != null ? sub : "null"));
+
+        User user = userService.findBySub(sub);
+        System.out.println("User: " +  user.getEmail());
+        
+        user.setTermsAcceptanceDate(LocalDateTime.now());
+        user.setTermsAccepted(true);
+        
+        System.out.println("Date: " +  user.getTermsAcceptanceDate());
+        System.out.println("Status: " +  user.isTermsAccepted());
+        
+        userService.save(user);
+
+        System.out.println("Saved date: " +  user.getTermsAcceptanceDate());
+        System.out.println("Saved status: " +  user.isTermsAccepted());
+        
+        return ResponseEntity.ok().build();
     }
 }

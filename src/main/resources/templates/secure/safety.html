@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <title th:text="#{title.safety}">Безопасность | WorkSwap</title>
     <link href="/css/public/pages/safety-page.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -29,13 +31,13 @@
             <div class="security-content">
                 <div class="security-section">
                     <h3 th:text="#{security.legal}">Правовая информация</h3>
-                    <div class="security-links">
-                        <a href="/terms" class="security-link" th:text="#{terms}">Условия пользования</a>
-                        <a href="/privacy" class="security-link" th:text="#{privacy.title}">Политика конфиденциальности</a>
+                    <div class="modal-links">
+                        <a href="/terms" target="_blank" th:text="#{terms}"></a>
+                        <a href="/privacy-policy" target="_blank" th:text="#{privacy.title}"></a>
                     </div>
                     <div class="security-dates">
                         <p th:text="#{policy.update.date} + ': ' + ${policyUpdateDate}">Дата обновления политики конфиденциальности и условий пользования: 01.01.2023</p>
-                        <p th:text="#{terms.acceptance.date} + ': ' + ${termsAcceptanceDate}">Дата принятия условий пользования: 15.05.2023</p>
+                        <p th:text="#{terms.acceptance.date} + ': ' + ${#temporals.format(user.termsAcceptanceDate, 'dd.MM.yyyy')}">Дата принятия условий пользования: 15.05.2023</p>
                     </div>
                 </div>
 
@@ -56,12 +58,8 @@
         </main>
     </div>
 </div>
-<!-- Языковой переключатель -->
-<div th:replace="fragments/language-switch :: langSwitcher"></div>
-<script src="/js/components/mobile-menu.js"></script>
 <script src="/js/components/safety.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="/js/websocket-global.js"></script>
+<!-- Файл импортов для защищённых страниц -->
+<th:block th:replace="~{fragments/global-imports :: secureImports(${user})}" />
 </body>
 </html>

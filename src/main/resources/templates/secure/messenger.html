@@ -144,41 +144,7 @@
         </main>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<!-- Языковой переключатель -->
-<div th:replace="fragments/language-switch :: langSwitcher"></div>
-<script th:inline="javascript">
-    let currentConversationId = [[${selectedConversation?.id}]];
-    const currentUserId = [[${user.id}]];
-    document.addEventListener("DOMContentLoaded", function () {
-        connect(); // Подключаем WebSocket после загрузки страницы
-    });
-</script>
-<script src="/js/components/mobile-menu.js"></script>
-<script>
-    // Управление мобильным меню диалогов
-    document.addEventListener('DOMContentLoaded', function() {
-        const dialogsToggleBtn = document.getElementById('dialogsToggleBtn');
-        const dialogsList = document.querySelector('.dialogs-list');
-
-        if (dialogsToggleBtn && dialogsList) {
-            dialogsToggleBtn.addEventListener('click', function() {
-                dialogsList.classList.toggle('show');
-            });
-
-            // Закрытие меню при клике вне его области
-            document.addEventListener('click', function(e) {
-                if (!dialogsList.contains(e.target) &&
-                    e.target !== dialogsToggleBtn &&
-                    !dialogsToggleBtn.contains(e.target)) {
-                    dialogsList.classList.remove('show');
-                }
-            });
-        }
-    });
-</script>
-<!--<script src="/js/websocket-global.js"></script>-->
-<script src="/js/websocket-messenger.js"></script>
+<!-- Файл импортов специально для мессенджера -->
+<th:block th:replace="~{fragments/global-imports :: messengerImports(${user})}" />
 </body>
 </html>
