@@ -98,25 +98,7 @@ header {
 }
 
 .btn-outline-primary {
-    border: 1px solid var(--primary);
-    color: var(--primary);
     margin-right: 0.5rem;
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--primary);
-    color: var(--white);
-}
-
-.btn-primary {
-    background-color: var(--primary);
-    color: var(--white);
-    border: 1px solid var(--primary);
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-dark);
-    border-color: var(--primary-dark);
 }
 
 .nav-buttons .logout-btn {

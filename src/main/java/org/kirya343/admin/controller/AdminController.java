@@ -1,25 +1,16 @@
 package org.kirya343.admin.controller;
 
 import org.kirya343.main.model.Listing;
-import org.kirya343.main.model.News;
-import org.kirya343.main.model.Resume;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.ListingService;
-import org.kirya343.main.services.NewsService;
 import org.kirya343.main.services.ResumeService;
 import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.StatService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,15 +23,11 @@ public class AdminController {
     private final StatService statService;
     private final ListingService listingService;
     private final UserService userService;
-    private final ResumeService resumeService;
-    private final NewsService newsService;
 
     public AdminController(StatService statService, ListingService listingService, UserService userService, ResumeService resumeService) {
         this.statService = statService;
         this.listingService = listingService;
         this.userService = userService;
-        this.resumeService = resumeService;
-        this.newsService = null;
     }
 
     @GetMapping

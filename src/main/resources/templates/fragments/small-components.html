@@ -13,3 +13,10 @@
     <span th:case="'product'" th:text="#{category.product}">Товар</span>
     <span th:case="'offer-service'" th:text="#{category.offer-service}">Запрос на услугу3</span>
 </span>
+
+<!-- Компонент кнопки загрузки файлов -->
+<div class="upload-controls" th:fragment="uploadControls">
+    <input type="file" id="image" name="image" accept="image/*" onchange="updateFileName()">
+    <label for="image" class="btn btn-outline-primary" th:text="#{listing.editing.image.button.select}">Выбрать файл</label>
+    <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
+</div>

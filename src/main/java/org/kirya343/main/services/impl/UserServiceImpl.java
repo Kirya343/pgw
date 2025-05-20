@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -60,6 +61,8 @@ public class UserServiceImpl implements UserService {
         newUser.setSub(sub);
         newUser.setEnabled(true);
         newUser.setRole("USER");
+        newUser.setTermsAccepted(true); // Устанавливаем значение по умолчанию
+        newUser.setTermsAcceptanceDate(LocalDateTime.now()); // Устанавливаем значение по умолчанию
 
         String oauthName = oauth2User.getAttribute("name");
         if (oauthName != null && !oauthName.isBlank()) {

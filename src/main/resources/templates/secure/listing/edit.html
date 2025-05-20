@@ -173,11 +173,8 @@
 
                 <div class="form-group">
                     <label for="image" th:text="#{listing.creating.image}">Изображение</label>
-                    <div class="upload-controls">
-                        <input type="file" id="image" name="image" accept="image/*" onchange="updateFileName()">
-                        <label for="image" class="btn btn-outline-primary" th:text="#{listing.editing.image.button.select}">Выбрать файл</label>
-                        <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
-                    </div>
+                    <!-- Блок загрузки (виден только при выборе "Моя") -->
+                    <div th:replace="~{fragments/small-components :: uploadControls}"></div>
                     <small class="form-text text-muted" th:text="#{listing.editing.image.maxsize}">Максимальный размер: 5MB (JPG, PNG, GIF)</small>
                     <div th:if="${imageError}" class="invalid-feedback" th:text="${imageError}"></div>
                 </div>
@@ -191,14 +188,9 @@
         </main>
     </div>
 </div>
-<!-- Языковой переключатель -->
-<div th:replace="fragments/language-switch :: langSwitcher"></div>
-<script src="/js/components/mobile-menu.js"></script>
-<script src="/js/components/update-filename.js"></script>
+<!-- Файл импортов для защищённых страниц -->
+<th:block th:replace="~{fragments/global-imports :: secureImports(${user})}" />
 <!-- Скрипт управления отображением полей -->
 <script src="/js/components/toggle-language-fields.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="/js/websocket-global.js"></script>
 </body>
 </html>

@@ -43,22 +43,12 @@ public class Resume {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    /**
-     * Эти поля нужны ТОЛЬКО для передачи данных из формы.
-     * Spring их будет заполнять, а мы потом вручную формируем Map.
-     * Они НЕ сохраняются в базу.
-     */
     @Transient
     private List<String> languagesForm;
 
     @Transient
     private List<String> languageLevelsForm;
 
-    /**
-     * Чтобы Spring не пытался маппить поля формы напрямую в this.languages,
-     * мы добавляем @Transient-поле, которое участвует только на этапе биндинга формы.
-     * Это поможет избежать ошибок с Map, так как Spring умеет работать с List, но не с Map.
-     */
     @Transient
     private Map<String, String> languagesFormMap = new HashMap<>();
 

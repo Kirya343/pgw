@@ -11,14 +11,14 @@
 <body>
 <header>
     <!-- Хедер страниц аккаунта -->
-    <div th:replace="fragments/account/account-header :: accountHeader"></div>
+    <div th:replace="~{fragments/account/account-header :: accountHeader}"></div>
 </header>
 
 <!-- Основной контент -->
 <div class="account-container">
     <div class="account-layout">
         <!-- Сайдбар меню -->
-        <div th:replace="fragments/account/account-sidebar :: sidebar"></div>
+        <div th:replace="~{fragments/account/account-sidebar :: sidebar}"></div>
 
         <!-- Основное содержимое -->
         <main class="account-main">
@@ -108,11 +108,7 @@
                         <input type="hidden" name="avatarType" th:value="${user.avatarType ?: 'uploaded'}">
 
                         <!-- Блок загрузки (виден только при выборе "Моя") -->
-                        <div class="upload-controls">
-                            <input type="file" id="avatar" name="avatar" accept="image/*">
-                            <label for="avatar" class="btn btn-outline-primary" th:text="#{profile.editing.avatar.upload}">Загрузить новую</label>
-                            <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
-                        </div>
+                        <div th:replace="~{fragments/small-components :: uploadControls}"></div>
                     </div>
                 </div>
 
@@ -134,26 +130,8 @@
         </main>
     </div>
 </div>
-<!-- Языковой переключатель -->
-<div th:replace="fragments/language-switch :: langSwitcher"></div>
-<script>
-    // Мобильное меню
-    document.querySelector('.navbar-toggler').addEventListener('click', function() {
-        document.querySelector('.navbar-collapse').classList.toggle('show');
-    });
-    document.getElementById('navbar-toggler').addEventListener('click', function() {
-        document.querySelector('.navbar-collapse').classList.toggle('show');
-    });
-
-    // Отображение имени выбранного файла
-    document.getElementById('avatar').addEventListener('change', function(e) {
-        const fileName = e.target.files[0] ? e.target.files[0].name : 'Файл не выбран';
-        document.querySelector('.file-name').textContent = fileName;
-    });
-</script>
+<!-- Файл импортов для защищённых страниц -->
+<th:block th:replace="~{fragments/global-imports :: secureImports(${user})}" />
 <script src="/js/account/edit.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="/js/websocket-global.js"></script>
 </body>
 </html>
