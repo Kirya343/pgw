@@ -1,10 +1,9 @@
 package org.kirya343.config;
 
 import jakarta.servlet.MultipartConfigElement;
-import org.kirya343.auth.CustomAuthenticationSuccessHandler;
-import org.kirya343.auth.services.ForcedOAuth2UserService;
-import org.kirya343.main.repository.UserRepository;
-import org.kirya343.main.services.UserService;
+import jakarta.servlet.SessionCookieConfig;
+
+import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,17 +13,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -42,17 +36,6 @@ public class SecurityConfig {
 
     private static final String GREEN = "\u001B[32m";
     private static final String RESET = "\u001B[0m";
-
-    private final ForcedOAuth2UserService forcedOAuth2UserService;
-    private final UserService userService;
-    private final UserRepository userRepository;
-
-    public SecurityConfig(ForcedOAuth2UserService forcedOAuth2UserService, UserService userService, UserRepository userRepository) {
-        this.forcedOAuth2UserService = forcedOAuth2UserService;
-        this.userService = userService;
-        this.userRepository = userRepository;
-        //System.out.println(GREEN + "SecurityConfig initialized" + RESET);
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -168,38 +151,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        //System.out.println(GREEN + "Creating PasswordEncoder (BCrypt)" + RESET);
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public MultipartConfigElement multipartConfigElement() {
         //System.out.println(GREEN + "Creating MultipartConfigElement" + RESET);
         return new MultipartConfigElement("", 10 * 1024 * 1024, 10 * 1024 * 1024, 0);
     }
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsService(PasswordEncoder encoder) {
-        //System.out.println(GREEN + "Creating InMemoryUserDetailsManager with admins" + RESET);
-        UserDetails admin1 = User.builder()
-                .username("kirya343")
-                .password(encoder.encode("PGW353"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails admin2 = User.builder()
-                .username("testadmin")
-                .password(encoder.encode("testadmin"))
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin1, admin2);
-    }
-
-    @Bean
-    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
-        //System.out.println(GREEN + "Creating CustomAuthenticationSuccessHandler" + RESET);
-        return new CustomAuthenticationSuccessHandler();
+    public ServletContextInitializer servletContextInitializer() {
+        return servletContext -> {
+            SessionCookieConfig sessionCookieConfig = servletContext.getSessionCookieConfig();
+            sessionCookieConfig.setMaxAge(14 * 24 * 60 * 60); // 14 дней в секундах
+        };
     }
 }
