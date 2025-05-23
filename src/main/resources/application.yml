@@ -19,15 +19,15 @@ spring:
     username: u156_kOg0BtJwSj
     password: IY+BHWniVPjzVtreUER+@KwS
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      auto-commit: false
   mvc:
     static-path-pattern: /**
-  hikari:
-    connection-timeout: 30000
-    maximum-pool-size: 10
-    minimum-idle: 5
-    idle-timeout: 600000
-    max-lifetime: 1800000
-    auto-commit: false
   jpa:
     properties:
       hibernate:
@@ -48,7 +48,7 @@ spring:
               - openid
               - profile
               - email
-            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            redirect-uri: https://workswap.org/login/oauth2/code/google
             #redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}" https://workswap.org/login/oauth2/code/google http://localhost:8080/login/oauth2/code/google
             authorization-grant-type: authorization_code
             client-name: Google
@@ -68,7 +68,7 @@ logging:
   level:
     org:
       hibernate:
-        SQL: DEBUG
+        SQL: INFO
       springframework:
         web:
           servlet:
