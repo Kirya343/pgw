@@ -50,11 +50,11 @@
                 <!-- Для авторизованных пользователей -->
                 <div th:if="${isAuthenticated}" class="account-info">
                     <a th:href="@{/secure/account}" class="account-link">
-                        <img th:src="${avatarUrl}"
+                        <img th:src="${avatarPath}"
                                 class="account-avatar"
                                 alt="Аватар"
                                 th:onerror="this.src='/images/avatar-placeholder.jpg'">
-                        <span th:text="${userName}">Пользователь</span>
+                        <span th:text="${user.name}">Пользователь</span>
                     </a>
                 </div>
             </div>

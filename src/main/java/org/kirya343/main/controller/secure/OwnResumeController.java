@@ -3,8 +3,7 @@ package org.kirya343.main.controller.secure;
 import org.kirya343.main.model.Resume;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ResumeRepository;
-import org.kirya343.main.services.components.AdminCheckService;
-import org.kirya343.main.services.components.AvatarService;
+import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.StorageService;
 import org.kirya343.main.services.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,21 +24,12 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/secure/resume")
+@RequiredArgsConstructor
 public class OwnResumeController {
     private final ResumeRepository resumeRepository;
     private final UserService userService;
     private final StorageService storageService;
-    private final AvatarService avatarService;
-    private final AdminCheckService adminCheckService;
-
-    public OwnResumeController(ResumeRepository resumeRepository, UserService userService,
-                               StorageService storageService, AvatarService avatarService, AdminCheckService adminCheckService) {
-        this.resumeRepository = resumeRepository;
-        this.userService = userService;
-        this.storageService = storageService;
-        this.avatarService = avatarService;
-        this.adminCheckService = adminCheckService;
-    }
+    private final AuthService authService;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -47,11 +39,8 @@ public class OwnResumeController {
     @GetMapping
     public String showResume(Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
 
-        User user = userService.getCurrentUser();
+        User user = userService.findUserFromOAuth2(oauth2User);
         Optional<Resume> resumeOpt = resumeRepository.findByUser(user);
-
-        boolean isAdmin = adminCheckService.isAdmin(oauth2User);
-        model.addAttribute("isAdmin", isAdmin);
 
         if (resumeOpt.isEmpty()) {
             model.addAttribute("hasResume", false);
@@ -61,12 +50,7 @@ public class OwnResumeController {
             model.addAttribute("resume", resumeOpt.get());
         }
 
-        String avatarPath = avatarService.resolveAvatarPath(user);
-        String name = user.getName();
-
-        model.addAttribute("userName", name != null ? name : "Пользователь");
-        model.addAttribute("avatarPath", avatarPath);
-        model.addAttribute("user", user);
+        authService.validateAndAddAuthentication(model, oauth2User);
 
         // Переменная для отображения активной страницы
         model.addAttribute("activePage", "resume");
@@ -75,14 +59,15 @@ public class OwnResumeController {
     }
 
     @PostMapping("/save")
-    public String saveResume(@ModelAttribute Resume resume,
+    public String saveResume(@ModelAttribute Resume resume, 
+                            @AuthenticationPrincipal OAuth2User oauth2User,
                             @RequestParam(value = "resumeFile", required = false) MultipartFile file,
                             @RequestParam("languages[]") List<String> languages,
                             @RequestParam("languageLevels[]") List<String> levels,
                             @RequestParam(value = "publish", defaultValue = "false") boolean publish,
                             RedirectAttributes redirectAttributes) {
         try {
-            User user = userService.getCurrentUser();
+            User user = userService.findUserFromOAuth2(oauth2User);
             Optional<Resume> existingResume = resumeRepository.findByUser(user);
 
             Resume resumeToSave = existingResume.orElseGet(() -> {

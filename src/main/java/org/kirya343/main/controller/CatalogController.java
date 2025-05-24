@@ -5,12 +5,9 @@ import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Resume;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ListingRepository;
-import org.kirya343.main.repository.ResumeRepository;
 import org.kirya343.main.services.*;
-import org.kirya343.main.services.components.AdminCheckService;
 import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.AvatarService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,16 +31,11 @@ import java.util.Locale;
 public class CatalogController {
 
     private final ListingService listingService;
-    private final UserService userService;
     private final AvatarService avatarService;
     private final ResumeService resumeService;
     private final ListingRepository listingRepository;
-
-    @Autowired
     private final AuthService authService;
-
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     @GetMapping
     public String showCatalog(
@@ -130,10 +122,10 @@ public class CatalogController {
 
             // Добавляем аватарки для каждого резюме
             resumes.forEach(resume -> {
-                User user = resume.getUser();
+                User resumeAuthor = resume.getUser();
                 // Устанавливаем аватар только если он еще не был установлен
-                if (user.getAvatarUrl() == null) {
-                    user.setAvatarUrl(avatarService.resolveAvatarPath(user));
+                if (resumeAuthor.getAvatarUrl() == null) {
+                    resumeAuthor.setAvatarUrl(avatarService.resolveAvatarPath(resumeAuthor));
                 }
             });
         } else {
@@ -170,12 +162,7 @@ public class CatalogController {
         model.addAttribute("searchQuery", searchQuery);
         model.addAttribute("activePage", "catalog");
 
-
-        User user = null;
-        if (oauth2User != null) {
-            user = userService.findUserFromOAuth2(oauth2User);
-        }
-        authService.addAuthenticationAttributes(model, oauth2User, user);
+        authService.validateAndAddAuthentication(model, oauth2User);
 
         List<CategoryTab> categories = List.of(
                 new CategoryTab("services", messageSource.getMessage("category.service", null, locale), category.equals("services")),
@@ -206,18 +193,18 @@ public class CatalogController {
     private record CategoryTab(String id, String title, boolean active) {}
 
     private Page<Listing> searchListings(String searchQuery, Locale locale, Pageable pageable) {
-    String lang = locale.getLanguage();
-    String query = "%" + searchQuery.toLowerCase() + "%";
-    
-    switch (lang) {
-        case "fi":
-            return listingRepository.searchAllFields(query, pageable);
-        case "ru":
-            return listingRepository.searchAllFields(query, pageable);
-        case "en":
-            return listingRepository.searchAllFields(query, pageable);
-        default:
-            return listingRepository.searchAllFields(query, pageable);
+        String lang = locale.getLanguage();
+        String query = "%" + searchQuery.toLowerCase() + "%";
+        
+        switch (lang) {
+            case "fi":
+                return listingRepository.searchAllFields(query, pageable);
+            case "ru":
+                return listingRepository.searchAllFields(query, pageable);
+            case "en":
+                return listingRepository.searchAllFields(query, pageable);
+            default:
+                return listingRepository.searchAllFields(query, pageable);
+        }
     }
-}
 }

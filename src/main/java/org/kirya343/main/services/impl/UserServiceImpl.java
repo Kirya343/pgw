@@ -132,27 +132,6 @@ public class UserServiceImpl implements UserService {
         // userRepository.save(user); // Не нужно - изменения сохранятся благодаря @Transactional
     }
 
-
-    @Override
-    public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("User not authenticated");
-        }
-
-        if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
-            String email = oauth2User.getAttribute("email");
-            User user = findByEmail(email);
-            if (user == null) {
-                // Возвращаем null или пробрасываем флаг регистрации
-                throw new RuntimeException("Пользователь не найден. Пожалуйста, зарегистрируйтесь.");
-            }
-            return user;
-        }
-
-        String email = authentication.getName();
-        return findByEmail(email);
-    }
     @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);

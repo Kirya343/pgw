@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import lombok.RequiredArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/listing")
+@RequiredArgsConstructor
 public class ListingsController {
 
     private final ListingService listingService;
@@ -29,16 +32,6 @@ public class ListingsController {
     private final ReviewService reviewService;
     private final AuthService authService;
 
-    public ListingsController(ListingService listingService,
-                              UserService userService,
-                              AvatarService avatarService, AuthService authService, FavoriteListingService favoriteListingService, ReviewService reviewService) {
-        this.listingService = listingService;
-        this.userService = userService;
-        this.avatarService = avatarService;
-        this.favoriteListingService = favoriteListingService;
-        this.reviewService = reviewService;
-        this.authService = authService;
-    }
 
     private void setLocalizedTitleAndDescription(Listing listing, Locale locale) {
         String title = null;
@@ -101,7 +94,7 @@ public class ListingsController {
             return "redirect:/catalog";
         }
 
-        authService.addAuthenticationAttributes(model, oauth2User, user);
+        authService.validateAndAddAuthentication(model, oauth2User);
 
         // 3. Локализация названия и описания
         setLocalizedTitleAndDescription(listing, locale);
@@ -109,7 +102,7 @@ public class ListingsController {
         // Получаем автора объявления и его аватар
         User author = listing.getAuthor();
 
-        if (user != author) {
+        if (user != author && user != null) {
             // Увеличиваем счетчик просмотров
             listing.setViews(listing.getViews() + 1);
             listingService.save(listing);
@@ -119,7 +112,7 @@ public class ListingsController {
 
         boolean isOwner = false;
         if (oauth2User != null) {
-            isOwner = listing.getAuthor() != null && listing.getAuthor().getId().equals(user.getId());
+            isOwner = listing.getAuthor() != null && listing.getAuthor().equals(user);
             model.addAttribute("isOwner", isOwner);
         }
 
@@ -168,11 +161,6 @@ public class ListingsController {
                             @RequestParam double rating, // Рейтинг отзыва
                             @AuthenticationPrincipal OAuth2User oauth2User,
                             @RequestHeader(value = "referer", required = false) String referer) {
-
-        // Проверяем, что пользователь аутентифицирован
-        if (oauth2User == null) {
-            return "redirect:/login"; // Если пользователь не авторизован, перенаправляем на страницу логина
-        }
 
         // Находим объявление по ID
         Listing listing = listingService.getListingById(id);

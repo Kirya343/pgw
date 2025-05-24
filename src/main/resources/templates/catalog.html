@@ -95,7 +95,7 @@
             <div th:if="${category == 'find-help'}" class="resumes-grid">
                 <div th:each="resume : ${resumes}" class="resume-card">
                     <a th:href="@{'/resume/' + ${resume.id}}" class="resume-link">
-                        <img th:src="@{${resume.user.avatarUrl}}"
+                        <img th:src="@{${resume.user.avatarPath}}"
                              class="resume-avatar"
                              alt="Аватар"
                              th:onerror="this.src='/images/avatar-placeholder.png'">

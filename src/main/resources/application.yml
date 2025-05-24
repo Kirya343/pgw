@@ -31,11 +31,10 @@ spring:
   jpa:
     properties:
       hibernate:
+        ddl-auto: update
+        format_sql: true
         connection:
           isolation: 2 # READ_COMMITTED
-    hibernate:
-      ddl-auto: update
-      format_sql: true
     show-sql: true
   security:
     oauth2:
@@ -49,7 +48,9 @@ spring:
               - profile
               - email
             redirect-uri: https://workswap.org/login/oauth2/code/google
-            #redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}" https://workswap.org/login/oauth2/code/google http://localhost:8080/login/oauth2/code/google
+            #redirect-uri: http://localhost:8080/login/oauth2/code/google
+            #redirect-uri: https://workswap.org/login/oauth2/code/google
+            #redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             client-name: Google
         provider:
