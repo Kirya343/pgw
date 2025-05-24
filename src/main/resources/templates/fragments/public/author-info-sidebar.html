@@ -11,9 +11,6 @@
                 <span th:text="#{listing.rating}">Рейтинг: </span>
                 <span th:text="${listing.author.averageRating}">4.5</span> ★
             </div>
-            <!-- <div class="seller-stats">
-                <span th:text="${listing.author.completedJobs != null ? listing.author.completedJobs : '0'}">0</span>
-            </div> -->
         </div>
         <div class="seller-actions">
             <div th:if="${isAuthenticated}">

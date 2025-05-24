@@ -101,6 +101,13 @@ header {
     margin-right: 0.5rem;
 }
 
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
 .nav-buttons .logout-btn {
     padding: 0.5rem 1.25rem;
     border: 1px solid var(--primary);
@@ -158,6 +165,7 @@ header {
 
 .account-link {
     display: flex;
+    margin: 0 auto;
     align-items: center;
     text-decoration: none;
     color: var(--dark);
