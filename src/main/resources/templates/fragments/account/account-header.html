@@ -6,12 +6,6 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <nav class="navbar-collapse">
-
-                <a th:if="${isAdmin}" href="/admin/dashboard" class="nav-link" th:text="#{header.admin}">Админка</a>
-
-                <!-- Кнопка Новостей -->
-                <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
-
                 <nav class="navbar-top">
                     <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
                     <button id="navbar-toggler" class="navbar-toggler">
@@ -37,6 +31,11 @@
 
                     <!-- сайдбар -->
                     <div th:replace="~{fragments/account/account-sidebar :: sidebar-links(${activePage})}"></div>
+                </div>
+                <div class="nav-buttons">
+                    <a th:if="${isAdmin}" href="/admin/dashboard" class="nav-link" th:text="#{header.admin}">Админка</a>
+                    <!-- Кнопка Новостей -->
+                    <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
                 </div>
                 <div class="nav-buttons">
                     <a href="/logout" class="logout-btn" th:text="#{logout.button}">Выйти</a>
