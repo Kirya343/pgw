@@ -102,7 +102,7 @@
 <!--                    <div class="chat-messages" id="chatMessages">-->
 <!--                        <div th:each="message : ${chatMessages}" class="message" th:classappend="${message.isCurrentUser} ? 'current-user' : 'other-user'">-->
 <!--                            <div class="message-header">-->
-<!--                                <img th:src="@{${message.avatarUrl}}"-->
+<!--                                <img th:src="@{${message.avatarPath}}"-->
 <!--                                     th:onerror="this.src='/images/avatar-placeholder.jpg'"-->
 <!--                                     class="message-avatar">-->
 <!--                                <span class="message-author" th:text="${message.author}">Пользователь</span>-->

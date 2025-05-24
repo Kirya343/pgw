@@ -4,7 +4,7 @@
             <div class="profile-avatar">
                 <img th:src="@{${avatarPath}}" alt="Аватар">
             </div>
-            <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
+            <h4 class="profile-name" th:text="${user.name}">Иван Иванов</h4>
             <p class="profile-rating">
                 <span th:each="i : ${#numbers.sequence(1,5)}">
                     <i class="fa"

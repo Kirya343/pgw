@@ -5,6 +5,7 @@ import java.util.Locale;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.AdminCheckService;
+import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.AvatarService;
 import org.springframework.boot.actuate.web.exchanges.HttpExchange.Principal;
 import org.springframework.http.ResponseEntity;
@@ -16,20 +17,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import lombok.RequiredArgsConstructor;
+
 
 @Controller
 @RequestMapping("/secure/safety")
+@RequiredArgsConstructor
 public class SafetyContoller {
 
-    private final UserService userService;
-    private final AvatarService avatarService;
-    private final AdminCheckService adminCheckService;
-
-    public SafetyContoller(UserService userService, AvatarService avatarService, AdminCheckService adminCheckService) {
-        this.userService = userService;
-        this.avatarService = avatarService;
-        this.adminCheckService = adminCheckService;
-    }
+    private final AuthService authService;
 
     @GetMapping
     public String securityPage(Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
@@ -37,25 +33,7 @@ public class SafetyContoller {
             return "redirect:/login";
         }
 
-        boolean isAdmin = adminCheckService.isAdmin(oauth2User);
-
-        // Получаем или создаем пользователя
-        User user = userService.findUserFromOAuth2(oauth2User);
-
-        // Определяем URL аватара с приоритетом avatarUrl над picture
-        String avatarPath = avatarService.resolveAvatarPath(user);
-
-        // Получаем email и имя (используем данные из БД, а не напрямую из OAuth2)
-        String email = user.getEmail() != null ? user.getEmail() : oauth2User.getAttribute("email");
-        String name = user.getName();
-
-
-        // Получаем даты из сервиса (можно хранить в базе данных или properties)
-        model.addAttribute("isAdmin", isAdmin);
-        model.addAttribute("userEmail", email != null ? email : "Email не распознан");
-        model.addAttribute("userName", name != null ? name : "Пользователь");
-        model.addAttribute("avatarPath", avatarPath);
-        model.addAttribute("user", user);
+        authService.validateAndAddAuthentication(model, oauth2User);
 
         model.addAttribute("activePage", "safety");
 

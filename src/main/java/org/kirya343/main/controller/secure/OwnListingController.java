@@ -5,9 +5,7 @@ import org.kirya343.main.model.Location;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.LocationRepository;
 import org.kirya343.main.services.*;
-import org.kirya343.main.services.components.AdminCheckService;
-import org.kirya343.main.services.components.AvatarService;
-import org.kirya343.main.services.components.StatService;
+import org.kirya343.main.services.components.AuthService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -16,38 +14,26 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.RequiredArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/secure/listing")
+@RequiredArgsConstructor
 public class OwnListingController {
 
 
-    private final AvatarService avatarService;
     private final ListingService listingService;
     private final UserService userService;
     private final StorageService storageService;
     private final LocationRepository locationRepository;
-    private final StatService statService;
-    private final AdminCheckService adminCheckService;
-
-    public OwnListingController(AvatarService avatarService, ListingService listingService, UserService userService, StorageService storageService, LocationRepository locationRepository, StatService statService, AdminCheckService adminCheckService) {
-        this.avatarService = avatarService;
-        this.listingService = listingService;
-        this.userService = userService;
-        this.storageService = storageService;
-        this.locationRepository = locationRepository;
-        this.statService = statService;
-        this.adminCheckService = adminCheckService;
-    }
+    private final AuthService authService;
 
     @GetMapping("/create")
     public String showCreateForm(Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
-
-        boolean isAdmin = adminCheckService.isAdmin(oauth2User);
-        model.addAttribute("isAdmin", isAdmin);
 
         Map<String, String> categories = Map.of(
                 "services", "Услуга",
@@ -55,22 +41,11 @@ public class OwnListingController {
                 "product", "Товар"
         );
         model.addAttribute("categories", categories);
-        // Получаем email из OAuth2 аутентификации
-        User user = userService.findUserFromOAuth2(oauth2User);
-        String name = user.getName();
-        String avatarPath = avatarService.resolveAvatarPath(user);
 
         List<Location> locations = locationRepository.findAllByOrderByNameAsc();
         model.addAttribute("locations", locations);
 
-        double averageRating = statService.getAverageRating(user);
-        model.addAttribute("rating", averageRating);
-
-        model.addAttribute("user", user);
-
-        // Передаём в шаблон
-        model.addAttribute("userName", name != null ? name : "Пользователь");
-        model.addAttribute("avatarPath", avatarPath);
+        authService.validateAndAddAuthentication(model, oauth2User);
 
         model.addAttribute("listing", new Listing());
         model.addAttribute("priceTypes", List.of("Фиксированная", "Договорная"));
@@ -142,14 +117,10 @@ public class OwnListingController {
     ) {
         try {
             // Проверка, что текущий пользователь - автор объявления
-            String email = oauth2User.getAttribute("email");
-            User currentUser = userService.findByEmail(email);
+            User user = userService.findUserFromOAuth2(oauth2User);
             Listing listing = listingService.getListingById(id);
 
-            boolean isAdmin = adminCheckService.isAdmin(oauth2User);
-            model.addAttribute("isAdmin", isAdmin);
-
-            if (!listing.getAuthor().getId().equals(currentUser.getId())) {
+            if (!listing.getAuthor().equals(user)) {
                 redirectAttributes.addFlashAttribute("error", "Вы не можете редактировать это объявление");
                 return "redirect:/secure/account";
             }
@@ -162,16 +133,11 @@ public class OwnListingController {
 
             List<Location> locations = locationRepository.findAllByOrderByNameAsc();
 
-            String name = currentUser.getName();
-            String avatarPath = avatarService.resolveAvatarPath(currentUser);
-
-
-            model.addAttribute("user", currentUser);
             model.addAttribute("listing", listing);
             model.addAttribute("categories", categories);
             model.addAttribute("locations", locations);
-            model.addAttribute("userName", name != null ? name : "Пользователь");
-            model.addAttribute("avatarPath", avatarPath);
+
+            authService.validateAndAddAuthentication(model, oauth2User);
 
             return "secure/listing/edit";
         } catch (Exception e) {
@@ -198,10 +164,9 @@ public class OwnListingController {
             Listing existingListing = listingService.getListingById(id);
 
             // Проверка авторства
-            String email = oauth2User.getAttribute("email");
-            User currentUser = userService.findByEmail(email);
+            User user = userService.findUserFromOAuth2(oauth2User);
 
-            if (!existingListing.getAuthor().getId().equals(currentUser.getId())) {
+            if (!existingListing.getAuthor().equals(user)) {
                 redirectAttributes.addFlashAttribute("error", "Вы не можете редактировать это объявление");
                 return "redirect:/secure/account";
             }
@@ -258,10 +223,9 @@ public class OwnListingController {
             Listing listing = listingService.getListingById(id);
 
             // Проверка авторства
-            String email = oauth2User.getAttribute("email");
-            User currentUser = userService.findByEmail(email);
+            User user = userService.findUserFromOAuth2(oauth2User);
 
-            if (!listing.getAuthor().getId().equals(currentUser.getId())) {
+            if (!listing.getAuthor().equals(user)) {
                 redirectAttributes.addFlashAttribute("error", "Вы не можете удалить это объявление");
                 return "redirect:/secure/account";
             }

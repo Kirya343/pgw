@@ -3,8 +3,7 @@ package org.kirya343.main.controller.secure;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.services.*;
-import org.kirya343.main.services.components.AdminCheckService;
-import org.kirya343.main.services.components.AvatarService;
+import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.StatService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -17,28 +16,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 import java.util.Locale;
 
 @Controller
+@RequiredArgsConstructor
 public class AccountController {
 
     private final UserService userService;
-    private final AvatarService avatarService;
     private final ListingService listingService;
     private final StatService statService;
     private final StorageService storageService;
-    private final AdminCheckService adminCheckService;
-
-    public AccountController(UserService userService,
-                             AvatarService avatarService, ListingService listingService, StatService statService, StorageService storageService, AdminCheckService adminCheckService) {
-        this.userService = userService;
-        this.avatarService = avatarService;
-        this.listingService = listingService;
-        this.statService = statService;
-        this.storageService = storageService;
-        this.adminCheckService = adminCheckService;
-    }
+    private final AuthService authService;
 
     @GetMapping("/secure/account")
     public String getAccountPage(Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
@@ -46,18 +37,8 @@ public class AccountController {
             return "redirect:/login";
         }
 
-        boolean isAdmin = adminCheckService.isAdmin(oauth2User);
-        model.addAttribute("isAdmin", isAdmin);
-
         // Получаем или создаем пользователя
         User user = userService.findUserFromOAuth2(oauth2User);
-
-        // Определяем URL аватара с приоритетом avatarUrl над picture
-        String avatarPath = avatarService.resolveAvatarPath(user);
-
-        // Получаем email и имя (используем данные из БД, а не напрямую из OAuth2)
-        String email = user.getEmail() != null ? user.getEmail() : oauth2User.getAttribute("email");
-        String name = user.getName();
 
         // Получаем список объявлений пользователя
         List<Listing> listings = listingService.getListingsByUser(user);
@@ -103,10 +84,7 @@ public class AccountController {
         int deals = statService.getCompletedDeals(user);
         double averageRating = statService.getAverageRating(user);
 
-        model.addAttribute("userEmail", email != null ? email : "Email не распознан");
-        model.addAttribute("userName", name != null ? name : "Пользователь");
-        model.addAttribute("avatarPath", avatarPath);
-        model.addAttribute("user", user);
+        authService.validateAndAddAuthentication(model, oauth2User);
 
         // Передаем данные в модель
         model.addAttribute("listings", listings);
@@ -122,19 +100,15 @@ public class AccountController {
     }
 
     @GetMapping("/secure/account/edit")
-    public String editProfile(@AuthenticationPrincipal OAuth2User principal, Model model) {
-        User user = userService.findByEmail(principal.getAttribute("email"));
-        String avatarPath = avatarService.resolveAvatarPath(user); // Формируем путь так же, как в getAccountPage
+    public String editProfile(@AuthenticationPrincipal OAuth2User oauth2User, Model model) {
+        User user = userService.findUserFromOAuth2(oauth2User);
         String avatarUrlPath = (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty())
                 ? "/" + user.getAvatarUrl()
                 : "/images/upload-foto.png";
 
-        double averageRating = statService.getAverageRating(user);
-        model.addAttribute("rating", averageRating);
-
-        model.addAttribute("user", user);
         model.addAttribute("avatarUrlPath", avatarUrlPath);
-        model.addAttribute("avatarPath", avatarPath);
+
+        authService.validateAndAddAuthentication(model, oauth2User);
 
         // Переменная для отображения активной страницы
         model.addAttribute("activePage", "edit");

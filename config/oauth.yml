@@ -1,0 +1,26 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 877639477404-i3qsu3i9gbegu4fphjiagtu35ce3uc7f.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            #redirect-uri: http://localhost:8080/login/oauth2/code/google
+            #redirect-uri: https://workswap.org/login/oauth2/code/google
+            #redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            client-name: Google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+            issuer-uri: https://accounts.google.com

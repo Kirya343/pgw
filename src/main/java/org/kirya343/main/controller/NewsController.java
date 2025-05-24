@@ -1,10 +1,7 @@
 package org.kirya343.main.controller;
 
-import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.News;
-import org.kirya343.main.model.User;
 import org.kirya343.main.services.NewsService;
-import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.StatService;
 import org.springframework.data.domain.Page;
@@ -18,25 +15,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.Locale;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class NewsController {
     private final NewsService newsService;
     private final StatService statService;
     private final AuthService authService;
-    private final UserService userService;
-
-    public NewsController(NewsService newsService, 
-                        StatService statService, 
-                        AuthService authService,
-                        UserService userService) {
-        this.newsService = newsService;
-        this.statService = statService;
-        this.authService = authService;
-        this.userService = userService;
-    }
 
     @GetMapping("/news")
     public String getNews(@RequestParam(defaultValue = "0") int page,
@@ -72,11 +61,7 @@ public class NewsController {
             news.setLocalizedContent(content);
         }
 
-        User user = null;
-        if (oauth2User != null) {
-            user = userService.findUserFromOAuth2(oauth2User);
-        }
-        authService.addAuthenticationAttributes(model, oauth2User, user);
+        authService.validateAndAddAuthentication(model, oauth2User);
 
         model.addAttribute("news", newsPage.getContent());
         model.addAttribute("currentPage", page);
@@ -112,12 +97,7 @@ public class NewsController {
         model.addAttribute("similarNews", similarNews);
         model.addAttribute("isAdmin", isAdmin);
         
-        // Обработка аутентификации через AuthService
-        User user = null;
-        if (oauth2User != null) {
-            user = userService.findUserFromOAuth2(oauth2User);
-        }
-        authService.addAuthenticationAttributes(model, oauth2User, user);
+        authService.validateAndAddAuthentication(model, oauth2User);
 
         return "news-view";
     }
