@@ -16,7 +16,6 @@ public class StorageService {
     private final Path rootLocation = Paths.get("uploads").toAbsolutePath().normalize();
     private final long maxFileSize = 10 * 1024 * 1024; // 5MB
 
-
     public StorageService() {
         try {
             Files.createDirectories(rootLocation);

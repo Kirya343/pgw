@@ -4,7 +4,7 @@ import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.components.AuthService;
-import org.kirya343.main.services.FavoriteListingService;
+import org.kirya343.main.services.impl.FavoriteListingServiceImpl;
 import org.kirya343.main.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FavoritesController {
 
-    private final FavoriteListingService favoriteListingService;
+    private final FavoriteListingServiceImpl favoriteListingService;
     private final UserService userService;
     private final AuthService authService;
 

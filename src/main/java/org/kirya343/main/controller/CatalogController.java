@@ -8,6 +8,7 @@ import org.kirya343.main.repository.ListingRepository;
 import org.kirya343.main.services.*;
 import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.AvatarService;
+import org.kirya343.main.services.ResumeService;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

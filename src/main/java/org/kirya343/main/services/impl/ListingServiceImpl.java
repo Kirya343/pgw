@@ -12,27 +12,26 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ListingServiceImpl implements ListingService {
 
     private final ListingRepository listingRepository;
 
     private final ConversationRepository conversationRepository;
 
-    public ListingServiceImpl(ListingRepository listingRepository, ConversationRepository conversationRepository) {
-        this.listingRepository = listingRepository;
-        this.conversationRepository = conversationRepository;
-    }
-
     @Override
     public Page<Listing> findByCategory(String category, Pageable pageable) {
         return listingRepository.findByCategory(category, pageable);
     }
 
+    @Override
     public List<Listing> getRecentListings(int count) {
         Pageable pageable = PageRequest.of(0, count);
         return listingRepository.findAllByOrderByCreatedAtDesc(pageable).getContent();
@@ -59,24 +58,33 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.findActiveByCategory(category, pageable);
     }
 
+    @Override
     public List<Listing> findByUserEmail(String email) {
         return listingRepository.findByAuthorEmail(email);
     }
+
+    @Override
     public List<Listing> getAllActiveListings() {
         return listingRepository.findByActiveTrue(); // Предполагая, что у вас есть поле `active` в сущности
     }
+
+    @Override
     public List<Listing> getAllListings() {
         return listingRepository.findAll(); // Просто получаем все объявления
     }
     // Новый метод с JOIN FETCH (оптимизированный)
+    @Override
     public Listing getListingByIdWithAuthorAndReviews(Long id) {
         return listingRepository.findByIdWithAuthorAndReviews(id).orElse(null);
     }
 
     // Оставляем стандартный тоже, если вдруг понадобится
+    @Override
     public Listing getListingById(Long id) {
         return listingRepository.findById(id).orElse(null);
     }
+
+    @Override
     public List<Listing> findSimilarListings(String category, Long excludeId, Locale locale) {
         List<Listing> listings = listingRepository.findByCategoryAndIdNot(category, excludeId, PageRequest.of(0, 4));
 
@@ -97,6 +105,7 @@ public class ListingServiceImpl implements ListingService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public void deleteListing(Long id) {
         Listing listing = listingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Объявление не найдено"));
@@ -111,6 +120,8 @@ public class ListingServiceImpl implements ListingService {
         // Теперь можно удалить объявление
         listingRepository.delete(listing);
     }
+
+    @Override
     public Page<Listing> findActiveByCategoryAndCommunity(String community, String category, Pageable pageable) {
         switch (community) {
             case "fi":
@@ -124,6 +135,7 @@ public class ListingServiceImpl implements ListingService {
         }
     }
 
+    @Override
     public Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, Locale locale) {
         Sort sort;
 
@@ -159,6 +171,7 @@ public class ListingServiceImpl implements ListingService {
         return findListingsByCategoryAndCommunity("services", locale, sortedPageable);
     }
 
+    @Override
     public Page<Listing> findListingsByCategoryAndCommunity(String category, Locale locale, Pageable pageable) {
         // В зависимости от языка выбираем нужное комьюнити
         if ("fi".equals(locale.getLanguage())) {

@@ -2,11 +2,7 @@ package org.kirya343.main.controller.secure;
 
 import java.util.Locale;
 
-import org.kirya343.main.model.User;
-import org.kirya343.main.services.UserService;
-import org.kirya343.main.services.components.AdminCheckService;
 import org.kirya343.main.services.components.AuthService;
-import org.kirya343.main.services.components.AvatarService;
 import org.springframework.boot.actuate.web.exchanges.HttpExchange.Principal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

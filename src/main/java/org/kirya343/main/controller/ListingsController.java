@@ -29,9 +29,8 @@ public class ListingsController {
     private final UserService userService;
     private final AvatarService avatarService;
     private final FavoriteListingService favoriteListingService;
-    private final ReviewService reviewService;
     private final AuthService authService;
-
+    private final ReviewService reviewService;
 
     private void setLocalizedTitleAndDescription(Listing listing, Locale locale) {
         String title = null;

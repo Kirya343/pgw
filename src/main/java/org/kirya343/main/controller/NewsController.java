@@ -1,9 +1,9 @@
 package org.kirya343.main.controller;
 
 import org.kirya343.main.model.News;
-import org.kirya343.main.services.NewsService;
 import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.StatService;
+import org.kirya343.main.services.NewsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
