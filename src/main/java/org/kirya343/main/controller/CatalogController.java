@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -64,21 +66,9 @@ public class CatalogController {
         if (searchQuery != null && !searchQuery.isEmpty()) {
             listingsPage = searchListings(searchQuery, locale, pageable);
         } else {
-            switch (category) {
-                case "offer-service":
-                    listingsPage = findListingsByCategoryAndCommunity("offer-service", locale, pageable);
-                    break;
-                case "find-help":
-                    listingsPage = findListingsByCategoryAndCommunity("find-help", locale, pageable);
-                    break;
-                case "product":
-                    listingsPage = findListingsByCategoryAndCommunity("product", locale, pageable);
-                    break;
-                default:
-                    listingsPage = findListingsByCategoryAndCommunity("services", locale, pageable);
-            }
-        }
-
+            System.out.println("\nFetching listings for category: " + category + "\n, locale: " + locale);
+            listingsPage = listingService.getListingsSorted(category, sortBy, pageable, locale);
+        }  
         // Интегрируем логику локализации описания и названия
         for (Listing listing : listingsPage.getContent()) {
             String title = null;
@@ -132,13 +122,13 @@ public class CatalogController {
             // Остальной код для других категорий
             switch (category) {
                 case "offer-service":
-                    listingsPage = findListingsByCategoryAndCommunity("offer-service", locale, pageable);
+                    listingsPage = listingService.findListingsByCategoryAndCommunity("offer-service", locale, pageable);
                     break;
                 case "product":
-                    listingsPage = findListingsByCategoryAndCommunity("product", locale, pageable);
+                    listingsPage = listingService.findListingsByCategoryAndCommunity("product", locale, pageable);
                     break;
                 default:
-                    listingsPage = findListingsByCategoryAndCommunity("services", locale, pageable);
+                    listingsPage = listingService.findListingsByCategoryAndCommunity("services", locale, pageable);
             }
         }
 
@@ -176,18 +166,76 @@ public class CatalogController {
         return "catalog";
     }
 
-    private Page<Listing> findListingsByCategoryAndCommunity(String category, Locale locale, Pageable pageable) {
-        // В зависимости от языка выбираем нужное комьюнити
-        if ("fi".equals(locale.getLanguage())) {
-            return listingService.findActiveByCategoryAndCommunity("fi", category, pageable);
-        } else if ("ru".equals(locale.getLanguage())) {
-            return listingService.findActiveByCategoryAndCommunity("ru", category, pageable);
-        } else if ("en".equals(locale.getLanguage())) {
-            return listingService.findActiveByCategoryAndCommunity("en", category, pageable);
-        } else {
-            return listingService.findActiveByCategory(category, pageable); // для других языков
+    @GetMapping("/sort")
+    public String sortCatalogAjax(
+            @RequestParam String category,
+            @RequestParam String sortBy,
+            @RequestParam(defaultValue = "0") int page,
+            Model model,
+            HttpServletRequest request,
+            Locale locale
+    ) {
+
+        System.out.println("=== [AJAX SORTING] ===");
+        System.out.println("Category: " + category);
+        System.out.println("SortBy: " + sortBy);
+        System.out.println("Page: " + page);
+        System.out.println("Locale: " + locale);
+
+        Pageable pageable = PageRequest.of(page, 12);
+        System.out.println("Pageable: page=" + pageable.getPageNumber() + ", size=" + pageable.getPageSize());
+        Page<Listing> listings = listingService.getListingsSorted(category, sortBy, pageable, locale); // или как у тебя реализовано
+        System.out.println("Listings loaded: " + listings.getNumberOfElements() + " / " + listings.getTotalElements());
+
+        System.out.println("\nFetching listings for category: " + category + "\n, locale: " + locale);
+        Page<Listing> listingsPage = listingService.getListingsSorted(category, sortBy, pageable, locale);
+
+        for (Listing listing : listingsPage.getContent()) {
+            String title = null;
+            String description = null;
+
+            if ("fi".equals(locale.getLanguage()) && listing.getCommunityFi()) {
+                title = listing.getTitleFi();
+                description = listing.getDescriptionFi();
+            } else if ("ru".equals(locale.getLanguage()) && listing.getCommunityRu()) {
+                title = listing.getTitleRu();
+                description = listing.getDescriptionRu();
+            } else if ("en".equals(locale.getLanguage()) && listing.getCommunityEn()) {
+                title = listing.getTitleEn();
+                description = listing.getDescriptionEn();
+            }
+
+            // Если нет значения для выбранного языка, пробуем другие языки
+            if (title == null || description == null) {
+                if (title == null) {
+                    title = listing.getTitleFi() != null ? listing.getTitleFi() :
+                            listing.getTitleRu() != null ? listing.getTitleRu() :
+                                    listing.getTitleEn();
+                }
+                if (description == null) {
+                    description = listing.getDescriptionFi() != null ? listing.getDescriptionFi() :
+                            listing.getDescriptionRu() != null ? listing.getDescriptionRu() :
+                                    listing.getDescriptionEn();
+                }
+            }
+
+            // Сохраняем в транзиентные поля
+            listing.setLocalizedTitle(title);
+            listing.setLocalizedDescription(description);
         }
-    }
+
+        model.addAttribute("listings", listings);
+
+        boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+        System.out.println("Is AJAX request: " + isAjax);
+
+        if (isAjax) {
+            System.out.println("Returning fragment: ~{fragments/public/catalog-fragments :: content}");
+            return "fragments/public/catalog-fragments :: content"; // HTML-фрагмент, который ты вставляешь в <div id="catalog-content">
+        }
+
+        return "catalog"; // fallback для обычной загрузки
+    }   
 
     // Вспомогательный класс для представления вкладок категорий
     private record CategoryTab(String id, String title, boolean active) {}

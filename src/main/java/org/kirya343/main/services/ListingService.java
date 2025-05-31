@@ -23,4 +23,6 @@ public interface ListingService {
     void deleteListing(Long id);
     Page<Listing> findActiveByCategoryAndCommunity(String community, String category, Pageable pageable);
     List<Listing> getRecentListings(int count);
+    Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, Locale locale);
+    Page<Listing> findListingsByCategoryAndCommunity(String category, Locale locale, Pageable pageable);
 }

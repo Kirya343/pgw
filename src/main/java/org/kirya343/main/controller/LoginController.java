@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class LoginController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/login")
     public String loginPage(@RequestParam(required = false) String error, Model model) {

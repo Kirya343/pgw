@@ -9,6 +9,7 @@ import org.kirya343.main.services.ListingService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -123,4 +124,51 @@ public class ListingServiceImpl implements ListingService {
         }
     }
 
+    public Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, Locale locale) {
+        Sort sort;
+
+        switch (sortBy) {
+            case "price":
+                sort = Sort.by(Sort.Direction.ASC, "price");
+                break;
+            case "rating":
+                sort = Sort.by(Sort.Direction.DESC, "rating");
+                break;
+            case "popularity":
+                sort = Sort.by(Sort.Direction.DESC, "views");
+                break;
+            case "date":
+            default:
+                sort = Sort.by(Sort.Direction.DESC, "createdAt");
+                break;
+        }
+
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        if (category != null) {
+            switch (category) {
+                case "offer-service":
+                case "find-help":
+                case "product":
+                    return findListingsByCategoryAndCommunity(category, locale, sortedPageable);
+                default:
+                    return findListingsByCategoryAndCommunity("services", locale, sortedPageable);
+            }
+        }
+
+        return findListingsByCategoryAndCommunity("services", locale, sortedPageable);
+    }
+
+    public Page<Listing> findListingsByCategoryAndCommunity(String category, Locale locale, Pageable pageable) {
+        // В зависимости от языка выбираем нужное комьюнити
+        if ("fi".equals(locale.getLanguage())) {
+            return findActiveByCategoryAndCommunity("fi", category, pageable);
+        } else if ("ru".equals(locale.getLanguage())) {
+            return findActiveByCategoryAndCommunity("ru", category, pageable);
+        } else if ("en".equals(locale.getLanguage())) {
+            return findActiveByCategoryAndCommunity("en", category, pageable);
+        } else {
+            return findActiveByCategory(category, pageable); // для других языков
+        }
+    }
 }
