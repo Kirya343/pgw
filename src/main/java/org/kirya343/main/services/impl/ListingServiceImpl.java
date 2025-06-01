@@ -7,6 +7,7 @@ import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.ListingRepository;
 import org.kirya343.main.services.ListingService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -136,39 +137,64 @@ public class ListingServiceImpl implements ListingService {
     }
 
     @Override
-    public Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, Locale locale) {
-        Sort sort;
+    public Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, Locale locale) {
+    Sort sort;
 
-        switch (sortBy) {
-            case "price":
-                sort = Sort.by(Sort.Direction.ASC, "price");
-                break;
-            case "rating":
-                sort = Sort.by(Sort.Direction.DESC, "rating");
-                break;
-            case "popularity":
-                sort = Sort.by(Sort.Direction.DESC, "views");
-                break;
-            case "date":
-            default:
-                sort = Sort.by(Sort.Direction.DESC, "createdAt");
-                break;
+    switch (sortBy) {
+        case "price":
+            sort = Sort.by(Sort.Direction.ASC, "price");
+            break;
+        case "rating":
+            sort = Sort.by(Sort.Direction.DESC, "rating");
+            break;
+        case "popularity":
+            sort = Sort.by(Sort.Direction.DESC, "views");
+            break;
+        case "date":
+        default:
+            sort = Sort.by(Sort.Direction.DESC, "createdAt");
+            break;
+    }
+
+    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+    // Получаем все объявления по категории и языковой аудитории
+    Page<Listing> baseListings = (category != null && (
+                category.equals("offer-service") || category.equals("find-help") || category.equals("product")))
+                ? findListingsByCategoryAndCommunity(category, locale, sortedPageable)
+                : findListingsByCategoryAndCommunity("services", locale, sortedPageable);
+
+        // Фильтруем по поиску
+        List<Listing> filtered = baseListings.getContent();
+
+        if (searchQuery != null && !searchQuery.isBlank()) {
+            String lowered = searchQuery.toLowerCase();
+            filtered = filtered.stream()
+                    .filter(l ->
+                            (l.getTitleRu() != null && l.getTitleRu().toLowerCase().contains(lowered)) ||
+                            (l.getDescriptionRu() != null && l.getDescriptionRu().toLowerCase().contains(lowered)) ||
+                            (l.getTitleFi() != null && l.getTitleFi().toLowerCase().contains(lowered)) ||
+                            (l.getDescriptionFi() != null && l.getDescriptionFi().toLowerCase().contains(lowered)) ||
+                            (l.getTitleEn() != null && l.getTitleEn().toLowerCase().contains(lowered)) ||
+                            (l.getDescriptionEn() != null && l.getDescriptionEn().toLowerCase().contains(lowered)) ||
+                            (l.getLocation() != null && l.getLocation().toLowerCase().contains(lowered))
+                    )
+                    .collect(Collectors.toList());
         }
 
-        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-
-        if (category != null) {
-            switch (category) {
-                case "offer-service":
-                case "find-help":
-                case "product":
-                    return findListingsByCategoryAndCommunity(category, locale, sortedPageable);
-                default:
-                    return findListingsByCategoryAndCommunity("services", locale, sortedPageable);
-            }
+        // Фильтруем по наличию отзывов
+        if (hasReviews) {
+            filtered = filtered.stream()
+                    .filter(l -> l.getReviews() != null && !l.getReviews().isEmpty())
+                    .collect(Collectors.toList());
         }
 
-        return findListingsByCategoryAndCommunity("services", locale, sortedPageable);
+        // Возвращаем постранично вручную
+        int start = (int) sortedPageable.getOffset();
+        int end = Math.min(start + sortedPageable.getPageSize(), filtered.size());
+
+        List<Listing> pageContent = (start <= end) ? filtered.subList(start, end) : List.of();
+        return new PageImpl<>(pageContent, sortedPageable, filtered.size());
     }
 
     @Override
@@ -183,5 +209,12 @@ public class ListingServiceImpl implements ListingService {
         } else {
             return findActiveByCategory(category, pageable); // для других языков
         }
+    }
+
+    @Override
+    public List<Listing> searchListings(String searchQuery) {
+        String query = "%" + searchQuery.toLowerCase() + "%";
+        
+        return listingRepository.searchAllFields(query);
     }
 }

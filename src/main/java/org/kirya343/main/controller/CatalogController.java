@@ -47,7 +47,6 @@ public class CatalogController {
             @RequestParam(defaultValue = "date") String sortBy,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String searchQuery,
-            @RequestParam(required = false, defaultValue = "false") boolean available,
             @RequestParam(required = false, defaultValue = "false") boolean hasReviews,
             Model model,
             Locale locale,
@@ -64,12 +63,8 @@ public class CatalogController {
 
         // Получаем объявления по категории и языку
         Page<Listing> listingsPage;
-        if (searchQuery != null && !searchQuery.isEmpty()) {
-            listingsPage = searchListings(searchQuery, locale, pageable);
-        } else {
-            System.out.println("\nFetching listings for category: " + category + "\n, locale: " + locale);
-            listingsPage = listingService.getListingsSorted(category, sortBy, pageable, locale);
-        }  
+        
+        listingsPage = listingService.getListingsSorted(category, sortBy, pageable, searchQuery, hasReviews, locale);
         // Интегрируем логику локализации описания и названия
         for (Listing listing : listingsPage.getContent()) {
             String title = null;
@@ -146,7 +141,6 @@ public class CatalogController {
         model.addAttribute("totalPages", listingsPage.getTotalPages());
         model.addAttribute("category", category);
         model.addAttribute("sortBy", sortBy);
-        model.addAttribute("available", available);
         model.addAttribute("hasReviews", hasReviews);
 
         // Переменная для отображения активной страницы
@@ -172,6 +166,8 @@ public class CatalogController {
             @RequestParam String category,
             @RequestParam String sortBy,
             @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(required = false, defaultValue = "false") boolean hasReviews,
             Model model,
             HttpServletRequest request,
             Locale locale
@@ -184,12 +180,8 @@ public class CatalogController {
         System.out.println("Locale: " + locale);
 
         Pageable pageable = PageRequest.of(page, 12);
-        System.out.println("Pageable: page=" + pageable.getPageNumber() + ", size=" + pageable.getPageSize());
-        Page<Listing> listings = listingService.getListingsSorted(category, sortBy, pageable, locale); // или как у тебя реализовано
-        System.out.println("Listings loaded: " + listings.getNumberOfElements() + " / " + listings.getTotalElements());
 
-        System.out.println("\nFetching listings for category: " + category + "\n, locale: " + locale);
-        Page<Listing> listingsPage = listingService.getListingsSorted(category, sortBy, pageable, locale);
+        Page<Listing> listingsPage = listingService.getListingsSorted(category, sortBy, pageable, searchQuery, hasReviews, locale);
 
         for (Listing listing : listingsPage.getContent()) {
             String title = null;
@@ -225,7 +217,7 @@ public class CatalogController {
             listing.setLocalizedDescription(description);
         }
 
-        model.addAttribute("listings", listings);
+        model.addAttribute("listings", listingsPage);
 
         boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
         System.out.println("Is AJAX request: " + isAjax);
@@ -240,20 +232,4 @@ public class CatalogController {
 
     // Вспомогательный класс для представления вкладок категорий
     private record CategoryTab(String id, String title, boolean active) {}
-
-    private Page<Listing> searchListings(String searchQuery, Locale locale, Pageable pageable) {
-        String lang = locale.getLanguage();
-        String query = "%" + searchQuery.toLowerCase() + "%";
-        
-        switch (lang) {
-            case "fi":
-                return listingRepository.searchAllFields(query, pageable);
-            case "ru":
-                return listingRepository.searchAllFields(query, pageable);
-            case "en":
-                return listingRepository.searchAllFields(query, pageable);
-            default:
-                return listingRepository.searchAllFields(query, pageable);
-        }
-    }
 }

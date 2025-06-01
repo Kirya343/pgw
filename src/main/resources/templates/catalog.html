@@ -147,11 +147,11 @@
         </main>
     </div>
 </div>
-<script>
+<!-- <script>
     document.getElementById('filterForm').addEventListener('change', function() {
         this.submit();
     });
-</script>
+</script> -->
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 
@@ -160,35 +160,65 @@
 
 <!-- Сортировка без перезагрузки -->
 <script>
+
+    function loadSortedCatalog() {
+        const params = new URLSearchParams(window.location.search);
+
+        const category = params.get("category") || "all";
+        const searchQuery = document.querySelector('input[name="searchQuery"]')?.value || "";
+        const hasReviews = document.querySelector('input[name="hasReviews"]')?.checked;
+
+        // Получаем выбранную сортировку
+        const activeSort = document.querySelector(".sort-link.active")?.getAttribute("data-sort") || "date";
+
+        const queryString = new URLSearchParams({
+            category,
+            sortBy: activeSort,
+            searchQuery,
+            hasReviews: hasReviews ? "on" : ""
+        });
+
+        fetch(`/catalog/sort?${queryString.toString()}`, {
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+            .then(response => response.text())
+            .then(html => {
+                document.querySelector("#catalog-content").innerHTML = html;
+            })
+            .catch(error => console.error("Ошибка при сортировке:", error));
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
+        // Клики по сортировке
         document.querySelectorAll(".sort-link").forEach(link => {
             link.addEventListener("click", function (e) {
                 e.preventDefault();
 
-                const sortBy = this.getAttribute("data-sort");
-                const category = new URLSearchParams(window.location.search).get("category") || "all";
-
-                // Удаляем "active" со всех кнопок сортировки
-                document.querySelectorAll(".sort-link").forEach(btn => {
-                    btn.classList.remove("active");
-                });
-
-                // Добавляем "active" на нажатую кнопку
+                document.querySelectorAll(".sort-link").forEach(btn => btn.classList.remove("active"));
                 this.classList.add("active");
 
-                // Загружаем отсортированные данные
-                fetch(`/catalog/sort?category=${category}&sortBy=${sortBy}`, {
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest"
-                    }
-                })
-                    .then(response => response.text())
-                    .then(html => {
-                        document.querySelector("#catalog-content").innerHTML = html;
-                    })
-                    .catch(error => console.error("Ошибка при сортировке:", error));
+                loadSortedCatalog();
             });
         });
+
+        // Перехват формы поиска
+        const searchForm = document.getElementById("searchForm");
+        if (searchForm) {
+            searchForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+                loadSortedCatalog();
+            });
+        }
+
+        // Отслеживаем изменение фильтра hasReviews
+        const reviewsCheckbox = document.querySelector('input[name="hasReviews"]');
+        if (reviewsCheckbox) {
+            reviewsCheckbox.addEventListener("change", function () {
+                loadSortedCatalog();
+            });
+        }
     });
 </script>
 <!-- Файл общих импортов -->

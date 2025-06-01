@@ -197,13 +197,13 @@ public class ChatWebSocketController {
         return new UserDTO(interlocutorName, interlocutorAvatar);
     }
 
-    @MessageMapping("/chat.subscribeToConversations")
+    /* @MessageMapping("/chat.subscribeToConversations")
     @SendToUser("/queue/conversations.updates")
     public ConversationDTO subscribeToConversations(Principal principal) {
         User user = userService.findBySub(principal.getName());
         // Можно сразу вернуть текущий список или просто подтвердить подписку
         return null; // Реальная логика будет в сервисе
-    }
+    } */
 
     @MessageMapping("/notifications.requestPending")
     public void requestPendingNotifications(Principal principal) {

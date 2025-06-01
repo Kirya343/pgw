@@ -21,7 +21,7 @@ public interface ListingService {
     Listing getListingByIdWithAuthorAndReviews(Long id);
     Page<Listing> findActiveByCategoryAndCommunity(String community, String category, Pageable pageable);
     List<Listing> getRecentListings(int count);
-    Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, Locale locale);
+    Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, Locale locale);
     Page<Listing> findListingsByCategoryAndCommunity(String category, Locale locale, Pageable pageable);
 
     // Методы для работы с похожими объявлениями
@@ -31,4 +31,6 @@ public interface ListingService {
     void deleteListing(Long id);
     void save(Listing listing);
     Listing saveAndReturn(Listing listing);
+
+    List<Listing> searchListings(String searchQuery);
 }
