@@ -6,8 +6,8 @@ import org.kirya343.main.model.DTOs.*;
 import org.kirya343.main.model.chat.*;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.components.AvatarService;
-import org.kirya343.main.services.chat.ChatService;
 import org.kirya343.main.services.NotificationService;
+import org.kirya343.main.services.chat.ChatService;
 import org.kirya343.main.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,13 +197,13 @@ public class ChatWebSocketController {
         return new UserDTO(interlocutorName, interlocutorAvatar);
     }
 
-    @MessageMapping("/chat.subscribeToConversations")
+    /* @MessageMapping("/chat.subscribeToConversations")
     @SendToUser("/queue/conversations.updates")
     public ConversationDTO subscribeToConversations(Principal principal) {
         User user = userService.findBySub(principal.getName());
         // Можно сразу вернуть текущий список или просто подтвердить подписку
         return null; // Реальная логика будет в сервисе
-    }
+    } */
 
     @MessageMapping("/notifications.requestPending")
     public void requestPendingNotifications(Principal principal) {
