@@ -71,8 +71,6 @@ public class UserServiceImpl implements UserService {
             newUser.setPicture(oauthPicture);
         }
 
-        // Дополнительно можно проверить наличие других обязательных атрибутов
-
         // Сохраняем нового пользователя
         newUser = userRepository.save(newUser);
 

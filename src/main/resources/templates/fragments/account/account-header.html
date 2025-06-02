@@ -1,46 +1,44 @@
-<div th:fragment="accountHeader">
-    <nav class="container">
-        <nav class="navbar">
-            <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
-            <button class="navbar-toggler">
+<nav class="container" th:fragment="accountHeader">
+    <nav class="navbar">
+        <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
+        <button class="navbar-toggler">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <nav class="navbar-collapse">
+            <nav class="navbar-top">
+                <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
+                <button id="navbar-toggler" class="navbar-toggler">
                 <span class="navbar-toggler-icon"></span>
-            </button>
-            <nav class="navbar-collapse">
-                <nav class="navbar-top">
-                    <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
-                    <button id="navbar-toggler" class="navbar-toggler">
-                    <span class="navbar-toggler-icon"></span>
-                    </button>
-                </nav>
-                <div class="account-manager">
-                    <div class="profile-card">
-                        <div class="profile-avatar">
-                            <img th:src="@{${avatarPath}}" alt="Аватар">
-                        </div>
-                        <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
-                        <p class="profile-rating">
-                    <span th:each="i : ${#numbers.sequence(1,5)}">
-                        <i class="fa"
-                            th:classappend="${user.averageRating >= i} ? 'fa-star' :
-                            (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
-                    </span>
-                            (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
-                        </p>
-                        <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
-                    </div>
-
-                    <!-- сайдбар -->
-                    <div th:replace="~{fragments/account/account-sidebar :: sidebar-links(${activePage})}"></div>
-                </div>
-                <div class="nav-buttons">
-                    <a th:if="${isAdmin}" href="/admin/dashboard" class="nav-link" th:text="#{header.admin}">Админка</a>
-                    <!-- Кнопка Новостей -->
-                    <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
-                </div>
-                <div class="nav-buttons">
-                    <a href="/logout" class="logout-btn" th:text="#{logout.button}">Выйти</a>
-                </div>
+                </button>
             </nav>
+            <div class="account-manager">
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <img th:src="@{${avatarPath}}" alt="Аватар">
+                    </div>
+                    <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
+                    <p class="profile-rating">
+                <span th:each="i : ${#numbers.sequence(1,5)}">
+                    <i class="fa"
+                        th:classappend="${user.averageRating >= i} ? 'fa-star' :
+                        (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                </span>
+                        (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
+                    </p>
+                    <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
+                </div>
+
+                <!-- сайдбар -->
+                <div th:replace="~{fragments/account/account-sidebar :: sidebar-links(${activePage})}"></div>
+            </div>
+            <div class="nav-buttons">
+                <a th:if="${isAdmin}" href="/admin/dashboard" class="nav-link" th:text="#{header.admin}">Админка</a>
+                <!-- Кнопка Новостей -->
+                <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="/logout" class="logout-btn" th:text="#{logout.button}">Выйти</a>
+            </div>
         </nav>
     </nav>
-</div>
+</nav>

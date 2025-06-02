@@ -1,57 +1,53 @@
-<div th:fragment="sidebar">
-    <aside class="account-sidebar">
-        <div class="profile-card">
-            <div class="profile-avatar">
-                <img th:src="@{${avatarPath}}" alt="Аватар">
-            </div>
-            <h4 class="profile-name" th:text="${user.name}">Иван Иванов</h4>
-            <p class="profile-rating">
-                <span th:each="i : ${#numbers.sequence(1,5)}">
-                    <i class="fa"
-                        th:classappend="${user.averageRating >= i} ? 'fa-star' :
-                        (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
-                </span>
-                (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
-            </p>
-            <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm" th:text="#{profile.edit}">Редактировать профиль</a>
+<aside class="account-sidebar" th:fragment="sidebar">
+    <div class="profile-card">
+        <div class="profile-avatar">
+            <img th:src="@{${avatarPath}}" alt="Аватар">
         </div>
+        <h4 class="profile-name" th:text="${user.name}">Иван Иванов</h4>
+        <p class="profile-rating">
+            <span th:each="i : ${#numbers.sequence(1,5)}">
+                <i class="fa"
+                    th:classappend="${user.averageRating >= i} ? 'fa-star' :
+                    (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+            </span>
+            (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
+        </p>
+        <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm" th:text="#{profile.edit}">Редактировать профиль</a>
+    </div>
 
-        <!-- сайдбар -->
-        <div th:replace="~{fragments/account/account-sidebar :: sidebar-links(${activePage})}"></div>
-    </aside>
-</div>
+    <!-- сайдбар -->
+    <nav th:replace="~{fragments/account/account-sidebar :: sidebar-links(${activePage})}"></nav>
+</aside>
 
 <!-- Ссылки в сайдбаре -->
-<div th:fragment="sidebar-links(activePage)">
-    <nav class="account-menu">
-        <a href="/secure/account"
-           class="account-menu-item"
-           th:classappend="${activePage == 'account'} ? ' active'"
-           th:text="#{link.account}">Мои объявления</a>
+<nav class="account-menu" th:fragment="sidebar-links(activePage)">
+    <a href="/secure/account"
+        class="account-menu-item"
+        th:classappend="${activePage == 'account'} ? ' active'"
+        th:text="#{link.account}">Мои объявления</a>
 
-        <a href="/secure/favorites"
-           class="account-menu-item"
-           th:classappend="${activePage == 'favorites'} ? ' active'"
-           th:text="#{link.favorite}">Избранное</a>
+    <a href="/secure/favorites"
+        class="account-menu-item"
+        th:classappend="${activePage == 'favorites'} ? ' active'"
+        th:text="#{link.favorite}">Избранное</a>
 
-        <a href="/secure/messenger"
-           class="account-menu-item"
-           th:classappend="${activePage == 'messenger'} ? ' active'"
-           th:text="#{link.messenger}">Сообщения</a>
+    <a href="/secure/messenger"
+        class="account-menu-item"
+        th:classappend="${activePage == 'messenger'} ? ' active'"
+        th:text="#{link.messenger}">Сообщения</a>
 
-        <a href="/secure/resume"
-           class="account-menu-item"
-           th:classappend="${activePage == 'resume'} ? ' active'"
-           th:text="#{link.resume}">Моё резюме</a>
+    <a href="/secure/resume"
+        class="account-menu-item"
+        th:classappend="${activePage == 'resume'} ? ' active'"
+        th:text="#{link.resume}">Моё резюме</a>
 
-        <a href="/secure/account/edit"
-           class="account-menu-item"
-           th:classappend="${activePage == 'edit'} ? ' active'"
-           th:text="#{link.settings}">Настройки</a>
+    <a href="/secure/account/edit"
+        class="account-menu-item"
+        th:classappend="${activePage == 'edit'} ? ' active'"
+        th:text="#{link.settings}">Настройки</a>
 
-        <a href="/secure/safety"
-           class="account-menu-item"
-           th:classappend="${activePage == 'safety'} ? ' active'"
-           th:text="#{link.safety}">Безопасность</a>
-    </nav>
-</div>
+    <a href="/secure/safety"
+        class="account-menu-item"
+        th:classappend="${activePage == 'safety'} ? ' active'"
+        th:text="#{link.safety}">Безопасность</a>
+</nav>

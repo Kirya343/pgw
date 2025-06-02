@@ -1,0 +1,59 @@
+<aside class="admin-sidebar" th:fragment="admin-sidebar">
+    <div class="text-center mb-4">
+        <a href="/catalog">
+            <h2 class="admin-logo">WorkSwap Admin</h2>
+        </a>
+    </div>
+
+    <!-- сайдбар -->
+    <nav th:replace="~{fragments/admin/admin-sidebar :: admin-sidebar-links(${activePage})}"></nav>
+</aside>
+
+<nav class="admin-nav" th:fragment="admin-sidebar-links(activePage)">
+
+    <div class="admin-nav-title">Основное</div>
+
+    <a href="/admin/dashboard" 
+        class="admin-nav-item" 
+        th:classappend="${activePage == 'dashboard'} ? ' active'">
+        <i class="fas fa-tachometer-alt"></i> Панель управления
+    </a>
+
+    <a href="#" class="admin-nav-item">
+        <i class="fas fa-list"></i> Объявления
+    </a>
+
+    <a href="#" class="admin-nav-item">
+        <i class="fas fa-file-alt"></i> Резюме
+    </a>
+
+    <a href="#" class="admin-nav-item">
+        <i class="fas fa-users"></i> Пользователи
+    </a>
+
+    <div class="admin-nav-title">Контент</div>
+    <a href="/admin/news" 
+        class="admin-nav-item" 
+        th:classappend="${activePage == 'admin-news'} ? ' active'">
+        <i class="fas fa-newspaper"></i> Новости
+    </a>
+
+    <a href="#" class="admin-nav-item">
+        <i class="fas fa-comments"></i> Отзывы
+    </a>
+
+    <a href="#" class="admin-nav-item">
+        <i class="fas fa-question-circle"></i> Вопросы
+    </a>
+
+
+    <div class="admin-nav-title">Настройки</div>
+
+    <a href="#" class="admin-nav-item">
+        <i class="fas fa-cog"></i> Системные
+    </a>
+
+    <a href="#" class="admin-nav-item">
+        <i class="fas fa-language"></i> Локализация
+    </a>
+</nav>

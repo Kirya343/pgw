@@ -13,14 +13,15 @@
 <body>
 <header>
     <!-- Хедер страниц аккаунта -->
-    <div th:replace="fragments/account/account-header :: accountHeader"></div>
+    <nav th:replace="~{fragments/account/account-header :: accountHeader}"></nav>
 </header>
+
 <!-- Основной контент -->
 <!-- favorites.html -->
 <section class="favorites-container">
     <div class="favorites-layout">
         <!-- Сайдбар меню -->
-        <div th:replace="fragments/account/account-sidebar :: sidebar"></div>
+        <aside th:replace="~{fragments/account/account-sidebar :: sidebar}"></aside>
 
         <!-- Основной блок -->
         <main class="favorites-main">

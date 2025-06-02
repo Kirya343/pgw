@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Resume;
 import org.kirya343.main.model.User;
-import org.kirya343.main.repository.ListingRepository;
 import org.kirya343.main.services.*;
 import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.AvatarService;
@@ -36,7 +35,6 @@ public class CatalogController {
     private final ListingService listingService;
     private final AvatarService avatarService;
     private final ResumeService resumeService;
-    private final ListingRepository listingRepository;
     private final AuthService authService;
     private final MessageSource messageSource;
 

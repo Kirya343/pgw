@@ -11,46 +11,7 @@
 <body>
 <div class="admin-layout">
     <!-- Сайдбар -->
-    <aside class="admin-sidebar">
-        <div class="text-center mb-4">
-            <h2 class="admin-logo">WorkSwap Admin</h2>
-        </div>
-
-        <nav class="admin-nav">
-            <div class="admin-nav-title">Основное</div>
-            <a href="/admin/dashboard" class="admin-nav-item active">
-                <i class="fas fa-tachometer-alt"></i> Панель управления
-            </a>
-            <a href="#" class="admin-nav-item">
-                <i class="fas fa-list"></i> Объявления
-            </a>
-            <a href="#" class="admin-nav-item">
-                <i class="fas fa-file-alt"></i> Резюме
-            </a>
-            <a href="#" class="admin-nav-item">
-                <i class="fas fa-users"></i> Пользователи
-            </a>
-
-            <div class="admin-nav-title">Контент</div>
-            <a href="/admin/news" class="admin-nav-item">
-                <i class="fas fa-newspaper"></i> Новости
-            </a>
-            <a href="#" class="admin-nav-item">
-                <i class="fas fa-comments"></i> Отзывы
-            </a>
-            <a href="#" class="admin-nav-item">
-                <i class="fas fa-question-circle"></i> Вопросы
-            </a>
-
-            <div class="admin-nav-title">Настройки</div>
-            <a href="#" class="admin-nav-item">
-                <i class="fas fa-cog"></i> Системные
-            </a>
-            <a href="#" class="admin-nav-item">
-                <i class="fas fa-language"></i> Локализация
-            </a>
-        </nav>
-    </aside>
+    <aside th:replace="~{fragments/admin/admin-sidebar :: admin-sidebar}" class="admin-sidebar"></aside>
 
     <!-- Основной контент -->
     <main class="admin-main">
@@ -83,9 +44,16 @@
             </div>
             <div class="stat-card">
                 <div class="stat-card-title">Резюме</div>
-                <div class="stat-card-value" ${stats.resumeCount}>000</div>
+                <div class="stat-card-value" th:text="${stats.resumesCount}">000</div>
                 <div class="stat-card-change negative">
                     <i class="fas fa-arrow-down"></i> 2% за месяц
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">Просмотры</div>
+                <div class="stat-card-value" th:text="${stats.viewsCount}">000</div>
+                <div class="stat-card-change positive">
+                    <i class="fas fa-arrow-up"></i> 3% за месяц
                 </div>
             </div>
             <div class="stat-card">
@@ -104,10 +72,10 @@
             </div>
             <div class="card-body">
                 <table class="admin-table">
-                    <thead>
+                    <thead style="cursor: pointer;" onclick="window.location.href='/admin/listings'">
                     <tr>
                         <th>ID</th>
-                        <th>Название</th>
+                        <th>Название</th> 
                         <th>Автор</th>
                         <th>Цена</th>
                         <th>Дата</th>
@@ -121,7 +89,8 @@
                         <td th:text="${listing.author.name}">Автор</td>
                         <td>
                             <!-- компонент для отображение типа цены -->
-                            <span th:replace="fragments/small-components :: priceTypes">€0</span></td>
+                            <span th:replace="fragments/small-components :: priceTypes">€0</span>
+                        </td>
                         <td th:text="${#temporals.format(listing.createdAt, 'dd.MM.yyyy')}">дд.мм.гггг</td>
                         <td>
                             <a th:href="@{/listing/{id}(id=${listing.id})}" class="btn-admin btn-admin-secondary mr-1">
@@ -148,15 +117,15 @@
             </div>
             <div class="card-body">
                 <table class="admin-table">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Имя</th>
-                        <th>Email</th>
-                        <th>Регистрация</th>
-                        <th>Статус</th>
-                        <th>Действия</th>
-                    </tr>
+                    <thead style="cursor: pointer;" onclick="window.location.href='/admin/users'">
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя</th>
+                            <th>Email</th>
+                            <th>Регистрация</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
                     </thead>
                     <tbody>
                     <tr th:each="user : ${recentUsers}">
