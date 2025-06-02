@@ -10,14 +10,14 @@
 <body>
 <header>
     <!-- Хедер страниц аккаунта -->
-    <div th:replace="fragments/account/account-header :: accountHeader"></div>
+    <nav th:replace="~{fragments/account/account-header :: accountHeader}"></nav>
 </header>
 
 <!-- Основной контент -->
 <div class="edit-listing-container">
     <div class="edit-listing-layout">
         <!-- Сайдбар меню -->
-        <div th:replace="fragments/account/account-sidebar :: sidebar"></div>
+        <aside th:replace="~{fragments/account/account-sidebar :: sidebar}"></aside>
 
         <!-- Основное содержимое -->
         <main class="edit-listing-main">

@@ -14,14 +14,14 @@
 <body>
 <header>
     <!-- Хедер страниц аккаунта -->
-    <div th:replace="fragments/account/account-header :: accountHeader"></div>
+    <nav th:replace="~{fragments/account/account-header :: accountHeader}"></nav>
 </header>
 
 <!-- Основной контент -->
 <div class="account-container">
     <div class="account-layout">
         <!-- Сайдбар меню -->
-        <div th:replace="fragments/account/account-sidebar :: sidebar"></div>
+        <aside th:replace="~{fragments/account/account-sidebar :: sidebar}"></aside>
 
         <!-- Основной контент -->
         <main class="account-main">

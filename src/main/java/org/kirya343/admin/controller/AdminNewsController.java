@@ -27,6 +27,7 @@ public class AdminNewsController {
     public String newsList(Model model) {
         List<News> newsList = newsService.findAll();
         model.addAttribute("newsList", newsList);
+        model.addAttribute("activePage", "admin-news");
         return "admin/news/news-list";
     }
 

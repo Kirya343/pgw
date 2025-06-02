@@ -42,7 +42,7 @@ public class AdminController {
 
         // Получаем последние объявления и пользователей
         List<Listing> recentListings = listingService.getRecentListings(3);
-        List<User> recentUsers = userService.getRecentUsers(3);
+        List<User> recentUsers = userService.getRecentUsers(3); 
 
         // Проставляем локализованные поля по схеме: ru -> fi -> en
         for (Listing listing : recentListings) {
@@ -74,6 +74,8 @@ public class AdminController {
         model.addAttribute("stats", stats);
         model.addAttribute("recentListings", recentListings);
         model.addAttribute("recentUsers", recentUsers);
+
+        model.addAttribute("activePage", "dashboard");
 
         return "admin/dashboard";
     }
