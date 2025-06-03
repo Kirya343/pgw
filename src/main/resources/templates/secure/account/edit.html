@@ -79,8 +79,14 @@
                             <!-- Вариант 1: Загруженная аватарка -->
                             <div class="avatar-option" data-type="uploaded">
                                 <div class="avatar-preview">
-                                    <img th:src="@{${avatarUrlPath}}" alt="Аватар">
-                                    <img th:unless="${user.avatarUrl}" src="/images/upload-foto.png">
+                                    <img th:if="${user.avatarUrl.startsWith('/avatars/')}"
+                                        th:src="@{${user.avatarUrl}}"
+                                        onerror="this.src='/images/avatar-placeholder.png'"
+                                        alt="Аватар">
+
+                                    <img th:unless="${user.avatarUrl.startsWith('/avatars/')}"
+                                        src="/images/upload-foto.png"
+                                        alt="Заглушка">
                                 </div>
                                 <span th:text="#{profile.editing.avatar.my}">Моя</span>
                             </div>

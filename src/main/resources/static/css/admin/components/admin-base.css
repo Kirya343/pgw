@@ -1,0 +1,10 @@
+.users-avatars {
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+}
+.small-users-avatars {
+    height: 23px;
+    width: 23px;
+    border-radius: 4px;
+}

@@ -6,7 +6,6 @@ import org.kirya343.main.model.DTOs.MessageDTO;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.chat.ChatService;
 import org.kirya343.main.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,19 +13,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
+
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/chat")
+@RequiredArgsConstructor
 public class ChatRestController {
 
-    @Autowired
-    private ChatService chatService;
-
-    @Autowired
-    private UserService userService;
+    private final ChatService chatService;
+    private final UserService userService;
 
     @GetMapping("/conversation/{conversationId}/messages")
     public ResponseEntity<List<MessageDTO>> getConversationMessages(@PathVariable Long conversationId, Principal principal) {

@@ -6,19 +6,25 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.List;
 
 public interface UserService {
-    // Удаляем дублирующийся метод
-    void setAvatarUrl(Long userId, String avatarUrl);
 
+    // Получение списка пользователей по пораметрам
+    List<User> findAll();
+    List<User> getRecentUsers(int count);
+
+    // Поиск пользователя по пораметрам
+    User findById(Long id);
     User findByEmail(String email);
-    User findByUsername(String username);
     User findBySub(String sub);
     User findUserFromOAuth2(OAuth2User oauth2User);
+
+    // Регистрирация пользователя из OAuth2
     void registerUserFromOAuth2(OAuth2User oauth2User);
 
-    // Добавляем новые методы
+    // Управление пользователями
     User save(User user);
-    void setRole(Long userId, String role);
-    User findById(Long id);
+    void deleteById(Long id);
 
-    List<User> getRecentUsers(int count);
+    // Обновление пользователя
+    void setAvatarUrl(Long userId, String avatarUrl);
+    void setRole(Long userId, String role);
 }

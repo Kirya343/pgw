@@ -14,7 +14,7 @@
             <div class="account-manager">
                 <div class="profile-card">
                     <div class="profile-avatar">
-                        <img th:src="@{${avatarPath}}" alt="Аватар">
+                        <img th:src="@{${user.avatarUrl}}" onerror="this.src='/images/avatar-placeholder.png'" alt="Аватар">
                     </div>
                     <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
                     <p class="profile-rating">

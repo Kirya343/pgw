@@ -14,13 +14,13 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
     private final UserService userService;
-    private final AvatarService avatarService;
+    /* private final AvatarService avatarService; */
     private final StatService statService;
     private final AdminCheckService adminCheckService;
 
     private void addAuthenticationAttributes(Model model, OAuth2User oauth2User, User user) {
         if (oauth2User != null) {
-            String avatarPath = avatarService.resolveAvatarPath(user);
+            /* String avatarPath = avatarService.resolveAvatarPath(user); */
             double averageRating = statService.getAverageRating(user);
 
             boolean isAdmin = adminCheckService.isAdmin(oauth2User);
@@ -28,12 +28,12 @@ public class AuthService {
             model.addAttribute("isAdmin", isAdmin);
 
             model.addAttribute("isAuthenticated", true);
-            model.addAttribute("avatarPath", avatarPath);
+            /* model.addAttribute("avatarPath", avatarPath); */
             model.addAttribute("user", user);
             model.addAttribute("rating", averageRating);
         } else {
             model.addAttribute("isAuthenticated", false);
-            model.addAttribute("avatarPath", "/images/avatar-placeholder.jpg");
+            /* model.addAttribute("avatarPath", "/images/avatar-placeholder.jpg"); */
         }
     }
 

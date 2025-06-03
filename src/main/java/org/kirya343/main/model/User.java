@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.kirya343.main.model.chat.Conversation;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,35 +28,21 @@ public class User {
     @Column(nullable = false, unique = true)
     private String sub; // Уникальный идентификатор от Google
 
-    @Column(unique = true)
-    private String username;
 
-    private String bio;
-
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    private String givenName;
-    private String familyName;
+    private String bio;
+
     private String picture;
     private String avatarUrl;
-    private boolean emailVerified;
-    private String locale;
 
-    @Column(name = "phone_visible")
     private boolean phoneVisible = true;  // Скрывать или отображать телефон
 
-    @Column(name = "email_visible")
     private boolean emailVisible = true;  // Скрывать или отображать email
-
-    @Enumerated(EnumType.STRING)
-    private AuthProvider provider; // GOOGLE, LOCAL и т.д.
-
-    // Для локальных пользователей (если нужно)
-    private String password;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Listing> listings = new ArrayList<>();
@@ -71,19 +56,13 @@ public class User {
     private String role;
 
     private boolean locked;
-    private boolean accountNonLocked;
-    private boolean accountNonExpired;
-    private boolean credentialsNonExpired;
-    private boolean accountNonLockingProtected;
     private boolean enabled;
-    private boolean disabled;
-    private boolean accountNonExpiredOrCredentialsNonExpired;
 
-    @Column(name = "avatar_type")
     private String avatarType; // "uploaded", "google", "default"
 
     private Double averageRating = 0.0; // Средний рейтинг пользователя
     private String phone;
+
     private Integer completedJobs;
 
     @CreationTimestamp
@@ -95,13 +74,8 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime termsAcceptanceDate;
 
-    public enum AuthProvider {
-        LOCAL,
-        GOOGLE
-    }
-
     // Метод для создания пользователя из OAuth2 данных
-    public static User fromOAuth2(OAuth2User oauth2User) {
+    /* public static User fromOAuth2(OAuth2User oauth2User) {
         User user = new User();
         user.setSub(oauth2User.getAttribute("sub"));
         user.setEmail(oauth2User.getAttribute("email"));
@@ -112,10 +86,9 @@ public class User {
         }
         user.setName(name);
 
-        user.setPicture(oauth2User.getAttribute("picture"));
-        user.setProvider(AuthProvider.GOOGLE);
+        user.setAvatarUrl(oauth2User.getAttribute("picture"));
         user.setEnabled(true);
         user.setRole("USER");
         return user;
-    }
+    } */
 }

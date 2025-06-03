@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление пользоватем | WorkSwap Admin</title>
+    <link href="/css/admin/pages/users/view-user.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<div class="admin-layout">
+    <!-- Сайдбар -->
+    <aside th:replace="~{fragments/admin/admin-sidebar :: admin-sidebar}" class="admin-sidebar"></aside>
+
+    <!-- Основной контент -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1>Управление пользователем</h1>
+            <div class="admin-user">
+                <span>Администратор</span>
+                <img src="/images/avatar-placeholder.png" onerror="this.src='/images/avatar-placeholder.png'" alt="Аватар" class="admin-user-avatar">
+            </div>
+        </header>
+
+        <nav class="breadcrumbs">
+            <a href="/admin/dashboard">Панель управления</a>
+            <span> / </span>
+            <a href="/admin/users">Управление пользователями</a>
+            <span> / </span>
+            <img th:src="@{${user.avatarUrl}}" th:onerror="this.src='/images/avatar-placeholder.png'" alt="Аватар" class="small-users-avatars">
+            <span aria-current="page" th:text="${user.name}"></span>
+        </nav>
+
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/admin/user/update/{id}(id=${user.id})}" 
+                      method="post" th:object="${user}" enctype="multipart/form-data">
+                    <!-- Заголовки -->
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Id</label>
+                        <input type="text" class="admin-form-control" th:value="${user.id}" readonly>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Имя пользователя</label>
+                        <input type="text" class="admin-form-control" th:value="${user.name}" readonly>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Google ID(sub)</label>
+                        <input type="text" class="admin-form-control" th:value="${user.sub}" readonly>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Статус</label>
+                        <input type="text" class="admin-form-control" th:value="${user.enabled ? 'Активен' : 'Отключён'}" readonly>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Статус блокировки</label>
+                        <input type="text" class="admin-form-control" th:value="${user.locked ? 'Заблокирован' : 'Нет'}" readonly>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Телефон</label>
+                        <input type="text" class="admin-form-control" th:value="${user.phone}" readonly>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Email</label>
+                        <input type="text" class="admin-form-control" th:value="${user.email}" readonly>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Описание</label>
+                        <input type="text" class="admin-form-control" th:value="${user.bio}" readonly>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Рейтинг</label>
+                        <input type="text" class="admin-form-control" th:value="${user.averageRating}" readonly>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Условия пользования</label>
+                        <input type="text" class="admin-form-control" th:value="${user.termsAccepted ? 'Приняты' : 'Не приняты'}" readonly>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Дата принятия условий пользования</label>
+                        <input type="text" class="admin-form-control" th:value="${#temporals.format(user.termsAcceptanceDate, 'dd.MM.yyyy')}" readonly>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <button type="submit" class="btn-admin btn-admin-primary">
+                            <i class="fas fa-save"></i> Сохранить
+                        </button>
+                        <a href="/admin/news" class="btn-admin btn-admin-secondary ml-2">
+                            <i class="fas fa-times"></i> Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

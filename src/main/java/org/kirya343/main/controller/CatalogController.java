@@ -3,10 +3,8 @@ package org.kirya343.main.controller;
 import lombok.RequiredArgsConstructor;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Resume;
-import org.kirya343.main.model.User;
 import org.kirya343.main.services.*;
 import org.kirya343.main.services.components.AuthService;
-import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.services.ResumeService;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -33,7 +31,6 @@ import java.util.Locale;
 public class CatalogController {
 
     private final ListingService listingService;
-    private final AvatarService avatarService;
     private final ResumeService resumeService;
     private final AuthService authService;
     private final MessageSource messageSource;
@@ -103,15 +100,6 @@ public class CatalogController {
         if ("find-help".equals(category)) {
             // Получаем опубликованные резюме
             resumes = resumeService.findPublishedResumes(pageable);
-
-            // Добавляем аватарки для каждого резюме
-            resumes.forEach(resume -> {
-                User resumeAuthor = resume.getUser();
-                // Устанавливаем аватар только если он еще не был установлен
-                if (resumeAuthor.getAvatarUrl() == null) {
-                    resumeAuthor.setAvatarUrl(avatarService.resolveAvatarPath(resumeAuthor));
-                }
-            });
         } else {
             // Остальной код для других категорий
             switch (category) {

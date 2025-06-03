@@ -7,6 +7,7 @@ import org.kirya343.main.model.User;
 import org.kirya343.main.repository.UserRepository;
 import org.kirya343.main.services.UserService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +20,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    public List<User> findAll() {
+        return userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 
     @Override
@@ -53,23 +54,16 @@ public class UserServiceImpl implements UserService {
         }
 
         // Создаем нового пользователя
-        User newUser = new User();
-        newUser.setEmail(email);
-        newUser.setSub(sub);
-        newUser.setEnabled(true);
-        newUser.setRole("USER");
+        User newUser = new User(); 
+        newUser.setEmail(email); // Устанавливаем email пользователя
+        newUser.setSub(sub); // Устанавливаем sub для идентификации пользователя в OAuth2
+        newUser.setEnabled(true); // Устанавливаем пользователя как активного
+        newUser.setRole("USER"); // Устанавливаем роль по умолчанию
         newUser.setTermsAccepted(true); // Устанавливаем значение по умолчанию
         newUser.setTermsAcceptanceDate(LocalDateTime.now()); // Устанавливаем значение по умолчанию
-
-        String oauthName = oauth2User.getAttribute("name");
-        if (oauthName != null && !oauthName.isBlank()) {
-            newUser.setName(oauthName);
-        }
-
-        String oauthPicture = oauth2User.getAttribute("picture");
-        if (oauthPicture != null && !oauthPicture.isBlank()) {
-            newUser.setPicture(oauthPicture);
-        }
+        newUser.setName(oauth2User.getAttribute("name")); // Устанавливаем имя пользователя
+        newUser.setAvatarUrl(oauth2User.getAttribute("picture")); // Устанавливаем URL аватара
+        newUser.setAvatarType("google"); // Устанавливаем тип аватара
 
         // Сохраняем нового пользователя
         newUser = userRepository.save(newUser);
@@ -134,6 +128,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getRecentUsers(int count) {
         return userRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, count)).getContent();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        User user = findById(id);
+        userRepository.delete(user);
     }
 }
 

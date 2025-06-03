@@ -4,7 +4,7 @@
         <article th:each="review : ${listing.reviews}" class="review-card">
             <div class="review-header">
                 <div class="reviewer-avatar">
-                    <img th:src="@{${reviewAuthorAvatars[review.id]}}"
+                    <img th:src="@{${review.author.avatarUrl}}"
                             onerror="this.src='/images/avatar-placeholder.jpg'"
                             alt="Reviewer Avatar">
                 </div>

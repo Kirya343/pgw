@@ -68,7 +68,6 @@ public class ForcedOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setSub(oAuth2User.getAttribute("sub"));
-        newUser.setUsername(oAuth2User.getAttribute("name"));
         newUser.setRole("USER"); // Default role
         return userRepository.save(newUser);
     }

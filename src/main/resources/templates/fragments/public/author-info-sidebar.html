@@ -1,7 +1,7 @@
 <aside class="listing-sidebar" th:fragment="authorInfoSidebar">
     <div class="seller-card" th:if="${listing.author != null}">
         <div class="seller-avatar">
-            <img th:src="@{${authorAvatarPath}}"
+            <img th:src="@{${listing.author.avatarUrl}}"
                     th:onerror="this.src='/images/default-avatar.png'"
                     alt="Аватар продавца">
         </div>

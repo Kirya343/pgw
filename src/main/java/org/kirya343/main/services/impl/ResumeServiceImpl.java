@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
 
-    private ResumeRepository resumeRepository;
+    private final ResumeRepository resumeRepository;
 
     @Override
     public List<Resume> findPublishedResumes(Pageable pageable) {

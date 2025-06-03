@@ -3,6 +3,8 @@
     margin-bottom: 1.5rem;
     font-size: 0.9rem;
     color: var(--gray);
+    display: flex;
+    flex-direction: row;
 }
 
 .breadcrumbs a {
