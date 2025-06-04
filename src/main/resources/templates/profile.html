@@ -59,20 +59,6 @@
                         Полное описание услуги или предложения.
                     </p>
 
-                    <div class="details-grid">
-                        <div class="detail-item">
-                            <span class="detail-label" th:text="#{listing.rating}">Рейтинг:</span>
-                            <span class="detail-value rating">
-                                <th:block th:each="i : ${#numbers.sequence(1,5)}">
-                                    <i class="fa"
-                                       th:classappend="${profileUser.averageRating >= i} ? 'fa-star' :
-                                       (${profileUser.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')">
-                                    </i>
-                                </th:block>
-                            </span>
-                        </div>
-                    </div>
-
                     <!-- Список объявлений пользователя -->
                     <div th:replace="~{fragments/public/catalog-fragments :: content}"></div>
                 </div>
