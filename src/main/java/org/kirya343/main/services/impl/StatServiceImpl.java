@@ -125,4 +125,23 @@ public class StatServiceImpl implements StatService {
 
         return stats;
     }
+
+    @Override
+    public Map<String, Object> getUserStats(User user, Locale locale) {
+        Map<String, Object> stats = new HashMap<>();
+
+        // Получаем статистику пользователя
+        int totalViews = getTotalViews(user);
+        int totalResponses = getTotalResponses(user);
+        int completedDeals = getCompletedDeals(user);
+
+        // Форматируем числа в зависимости от локали
+        NumberFormat numberFormat = NumberFormat.getInstance(locale);
+
+        stats.put("totalViews", numberFormat.format(totalViews));
+        stats.put("totalResponses", numberFormat.format(totalResponses));
+        stats.put("completedDeals", numberFormat.format(completedDeals));
+
+        return stats;
+    }
 }

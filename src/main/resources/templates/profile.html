@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{title.listing}">Просмотр объявления | WorkSwap</title>
+    <link href="/css/public/pages/listing-page.css" rel="stylesheet">
+    <link href="/css/public/pages/catalog-page.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<header>
+    <div th:replace="fragments/public/header :: header(${activePage})"></div>
+</header>
+
+<!-- Основной контент -->
+<div class="listing-container">
+    <div class="listing-layout">
+        <!-- Основное содержимое -->
+        <main class="listing-main">
+
+            <!-- Заголовок объявления -->
+            <div class="listing-header">
+                <h1 th:text="${listing.localizedTitle}">Название объявления</h1>
+                <div class="listing-meta">
+                    <span class="listing-date" th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy')}">01.01.2023</span>
+                    <span class="listing-views">Просмотры: <span th:text="${listing.views}">0</span></span>
+                </div>
+            </div>
+
+            <!-- Галерея изображений -->
+            <!-- <div class="listing-gallery">
+                <div class="main-image">
+                    <img th:src="@{'/' + ${listing.imagePath}}"
+                         th:onerror="this.src='/images/default-listing.png'"
+                         alt="Основное изображение"
+                         class="clickable-image" th:data-fullscreen="@{'/' + ${listing.imagePath}}">
+                </div>
+                <div class="thumbnails" th:if="${listing.images != null and !listing.images.isEmpty()}">
+                    <div class="thumbnail" th:each="image : ${listing.images}">
+                        <img th:src="@{'/' + ${image.path}}"
+                             th:onerror="this.src='/images/default-listing.png'"
+                             alt="Дополнительное изображение"
+                             class="clickable-image" data-fullscreen="@{'/' + ${image.path}}">
+                    </div>
+                </div>
+            </div>
+            <div id="fullscreen-modal" class="fullscreen-modal">
+                <span class="close" id="close-modal">&times;</span>
+                <img id="fullscreen-image" src="" alt='/images/default-listing.png'>
+            </div> -->
+
+            <!-- Список объявлений пользователя -->
+            <div class="listing-content">
+                <div class="listing-details">
+                    <h2 th:text="#{listing.description}">Описание</h2>
+                    <p class="listing-description"
+                       th:text="${listing.localizedDescription ?: 'Нет описания'}">
+                        Полное описание услуги или предложения.
+                    </p>
+
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label" th:text="#{listing.price}">Цена:</span>
+                            <!-- компонент для отображение типа цены -->
+                            <span th:replace="fragments/small-components :: priceTypes"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label" th:text="#{listing.location}">Локация:</span>
+                            <span class="detail-value" th:text="${listing.location ?: 'Хельсинки'}">Хельсинки</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label" th:text="#{listing.category}">Категория:</span>
+                            <!-- компонент для отображение типа категории -->
+                            <span th:replace="fragments/small-components :: categoryTypes"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label" th:text="#{listing.rating}">Рейтинг:</span>
+                            <span class="detail-value rating">
+                                <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                                    <i class="fa"
+                                       th:classappend="${listing.averageRating >= i} ? 'fa-star' :
+                                       (${listing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')">
+                                    </i>
+                                </th:block>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="listing-features" th:if="${listing.features != null and !listing.features.isEmpty()}">
+                        <h3 th:text="#{listing.features}">Особенности</h3>
+                        <ul class="features-list">
+                            <li th:each="feature : ${listing.features}"
+                                th:text="${feature ?: 'Особенность'}">
+                                Быстрое выполнение
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Боковая панель с контактами -->
+                <aside th:replace="fragments/public/author-info-sidebar :: authorInfoSidebar"></aside>
+            </div>
+
+            <!-- Отзывы -->
+            <!-- Список существующих отзывов -->
+            <section th:replace="fragments/public/reviews-components :: reviewsList"></section>
+
+            <!-- Форма для добавления нового отзыва -->
+            <section th:replace="fragments/public/reviews-components :: reviewForm"></section>
+
+            <!-- Если пользователь не аутентифицирован -->
+            <section th:replace="fragments/public/reviews-components :: isNotAuthenticated"></section>
+
+
+            <!-- Похожие объявления -->
+            <section class="similar-listings" th:if="${similarListings != null and !similarListings.isEmpty()}">
+                <h2 th:text="#{similar_listings.title}">Похожие объявления</h2>
+                <div class="listings-grid">
+                    <article th:replace="fragments/cards/listing-card :: similarListingCard(${similarListing})"></article>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+<!-- Файл общих импортов -->
+<th:block th:replace="~{fragments/global-imports :: globalImports}" />
+<!-- ИЗображение на полный экран при клике -->
+<script src="/js/components/fullscreen-image.js"></script>
+<!-- Выбор звёздочек для отзыва -->
+<script src="/js/components/review-stars-select.js"></script>
+</body>
+</html>

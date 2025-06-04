@@ -31,6 +31,11 @@ public interface ListingService {
     void deleteListing(Long id);
     void save(Listing listing);
     Listing saveAndReturn(Listing listing);
+    void localizeListing(Listing listing, Locale locale);
 
     List<Listing> searchListings(String searchQuery);
+
+    // Метод для локализации объявлений пользователя в аккаунте
+    List<Listing> localizeAccountListings(User user, Locale locale);
+    List<Listing> localizeFavoriteListings(User user, Locale locale);
 }

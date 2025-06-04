@@ -114,4 +114,17 @@
             </div>
         </div>
     </div>
+
+    <a th:if="${activePage == profile}" th:href="@{'/resume/' + ${resume.id}}" class="resume-link">
+        <!-- <img th:src="@{${resume.user.avatarUrl}}"
+                class="resume-avatar"
+                alt="Аватар"
+                th:onerror="this.src='/images/avatar-placeholder.png'"> -->
+        <div class="resume-info">
+            <h3 th:text="${resume.profession}">Специальность</h3>
+            <div class="resume-meta">
+                <span class="resume-education" th:text="#{'education.' + ${resume.education}}">Образование</span>
+            </div>
+        </div>
+    </a>
 </aside>

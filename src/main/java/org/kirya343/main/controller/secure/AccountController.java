@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -40,58 +41,15 @@ public class AccountController {
         // Получаем или создаем пользователя
         User user = userService.findUserFromOAuth2(oauth2User);
 
-        // Получаем список объявлений пользователя
-        List<Listing> listings = listingService.getListingsByUser(user);
+        List<Listing> listings = listingService.localizeAccountListings(user, locale);
 
-        // Обрабатываем каждый listing, чтобы задать title и description по нужному порядку языков
-        for (Listing listing : listings) {
-            String title = null;
-            String description = null;
-
-            if ("fi".equals(locale.getLanguage()) && listing.getCommunityFi()) {
-                title = listing.getTitleFi();
-                description = listing.getDescriptionFi();
-            } else if ("ru".equals(locale.getLanguage()) && listing.getCommunityRu()) {
-                title = listing.getTitleRu();
-                description = listing.getDescriptionRu();
-            } else if ("en".equals(locale.getLanguage()) && listing.getCommunityEn()) {
-                title = listing.getTitleEn();
-                description = listing.getDescriptionEn();
-            }
-
-            // Если нет значения для выбранного языка, пробуем другие языки
-            if (title == null || description == null) {
-                if (title == null) {
-                    title = listing.getTitleFi() != null ? listing.getTitleFi() :
-                            listing.getTitleRu() != null ? listing.getTitleRu() :
-                                    listing.getTitleEn();
-                }
-                if (description == null) {
-                    description = listing.getDescriptionFi() != null ? listing.getDescriptionFi() :
-                            listing.getDescriptionRu() != null ? listing.getDescriptionRu() :
-                                    listing.getDescriptionEn();
-                }
-            }
-
-            // Сохраняем в транзиентные поля
-            listing.setLocalizedTitle(title);
-            listing.setLocalizedDescription(description);
-        }
-
-        // Получаем статистику
-        int views = statService.getTotalViews(user);
-        int responses = statService.getTotalResponses(user);
-        int deals = statService.getCompletedDeals(user);
-        double averageRating = statService.getAverageRating(user);
+        Map<String, Object> userStats = statService.getUserStats(user, locale);
 
         authService.validateAndAddAuthentication(model, oauth2User);
 
         // Передаем данные в модель
         model.addAttribute("listings", listings);
-        model.addAttribute("views", views);
-        model.addAttribute("responses", responses);
-        model.addAttribute("deals", deals);
-        model.addAttribute("rating", averageRating);
+        model.addAttribute("stats", userStats);
 
         // Переменная для отображения активной страницы
         model.addAttribute("activePage", "account");

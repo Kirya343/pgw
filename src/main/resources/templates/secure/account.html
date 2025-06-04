@@ -45,17 +45,17 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-value">
-                            <span th:text="${views}">0</span></div>
+                            <span th:text="${stats.totalViews}">0</span></div>
                         <div class="stat-label" th:text="#{statistic.views}">Просмотры</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value">
-                            <span th:text="${responses}">0</span></div>
+                            <span th:text="${stats.totalResponses}">0</span></div>
                         <div class="stat-label" th:text="#{statistic.responses}">Отклики</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value">
-                            <span th:text="${deals}">0</span></div>
+                            <span th:text="${stats.completedDeals}">0</span></div>
                         <div class="stat-label" th:text="#{statistic.deals}">Завершённые сделки</div>
                     </div>
                     <div class="stat-card">

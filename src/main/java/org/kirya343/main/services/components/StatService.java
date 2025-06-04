@@ -12,6 +12,7 @@ public interface StatService {
     int getTotalViews(User user);
     int getTotalResponses(User user); // Можно под фейковые данные
     int getCompletedDeals(User user); // Тоже можно имитировать
-    double getAverageRating(User user);
+    double getAverageRating(User user); 
     Map<String, Object> getSiteStats(Locale locale);
+    Map<String, Object> getUserStats(User user, Locale locale);
 }

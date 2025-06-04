@@ -5,8 +5,8 @@
             <div class="review-header">
                 <div class="reviewer-avatar">
                     <img th:src="@{${review.author.avatarUrl}}"
-                            onerror="this.src='/images/avatar-placeholder.jpg'"
-                            alt="Reviewer Avatar">
+                        th:onerror="this.src='/images/avatar-placeholder.png'"
+                        alt="Reviewer Avatar">
                 </div>
                 <div class="reviewer-info">
                     <h4 th:text="${review.author.name ?: 'Аноним'}">Алексей Петров</h4>
