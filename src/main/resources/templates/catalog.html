@@ -109,14 +109,7 @@
                 </th:block>
             </div> -->
             <div id="catalog-content">
-                <div th:unless="${category == 'find-help'}" class="listings-grid">
-                    <a th:each="listing : ${listings}"
-                    th:href="@{'/listing/' + ${listing.id}}"
-                    th:if="${listing.localizedTitle != null and listing.localizedDescription != null}"
-                    class="listing-link">
-                        <article th:replace="~{fragments/cards/listing-card :: listingCard(${listing})}"></article>
-                    </a>
-                </div>
+                <div th:replace="~{fragments/public/catalog-fragments :: content}"></div>
             </div>
             <!-- Если нет объявлений -->
             <div th:if="${category == 'find-help' and #lists.isEmpty(resumes)}" class="no-listings">
