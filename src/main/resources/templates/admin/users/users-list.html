@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новости | WorkSwap Admin</title>
+    <link href="/css/admin/pages/list-page.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<div class="admin-layout">
+    <!-- Сайдбар -->
+    <aside th:replace="~{fragments/admin/admin-sidebar :: admin-sidebar}" class="admin-sidebar"></aside>
+
+    <!-- Основной контент -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1>Управление пользователями</h1>
+            <div class="admin-user">
+                <span>Администратор</span>
+                <img src="/images/avatar-placeholder.png" alt="Аватар" class="admin-user-avatar">
+            </div>
+        </header>
+        <nav class="breadcrumbs">
+            <a href="/admin/dashboard">Панель управления</a>
+            <span> / </span>
+            <span href="/admin/news">Управление пользователями</span>
+        </nav>
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2>Список пользователей</h2>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th></th>
+                        <th>Имя</th>
+                        <th>Email</th>
+                        <th>Дата регистрации</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${usersList}">
+                        <td th:text="${user.id}">#0000</td>
+                        <td>
+                            <img th:src="@{${user.avatarUrl}}" th:onerror="this.src='/images/avatar-placeholder.png'" alt="Аватар" class="users-avatars">
+                        </td>
+                        <td th:text="${user.name}">Имя</td>
+                        <td th:text="${user.email}">Email</td>
+                        <td th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy HH:mm')}">дд.мм.гггг</td>
+                        <td>
+                            <span class="badge" 
+                                  th:classappend="${user.enabled} ? 'bg-success' : 'bg-secondary'"
+                                  th:text="${user.enabled} ? 'Активен' : 'Заблокирован'">
+                                Статус
+                            </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/users/view/{id}(id=${user.id})}" 
+                               class="btn-admin btn-admin-primary mr-1">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a th:href="@{/admin/users/delete/{id}(id=${user.id})}" 
+                               class="btn-admin btn-admin-danger"
+                               onclick="return confirm('Удалить этого пользователя?');">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(usersList)}">
+                        <td colspan="6" class="text-center">Нет пользователей</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

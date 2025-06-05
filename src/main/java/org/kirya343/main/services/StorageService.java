@@ -102,7 +102,7 @@ public class StorageService {
             Files.copy(file.getInputStream(), destinationFile);
         }
 
-        return fileType.getDirectory() + "/" + filename;
+        return "/" + fileType.getDirectory() + "/" + filename;
     }
 
     public String storeListingImage(MultipartFile file, Long listingId) throws IOException {

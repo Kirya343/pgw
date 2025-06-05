@@ -4,9 +4,9 @@
         <article th:each="review : ${listing.reviews}" class="review-card">
             <div class="review-header">
                 <div class="reviewer-avatar">
-                    <img th:src="@{${reviewAuthorAvatars[review.id]}}"
-                            onerror="this.src='/images/avatar-placeholder.jpg'"
-                            alt="Reviewer Avatar">
+                    <img th:src="@{${review.author.avatarUrl}}"
+                        th:onerror="this.src='/images/avatar-placeholder.png'"
+                        alt="Reviewer Avatar">
                 </div>
                 <div class="reviewer-info">
                     <h4 th:text="${review.author.name ?: 'Аноним'}">Алексей Петров</h4>

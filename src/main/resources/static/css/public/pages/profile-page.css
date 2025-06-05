@@ -1,0 +1,20 @@
+@import url(catalog-page.css);
+@import url(listing-page.css);
+
+.resume-card {
+    height: auto;
+    max-height: 200px;
+}
+
+.resume-card-link {
+    display: flex;
+    flex-direction: row;
+}
+
+.resume-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+}

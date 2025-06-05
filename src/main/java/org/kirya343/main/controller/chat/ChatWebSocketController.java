@@ -1,17 +1,17 @@
 package org.kirya343.main.controller.chat;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
 import org.kirya343.main.controller.mappers.ChatMapper;
 import org.kirya343.main.model.DTOs.*;
 import org.kirya343.main.model.chat.*;
 import org.kirya343.main.model.User;
-import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.services.NotificationService;
 import org.kirya343.main.services.chat.ChatService;
 import org.kirya343.main.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -29,29 +29,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@RequiredArgsConstructor
 public class ChatWebSocketController {
     private static final Logger logger = LoggerFactory.getLogger(ChatWebSocketController.class);
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-
-    @Autowired
-    private SimpUserRegistry simpUserRegistry;
-
-    @Autowired
-    private ChatService chatService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ChatMapper chatMapper;
-
-    @Autowired
-    private AvatarService interlocutorAvatar;
-
-    @Autowired
-    private NotificationService notificationService;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final SimpUserRegistry simpUserRegistry;
+    private final ChatService chatService;
+    private final UserService userService;
+    private final ChatMapper chatMapper;
+    private final NotificationService notificationService;
 
     @MessageMapping("/chat.send")
     public void sendMessage(MessageDTO messageDTO, Principal principal) throws AccessDeniedException {
@@ -193,6 +180,7 @@ public class ChatWebSocketController {
         if (interlocutorName == null) {
             throw new AccessDeniedException("No access to this conversation");
         }
+        String interlocutorAvatar = interlocutorName.getAvatarUrl() != null ? interlocutorName.getAvatarUrl() : "/images/avatar-placeholder.png";
 
         return new UserDTO(interlocutorName, interlocutorAvatar);
     }

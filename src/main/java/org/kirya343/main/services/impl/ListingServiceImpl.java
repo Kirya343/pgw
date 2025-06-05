@@ -1,10 +1,12 @@
 package org.kirya343.main.services.impl;
 
+import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.ListingRepository;
+import org.kirya343.main.services.FavoriteListingService;
 import org.kirya343.main.services.ListingService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,8 +26,8 @@ import java.util.stream.Collectors;
 public class ListingServiceImpl implements ListingService {
 
     private final ListingRepository listingRepository;
-
     private final ConversationRepository conversationRepository;
+    private final FavoriteListingService favoriteListingService;
 
     @Override
     public Page<Listing> findByCategory(String category, Pageable pageable) {
@@ -216,5 +218,79 @@ public class ListingServiceImpl implements ListingService {
         String query = "%" + searchQuery.toLowerCase() + "%";
         
         return listingRepository.searchAllFields(query);
+    }
+
+    @Override
+    public List<Listing> localizeAccountListings(User user, Locale locale) {
+        List<Listing> listings = getListingsByUser(user);
+        System.out.println("Got locale: " + locale);
+
+        for (Listing listing : listings) {
+            localizeListing(listing, locale);
+        }
+
+        System.out.println("Объявлений: " + listings.size());
+        return listings;
+    }
+
+    @Override
+    public List<Listing> localizeFavoriteListings(User user, Locale locale) {
+        List<FavoriteListing> favoriteListings = favoriteListingService.findByUser(user);
+        List<Listing> listings = favoriteListings.stream()
+                .map(FavoriteListing::getListing)
+                .collect(Collectors.toList());
+
+        for (Listing listing : listings) {
+            localizeListing(listing, locale);
+        }
+
+        System.out.println("Объявлений: " + listings.size());
+        return listings;
+    }
+
+    @Override
+    public void localizeListing(Listing listing, Locale locale) {
+        String title = null;
+        String description = null;
+
+        String lang = locale.getLanguage();
+
+        // 1. Основной язык
+        if ("fi".equals(lang) && listing.getCommunityFi()) {
+            title = safe(listing.getTitleFi());
+            description = safe(listing.getDescriptionFi());
+        } else if ("ru".equals(lang) && listing.getCommunityRu()) {
+            title = safe(listing.getTitleRu());
+            description = safe(listing.getDescriptionRu());
+        } else if ("en".equals(lang) && listing.getCommunityEn()) {
+            title = safe(listing.getTitleEn());
+            description = safe(listing.getDescriptionEn());
+        }
+
+        // 2. Fallback — проверяем другие языки
+        if (isBlank(title) || isBlank(description)) {
+            if (isBlank(title)) {
+                if (!isBlank(listing.getTitleFi())) title = listing.getTitleFi();
+                else if (!isBlank(listing.getTitleRu())) title = listing.getTitleRu();
+                else if (!isBlank(listing.getTitleEn())) title = listing.getTitleEn();
+            }
+
+            if (isBlank(description)) {
+                if (!isBlank(listing.getDescriptionFi())) description = listing.getDescriptionFi();
+                else if (!isBlank(listing.getDescriptionRu())) description = listing.getDescriptionRu();
+                else if (!isBlank(listing.getDescriptionEn())) description = listing.getDescriptionEn();
+            }
+        }
+
+        listing.setLocalizedTitle(title);
+        listing.setLocalizedDescription(description);
+    }
+
+    private String safe(String value) {
+    return (value != null && !value.isBlank()) ? value : null;
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
     }
 }

@@ -1,7 +1,7 @@
 <aside class="listing-sidebar" th:fragment="authorInfoSidebar">
     <div class="seller-card" th:if="${listing.author != null}">
         <div class="seller-avatar">
-            <img th:src="@{${authorAvatarPath}}"
+            <img th:src="@{${listing.author.avatarUrl}}"
                     th:onerror="this.src='/images/default-avatar.png'"
                     alt="Аватар продавца">
         </div>
@@ -113,5 +113,85 @@
                         th:text="${resume.user.emailVisible ? (resume.user.email != null ? resume.user.email : 'Не указан') : 'Скрыто'}">Не указан</span>
             </div>
         </div>
+    </div>
+
+    <a th:if="${activePage == profile}" th:href="@{'/resume/' + ${resume.id}}" class="resume-link">
+        <!-- <img th:src="@{${resume.user.avatarUrl}}"
+                class="resume-avatar"
+                alt="Аватар"
+                th:onerror="this.src='/images/avatar-placeholder.png'"> -->
+        <div class="resume-info">
+            <h3 th:text="${resume.profession}">Специальность</h3>
+            <div class="resume-meta">
+                <span class="resume-education" th:text="#{'education.' + ${resume.education}}">Образование</span>
+            </div>
+        </div>
+    </a>
+</aside>
+
+<aside class="listing-sidebar" th:fragment="profileInfoSidebar">
+    <div class="seller-card" th:if="${profileUser != null}">
+        <div class="seller-avatar">
+            <img th:src="@{${profileUser.avatarUrl}}"
+                th:onerror="this.src='/images/avatar-placeholder.png'"
+                alt="Аватар продавца">
+        </div>
+        <div class="seller-info">
+            <h4 th:text="${profileUser.name ?: 'Неизвестный автор'}">Иван Иванов</h4>
+            <div class="seller-rating">
+                <span th:text="#{listing.rating}">Рейтинг: </span>
+                <span th:text="${profileUser.averageRating}">4.5</span> ★
+            </div>
+        </div>
+        <div class="seller-actions">
+            <div th:if="${isAuthenticated}">
+                <!-- Показываем кнопки только если пользователь не владелец -->
+                <div th:unless="${isOwner}">
+                    <form action="/secure/messenger/chat" method="get">
+                        <input type="hidden" name="sellerId" th:value="${profileUser.id}">
+                        <input type="hidden" name="listingId" th:value="${listing.id}">
+                        <button type="submit" class="btn btn-primary" th:text="#{listing.write}">Написать сообщение</button>
+                    </form>
+                </div>
+
+                <!-- Можно добавить кнопки для владельца -->
+                <a th:href="@{'/secure/listing/edit/' + ${listing.id}}"
+                    class="btn btn-primary"
+                    th:if="${isOwner}" th:text="#{listing.edit}">Редактировать</a>
+            </div>
+            <div th:unless="${isAuthenticated}">
+                <a href="/login" class="btn btn-primary" th:text="#{login.to.write}">Войти, чтобы написать</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-card" th:if="${profileUser != null}">
+        <h3 th:text="#{listing.author.contacts}">Контактная информация</h3>
+        <div class="contact-methods">
+            <div class="contact-item">
+                <span class="contact-icon">📱</span>
+                <span th:text="${profileUser.phoneVisible ? (profileUser.phone != null ? profileUser.phone : 'Не указан') : 'Скрыто'}">Не указан</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-icon">✉️</span>
+                <span class="contact-value"
+                        th:text="${profileUser.emailVisible ? (profileUser.email != null ? profileUser.email : 'Не указан') : 'Скрыто'}">Не указан</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="resume-card">
+        <a th:href="@{'/resume/' + ${resume.id}}" class="resume-card-link">
+            <img th:src="@{${profileUser.avatarUrl}}"
+                    class="resume-avatar"
+                    alt="Аватар"
+                    th:onerror="this.src='/images/avatar-placeholder.png'">
+            <div class="resume-info">
+                <h3 th:text="${resume.profession}">Специальность</h3>
+                <div class="resume-meta">
+                    <span class="resume-education" th:text="#{'education.' + ${resume.education}}">Образование</span>
+                </div>
+            </div>
+        </a>
     </div>
 </aside>

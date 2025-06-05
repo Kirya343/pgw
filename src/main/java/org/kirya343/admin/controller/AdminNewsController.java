@@ -10,18 +10,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.RequiredArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/admin/news")
 public class AdminNewsController {
 
     private final NewsService newsService;
-
-    public AdminNewsController(NewsService newsService) {
-        this.newsService = newsService;
-    }
 
     @GetMapping
     public String newsList(Model model) {
@@ -36,6 +35,7 @@ public class AdminNewsController {
         News news = new News();
         news.setPublishDate(LocalDateTime.now());
         model.addAttribute("news", news);
+        model.addAttribute("activePage", "admin-news");
         return "admin/news/news-edit";
     }
 
@@ -90,6 +90,7 @@ public class AdminNewsController {
             News news = newsService.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Новость не найдена"));
             model.addAttribute("news", news);
+            model.addAttribute("activePage", "admin-news");
             return "admin/news/news-edit";
         } catch (IllegalArgumentException e) {
             return "redirect:/admin/news";

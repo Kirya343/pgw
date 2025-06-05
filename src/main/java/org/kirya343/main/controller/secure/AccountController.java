@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -40,58 +41,15 @@ public class AccountController {
         // Получаем или создаем пользователя
         User user = userService.findUserFromOAuth2(oauth2User);
 
-        // Получаем список объявлений пользователя
-        List<Listing> listings = listingService.getListingsByUser(user);
+        List<Listing> listings = listingService.localizeAccountListings(user, locale);
 
-        // Обрабатываем каждый listing, чтобы задать title и description по нужному порядку языков
-        for (Listing listing : listings) {
-            String title = null;
-            String description = null;
-
-            if ("fi".equals(locale.getLanguage()) && listing.getCommunityFi()) {
-                title = listing.getTitleFi();
-                description = listing.getDescriptionFi();
-            } else if ("ru".equals(locale.getLanguage()) && listing.getCommunityRu()) {
-                title = listing.getTitleRu();
-                description = listing.getDescriptionRu();
-            } else if ("en".equals(locale.getLanguage()) && listing.getCommunityEn()) {
-                title = listing.getTitleEn();
-                description = listing.getDescriptionEn();
-            }
-
-            // Если нет значения для выбранного языка, пробуем другие языки
-            if (title == null || description == null) {
-                if (title == null) {
-                    title = listing.getTitleFi() != null ? listing.getTitleFi() :
-                            listing.getTitleRu() != null ? listing.getTitleRu() :
-                                    listing.getTitleEn();
-                }
-                if (description == null) {
-                    description = listing.getDescriptionFi() != null ? listing.getDescriptionFi() :
-                            listing.getDescriptionRu() != null ? listing.getDescriptionRu() :
-                                    listing.getDescriptionEn();
-                }
-            }
-
-            // Сохраняем в транзиентные поля
-            listing.setLocalizedTitle(title);
-            listing.setLocalizedDescription(description);
-        }
-
-        // Получаем статистику
-        int views = statService.getTotalViews(user);
-        int responses = statService.getTotalResponses(user);
-        int deals = statService.getCompletedDeals(user);
-        double averageRating = statService.getAverageRating(user);
+        Map<String, Object> userStats = statService.getUserStats(user, locale);
 
         authService.validateAndAddAuthentication(model, oauth2User);
 
         // Передаем данные в модель
         model.addAttribute("listings", listings);
-        model.addAttribute("views", views);
-        model.addAttribute("responses", responses);
-        model.addAttribute("deals", deals);
-        model.addAttribute("rating", averageRating);
+        model.addAttribute("stats", userStats);
 
         // Переменная для отображения активной страницы
         model.addAttribute("activePage", "account");
@@ -101,12 +59,6 @@ public class AccountController {
 
     @GetMapping("/secure/account/edit")
     public String editProfile(@AuthenticationPrincipal OAuth2User oauth2User, Model model) {
-        User user = userService.findUserFromOAuth2(oauth2User);
-        String avatarUrlPath = (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty())
-                ? "/" + user.getAvatarUrl()
-                : "/images/upload-foto.png";
-
-        model.addAttribute("avatarUrlPath", avatarUrlPath);
 
         authService.validateAndAddAuthentication(model, oauth2User);
 
@@ -118,15 +70,15 @@ public class AccountController {
     @PostMapping("/secure/account/update")
     public String updateProfile(
             @ModelAttribute User updatedUser,
-            @RequestParam(value = "avatar", required = false) MultipartFile avatarFile,
+            @RequestParam(value = "image", required = false) MultipartFile avatarFile,
             @RequestParam("avatarType") String avatarType,
             @RequestParam(value = "phoneVisible", defaultValue = "false") boolean phoneVisible,
             @RequestParam(value = "emailVisible", defaultValue = "false") boolean emailVisible,
-            @AuthenticationPrincipal OAuth2User principal,
+            @AuthenticationPrincipal OAuth2User oAuth2User,
             RedirectAttributes redirectAttributes) {
 
         try {
-            User currentUser = userService.findByEmail(principal.getAttribute("email"));
+            User currentUser = userService.findByEmail(oAuth2User.getAttribute("email"));
 
             // Обновляем основные данные
             currentUser.setName(updatedUser.getName() != null ? updatedUser.getName() : currentUser.getName());
@@ -138,10 +90,21 @@ public class AccountController {
             currentUser.setPhoneVisible(phoneVisible); // Устанавливаем настройку отображения телефона
             currentUser.setEmailVisible(emailVisible); // Устанавливаем настройку отображения email
 
+            System.out.println("avatarFile: " + avatarFile);
             // Сохраняем новую аватарку, если загружена
             if (avatarFile != null && !avatarFile.isEmpty()) {
-                String fileName = storageService.storeAvatar(avatarFile, currentUser.getId());
-                currentUser.setAvatarUrl(fileName);
+                String filePath = storageService.storeAvatar(avatarFile, currentUser.getId());
+                System.out.println("Avatar file path: " + filePath);
+                currentUser.setAvatarUrl(filePath);
+            }
+
+            if ("default".equals(avatarType)) {
+                currentUser.setAvatarUrl("/images/avatar-placeholder.png");
+            }
+
+            
+            if ("google".equals(avatarType)) {
+                currentUser.setAvatarUrl(oAuth2User.getAttribute("picture"));
             }
 
             // Сохраняем пользователя

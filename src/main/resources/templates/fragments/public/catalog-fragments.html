@@ -1,11 +1,9 @@
 <!-- Сортировочный фрагмент для каталога объявлений -->
-<div th:fragment="content">
-    <div class="listings-grid">
-        <a th:each="listing : ${listings}"
-           th:href="@{'/listing/' + ${listing.id}}"
-           th:if="${listing.localizedTitle != null and listing.localizedDescription != null}"
-           class="listing-link">
-            <article th:replace="~{fragments/cards/listing-card :: listingCard(${listing})}"></article>
-        </a>
-    </div>
+<div class="listings-grid" th:fragment="content" th:unless="${category == 'find-help'}">
+    <a th:each="listing : ${listings}"
+        th:href="@{'/listing/' + ${listing.id}}"
+        th:if="${listing.localizedTitle != null and listing.localizedDescription != null}"
+        class="listing-link">
+        <article th:replace="~{fragments/cards/listing-card :: listingCard(${listing})}"></article>
+    </a>
 </div>

@@ -27,7 +27,9 @@
         <i class="fas fa-file-alt"></i> Резюме
     </a>
 
-    <a href="#" class="admin-nav-item">
+    <a href="/admin/users" 
+        class="admin-nav-item" 
+        th:classappend="${activePage == 'admin-users'} ? ' active'">
         <i class="fas fa-users"></i> Пользователи
     </a>
 

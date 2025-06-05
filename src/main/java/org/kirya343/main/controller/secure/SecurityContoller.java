@@ -2,6 +2,8 @@ package org.kirya343.main.controller.secure;
 
 import java.util.Locale;
 
+import org.kirya343.main.model.User;
+import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.AuthService;
 import org.springframework.boot.actuate.web.exchanges.HttpExchange.Principal;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +19,12 @@ import lombok.RequiredArgsConstructor;
 
 
 @Controller
-@RequestMapping("/secure/safety")
+@RequestMapping("/secure/security")
 @RequiredArgsConstructor
-public class SafetyContoller {
+public class SecurityContoller {
 
     private final AuthService authService;
+    private final UserService userService;
 
     @GetMapping
     public String securityPage(Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
@@ -31,16 +34,17 @@ public class SafetyContoller {
 
         authService.validateAndAddAuthentication(model, oauth2User);
 
-        model.addAttribute("activePage", "safety");
+        model.addAttribute("activePage", "security");
 
         model.addAttribute("policyUpdateDate", "01.05.2025"); // Заменить на реальную дату
         
-        return "secure/safety";
+        return "secure/security";
     }
 
     @PostMapping("/delete-account")
-    public ResponseEntity<?> deleteAccount(Principal principal) {
-        // Логика удаления аккаунта
+    public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal OAuth2User oauth2User) {
+        User user = userService.findUserFromOAuth2(oauth2User);
+        userService.deleteById(user.getId());
         return ResponseEntity.ok().build();
     }
 

@@ -24,49 +24,50 @@
     </div>
 </article>
 
-
 <!-- карточка объявления для показа на страницах личного кабинета (с просмотрами и кнопками) -->
 <article th:each="listing : ${listings}" class="listing-card" th:fragment="listingCardAccount(listing, activePage)">
-    <div th:class="${listing.active} ? 'listing-status active' : 'listing-status inactive'"
-            th:text="${listing.active} ? 'Активно' : 'Не активно'"></div>
+    <a th:href="@{/listing/{id}(id=${listing.id})}">
+        <div th:class="${listing.active} ? 'listing-status active' : 'listing-status inactive'"
+                th:text="${listing.active} ? 'Активно' : 'Не активно'"></div>
 
-    <img th:src="@{'/' + ${listing.imagePath}}"
-            th:onerror="this.src='/images/default-listing.png'"
-            class="listing-img"
-            alt="Изображение объявления">
+        <img th:src="@{'/' + ${listing.imagePath}}"
+                th:onerror="this.src='/images/default-listing.png'"
+                class="listing-img"
+                alt="Изображение объявления">
 
-    <div class="card-body">
-        <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
-        <p class="card-text" th:text="${#strings.abbreviate(listing.localizedDescription, 100)}">Описание</p>
-        <div class="card-footer">
-            <div>
-                <!-- компонент для отображение цены (с типом) -->
-                <span th:replace="fragments/small-components :: priceTypes"></span>
-                <div class="listing-views">
-                    <span th:text="#{listings.views}">0</span>
-                    <span th:text="${listing.views}">0</span>
+        <div class="card-body">
+            <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
+            <p class="card-text" th:text="${#strings.abbreviate(listing.localizedDescription, 100)}">Описание</p>
+            <div class="card-footer">
+                <div>
+                    <!-- компонент для отображение цены (с типом) -->
+                    <span th:replace="fragments/small-components :: priceTypes"></span>
+                    <div class="listing-views">
+                        <span th:text="#{listings.views}">0</span>
+                        <span th:text="${listing.views}">0</span>
+                    </div>
+                </div>
+                <!-- кнопки только в "моих объявлениях" -->
+                <div class="listing-actions" th:if="${activePage == 'account'}">
+                    <a th:href="@{/secure/listing/edit/{id}(id=${listing.id})}"
+                        class="btn btn-sm btn-outline-primary" th:text="#{listing.edit}"></a>
+                    <form th:action="@{/secure/listing/delete/{id}(id=${listing.id})}"
+                            method="post"
+                            style="display: inline;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{my.listings.button.delete}"></button>
+                    </form>
+                </div>
+                <!-- кнопки только в "избранных" -->
+                <div class="listing-actions" th:if="${activePage == 'favorites'}">
+                    <form th:action="@{/listing/{id}/favorite(id=${listing.id})}" method="post" style="display: inline;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{listing.favorite.remove}">Убрать из избранных</button>
+                    </form>
                 </div>
             </div>
-            <!-- кнопки только в "моих объявлениях" -->
-            <div class="listing-actions" th:if="${activePage == 'account'}">
-                <a th:href="@{/secure/listing/edit/{id}(id=${listing.id})}"
-                    class="btn btn-sm btn-outline-primary" th:text="#{listing.edit}"></a>
-                <form th:action="@{/secure/listing/delete/{id}(id=${listing.id})}"
-                        method="post"
-                        style="display: inline;">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{my.listings.button.delete}"></button>
-                </form>
-            </div>
-            <!-- кнопки только в "избранных" -->
-            <div class="listing-actions" th:if="${activePage == 'favorites'}">
-                <form th:action="@{/listing/{id}/favorite(id=${listing.id})}" method="post" style="display: inline;">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                    <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{listing.favorite.remove}">Убрать из избранных</button>
-                </form>
-            </div>
         </div>
-    </div>
+    </a>
 </article>
 
 <article th:each="similarListing : ${similarListings}" 

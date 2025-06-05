@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-    <title th:text="#{title.safety}">Безопасность | WorkSwap</title>
-    <link href="/css/public/pages/safety-page.css" rel="stylesheet">
+    <title th:text="#{title.security}">Безопасность | WorkSwap</title>
+    <link href="/css/public/pages/security-page.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="/favicon.ico">
 </head>
@@ -58,7 +58,7 @@
         </main>
     </div>
 </div>
-<script src="/js/components/safety.js"></script>
+<script src="/js/components/security.js"></script>
 <!-- Файл импортов для защищённых страниц -->
 <th:block th:replace="~{fragments/global-imports :: secureImports(${user})}" />
 </body>

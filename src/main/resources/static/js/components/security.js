@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     confirmAction.addEventListener('click', function() {
         if (!currentAction) return;
         
-        fetch(`/secure/account/${currentAction}`, {
+        fetch(`/secure/security/${currentAction}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

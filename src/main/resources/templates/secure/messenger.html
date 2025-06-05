@@ -52,7 +52,6 @@
 
                         <div class="dialog-avatar">
                             <img th:src="@{${conversation.interlocutorAvatar}}"
-                                 th:onerror="this.src=@{/images/avatar-placeholder.png}"
                                  alt="Аватар">
                         </div>
 
@@ -91,7 +90,7 @@
                          data-conversation-id="${selectedConversation.id}">
                         <div class="chat-header">
                             <div class="chat-user">
-                                <img class="dialog-avatar" id="interlocutorAvatar" src="/images/avatar-placeholder.png" alt="Avatar" />
+                                <img class="dialog-avatar" id="interlocutorAvatar" onerror="this.src='/images/avatar-placeholder.png'" src="/images/avatar-placeholder.png" alt="Avatar" />
                                 <div>
                                     <h4 id="interlocutorName"></h4>
                                     <p class="user-status"></p>
