@@ -25,4 +25,8 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "listing_id")
     private Listing listing;
+
+    @ManyToOne
+    @JoinColumn(name = "profile_id")
+    private User profile;
 }
