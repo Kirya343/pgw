@@ -48,7 +48,7 @@
                 <span class="review-date" th:text="${#temporals.format(review.createdAt, 'dd.MM.yyyy')}">15.03.2023</span>
             </div>
         </div>
-        <a class="review-listing-link text-link" th:if="${review.listing != null}" th:text="${review.listing.localizedTitle}" th:href="@{/listing/{id}(id=${review.listing.id})}"></a>
+        <a class="review-listing-link text-link" th:if="${review.listing != null and profileUser != null}" th:text="${review.listing.localizedTitle}" th:href="@{/listing/{id}(id=${review.listing.id})}"></a>
     </div>
     <div class="review-content">
         <p th:text="${review.text ?: 'Нет текста отзыва'}">Отличный специалист, быстро и качественно выполнил работу. Рекомендую!</p>
