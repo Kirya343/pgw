@@ -47,6 +47,11 @@ public class ListingServiceImpl implements ListingService {
     }
 
     @Override
+    public List<Listing> getActiveListingsByUser(User user) {
+        return listingRepository.findByAuthorAndActiveTrue(user);
+    } 
+
+    @Override
     public void save(Listing listing) {
         listingRepository.save(listing);
     }
@@ -223,6 +228,19 @@ public class ListingServiceImpl implements ListingService {
     @Override
     public List<Listing> localizeAccountListings(User user, Locale locale) {
         List<Listing> listings = getListingsByUser(user);
+        System.out.println("Got locale: " + locale);
+
+        for (Listing listing : listings) {
+            localizeListing(listing, locale);
+        }
+
+        System.out.println("Объявлений: " + listings.size());
+        return listings;
+    }
+
+    @Override
+    public List<Listing> localizeActiveAccountListings(User user, Locale locale) {
+        List<Listing> listings = getActiveListingsByUser(user);
         System.out.println("Got locale: " + locale);
 
         for (Listing listing : listings) {

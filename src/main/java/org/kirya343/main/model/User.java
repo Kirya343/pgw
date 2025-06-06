@@ -74,6 +74,9 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime termsAcceptanceDate;
 
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+    private List<Review> reviews;
+
     // Метод для создания пользователя из OAuth2 данных
     /* public static User fromOAuth2(OAuth2User oauth2User) {
         User user = new User();

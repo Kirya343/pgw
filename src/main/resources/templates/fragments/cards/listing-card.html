@@ -1,6 +1,6 @@
 <!-- карточка объявления для показа на публичных страницах (с рейтингом, локацией) -->
 <article class="listing-card" th:fragment="listingCard(listing)">
-    <img th:src="@{${listing.imagePath ?: '/images/default-listing.png'}}"
+    <img th:src="@{'/' + ${listing.imagePath}}"
             class="listing-img" th:onerror="this.src='/images/default-listing.png'"
             alt="Изображение объявления">
 

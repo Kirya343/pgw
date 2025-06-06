@@ -151,13 +151,12 @@
                 <div th:unless="${isOwner}">
                     <form action="/secure/messenger/chat" method="get">
                         <input type="hidden" name="sellerId" th:value="${profileUser.id}">
-                        <input type="hidden" name="listingId" th:value="${listing.id}">
                         <button type="submit" class="btn btn-primary" th:text="#{listing.write}">Написать сообщение</button>
                     </form>
                 </div>
 
                 <!-- Можно добавить кнопки для владельца -->
-                <a th:href="@{'/secure/listing/edit/' + ${listing.id}}"
+                <a th:href="@{'/secure/account/edit/'}"
                     class="btn btn-primary"
                     th:if="${isOwner}" th:text="#{listing.edit}">Редактировать</a>
             </div>

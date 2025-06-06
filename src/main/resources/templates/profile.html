@@ -67,15 +67,13 @@
                 <aside th:replace="~{fragments/public/author-info-sidebar :: profileInfoSidebar}"></aside>
             </div>
 
-            <!-- Отзывы -->
-            <!-- Список существующих отзывов -->
-            <!-- <section th:replace="fragments/public/reviews-components :: reviewsList"></section> -->
+            <section th:replace="fragments/public/reviews-components :: reviewsList"></section>
 
             <!-- Форма для добавления нового отзыва -->
-            <!-- <section th:replace="fragments/public/reviews-components :: reviewForm"></section> -->
+            <section th:replace="fragments/public/reviews-components :: profileReviewForm"></section>
 
             <!-- Если пользователь не аутентифицирован -->
-            <!-- <section th:replace="fragments/public/reviews-components :: isNotAuthenticated"></section> -->
+            <section th:replace="fragments/public/reviews-components :: isNotAuthenticated"></section>
         </main>
     </div>
 </div>

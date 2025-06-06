@@ -35,7 +35,7 @@ public class ProfileController {
         
         User profileUser = userService.findById(id);
 
-        List<Listing> listings = listingService.localizeAccountListings(profileUser, locale);
+        List<Listing> listings = listingService.localizeActiveAccountListings(profileUser, locale);
 
         Resume resume = resumeService.getResumeByUser(profileUser);
         

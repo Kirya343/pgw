@@ -89,11 +89,12 @@ public class ListingsController {
                             @AuthenticationPrincipal OAuth2User oauth2User,
                             @RequestHeader(value = "referer", required = false) String referer) {
 
-        // Находим объявление по ID
         Listing listing = listingService.getListingById(id);
         if (listing == null) {
             return "redirect:/catalog"; // Если объявление не найдено, перенаправляем на каталог
         }
+
+        User profile = listing.getAuthor();
 
         // Получаем текущего пользователя
         User user = userService.findUserFromOAuth2(oauth2User);
@@ -110,6 +111,7 @@ public class ListingsController {
         review.setRating(rating);
         review.setCreatedAt(LocalDateTime.now());
         review.setListing(listing);
+        review.setProfile(profile);
         review.setAuthor(user);
 
         // Сохраняем отзыв

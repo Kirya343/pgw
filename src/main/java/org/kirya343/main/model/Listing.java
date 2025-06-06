@@ -57,7 +57,7 @@ public class Listing {
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 
-    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
     private double averageRating;
