@@ -1,37 +1,63 @@
-<section class="reviews-section" th:if="${listing.reviews != null and !listing.reviews.isEmpty()}" th:fragment="reviewsList">
+<section class="reviews-section" th:if="${(listing != null and !#lists.isEmpty(listing.reviews)) or (profileUser != null and !#lists.isEmpty(profileUser.reviews))}" th:fragment="reviewsList">
     <h2 th:text="#{reviews.title}">Отзывы</h2>
     <div class="reviews-list">
-        <article th:each="review : ${listing.reviews}" class="review-card">
-            <div class="review-header">
-                <div class="reviewer-avatar">
-                    <img th:src="@{${review.author.avatarUrl}}"
-                        th:onerror="this.src='/images/avatar-placeholder.png'"
-                        alt="Reviewer Avatar">
-                </div>
-                <div class="reviewer-info">
-                    <h4 th:text="${review.author.name ?: 'Аноним'}">Алексей Петров</h4>
-                    <div class="review-meta">
-                        <span class="review-rating listing-rating">
-                            <th:block th:each="i : ${#numbers.sequence(1,5)}">
-                                <i class="fa"
-                                    th:classappend="${review.rating >= i} ? 'fa-star' : (${review.rating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
-                            </th:block>
-                        </span>
-                        <span class="review-date"
-                                th:text="${#temporals.format(review.createdAt, 'dd.MM.yyyy')}">15.03.2023</span>
-                    </div>
-                </div>
-            </div>
-            <div class="review-content">
-                <p th:text="${review.text ?: 'Нет текста отзыва'}">Отличный специалист, быстро и качественно выполнил работу. Рекомендую!</p>
-            </div>
-        </article>
+        <article th:replace="~{fragments/public/reviews-components :: reviewCard}"></article>
     </div>
 </section>
 
 <section class="review-form" th:if="${isAuthenticated}" th:fragment="reviewForm">
     <h3 th:text="#{reviews.leave_review}">Оставьте свой отзыв</h3>
     <form th:action="@{/listing/{id}/review(id=${listing.id})}" method="post">
+        <div class="form-row">
+            <div class="rating-group">
+                <label for="rating" th:text="#{reviews.rating}">Оценка</label>
+                <div class="listing-rating">
+                    <span class="star" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star" data-value="4">&#9733;</span>
+                    <span class="star" data-value="5">&#9733;</span>
+                    <input type="hidden" id="rating" name="rating" value="0"> <!-- скрытое поле для отправки значения -->
+                </div>
+            </div>
+            <div class="text-group">
+                <label for="text" th:text="#{reviews.placeholder_text}">Текст отзыва</label>
+                <textarea id="text" name="text" required></textarea>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" th:text="#{reviews.button.enter}">Оставить отзыв</button>
+    </form>
+</section>
+
+<article th:each="review : ${profileUser != null && profileUser.reviews != null ? profileUser.reviews : (listing != null ? listing.reviews : null)}" class="review-card" th:fragment="reviewCard">
+    <div class="review-header">
+        <div class="reviewer-avatar">
+            <img th:src="@{${review.author.avatarUrl}}"
+                th:onerror="this.src='/images/avatar-placeholder.png'"
+                alt="Reviewer Avatar">
+        </div>
+        <div class="reviewer-info">
+            <h4 th:text="${review.author.name ?: 'Аноним'}">Алексей Петров</h4>
+            <div class="review-meta">
+                <span class="review-rating listing-rating">
+                    <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                        <i class="fa"
+                            th:classappend="${review.rating >= i} ? 'fa-star' : (${review.rating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                    </th:block>
+                </span>
+                <span class="review-date" th:text="${#temporals.format(review.createdAt, 'dd.MM.yyyy')}">15.03.2023</span>
+            </div>
+        </div>
+        <a class="review-listing-link text-link" th:if="${review.listing != null}" th:text="${review.listing.localizedTitle}" th:href="@{/listing/{id}(id=${review.listing.id})}"></a>
+    </div>
+    <div class="review-content">
+        <p th:text="${review.text ?: 'Нет текста отзыва'}">Отличный специалист, быстро и качественно выполнил работу. Рекомендую!</p>
+    </div>
+</article>
+
+<section class="review-form" th:if="${isAuthenticated}" th:fragment="profileReviewForm">
+    <h3 th:text="#{reviews.leave_review}">Оставьте свой отзыв</h3>
+    <form th:action="@{/profile/{id}/review(id=${profileUser.id})}" method="post">
         <div class="form-row">
             <div class="rating-group">
                 <label for="rating" th:text="#{reviews.rating}">Оценка</label>

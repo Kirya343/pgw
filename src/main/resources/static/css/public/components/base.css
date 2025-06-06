@@ -2,6 +2,9 @@
 @import url(listing-cards.css);
 @import url(buttons.css);
 @import url(terms-modal.css);
+@import url(text-decorations.css);
+@import url(cards/review-card.css);
+
 /* Базовые сбросы */
 *, *::before, *::after {
     box-sizing: border-box;

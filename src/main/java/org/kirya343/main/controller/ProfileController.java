@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,7 +25,6 @@ public class ProfileController {
 
     private final ListingService listingService;
     private final UserService userService;
-    private final FavoriteListingService favoriteListingService;
     private final AuthService authService;
     private final ReviewService reviewService;
     private final ResumeService resumeService;
@@ -35,7 +35,7 @@ public class ProfileController {
         
         User profileUser = userService.findById(id);
 
-        List<Listing> listings = listingService.localizeAccountListings(profileUser, locale);
+        List<Listing> listings = listingService.localizeActiveAccountListings(profileUser, locale);
 
         Resume resume = resumeService.getResumeByUser(profileUser);
         
@@ -52,7 +52,7 @@ public class ProfileController {
             model.addAttribute("isOwner", isOwner);
         }
 
-        List<Review> reviews = reviewService.getReviewsByListingIdWithAuthors(id);
+        List<Review> reviews = reviewService.getReviewsByProfileIdWithAuthors(id);
 
         model.addAttribute("profileUser", profileUser);
         model.addAttribute("listings", listings);
@@ -62,5 +62,47 @@ public class ProfileController {
         model.addAttribute("activePage", "profile");
 
         return "profile";
+    }
+
+    @PostMapping("/{id}/review")
+    public String addReview(@PathVariable Long id,
+                            @RequestParam String text, // Текст отзыва
+                            @RequestParam double rating, // Рейтинг отзыва
+                            @AuthenticationPrincipal OAuth2User oauth2User,
+                            @RequestHeader(value = "referer", required = false) String referer) {
+
+        // Находим объявление по ID
+        User profile = userService.findById(id);
+        if (profile == null) {
+            return "redirect:/catalog"; // Если объявление не найдено, перенаправляем на каталог
+        }
+
+        // Получаем текущего пользователя
+        User user = userService.findUserFromOAuth2(oauth2User);
+
+        // Проверяем, оставлял ли пользователь уже отзыв к этому объявлению
+        boolean alreadyReviewed = reviewService.hasUserReviewedProfile(user, profile);
+        if (alreadyReviewed) {
+            return "redirect:" + (referer != null ? referer : "/profile/" + id); // Если отзыв уже есть, просто редиректим обратно
+        }
+
+        // Создаем новый отзыв
+        Review review = new Review();
+        review.setText(text);
+        review.setRating(rating);
+        review.setCreatedAt(LocalDateTime.now());
+        review.setProfile(profile);
+        review.setAuthor(user);
+
+        // Сохраняем отзыв
+        reviewService.saveReview(review);
+
+        // Обновляем рейтинг профиля
+        double newProfileRating = reviewService.calculateAverageRatingForListing(profile.getId());
+        profile.setAverageRating(newProfileRating);
+        userService.save(profile);
+
+        // Перенаправляем обратно на страницу объявления
+        return "redirect:" + (referer != null ? referer : "/profile/" + id);
     }
 }

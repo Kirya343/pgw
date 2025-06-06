@@ -16,6 +16,7 @@ public interface ListingService {
     List<Listing> findByUserEmail(String email);
     List<Listing> getAllActiveListings(); // Предполагая, что у вас есть поле `active`
     List<Listing> getAllListings();// в сущности
+    List<Listing> getActiveListingsByUser(User user);
     Page<Listing> findActiveByCategory(String category, Pageable pageable);
     Listing getListingById(Long id);
     Listing getListingByIdWithAuthorAndReviews(Long id);
@@ -37,5 +38,6 @@ public interface ListingService {
 
     // Метод для локализации объявлений пользователя в аккаунте
     List<Listing> localizeAccountListings(User user, Locale locale);
+    List<Listing> localizeActiveAccountListings(User user, Locale locale);
     List<Listing> localizeFavoriteListings(User user, Locale locale);
 }

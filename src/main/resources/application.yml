@@ -26,9 +26,9 @@ spring:
   mvc:
     static-path-pattern: /**
   jpa:
-    properties:
-      hibernate:
+    hibernate:
         ddl-auto: update
+    properties:
         format_sql: true
         connection:
           isolation: 2 # READ_COMMITTED

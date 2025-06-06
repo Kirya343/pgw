@@ -16,6 +16,9 @@ import java.util.Optional;
 public interface ListingRepository extends JpaRepository<Listing, Long> {
     Page<Listing> findByCategory(String category, Pageable pageable);
     List<Listing> findByAuthor(User author);
+
+    List<Listing> findByAuthorAndActiveTrue(User author);
+
     @Query("SELECT l FROM Listing l WHERE l.author.email = :email")
     List<Listing> findByAuthorEmail(@Param("email") String email);
     List<Listing> findByActiveTrue();
