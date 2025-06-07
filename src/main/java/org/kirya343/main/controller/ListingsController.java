@@ -99,6 +99,10 @@ public class ListingsController {
         // Получаем текущего пользователя
         User user = userService.findUserFromOAuth2(oauth2User);
 
+        if (user == profile) {
+            return "redirect:" + (referer != null ? referer : "/listing/" + id); // Если пользователь оставляет отзыв себе, перенаправляем на каталог
+        }
+
         // Проверяем, оставлял ли пользователь уже отзыв к этому объявлению
         boolean alreadyReviewed = reviewService.hasUserReviewedListing(user, listing);
         if (alreadyReviewed) {

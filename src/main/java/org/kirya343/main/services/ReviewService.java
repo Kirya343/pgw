@@ -93,9 +93,10 @@ public class ReviewService {
 
         // Если есть хотя бы одно объявление с рейтингом больше 1, считаем средний рейтинг
         if (totalReviews > 0) {
-            return totalRating / totalReviews;  // Средний рейтинг пользователя
+        double average = totalRating / totalReviews;
+        return Math.round(average * 10.0) / 10.0;  // округление до 1 знака после запятой
         } else {
-            return 0;  // Если у пользователя нет объявлений с рейтингом > 1, возвращаем 0
+            return 0.0;
         }
     }
 }

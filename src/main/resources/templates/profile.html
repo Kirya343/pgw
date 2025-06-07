@@ -54,10 +54,7 @@
             <div class="listing-content">
                 <div class="listing-details">
                     <h2 th:text="#{listing.description}">Описание</h2>
-                    <p class="listing-description"
-                       th:text="${profileUser.bio ?: 'Нет описания'}">
-                        Полное описание услуги или предложения.
-                    </p>
+                    <p class="listing-description" th:text="${profileUser.bio ?: ''}"></p>
 
                     <!-- Список объявлений пользователя -->
                     <div th:replace="~{fragments/public/catalog-fragments :: content}"></div>

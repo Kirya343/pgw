@@ -2,7 +2,7 @@
 @import url(../../../public/components/base.css);
 @import url(../../../public/components/header.css);
 @import url(../../../public/components/breadcrumbs.css);
-@import url(../../../admin/pages/main-admin-page.css);
+@import url(main-admin-page.css);
 @import url(../../../variables.css);
 
 /* Дополнительные стили для страницы новостей */
