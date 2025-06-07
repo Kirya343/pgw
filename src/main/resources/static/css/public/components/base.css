@@ -3,7 +3,10 @@
 @import url(buttons.css);
 @import url(terms-modal.css);
 @import url(text-decorations.css);
+
 @import url(cards/review-card.css);
+@import url(cards/listing-card.css);
+@import url(cards/resume-card.css);
 
 /* Базовые сбросы */
 *, *::before, *::after {

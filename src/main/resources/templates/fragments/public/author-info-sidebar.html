@@ -45,15 +45,15 @@
     <div class="contact-card" th:if="${listing.author != null}">
         <h3 th:text="#{listing.author.contacts}">Контактная информация</h3>
         <div class="contact-methods">
-            <div class="contact-item">
+            <div class="contact-item" th:if="${listing.author.phoneVisible and listing.author.phone != null}">
                 <span class="contact-icon">📱</span>
-                <span th:text="${listing.author.phoneVisible ? (listing.author.phone != null ? listing.author.phone : 'Не указан') : 'Скрыто'}">Не указан</span>
+                <span th:text="${listing.author.phone}"></span>
             </div>
-            <div class="contact-item">
+            <div class="contact-item" th:if="${listing.author.emailVisible and listing.author.email != null}">
                 <span class="contact-icon">✉️</span>
-                <span class="contact-value"
-                        th:text="${listing.author.emailVisible ? (listing.author.email != null ? listing.author.email : 'Не указан') : 'Скрыто'}">Не указан</span>
+                <span th:text="${listing.author.email}"></span>
             </div>
+            <span th:if="${!(listing.author.phoneVisible and listing.author.phone != null) and !(listing.author.emailVisible and listing.author.email != null)}" th:text="#{no.contacts}"></span>
         </div>
     </div>
 </aside>
@@ -105,30 +105,17 @@
     <div class="contact-card" th:if="${resume.user != null}">
         <h3 th:text="#{listing.author.contacts}">Контактная информация</h3>
         <div class="contact-methods">
-            <div class="contact-item">
+            <div class="contact-item" th:if="${resume.user.phoneVisible and resume.user.phone != null}">
                 <span class="contact-icon">📱</span>
-                <span th:text="${resume.user.phoneVisible ? (resume.user.phone != null ? resume.user.phone : 'Не указан') : 'Скрыто'}">Не указан</span>
+                <span th:text="${resume.user.phone}"></span>
             </div>
-            <div class="contact-item">
+            <div class="contact-item" th:if="${resume.user.emailVisible and resume.user.email != null}">
                 <span class="contact-icon">✉️</span>
-                <span class="contact-value"
-                        th:text="${resume.user.emailVisible ? (resume.user.email != null ? resume.user.email : 'Не указан') : 'Скрыто'}">Не указан</span>
+                <span th:text="${resume.user.email}"></span>
             </div>
+            <span th:if="${!(resume.user.phoneVisible and resume.user.phone != null) and !(resume.user.emailVisible and resume.user.email != null)}" th:text="#{no.contacts}"></span>
         </div>
     </div>
-
-    <a th:if="${activePage == profile}" th:href="@{'/resume/' + ${resume.id}}" class="resume-link">
-        <!-- <img th:src="@{${resume.user.avatarUrl}}"
-                class="resume-avatar"
-                alt="Аватар"
-                th:onerror="this.src='/images/avatar-placeholder.png'"> -->
-        <div class="resume-info">
-            <h3 th:text="${resume.profession}">Специальность</h3>
-            <div class="resume-meta">
-                <span class="resume-education" th:text="#{'education.' + ${resume.education}}">Образование</span>
-            </div>
-        </div>
-    </a>
 </aside>
 
 <aside class="listing-sidebar" th:fragment="profileInfoSidebar">
@@ -169,15 +156,15 @@
     <div class="contact-card" th:if="${profileUser != null}">
         <h3 th:text="#{listing.author.contacts}">Контактная информация</h3>
         <div class="contact-methods">
-            <div class="contact-item">
+            <div class="contact-item" th:if="${profileUser.phoneVisible and profileUser.phone != null}">
                 <span class="contact-icon">📱</span>
-                <span th:text="${profileUser.phoneVisible ? (profileUser.phone != null ? profileUser.phone : 'Не указан') : 'Скрыто'}">Не указан</span>
+                <span th:text="${profileUser.phone}"></span>
             </div>
-            <div class="contact-item">
+            <div class="contact-item" th:if="${profileUser.emailVisible and profileUser.email != null}">
                 <span class="contact-icon">✉️</span>
-                <span class="contact-value"
-                        th:text="${profileUser.emailVisible ? (profileUser.email != null ? profileUser.email : 'Не указан') : 'Скрыто'}">Не указан</span>
+                <span th:text="${profileUser.email}"></span>
             </div>
+            <span th:if="${!(profileUser.phoneVisible and profileUser.phone != null) and !(profileUser.emailVisible and profileUser.email != null)}" th:text="#{no.contacts}"></span>
         </div>
     </div>
 
