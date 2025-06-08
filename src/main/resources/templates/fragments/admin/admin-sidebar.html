@@ -19,11 +19,15 @@
         <i class="fas fa-tachometer-alt"></i> Панель управления
     </a>
 
-    <a href="#" class="admin-nav-item">
+    <a href="/admin/listings" 
+        class="admin-nav-item" 
+        th:classappend="${activePage == 'admin-listings'} ? ' active'">
         <i class="fas fa-list"></i> Объявления
     </a>
 
-    <a href="#" class="admin-nav-item">
+    <a href="/admin/resumes" 
+        class="admin-nav-item" 
+        th:classappend="${activePage == 'admin-resumes'} ? ' active'">
         <i class="fas fa-file-alt"></i> Резюме
     </a>
 

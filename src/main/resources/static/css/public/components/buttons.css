@@ -28,3 +28,8 @@
     background-color: var(--primary-dark);
     border-color: var(--primary-dark);
 }
+
+.login-button {
+    display: flex;
+    flex-direction: row;
+}

@@ -6,6 +6,7 @@ import org.kirya343.main.model.User;
 import org.kirya343.main.repository.LocationRepository;
 import org.kirya343.main.services.*;
 import org.kirya343.main.services.components.AuthService;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Controller
@@ -31,14 +33,15 @@ public class OwnListingController {
     private final StorageService storageService;
     private final LocationRepository locationRepository;
     private final AuthService authService;
+    private final MessageSource messageSource;
 
     @GetMapping("/create")
-    public String showCreateForm(Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
+    public String showCreateForm(Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
 
         Map<String, String> categories = Map.of(
-                "services", "Услуга",
-                "offer-service", "Запрос на услугу",
-                "product", "Товар"
+                "services", messageSource.getMessage("category.service", null, locale),
+                "offer-service", messageSource.getMessage("category.offer-service", null, locale),
+                "product", messageSource.getMessage("category.product", null, locale)
         );
         model.addAttribute("categories", categories);
 
@@ -48,7 +51,6 @@ public class OwnListingController {
         authService.validateAndAddAuthentication(model, oauth2User);
 
         model.addAttribute("listing", new Listing());
-        model.addAttribute("priceTypes", List.of("Фиксированная", "Договорная"));
         return "secure/listing/create";
     }
 

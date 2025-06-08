@@ -75,46 +75,4 @@ public class AdminController {
         return "admin/dashboard";
     }
 
-
-
-    @GetMapping("/listings")
-    public String listings(Model model) {
-        List<Listing> allListings = listingService.getAllListings();
-        model.addAttribute("listings", allListings);
-        return "admin/listings";
-    }
-
-//    @GetMapping("/resumes")
-//    public String resumes(Model model) {
-//        List<Resume> allResumes = resumeService.getAllResumes();
-//        model.addAttribute("resumes", allResumes);
-//        return "admin/resumes";
-//    }
-//
-//    @GetMapping("/users")
-//    public String users(Model model) {
-//        List<User> allUsers = adminService.getAllUsers();
-//        model.addAttribute("users", allUsers);
-//        return "admin/users";
-//    }
-
-    @GetMapping("/reviews")
-    public String reviews() {
-        return "admin/reviews";
-    }
-
-    @GetMapping("/questions")
-    public String questions() {
-        return "admin/questions";
-    }
-
-    @GetMapping("/settings")
-    public String settings() {
-        return "admin/settings";
-    }
-
-    @GetMapping("/localization")
-    public String localization() {
-        return "admin/localization";
-    }
 }
