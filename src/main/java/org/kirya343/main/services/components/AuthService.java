@@ -16,16 +16,13 @@ public class AuthService {
     private final UserService userService;
     /* private final AvatarService avatarService; */
     private final StatService statService;
-    private final AdminCheckService adminCheckService;
+    private final RoleCheckService roleCheckService;
 
     private void addAuthenticationAttributes(Model model, OAuth2User oauth2User, User user) {
         if (oauth2User != null) {
-            /* String avatarPath = avatarService.resolveAvatarPath(user); */
             double averageRating = statService.getAverageRating(user);
 
-            boolean isAdmin = adminCheckService.isAdmin(oauth2User);
-            
-            model.addAttribute("isAdmin", isAdmin);
+            roleCheckService.CheckRoles(model, oauth2User);
 
             model.addAttribute("isAuthenticated", true);
             /* model.addAttribute("avatarPath", avatarPath); */
@@ -33,7 +30,6 @@ public class AuthService {
             model.addAttribute("rating", averageRating);
         } else {
             model.addAttribute("isAuthenticated", false);
-            /* model.addAttribute("avatarPath", "/images/avatar-placeholder.jpg"); */
         }
     }
 

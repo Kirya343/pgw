@@ -53,7 +53,29 @@ public class User {
     @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Conversation> conversationsReceived = new ArrayList<>();
 
-    private String role;
+    public enum Role {
+        USER(1),
+        PREMIUM(2),
+        BUSINESS(3),
+        ADMIN(4);
+
+        private final int level;
+
+        Role(int level) {
+            this.level = level;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+        public boolean isAtLeast(Role other) {
+            return this.level >= other.level;
+        }
+    }
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     private boolean locked;
     private boolean enabled;
@@ -76,22 +98,4 @@ public class User {
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     private List<Review> reviews;
-
-    // Метод для создания пользователя из OAuth2 данных
-    /* public static User fromOAuth2(OAuth2User oauth2User) {
-        User user = new User();
-        user.setSub(oauth2User.getAttribute("sub"));
-        user.setEmail(oauth2User.getAttribute("email"));
-
-        String name = oauth2User.getAttribute("name");
-        if (name == null || name.isBlank()) {
-            name = oauth2User.getAttribute("email"); // запасной вариант
-        }
-        user.setName(name);
-
-        user.setAvatarUrl(oauth2User.getAttribute("picture"));
-        user.setEnabled(true);
-        user.setRole("USER");
-        return user;
-    } */
 }
