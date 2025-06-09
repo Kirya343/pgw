@@ -55,21 +55,23 @@
                 <!-- Список новостей -->
                 <div class="news-list">
                     <article th:each="newsItem : ${news}" class="news-card">
-                        <div class="news-header">
-                            <img th:src="@{${newsItem.imageUrl}}"
-                                 alt="Изображение новости"
-                                 class="news-image"
-                                 th:onerror="this.src='/images/default-listing.png'">
-                            <div class="news-meta">
-                                <span class="news-date" th:text="${#temporals.format(newsItem.publishDate, 'dd.MM.yyyy')}">01.01.2023</span>
-                                <span class="news-author" th:text="${newsItem.author}">Администратор</span>
+                        <a th:href="@{'/news/' + ${newsItem.id}}">
+                            <div class="news-header">
+                                <img th:src="@{${newsItem.imageUrl}}"
+                                        alt="Изображение новости"
+                                        class="news-image"
+                                        th:onerror="this.src='/images/default-listing.png'">
+                                <div class="news-meta">
+                                    <span class="news-date" th:text="${#temporals.format(newsItem.publishDate, 'dd.MM.yyyy')}">01.01.2023</span>
+                                    <span class="news-author" th:text="${newsItem.author}">Администратор</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="news-body">
-                            <h2 class="news-title" th:text="${newsItem.localizedTitle}">Заголовок новости</h2>
-                            <p class="news-excerpt" th:text="${newsItem.localizedExcerpt}">Краткое описание новости, которое будет отображаться в списке...</p>
-                            <a th:href="@{'/news/' + ${newsItem.id}}" class="news-read-more" th:text="#{news.read_more}">Читать далее</a>
-                        </div>
+                            <div class="news-body">
+                                <h2 class="news-title" th:text="${newsItem.localizedTitle}">Заголовок новости</h2>
+                                <p class="news-excerpt" th:text="${newsItem.localizedExcerpt}">Краткое описание новости, которое будет отображаться в списке...</p>
+                                <a th:href="@{'/news/' + ${newsItem.id}}" class="news-read-more" th:text="#{news.read_more}">Читать далее</a>
+                            </div>
+                        </a>
                     </article>
                 </div>
             </main>
