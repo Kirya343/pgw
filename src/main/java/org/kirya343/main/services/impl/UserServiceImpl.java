@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.User.Role;
 import org.kirya343.main.repository.UserRepository;
 import org.kirya343.main.services.UserService;
 import org.springframework.data.domain.PageRequest;
@@ -58,7 +59,7 @@ public class UserServiceImpl implements UserService {
         newUser.setEmail(email); // Устанавливаем email пользователя
         newUser.setSub(sub); // Устанавливаем sub для идентификации пользователя в OAuth2
         newUser.setEnabled(true); // Устанавливаем пользователя как активного
-        newUser.setRole("USER"); // Устанавливаем роль по умолчанию
+        newUser.setRole(Role.USER); // Устанавливаем роль по умолчанию
         newUser.setTermsAccepted(true); // Устанавливаем значение по умолчанию
         newUser.setTermsAcceptanceDate(LocalDateTime.now()); // Устанавливаем значение по умолчанию
         newUser.setName(oauth2User.getAttribute("name")); // Устанавливаем имя пользователя
@@ -117,8 +118,7 @@ public class UserServiceImpl implements UserService {
     public void setRole(Long userId, String role) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setRole(role);
-        // userRepository.save(user); // Не нужно - изменения сохранятся благодаря @Transactional
+        user.setRole(Role.USER);
     }
 
     @Override

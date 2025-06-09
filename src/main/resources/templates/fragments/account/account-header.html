@@ -32,7 +32,7 @@
                 <div th:replace="~{fragments/account/account-sidebar :: sidebar-links(${activePage})}"></div>
             </div>
             <div class="nav-buttons">
-                <a th:if="${isAdmin}" href="/admin/dashboard" class="nav-link" th:text="#{header.admin}">Админка</a>
+                <a th:if="${roleAdmin}" href="/admin/dashboard" class="nav-link" th:text="#{header.admin}">Админка</a>
                 <!-- Кнопка Новостей -->
                 <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
             </div>
