@@ -161,21 +161,57 @@
                     </select>
                 </div>
 
-                <!-- Изображения -->
                 <div class="form-group">
-                    <label th:text="#{listing.editing.image}">Текущее изображение</label>
-                    <img th:src="@{'/' + ${listing.imagePath}}"
-                         th:onerror="this.src='/images/default-listing.png'"
-                         class="current-image"
-                         alt="Текущее изображение">
-                </div>
-
-                <div class="form-group">
-                    <label for="image" th:text="#{listing.creating.image}">Изображение</label>
-                    <!-- Блок загрузки (виден только при выборе "Моя") -->
-                    <div th:replace="~{fragments/small-components :: uploadControls}"></div>
-                    <small class="form-text text-muted" th:text="#{listing.editing.image.maxsize}">Максимальный размер: 5MB (JPG, PNG, GIF)</small>
-                    <div th:if="${imageError}" class="invalid-feedback" th:text="${imageError}"></div>
+                    <label th:text="#{listing.editing.image}">Изображения</label>
+                    
+                    <!-- Текущее основное изображение -->
+                    <div class="current-main-image mb-3">
+                        <img th:src="${listing.imagePath != null ? listing.imagePath : '/images/default-listing.png'}"
+                            th:onerror="this.src='/images/default-listing.png'"
+                            class="current-image img-thumbnail"
+                            alt="Текущее основное изображение"
+                            id="mainImagePreview">
+                        <input type="hidden" id="mainImagePath" name="imagePath" th:value="${listing.imagePath}">
+                    </div>
+                    
+                    <!-- Список всех изображений -->
+                    <div class="image-gallery mb-3">
+                        <div class="row" id="imageGallery">
+                            <!-- Существующие изображения -->
+                            <div class="col-md-3 mb-3 image-item" th:each="image : ${listing.images}">
+                                <div class="card">
+                                    <img th:src="${image.path}" 
+                                        th:onerror="this.src='/images/default-listing.png'"
+                                        class="card-img-top img-thumbnail">
+                                    <div class="card-body p-2">
+                                        <div class="btn-group btn-group-sm w-100">
+                                            <button type="button" class="btn btn-outline-primary set-main-btn" 
+                                                    th:attr="data-image-path=${image.path}">
+                                                Сделать основным
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger delete-btn"
+                                                    th:attr="data-image-id=${image.id}">
+                                                Удалить
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Загрузка новых изображений -->
+                    <div class="upload-controls">
+                        <input type="file" id="images" name="uploadedImages" accept="image/*" multiple 
+                            class="d-none" onchange="handleImageUpload(this)">
+                        <label for="images" class="btn btn-outline-primary" 
+                            th:text="#{listing.editing.image.button.select}">
+                            Выбрать файлы
+                        </label>
+                    </div>
+                    
+                    <!-- Скрытые поля для удаляемых изображений -->
+                    <input type="hidden" id="deletedImages" name="deletedImages" value="">
                 </div>
 
                 <!-- Кнопки -->

@@ -1,5 +1,6 @@
 package org.kirya343.main.controller.secure;
 
+import org.kirya343.main.model.Image;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Location;
 import org.kirya343.main.model.User;
@@ -18,14 +19,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.kirya343.main.repository.ImageRepository;
 
 @Controller
 @RequestMapping("/secure/listing")
 @RequiredArgsConstructor
 public class OwnListingController {
+
+    private final ImageRepository imageRepository;
 
 
     private final ListingService listingService;
@@ -34,6 +40,7 @@ public class OwnListingController {
     private final LocationRepository locationRepository;
     private final AuthService authService;
     private final MessageSource messageSource;
+
 
     @GetMapping("/create")
     public String showCreateForm(Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
@@ -156,16 +163,15 @@ public class OwnListingController {
             @RequestParam(value = "communityRu", defaultValue = "false") boolean communityRu,
             @RequestParam(value = "communityFi", defaultValue = "false") boolean communityFi,
             @RequestParam(value = "communityEn", defaultValue = "false") boolean communityEn,
-            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "uploadedImages", required = false) MultipartFile[] uploadedImages,
+            @RequestParam(value = "deletedImages", required = false) String deletedImages,
+            @RequestParam(value = "imagePath", required = false) String imagePathParam,
             @RequestParam(value = "active", defaultValue = "false") boolean active,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
-
         try {
             Listing existingListing = listingService.getListingById(id);
-
-            // Проверка авторства
             User user = userService.findUserFromOAuth2(oauth2User);
 
             if (!existingListing.getAuthor().equals(user)) {
@@ -185,25 +191,46 @@ public class OwnListingController {
             existingListing.setCategory(listingData.getCategory());
             existingListing.setLocation(listingData.getLocation());
             existingListing.setActive(active);
-
             existingListing.setCommunityRu(communityRu);
             existingListing.setCommunityFi(communityFi);
             existingListing.setCommunityEn(communityEn);
 
-            // Сначала сохраняем объявление, чтобы получить ID
-            Listing savedListing = listingService.saveAndReturn(existingListing);
+            // Удаление отмеченных изображений
+            if (deletedImages != null && !deletedImages.isEmpty()) {
+                Arrays.stream(deletedImages.split(","))
+                    .map(Long::parseLong)
+                    .forEach(imageId -> {
+                        // Не удаляем, если это текущее основное изображение
+                        if (existingListing.getImagePath() == null || 
+                            !imageRepository.findById(imageId).get().getPath().equals(existingListing.getImagePath())) {
+                            imageRepository.deleteById(imageId);
+                        }
+                    });
+            }
 
-            if (!image.isEmpty()) {
-                try {
-                    // Теперь передаем ID сохраненного объявления
-                    String imagePath = storageService.storeListingImage(image, savedListing.getId());
-                    savedListing.setImagePath(imagePath);
-                    listingService.save(savedListing); // Обновляем с путем к изображению
-                } catch (Exception e) {
-                    redirectAttributes.addFlashAttribute("error",
-                            "Ошибка загрузки изображения: " + e.getMessage());
-                    return "redirect:/secure/listing/create";
+            // Добавление новых изображений
+            if (uploadedImages != null) {
+                for (MultipartFile image : uploadedImages) {
+                    if (!image.isEmpty()) {
+                        String imagePath = storageService.storeListingImage(image, existingListing.getId());
+                        Image imageEntity = new Image();
+                        imageEntity.setListing(existingListing);
+                        imageEntity.setPath(imagePath);
+                        imageRepository.save(imageEntity);
+                        
+                        // Если это выбранное основное изображение
+                        if (image.getOriginalFilename().equals(imagePathParam)) {
+                            existingListing.setImagePath(imagePath);
+                        }
+                    }
                 }
+            }
+
+            // Обновление основного изображения (если выбрано существующее)
+            if (imagePathParam != null && !imagePathParam.isEmpty() && 
+                (uploadedImages == null || !Arrays.stream(uploadedImages)
+                    .anyMatch(file -> file.getOriginalFilename().equals(imagePathParam)))) {
+                existingListing.setImagePath(imagePathParam);
             }
 
             listingService.save(existingListing);
