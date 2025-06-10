@@ -42,23 +42,31 @@
             <!-- Галерея изображений -->
             <div class="listing-gallery">
                 <div class="main-image">
-                    <img th:src="@{'/' + ${listing.imagePath}}"
-                         th:onerror="this.src='/images/default-listing.png'"
-                         alt="Основное изображение"
-                         class="clickable-image" th:data-fullscreen="@{'/' + ${listing.imagePath}}">
+                    <div class="image-container">
+                        <button class="nav-arrow prev-arrow">&#10094;</button>
+                        <img th:src="${listing.imagePath != null ? listing.imagePath : '/images/default-listing.png'}"
+                            th:onerror="this.src='/images/default-listing.png'"
+                            alt="Основное изображение"
+                            class="clickable-image main-image-view"
+                            id="mainImageView">
+                        <button class="nav-arrow next-arrow">&#10095;</button>
+                    </div>
                 </div>
                 <div class="thumbnails" th:if="${listing.images != null and !listing.images.isEmpty()}">
-                    <div class="thumbnail" th:each="image : ${listing.images}">
-                        <img th:src="@{'/' + ${image.path}}"
-                             th:onerror="this.src='/images/default-listing.png'"
-                             alt="Дополнительное изображение"
-                             class="clickable-image" data-fullscreen="@{'/' + ${image.path}}">
+                    <div class="thumbnail" th:each="image,iter : ${listing.images}" th:attr="data-index=${iter.index}">
+                        <img th:src="${image.path}"
+                            th:onerror="this.src='/images/default-listing.png'"
+                            alt="Дополнительное изображение"
+                            class="clickable-image thumbnail-img">
                     </div>
                 </div>
             </div>
+
             <div id="fullscreen-modal" class="fullscreen-modal">
                 <span class="close" id="close-modal">&times;</span>
-                <img id="fullscreen-image" src="" alt='/images/default-listing.png'>
+                <button class="modal-arrow modal-prev">&#10094;</button>
+                <img id="fullscreen-image" src="">
+                <button class="modal-arrow modal-next">&#10095;</button>
             </div>
 
             <!-- Информация о предложении -->
@@ -137,8 +145,11 @@
 <!-- Файл общих импортов -->
 <th:block th:replace="~{fragments/global-imports :: globalImports}" />
 <!-- ИЗображение на полный экран при клике -->
-<script src="/js/components/fullscreen-image.js"></script>
+<!-- <script src="/js/components/fullscreen-image.js"></script> -->
 <!-- Выбор звёздочек для отзыва -->
 <script src="/js/components/review-stars-select.js"></script>
+
+<script src="/js/components/images-browser.js"></script>
+
 </body>
 </html>

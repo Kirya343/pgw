@@ -435,3 +435,29 @@
     background-position: center;
     background-size: 100%;
 }
+
+.image-gallery {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.image-item .card {
+    height: 100%;
+}
+
+.image-item img {
+    height: 150px;
+    object-fit: cover;
+}
+
+.current-main-image img {
+    max-height: 300px;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+}
+
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
