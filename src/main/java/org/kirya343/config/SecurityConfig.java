@@ -40,12 +40,9 @@ public class SecurityConfig {
     private final UserRepository userRepository;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        //System.out.println(GREEN + "Configuring SecurityFilterChain" + RESET);
-
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> {
-                    //System.out.println(GREEN + "Setting authorization rules" + RESET);
                     auth.requestMatchers("/admin/**").hasRole("ADMIN")
                             .requestMatchers("/secure/**").authenticated()
                             .requestMatchers("/uploads/**").permitAll()
@@ -54,7 +51,6 @@ public class SecurityConfig {
                             .anyRequest().permitAll();
                 })
                 .oauth2Login(oauth2 -> {
-                    //System.out.println(GREEN + "Configuring OAuth2 login" + RESET);
                     oauth2.loginPage("/login")
                             .userInfoEndpoint(userInfo -> userInfo
                                     .oidcUserService(oidcUserCreate())
@@ -80,7 +76,6 @@ public class SecurityConfig {
                             });
                 })
                 .formLogin(form -> {
-                    //System.out.println(GREEN + "Configuring form login" + RESET);
                     form.loginPage("/login")
                             .successHandler((request, response, authentication) -> {
                                 // Проверяем, является ли пользователь админом
@@ -93,7 +88,6 @@ public class SecurityConfig {
                             .permitAll();
                 })
                 .logout(logout -> {
-                    //System.out.println(GREEN + "Configuring logout" + RESET);
                     logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                             .logoutSuccessUrl("/")
                             .invalidateHttpSession(true)
