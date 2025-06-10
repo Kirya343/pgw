@@ -50,14 +50,7 @@ public class LoginController {
         OAuth2User oauth2User = (OAuth2User) request.getSession().getAttribute("oauth2User");
 
         if (oauth2User == null) {
-            // Пробуем получить из аутентификации
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null && auth.getPrincipal() instanceof OAuth2User) {
-                oauth2User = (OAuth2User) auth.getPrincipal();
-                request.getSession().setAttribute("oauth2User", oauth2User);
-            } else {
-                return "redirect:/login";
-            }
+            return "redirect:/login";
         }
 
         // Всегда добавляем атрибуты в модель
