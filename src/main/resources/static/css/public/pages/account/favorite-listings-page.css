@@ -21,7 +21,7 @@
 }
 
 /* Сайдбар */
-.favorites-sidebar {
+.account-sidebar {
     flex: 0 0 280px;
     position: sticky;
     top: calc(var(--header-height) + 20px);
@@ -214,8 +214,8 @@
 /* Пустое избранное */
 .no-listings {
     text-align: center;
-    padding: 2rem;
-    background: var(--white);
+    padding: 3rem;
+    background: var(--light-background);
     border-radius: var(--radius);
     box-shadow: 0 2px 8px var(--shadow-color);
     margin-top: 1.5rem;

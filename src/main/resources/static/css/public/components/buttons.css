@@ -33,3 +33,20 @@
     display: flex;
     flex-direction: row;
 }
+
+.telegram-button {
+    background-color: var(--telegram);
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 1rem;
+    width: 100%;
+    margin-top: 1.5rem;
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.telegram-button :hover {
+    background-color: var(--telegram-hover);
+} 

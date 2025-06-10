@@ -17,6 +17,34 @@
 
     <!-- сайдбар -->
     <nav th:replace="~{fragments/account/account-sidebar :: sidebar-links(${activePage})}"></nav>
+
+    <button th:if="${!user.telegramConnected}" class="telegram-button" id="connectTelegram" th:text="#{telegramm.connect}">Подключить Telegram</button>
+
+    <script>
+        document.getElementById('connectTelegram').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/telegram/connect', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+                    }
+                });
+
+                if (response.ok) {
+                    const linkUrl = await response.text(); // Получаем URL как строку
+                    window.open(linkUrl, '_blank'); // Открываем в новой вкладке
+                } else {
+                    const errorText = await response.text();
+                    alert('Ошибка: ' + errorText);
+                }
+            } catch (error) {
+                console.error('Ошибка запроса:', error);
+                alert('Ошибка запроса');
+            }
+        });
+    </script>
+
 </aside>
 
 <!-- Ссылки в сайдбаре -->

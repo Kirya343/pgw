@@ -1,10 +1,5 @@
-@import url(../../components/footer.css);
 @import url(../../components/base.css);
-@import url(../../components/header.css);
-@import url(../../components/account-rating.css);
-@import url(../../components/lang-switcher.css);
-@import url(../../components/slider-switcher.css);
-@import url(../../../variables.css);
+@import url(../../components/listing-page/images-grid.css);
 
 /* Основной контейнер */
 .edit-listing-container {
@@ -434,30 +429,4 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100%;
-}
-
-.image-gallery {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.image-item .card {
-    height: 100%;
-}
-
-.image-item img {
-    height: 150px;
-    object-fit: cover;
-}
-
-.current-main-image img {
-    max-height: 300px;
-    max-width: 100%;
-    display: block;
-    margin: 0 auto;
-}
-
-.btn-group-sm .btn {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
 }

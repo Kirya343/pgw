@@ -165,7 +165,7 @@
                     <label th:text="#{listing.editing.image}">Изображения</label>
                     
                     <!-- Текущее основное изображение -->
-                    <div class="current-main-image mb-3">
+                    <div class="current-main-image">
                         <img th:src="${listing.imagePath != null ? listing.imagePath : '/images/default-listing.png'}"
                             th:onerror="this.src='/images/default-listing.png'"
                             class="current-image img-thumbnail"
@@ -175,22 +175,22 @@
                     </div>
                     
                     <!-- Список всех изображений -->
-                    <div class="image-gallery mb-3">
-                        <div class="row" id="imageGallery">
+                    <div class="image-gallery">
+                        <div class="image-gallery-grid" id="imageGallery">
                             <!-- Существующие изображения -->
-                            <div class="col-md-3 mb-3 image-item" th:each="image : ${listing.images}">
-                                <div class="card">
+                            <div class="image-item" th:each="image : ${listing.images}">
+                                <div class="image-card">
                                     <img th:src="${image.path}" 
                                         th:onerror="this.src='/images/default-listing.png'"
                                         class="card-img-top img-thumbnail">
                                     <div class="card-body p-2">
                                         <div class="btn-group btn-group-sm w-100">
                                             <button type="button" class="btn btn-outline-primary set-main-btn" 
-                                                    th:attr="data-image-path=${image.path}">
-                                                Сделать основным
+                                                    th:attr="data-image-path=${image.path}" th:text="#{listing.set.main}">
+                                                Основное
                                             </button>
                                             <button type="button" class="btn btn-outline-danger delete-btn"
-                                                    th:attr="data-image-id=${image.id}">
+                                                    th:attr="data-image-id=${image.id}" th:text="#{my.listings.button.delete}">
                                                 Удалить
                                             </button>
                                         </div>
@@ -205,9 +205,7 @@
                         <input type="file" id="images" name="uploadedImages" accept="image/*" multiple 
                             class="d-none" onchange="handleImageUpload(this)">
                         <label for="images" class="btn btn-outline-primary" 
-                            th:text="#{listing.editing.image.button.select}">
-                            Выбрать файлы
-                        </label>
+                            th:text="#{listing.editing.image.upload}">Выбрать файлы</label>
                     </div>
                     
                     <!-- Скрытые поля для удаляемых изображений -->

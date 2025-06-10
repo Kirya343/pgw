@@ -1,12 +1,5 @@
-@import url(../../components/footer.css);
 @import url(../../components/base.css);
-@import url(../../components/header.css);
-@import url(../../components/account-rating.css);
-@import url(../../components/lang-switcher.css);
-@import url(../../components/slider-switcher.css);
-@import url(../../../variables.css);
-
-
+@import url(../../components/listing-page/images-grid.css);
 
 .account-sidebar {
     flex: 0 0 280px;
