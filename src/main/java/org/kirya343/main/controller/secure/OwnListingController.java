@@ -64,7 +64,9 @@ public class OwnListingController {
     @PostMapping("/create")
     public String createListing(
             @ModelAttribute Listing listing,
-            @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "uploadedImages", required = false) MultipartFile[] uploadedImages,
+            @RequestParam(value = "deletedImages", required = false) String deletedImages,
+            @RequestParam(value = "imagePath", required = false) String imagePathParam,
             @RequestParam(value = "titleRu", required = false) String titleRu,
             @RequestParam(value = "descriptionRu", required = false) String descriptionRu,
             @RequestParam(value = "titleFi", required = false) String titleFi,
@@ -94,17 +96,42 @@ public class OwnListingController {
             // Сначала сохраняем объявление, чтобы получить ID
             Listing savedListing = listingService.saveAndReturn(listing);
 
-            if (!image.isEmpty()) {
-                try {
-                    // Теперь передаем ID сохраненного объявления
-                    String imagePath = storageService.storeListingImage(image, savedListing.getId());
-                    savedListing.setImagePath(imagePath);
-                    listingService.save(savedListing); // Обновляем с путем к изображению
-                } catch (Exception e) {
-                    redirectAttributes.addFlashAttribute("error",
-                            "Ошибка загрузки изображения: " + e.getMessage());
-                    return "redirect:/secure/listing/create";
+            // Удаление отмеченных изображений
+            if (deletedImages != null && !deletedImages.isEmpty()) {
+                Arrays.stream(deletedImages.split(","))
+                    .map(Long::parseLong)
+                    .forEach(imageId -> {
+                        // Не удаляем, если это текущее основное изображение
+                        if (savedListing.getImagePath() == null || 
+                            !imageRepository.findById(imageId).get().getPath().equals(savedListing.getImagePath())) {
+                            imageRepository.deleteById(imageId);
+                        }
+                    });
+            }
+
+            // Добавление новых изображений
+            if (uploadedImages != null) {
+                for (MultipartFile image : uploadedImages) {
+                    if (!image.isEmpty()) {
+                        String imagePath = storageService.storeListingImage(image, savedListing.getId());
+                        Image imageEntity = new Image();
+                        imageEntity.setListing(savedListing);
+                        imageEntity.setPath(imagePath);
+                        imageRepository.save(imageEntity);
+                        
+                        // Если это выбранное основное изображение
+                        if (image.getOriginalFilename().equals(imagePathParam)) {
+                            savedListing.setImagePath(imagePath);
+                        }
+                    }
                 }
+            }
+
+            // Обновление основного изображения (если выбрано существующее)
+            if (imagePathParam != null && !imagePathParam.isEmpty() && 
+                (uploadedImages == null || !Arrays.stream(uploadedImages)
+                    .anyMatch(file -> file.getOriginalFilename().equals(imagePathParam)))) {
+                savedListing.setImagePath(imagePathParam);
             }
 
             redirectAttributes.addFlashAttribute("success", "Объявление успешно создано!");

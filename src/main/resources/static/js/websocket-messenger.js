@@ -11,13 +11,10 @@ const stompClient = Stomp.over(socket);
 
 // Функция для подключения
 function connect() {
-    console.log('Попытка подключения к WebSocket...');
     stompClient.connect({}, function (frame) {
-        console.log('Подключено: ' + frame);
 
         // Подписка на обновления по списку разговоров
         stompClient.subscribe("/user/queue/conversations", function(message) {
-            console.log("Получено сообщение о разговорах:", message.body);
             const conversations = JSON.parse(message.body);
             renderConversations(conversations); // твоя функция для рендера
         });
@@ -25,37 +22,28 @@ function connect() {
         // Подписка на обновление информации о собеседнике
         stompClient.subscribe('/user/queue/interlocutorInfo', function (message) {
             const interlocutorInfo = JSON.parse(message.body);
-            console.log("Получена информация о собеседнике:", interlocutorInfo);
             if (interlocutorInfo && interlocutorInfo.interlocutorName && interlocutorInfo.interlocutorAvatar) {
                 document.getElementById('interlocutorName').innerText = interlocutorInfo.interlocutorName;
                 document.getElementById('interlocutorAvatar').src = interlocutorInfo.interlocutorAvatar;
-            } else {
-                console.error("Информация о собеседнике не получена:", interlocutorInfo);
             }
         });
 
         // Загружаем разговоры сразу после подключения
         loadConversations();
-    }, function(error) {
-        console.error('Ошибка WebSocket: ', error);
     });
 }
 
 
 // Функция для получения информации о собеседнике
 function getInterlocutorInfo(conversationId) {
-    console.log('Начинаю загрузку информации о собеседнике');
     stompClient.send("/app/chat.getInterlocutorInfo", {}, JSON.stringify({ conversationId: conversationId }));
 }
 
 // Функция для получения списка диалогов с сервера
 function loadConversations() {
-    console.log('Загружаем разговоры');
     if (stompClient && stompClient.connected) {
         stompClient.send("/app/getConversations", {}, JSON.stringify({}));
     } else {
-        console.error("STOMP client не подключен. Переподключаюсь...");
-
         // Если соединения нет, переподключаемся
         connect(function () {
             stompClient.send("/app/getConversations", {}, JSON.stringify({}));
@@ -69,13 +57,6 @@ function loadConversations() {
  * @param {boolean} isInitialLoad - Флаг первичной загрузки (true = очистить контейнер)
  */
 function setupChatSubscription(conversationId) {
-    console.log('Инициализация чата для conversationId:', conversationId);
-
-    if (!stompClient || !stompClient.connected) {
-        console.error("STOMP client не подключен");
-        return;
-    }
-
     // Подписываемся на обновления чата
     currentSubscription = stompClient.subscribe(`/topic/history.messages/${conversationId}`, (response) => {
         try {
@@ -84,27 +65,21 @@ function setupChatSubscription(conversationId) {
 
             // Обработка массива сообщений (история)
             if (Array.isArray(data)) {
-                console.log('Получена история сообщений:', data.length, 'шт');
                 messageContainer.innerHTML = ''; // Очищаем только при первой загрузке
                 data.forEach(msg => showMessage(msg));
             }
             // Обработка одиночного сообщения (новое сообщение)
             else if (data.id) {
-
-                console.log('Получено новое сообщение:', data);
                 if (conversationId === currentConversationId) {
                     showMessage(data);
-                } else {
-                    console.log('Сообщение для другого чата (текущий:', currentConversationId, ')');
                 }
             }
-        } catch (e) {
-            console.error('Ошибка обработки сообщения:', e, response.body);
+        } catch (error) {
+            console.error("Ошибка при обработке сообщения:", error);
         }
     });
 
     // Запрашиваем историю сообщений
-    console.log('Запрос истории сообщений для чата', conversationId);
     stompClient.send(`/app/chat.loadMessages/${conversationId}`, {}, '');
 
     // Сохраняем ID текущего чата
@@ -115,7 +90,6 @@ function setupChatSubscription(conversationId) {
 // Пример функции для рендеринга списка разговоров:
 
 function renderConversations(conversations) {
-    console.log('Инициализация диалогов');
     const container = document.querySelector(".dialogs-list");
     container.innerHTML = "";
 
@@ -160,7 +134,6 @@ function subscribeToConversationsUpdates() {
 
     conversationsSubscription = stompClient.subscribe("/user/queue/conversations.updates", function(message) {
         const update = JSON.parse(message.body);
-        console.log("Получено обновление диалога:", update);
 
         // Обновляем только конкретный диалог
         updateSingleConversation(update);
@@ -221,19 +194,7 @@ function updateSingleConversation(conversation) {
 
 // Функция для отправки сообщения
 function sendMessage() {
-    console.log('Отправляем сообщение');
     const messageText = document.getElementById('message-input').value;
-
-    if (!messageText.trim()) {
-        console.error("Message text cannot be empty.");
-        return;
-    }
-
-    // Проверка существования ID пользователя и ID чата
-    if (!currentUserId || !currentConversationId) {
-        console.error("User or conversation ID is missing.");
-        return;
-    }
 
     const message = {
         text: messageText,
@@ -253,8 +214,6 @@ function sendMessage() {
 
 // Функция для отображения нового сообщения на странице
 function showMessage(message) {
-    console.log('Показываем сообщения в диалоге');
-    console.log('Received message: ', message);
 
     // Создаем новый элемент сообщения
     const messageContainer = document.getElementById("messages-container");
@@ -279,7 +238,6 @@ function showMessage(message) {
 
 
 function initializeDialogClickListeners() {
-    console.log('Инициализируем клики по диалогам');
     const dialogItems = document.querySelectorAll('.dialog-item');
 
     dialogItems.forEach(item => {
@@ -309,8 +267,6 @@ function handleDialogClick() {
             if (currentSubscription) {
                 currentSubscription.unsubscribe();
             }
-
-            console.log('Подписываемся на новый канал для текущего разговора (' + currentConversationId + ')');
             currentSubscription = stompClient.subscribe('/topic/messages/' + currentConversationId, function (messageOutput) {
                 showMessage(JSON.parse(messageOutput.body)); // Отображаем сообщение
             });

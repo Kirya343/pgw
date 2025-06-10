@@ -98,4 +98,8 @@ public class User {
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     private List<Review> reviews;
+
+    // соц сети
+
+    private boolean telegramConnected = false; // Подключен ли Telegram
 }

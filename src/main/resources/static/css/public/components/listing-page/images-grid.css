@@ -1,0 +1,40 @@
+.image-gallery {
+    max-height: 480px;
+    overflow-y: auto;
+    border-color: var(--border-color);
+    border-radius: var(--radius);
+}
+
+.image-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.image-item .image-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 4px var(--shadow-color);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.image-item img {
+    height: 150px;
+    object-fit: cover;
+}
+
+.current-main-image img {
+    max-height: 300px;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+}
+
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
