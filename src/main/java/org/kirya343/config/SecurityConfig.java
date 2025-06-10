@@ -2,8 +2,10 @@ package org.kirya343.config;
 
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.SessionCookieConfig;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
+import org.kirya343.main.exceptions.UserNotRegisteredException;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.UserRepository;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
@@ -22,7 +24,11 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,9 +40,12 @@ public class SecurityConfig {
     private final UserRepository userRepository;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        //System.out.println(GREEN + "Configuring SecurityFilterChain" + RESET);
+
         http
                 .authorizeHttpRequests(auth -> {
+                    //System.out.println(GREEN + "Setting authorization rules" + RESET);
                     auth.requestMatchers("/admin/**").hasRole("ADMIN")
                             .requestMatchers("/secure/**").authenticated()
                             .requestMatchers("/uploads/**").permitAll()
@@ -45,30 +54,46 @@ public class SecurityConfig {
                             .anyRequest().permitAll();
                 })
                 .oauth2Login(oauth2 -> {
+                    //System.out.println(GREEN + "Configuring OAuth2 login" + RESET);
                     oauth2.loginPage("/login")
                             .userInfoEndpoint(userInfo -> userInfo
-                                .oidcUserService(oidcUserService())
+                                    .oidcUserService(oidcUserCreate())
                             )
                             .successHandler((request, response, authentication) -> {
                                 savedRequestAuthenticationSuccessHandler().onAuthenticationSuccess(request, response, authentication);
                             })
                             .failureHandler((request, response, exception) -> {
-                                if (exception.getMessage().contains("user_not_registered")) {
-                                    response.sendRedirect("/register?oauth2_error=user_not_registered");
+                                if (exception instanceof UserNotRegisteredException || 
+                                    (exception.getCause() != null && exception.getCause() instanceof UserNotRegisteredException)) {
+                                    
+                                    // Получаем email из исключения
+                                    String email = exception instanceof UserNotRegisteredException 
+                                        ? ((UserNotRegisteredException) exception).getEmail()
+                                        : ((UserNotRegisteredException) exception.getCause()).getEmail();
+                                    
+                                    // Перенаправляем с сохранением сессии
+                                    response.sendRedirect("/register?error=user_not_registered&email=" 
+                                        + URLEncoder.encode(email, StandardCharsets.UTF_8));
                                 } else {
-                                    response.sendRedirect("/login?error");
+                                    response.sendRedirect("/login?error=oauth_error");
                                 }
                             });
                 })
                 .formLogin(form -> {
+                    //System.out.println(GREEN + "Configuring form login" + RESET);
                     form.loginPage("/login")
                             .successHandler((request, response, authentication) -> {
+                                // Проверяем, является ли пользователь админом
+                                if (authentication.getAuthorities().stream()
+                                        .anyMatch(g -> g.getAuthority().equals("ROLE_ADMIN"))) {
+                                }
                                 savedRequestAuthenticationSuccessHandler().onAuthenticationSuccess(request, response, authentication);
                             })
                             .failureUrl("/login?error")
                             .permitAll();
                 })
                 .logout(logout -> {
+                    //System.out.println(GREEN + "Configuring logout" + RESET);
                     logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                             .logoutSuccessUrl("/")
                             .invalidateHttpSession(true)
@@ -85,13 +110,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
+    OAuth2UserService<OidcUserRequest, OidcUser> oidcUserCreate() {
         return userRequest -> {
             OidcUser oidcUser = new OidcUserService().loadUser(userRequest);
             String email = oidcUser.getEmail();
             Optional<User> optionalUser = userRepository.findByEmail(email);
             if (optionalUser.isEmpty()) {
-                throw new RuntimeException("user_not_registered");
+            // Сохраняем данные пользователя в сессии перед выбросом исключения
+                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+                request.getSession().setAttribute("oauth2User", oidcUser);
+                throw new UserNotRegisteredException(email);
             }
             User user = optionalUser.get();
             Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
