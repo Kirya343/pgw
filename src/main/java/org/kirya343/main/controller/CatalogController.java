@@ -1,11 +1,14 @@
 package org.kirya343.main.controller;
 
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Resume;
-import org.kirya343.main.services.*;
-import org.kirya343.main.services.components.AuthService;
+import org.kirya343.main.services.ListingService;
 import org.kirya343.main.services.ResumeService;
+import org.kirya343.main.services.components.AuthService;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,10 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/catalog")
@@ -37,7 +37,7 @@ public class CatalogController {
 
     @GetMapping
     public String showCatalog(
-            @RequestParam(defaultValue = "services") String category,
+            @RequestParam(required = false) String category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "date") String sortBy,
             @RequestParam(required = false) String location,
@@ -45,6 +45,7 @@ public class CatalogController {
             @RequestParam(required = false, defaultValue = "false") boolean hasReviews,
             Model model,
             Locale locale,
+            HttpServletRequest request,
             @AuthenticationPrincipal OAuth2User oauth2User) {
 
         // Определяем параметры сортировки
@@ -102,15 +103,10 @@ public class CatalogController {
             resumes = resumeService.findPublishedResumes(pageable);
         } else {
             // Остальной код для других категорий
-            switch (category) {
-                case "offer-service":
-                    listingsPage = listingService.findListingsByCategoryAndCommunity("offer-service", locale, pageable);
-                    break;
-                case "product":
-                    listingsPage = listingService.findListingsByCategoryAndCommunity("product", locale, pageable);
-                    break;
-                default:
-                    listingsPage = listingService.findListingsByCategoryAndCommunity("services", locale, pageable);
+            if (category!=null){
+                listingsPage = listingService.findListingsByCategoryAndCommunity(category, locale, pageable);
+            } else {
+                listingsPage = listingService.findListingsByCommunity(locale, pageable);
             }
         }
 
@@ -136,11 +132,20 @@ public class CatalogController {
         authService.validateAndAddAuthentication(model, oauth2User);
 
         List<CategoryTab> categories = List.of(
-                new CategoryTab("services", messageSource.getMessage("category.service", null, locale), category.equals("services")),
-                new CategoryTab("offer-service", messageSource.getMessage("category.offer-service", null, locale), category.equals("offer-service")),
-                new CategoryTab("product", messageSource.getMessage("category.product", null, locale), category.equals("product")),
-                new CategoryTab("find-help", messageSource.getMessage("category.helper", null, locale), category.equals("find-help"))
+            new CategoryTab("services", messageSource.getMessage("category.service", null, locale), 
+                "services".equals(category)),  // Безопасное сравнение
+            new CategoryTab("offer-service", messageSource.getMessage("category.offer-service", null, locale), 
+                "offer-service".equals(category)),  // Безопасное сравнение
+            new CategoryTab("product", messageSource.getMessage("category.product", null, locale), 
+                "product".equals(category)),  // Безопасное сравнение
+            new CategoryTab("find-help", messageSource.getMessage("category.helper", null, locale), 
+                "find-help".equals(category))  // Безопасное сравнение
         );
+
+        // Если текущая категория совпадает с запрошенной - сбрасываем фильтр
+        if (category != null && category.equals(request.getParameter("currentCategory"))) {
+            return "redirect:/catalog"; // Редирект без параметра category
+        }
 
         model.addAttribute("categories", categories);
 

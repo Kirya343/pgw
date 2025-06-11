@@ -1,5 +1,8 @@
 package org.kirya343.main.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.springframework.data.domain.Page;
@@ -8,9 +11,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ListingRepository extends JpaRepository<Listing, Long> {
@@ -21,7 +21,14 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
 
     @Query("SELECT l FROM Listing l WHERE l.author.email = :email")
     List<Listing> findByAuthorEmail(@Param("email") String email);
-    List<Listing> findByActiveTrue();
+
+    // Для Page
+    @Query("SELECT l FROM Listing l WHERE l.active = true")
+    Page<Listing> findPageByActiveTrue(Pageable pageable);
+    // Для List
+    @Query("SELECT l FROM Listing l WHERE l.active = true")
+    List<Listing> findListByActiveTrue();
+
     Page<Listing> findByCategoryAndActiveTrue(String category, Pageable pageable);
     @Query("SELECT l FROM Listing l WHERE l.active = true AND l.category = :category")
     Page<Listing> findActiveByCategory(@Param("category") String category, Pageable pageable);
@@ -31,13 +38,15 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
             @Param("excludeId") Long excludeId,
             Pageable pageable);
 
-    List<Listing> findByCommunityRuTrueAndActiveTrue(); // Для русскоязычного комьюнити
-    List<Listing> findByCommunityFiTrueAndActiveTrue(); // Для финскоязычного комьюнити
-    List<Listing> findByCommunityEnTrueAndActiveTrue(); // Для англоязычного комьюнити
+
 
     Page<Listing> findByCategoryAndCommunityRuTrueAndActiveTrue(String category, Pageable pageable);
     Page<Listing> findByCategoryAndCommunityFiTrueAndActiveTrue(String category, Pageable pageable);
     Page<Listing> findByCategoryAndCommunityEnTrueAndActiveTrue(String category, Pageable pageable);
+
+    Page<Listing> findByCommunityRuTrueAndActiveTrue(Pageable pageable);
+    Page<Listing> findByCommunityFiTrueAndActiveTrue(Pageable pageable);
+    Page<Listing> findByCommunityEnTrueAndActiveTrue(Pageable pageable);
 
     // 🔥 Новый метод для оптимизированной загрузки
     @Query("SELECT DISTINCT l FROM Listing l " +
