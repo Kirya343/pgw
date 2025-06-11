@@ -1,5 +1,9 @@
 package org.kirya343.main.services.impl;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
 import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
@@ -17,10 +21,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class ListingServiceImpl implements ListingService {
@@ -28,7 +28,7 @@ public class ListingServiceImpl implements ListingService {
     private final ListingRepository listingRepository;
     private final ConversationRepository conversationRepository;
     private final FavoriteListingService favoriteListingService;
-
+    
     @Override
     public Page<Listing> findByCategory(String category, Pageable pageable) {
         return listingRepository.findByCategory(category, pageable);
@@ -73,7 +73,7 @@ public class ListingServiceImpl implements ListingService {
 
     @Override
     public List<Listing> getAllActiveListings() {
-        return listingRepository.findByActiveTrue(); // Предполагая, что у вас есть поле `active` в сущности
+        return listingRepository.findListByActiveTrue(); // Предполагая, что у вас есть поле `active` в сущности
     }
 
     @Override
@@ -144,6 +144,21 @@ public class ListingServiceImpl implements ListingService {
     }
 
     @Override
+    public Page<Listing> findActiveByCommunity(String community, Pageable pageable) {
+        switch (community) {
+            case "fi":
+                return listingRepository.findByCommunityFiTrueAndActiveTrue(pageable);
+            case "ru":
+                return listingRepository.findByCommunityRuTrueAndActiveTrue(pageable);
+            case "en":
+                return listingRepository.findByCommunityEnTrueAndActiveTrue(pageable);
+            default:
+                return listingRepository.findPageByActiveTrue(pageable); // Для всех остальных языков
+        }
+    }
+
+
+    @Override
     public Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, Locale locale) {
     Sort sort;
 
@@ -165,9 +180,10 @@ public class ListingServiceImpl implements ListingService {
 
     Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-    // Получаем все объявления по категории и языковой аудитории
-    Page<Listing> baseListings = (category != null && (
-                category.equals("offer-service") || category.equals("find-help") || category.equals("product")))
+    // Получаем все объявления по категории (если указана) и языковой аудитории
+    Page<Listing> baseListings = (category == null || category.isEmpty()) 
+            ? findListingsByCommunity(locale, sortedPageable)
+            : (category.equals("offer-service") || category.equals("find-help") || category.equals("product"))
                 ? findListingsByCategoryAndCommunity(category, locale, sortedPageable)
                 : findListingsByCategoryAndCommunity("services", locale, sortedPageable);
 
@@ -215,6 +231,19 @@ public class ListingServiceImpl implements ListingService {
             return findActiveByCategoryAndCommunity("en", category, pageable);
         } else {
             return findActiveByCategory(category, pageable); // для других языков
+        }
+    }
+
+    @Override
+    public Page<Listing> findListingsByCommunity(Locale locale, Pageable pageable){
+        if ("fi".equals(locale.getLanguage())) {
+            return findActiveByCommunity("fi", pageable);
+        } else if ("ru".equals(locale.getLanguage())) {
+            return findActiveByCommunity("ru", pageable);
+        } else if ("en".equals(locale.getLanguage())) {
+            return findActiveByCommunity("en", pageable);
+        } else{
+            return null;
         }
     }
 
