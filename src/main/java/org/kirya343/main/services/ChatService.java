@@ -11,7 +11,6 @@ import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.MessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -123,10 +122,7 @@ public class ChatService {
         // Добавление сообщения в список сообщений беседы
         conversation.getMessages().add(message);
 
-        // Сохраняем сообщение
         messageRepository.save(message);
-
-        // Сохраняем изменения в беседе (если коллекция сообщений была обновлена)
         conversationRepository.save(conversation);
 
         return message;

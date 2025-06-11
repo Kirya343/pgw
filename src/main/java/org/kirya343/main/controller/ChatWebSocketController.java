@@ -10,8 +10,6 @@ import org.kirya343.main.model.User;
 import org.kirya343.main.services.ChatService;
 import org.kirya343.main.services.NotificationService;
 import org.kirya343.main.services.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -33,7 +31,6 @@ import java.util.stream.Collectors;
 @Controller
 @RequiredArgsConstructor
 public class ChatWebSocketController {
-    private static final Logger logger = LoggerFactory.getLogger(ChatWebSocketController.class);
 
     private final SimpMessagingTemplate messagingTemplate;
     private final SimpUserRegistry simpUserRegistry;
@@ -113,7 +110,6 @@ public class ChatWebSocketController {
     @MessageMapping("/chat.loadMessages/{conversationId}")
     @SendTo("/topic/history.messages/{conversationId}")
     public List<MessageDTO> loadMessagesForConversation(@DestinationVariable Long conversationId, @AuthenticationPrincipal OAuth2User oauth2User) {
-        logger.info("Получение сообщений для разговора с ID: {}", conversationId);
 
         User user = userService.findUserFromOAuth2(oauth2User);
 

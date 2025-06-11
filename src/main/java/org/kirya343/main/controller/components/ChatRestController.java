@@ -8,6 +8,8 @@ import org.kirya343.main.services.ChatService;
 import org.kirya343.main.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,19 +29,16 @@ public class ChatRestController {
     private final UserService userService;
 
     @GetMapping("/conversation/{conversationId}/messages")
-    public ResponseEntity<List<MessageDTO>> getConversationMessages(@PathVariable Long conversationId, Principal principal) {
-        User currentUser = userService.findBySub(principal.getName());
+    public ResponseEntity<List<MessageDTO>> getConversationMessages(@PathVariable Long conversationId, @AuthenticationPrincipal OAuth2User oauth2User) {
+        User currentUser = userService.findUserFromOAuth2(oauth2User);
 
         Conversation conversation = chatService.getConversationById(conversationId);
+        chatService.markMessagesAsRead(conversationId, currentUser.getId());
 
         if (conversation == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // 404, если беседа не найдена
         }
 
-        // Маркируем сообщения как прочитанные
-        chatService.markMessagesAsRead(conversationId, currentUser);
-
-        // Получаем сообщения
         List<Message> messages = chatService.getMessages(conversation);
 
         if (messages.isEmpty()) {
