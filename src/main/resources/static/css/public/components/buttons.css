@@ -1,3 +1,13 @@
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
 .btn-outline-danger {
     border: 1px solid var(--danger);
     color: var(--danger);
@@ -34,6 +44,11 @@
     flex-direction: row;
 }
 
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+}
+
 .telegram-button {
     background-color: var(--telegram);
     color: white;
@@ -50,3 +65,32 @@
 .telegram-button :hover {
     background-color: var(--telegram-hover);
 } 
+
+.search-btn {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    padding: 0;
+}
+
+/* Google button */
+.btn-google {
+    display: inline-block;
+    background-color: #4285F4;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-google:hover {
+    background-color: #357ae8;
+}

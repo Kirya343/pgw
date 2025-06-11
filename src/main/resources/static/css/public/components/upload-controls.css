@@ -1,0 +1,44 @@
+.upload-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.upload-controls input[type="file"] {
+    display: none;
+}
+
+.upload-controls label {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background-color: var(--white);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.upload-controls .btn {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+}
+
+.upload-controls .btn-outline-primary {
+    background-color: var(--white);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    margin-top: 8px;
+}
+
+.upload-controls .btn:hover {
+    box-shadow: 0 3px 6px var(--shadow-color);
+}
+
+.upload-controls label:hover {
+    background-color: var(--primary);
+    color: var(--white);
+    border-color: var(--primary-dark);
+}

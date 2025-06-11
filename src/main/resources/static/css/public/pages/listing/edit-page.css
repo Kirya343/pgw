@@ -1,54 +1,6 @@
 @import url(../../components/base.css);
 @import url(../../components/listing-page/images-grid.css);
 
-/* Основной контейнер */
-.edit-listing-container {
-    padding: 2rem 0;
-    background-color: var(--light-background);
-}
-
-/* Макет страницы */
-.edit-listing-layout {
-    display: flex;
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-/* Сайдбар (как в account-page.css) */
-.account-sidebar {
-    flex: 0 0 280px;
-    position: sticky;
-    top: calc(var(--header-height) + 20px);
-}
-
-/* Основное содержимое */
-.edit-listing-main {
-    flex: 1;
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: 0 2px 8px var(--shadow-color);
-    padding: 2rem;
-}
-
-/* Заголовок */
-.edit-listing-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.edit-listing-header h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
-    color: var(--dark);
-}
-
 /* Форма редактирования */
 .edit-listing-form {
     display: grid;
@@ -114,33 +66,6 @@
     box-shadow: 0 2px 4px var(--shadow-color);
 }
 
-.upload-controls {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    margin-top: 0.5rem;
-}
-
-.upload-controls input[type="file"] {
-    display: none;
-}
-
-.upload-controls label {
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--primary);
-    color: var(--primary);
-    background-color: var(--white);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.upload-controls label:hover {
-    background-color: var(--primary);
-    color: var(--white);
-    border-color: var(--primary-dark);
-}
-
 .file-name {
     font-size: 0.9rem;
     color: var(--gray);
@@ -195,35 +120,6 @@
     border-top: 1px solid var(--border-color);
 }
 
-.btn {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-primary {
-    background-color: var(--primary);
-    color: var(--white);
-    border: none;
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-dark);
-}
-
-.btn-outline-secondary {
-    background-color: transparent;
-    color: var(--secondary);
-    border: 1px solid var(--secondary);
-}
-
-.btn-outline-secondary:hover {
-    background-color: var(--secondary-light);
-}
-
 /* Сообщения об ошибках */
 .invalid-feedback {
     color: var(--danger);
@@ -251,88 +147,11 @@
     border: 1px solid rgba(248, 113, 113, 0.2);
 }
 
-/* Дополнительные стили для кнопок */
-.btn-sm {
-    padding: 0.35rem 0.75rem;
-    font-size: 0.85rem;
-}
-
-.btn-outline-primary {
-    background-color: transparent;
-    color: var(--primary);
-    border: 1px solid var(--primary);
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--primary);
-    color: var(--white);
-}
-
-/* Стили для меню аккаунта */
-.account-menu {
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: 0 2px 8px var(--shadow-color);
-    padding: 1rem 0;
-}
-
-.account-menu-item {
-    display: block;
-    padding: 0.75rem 1.5rem;
-    color: var(--dark);
-    transition: all 0.2s;
-}
-
-.account-menu-item:hover {
-    background-color: rgba(99, 102, 241, 0.1);
-    color: var(--primary);
-}
-
-.account-menu-item.active {
-    background-color: var(--primary);
-    color: var(--white);
-}
-
 /* Дополнительные стили для формы */
 .form-text {
     font-size: 0.8rem;
     color: var(--gray);
     margin-top: 0.25rem;
-}
-
-.profile-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px var(--shadow-color);
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-
-/* Стили для карточки профиля */
-.profile-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 0 auto 1rem;
-    border: 3px solid var(--primary-light);
-}
-
-.profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.profile-name {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-}
-
-.profile-rating {
-    color: var(--rating-star);
-    margin-bottom: 1rem;
 }
 
 /* Адаптивность */
@@ -352,30 +171,11 @@
     .audience-switches {
         flex-direction: column;
     }
-
-    .edit-listing-layout {
-        flex-direction: column;
-    }
-
-    .account-sidebar {
-        position: static;
-        width: 100%;
-    }
 }
 
 @media (max-width: 576px) {
-    .edit-listing-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
     .form-actions {
         flex-direction: column;
-    }
-
-    .btn {
-        width: 100%;
     }
     .audience-switches {
         flex-direction: column;
@@ -384,21 +184,6 @@
 @media (max-width: 768px) {
     .current-image {
         max-width: 100%;
-    }
-
-    .upload-controls {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .account-sidebar {
-        position: static;
-        width: 100%;
-        display: none;
-    }
-
-    .navbar-collapse {
-        top: 0;
     }
 }
 
@@ -418,15 +203,4 @@
 .form-group textarea:disabled {
     background-color: var(--light-background);
     cursor: not-allowed;
-}
-
-/* Стили для иконки бургер-меню */
-.navbar-toggler-icon {
-    display: inline-block;
-    width: 1.5em;
-    height: 1.5em;
-    vertical-align: middle;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 100%;
 }

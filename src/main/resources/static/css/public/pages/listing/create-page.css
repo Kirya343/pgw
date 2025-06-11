@@ -1,70 +1,6 @@
 @import url(../../components/base.css);
 @import url(../../components/listing-page/images-grid.css);
 
-.account-sidebar {
-    flex: 0 0 280px;
-    position: sticky;
-    top: calc(var(--header-height) + 20px);
-}
-
-.account-container {
-    padding: 2rem 0;
-    background-color: var(--light-background);
-}
-
-.account-header {
-    margin-bottom: 2rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 1rem;
-}
-
-/* Стили для загрузки файлов (как в edit-page.css) */
-.upload-controls {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    margin-top: 0.5rem;
-}
-
-.upload-controls input[type="file"] {
-    display: none;
-}
-
-/* Добавь в create-page.css */
-.upload-controls label {
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--primary);
-    color: var(--primary);
-    background-color: var(--white);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.upload-controls .btn {
-    padding: 0.75rem 2rem;
-    font-size: 1rem;
-    border-radius: var(--radius);
-    transition: all 0.2s ease;
-}
-
-.upload-controls .btn-outline-primary {
-    background-color: var(--white);
-    color: var(--primary);
-    border: 1px solid var(--primary);
-    margin-top: 8px;
-}
-
-.upload-controls .btn:hover {
-    box-shadow: 0 3px 6px var(--shadow-color);
-}
-
-.upload-controls label:hover {
-    background-color: var(--primary);
-    color: var(--white);
-    border-color: var(--primary-dark);
-}
-
 .file-name {
     font-size: 0.9rem;
     color: var(--gray);
@@ -83,140 +19,6 @@
 }
 
 .form-grid {
-    display: grid;
-    gap: 1.5rem;
-}
-
-.account-header h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
-}
-
-.account-main {
-    flex: 1;
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: 0 2px 8px var(--shadow-color);
-    padding: 2rem;
-}
-
-.account-layout {
-    display: flex;
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-.profile-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px var(--shadow-color);
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-
-.profile-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 0 auto 1rem;
-    border: 3px solid var(--primary-light);
-}
-
-.profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.profile-name {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-}
-
-.profile-rating {
-    color: var(--rating-star);
-    margin-bottom: 1rem;
-}
-
-.btn-sm {
-    padding: 0.35rem 0.75rem;
-    font-size: 0.85rem;
-}
-
-.account-menu {
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: 0 2px 8px var(--shadow-color);
-    padding: 1rem 0;
-}
-
-.account-menu-item {
-    display: block;
-    padding: 0.75rem 1.5rem;
-    color: var(--dark);
-    transition: all 0.2s;
-}
-
-.account-menu-item:hover {
-    background-color: rgba(99, 102, 241, 0.1);
-    color: var(--primary);
-}
-
-.account-menu-item.active {
-    background-color: var(--primary);
-}
-
-
-    /* Контейнер страницы */
-.create-listing-container {
-    padding: 2rem 0;
-    background-color: var(--light-background);
-}
-
-.create-listing-layout {
-    display: flex;
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-/* Сайдбар (такой же как в account-page.css) */
-.account-sidebar {
-    flex: 0 0 280px;
-    position: sticky;
-    top: calc(var(--header-height) + 20px);
-}
-
-/* Основная панель */
-.create-listing-main {
-    flex: 1;
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: 0 2px 8px var(--shadow-color);
-    padding: 2rem;
-}
-
-/* Заголовок страницы */
-.create-listing-header {
-    margin-bottom: 2rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 1rem;
-}
-
-.create-listing-header h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
-}
-
-/* Форма */
-.create-listing-form {
     display: grid;
     gap: 1.5rem;
 }
@@ -282,38 +84,6 @@
     justify-content: flex-end;
 }
 
-
-.btn-primary {
-    background-color: var(--primary);
-    color: var(--white);
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: var(--radius);
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-dark);
-}
-
-.btn-outline-secondary {
-    background-color: transparent;
-    color: var(--secondary);
-    border: 1px solid var(--secondary);
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-left: 1rem;
-}
-
-.btn-outline-secondary:hover {
-    background-color: var(--secondary-light);
-}
-
 /* Сообщения об ошибках */
 .form-error {
     color: var(--danger);
@@ -354,10 +124,6 @@
         flex-direction: column;
     }
 
-    .create-listing-layout {
-        flex-direction: column;
-    }
-
     .form-actions {
         justify-content: center;
     }
@@ -369,11 +135,6 @@
     .form-actions {
         flex-direction: column;
         gap: 1rem;
-    }
-
-    .btn-outline-secondary {
-        margin-left: 0;
-        margin-top: 1rem;
     }
 
     .account-sidebar {

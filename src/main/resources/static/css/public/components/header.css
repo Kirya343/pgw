@@ -87,16 +87,6 @@ header {
     color: var(--primary);
 }
 
-.btn {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-}
-
 .btn-outline-primary {
     margin-right: 0.5rem;
 }

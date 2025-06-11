@@ -75,9 +75,6 @@
                 </span>
                 <span th:text="'(' + ${#numbers.formatDecimal(resume.user.averageRating, 1, 1)} + ')'">(4.5)</span>
             </div>
-            <!-- <div class="seller-stats">
-                <span th:text="${resume.user.completedJobs != null ? resume.user.completedJobs : '0'} + ' ' + #{resume.completed.jobs}">10 выполненных работ</span>
-            </div> -->
         </div>
         <div class="seller-actions" th:if="${isAuthenticated}">
             <!-- Показываем кнопки только если пользователь не владелец -->

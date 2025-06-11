@@ -87,7 +87,7 @@
         </aside>
 
         <main class="catalog-main">
-            <div th:if="${category == 'find-help'}" class="resumes-grid">
+            <div th:if="${category == 'find-help'}" class="listings-grid">
                 <div th:each="resume : ${resumes}" class="resume-card">
                     <a th:href="@{'/resume/' + ${resume.id}}" class="resume-link">
                         <img th:src="@{${resume.user.avatarUrl}}"

@@ -1,0 +1,22 @@
+/* Сетка избранных */
+.listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Пустое избранное */
+.no-listings {
+    text-align: center;
+    padding: 3rem;
+    background: var(--light-background);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px var(--shadow-color);
+    margin-top: 1.5rem;
+}
+
+.no-listings p {
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
