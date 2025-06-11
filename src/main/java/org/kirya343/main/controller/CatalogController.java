@@ -142,11 +142,6 @@ public class CatalogController {
                 "find-help".equals(category))  // Безопасное сравнение
         );
 
-        // Если текущая категория совпадает с запрошенной - сбрасываем фильтр
-        if (category != null && category.equals(request.getParameter("currentCategory"))) {
-            return "redirect:/catalog"; // Редирект без параметра category
-        }
-
         model.addAttribute("categories", categories);
 
         return "catalog";

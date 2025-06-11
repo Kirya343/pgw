@@ -18,9 +18,9 @@
         <ul class="nav nav-pills justify-content-center">
             <li th:each="tab : ${categories}"
                 th:class="${tab.active} ? 'nav-item active' : 'nav-item'">
-                <a th:href="@{${tab.active} ? '/catalog' : '/catalog'(category=${tab.id})}"
-                   th:text="${tab.title}"
-                   class="nav-link"></a>
+                <a th:href="${tab.active} ? @{/catalog} : @{/catalog(category=${tab.id})}"
+                    th:text="${tab.title}"
+                    class="nav-link"></a>
             </li>
         </ul>
     </div>
