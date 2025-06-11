@@ -1,10 +1,10 @@
-package org.kirya343.main.controller.chat;
+package org.kirya343.main.controller.components;
 
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.DTOs.MessageDTO;
 import org.kirya343.main.model.User;
-import org.kirya343.main.services.chat.ChatService;
+import org.kirya343.main.services.ChatService;
 import org.kirya343.main.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +62,5 @@ public class ChatRestController {
 
         return ResponseEntity.ok(messageDTOs);
     }
-
 }
 

@@ -1,6 +1,8 @@
-package org.kirya343.main.services.chat;
+package org.kirya343.main.services;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
 import org.kirya343.main.controller.mappers.ChatMapper;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.Listing;
@@ -20,19 +22,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ChatService {
 
-    @Autowired
-    private ConversationRepository conversationRepository;
-
-    @Autowired
-    private MessageRepository messageRepository;
-
-    @Autowired
-    private ChatMapper chatMapper;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private final ConversationRepository conversationRepository;
+    private final MessageRepository messageRepository;
+    private final ChatMapper chatMapper;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public Conversation getOrCreateConversation(User user1, User user2, Listing listing) {
         if (listing != null) {
@@ -63,8 +59,6 @@ public class ChatService {
 
     public List<Conversation> getUserConversations(User user) {
         List<Conversation> conversations = conversationRepository.findByUser1OrUser2(user, user);
-        // Добавить логирование для проверки
-        System.out.println("Conversations found: " + conversations.size());
         return conversations;
     }
 
@@ -141,8 +135,9 @@ public class ChatService {
     public Conversation getConversationById(Long conversationId) {
         return conversationRepository.findById(conversationId).orElse(null);
     }
+
     @Transactional
-    public void markMessagesAsRead(Long conversationId, User reader) {
-        messageRepository.markMessagesAsRead(conversationId, reader.getId());
+    public void markMessagesAsRead(Long conversationId, Long readerId) {
+        messageRepository.markMessagesAsRead(conversationId, readerId);
     }
 }

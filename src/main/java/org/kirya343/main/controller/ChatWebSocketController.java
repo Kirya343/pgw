@@ -1,4 +1,4 @@
-package org.kirya343.main.controller.chat;
+package org.kirya343.main.controller;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -7,8 +7,8 @@ import org.kirya343.main.controller.mappers.ChatMapper;
 import org.kirya343.main.model.DTOs.*;
 import org.kirya343.main.model.chat.*;
 import org.kirya343.main.model.User;
+import org.kirya343.main.services.ChatService;
 import org.kirya343.main.services.NotificationService;
-import org.kirya343.main.services.chat.ChatService;
 import org.kirya343.main.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +20,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 
@@ -41,9 +43,9 @@ public class ChatWebSocketController {
     private final NotificationService notificationService;
 
     @MessageMapping("/chat.send")
-    public void sendMessage(MessageDTO messageDTO, Principal principal) throws AccessDeniedException {
+    public void sendMessage(MessageDTO messageDTO, @AuthenticationPrincipal OAuth2User oauth2User) throws AccessDeniedException {
         // Получаем отправителя
-        User sender = userService.findBySub(principal.getName());
+        User sender = userService.findUserFromOAuth2(oauth2User);
         // Получаем беседу
         Conversation conversation = chatService.getConversationById(messageDTO.getConversationId());
         // Сохраняем сообщение в базу
@@ -110,10 +112,10 @@ public class ChatWebSocketController {
 
     @MessageMapping("/chat.loadMessages/{conversationId}")
     @SendTo("/topic/history.messages/{conversationId}")
-    public List<MessageDTO> loadMessagesForConversation(@DestinationVariable Long conversationId, Principal principal) {
+    public List<MessageDTO> loadMessagesForConversation(@DestinationVariable Long conversationId, @AuthenticationPrincipal OAuth2User oauth2User) {
         logger.info("Получение сообщений для разговора с ID: {}", conversationId);
 
-        User currentUser = userService.findBySub(principal.getName());
+        User user = userService.findUserFromOAuth2(oauth2User);
 
         // Получаем разговор по ID
         Conversation conversation = chatService.getConversationById(conversationId);
@@ -133,17 +135,17 @@ public class ChatWebSocketController {
                         msg.getSender().getId(),
                         conversation.getId(),
                         msg.getReceiver().getId(),
-                        msg.getSender().equals(currentUser) // Проверка на владельца сообщения
+                        msg.getSender().equals(user) // Проверка на владельца сообщения
                 ))
                 .collect(Collectors.toList());
     }
 
     @MessageMapping("/chat.markAsRead")
-    public void markAsRead(MarkAsReadDTO markAsReadDTO, Principal principal) {
-        User user = userService.findBySub(principal.getName());
+    public void markAsRead(MarkAsReadDTO markAsReadDTO, @AuthenticationPrincipal OAuth2User oauth2User) {
+        User user = userService.findUserFromOAuth2(oauth2User);
         Long conversationId = markAsReadDTO.getConversationId();
 
-        chatService.markMessagesAsRead(conversationId, user);
+        chatService.markMessagesAsRead(conversationId, user.getId());
         // Уведомляем об обновлении
         chatService.notifyConversationUpdate(markAsReadDTO.getConversationId(), user);
     }
