@@ -1,6 +1,8 @@
-package org.kirya343.main.services.chat;
+package org.kirya343.main.services;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
 import org.kirya343.main.controller.mappers.ChatMapper;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.Listing;
@@ -9,7 +11,6 @@ import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.MessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +21,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ChatService {
 
-    @Autowired
-    private ConversationRepository conversationRepository;
-
-    @Autowired
-    private MessageRepository messageRepository;
-
-    @Autowired
-    private ChatMapper chatMapper;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private final ConversationRepository conversationRepository;
+    private final MessageRepository messageRepository;
+    private final ChatMapper chatMapper;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public Conversation getOrCreateConversation(User user1, User user2, Listing listing) {
         if (listing != null) {
@@ -63,8 +58,6 @@ public class ChatService {
 
     public List<Conversation> getUserConversations(User user) {
         List<Conversation> conversations = conversationRepository.findByUser1OrUser2(user, user);
-        // Добавить логирование для проверки
-        System.out.println("Conversations found: " + conversations.size());
         return conversations;
     }
 
@@ -129,10 +122,7 @@ public class ChatService {
         // Добавление сообщения в список сообщений беседы
         conversation.getMessages().add(message);
 
-        // Сохраняем сообщение
         messageRepository.save(message);
-
-        // Сохраняем изменения в беседе (если коллекция сообщений была обновлена)
         conversationRepository.save(conversation);
 
         return message;
@@ -141,8 +131,9 @@ public class ChatService {
     public Conversation getConversationById(Long conversationId) {
         return conversationRepository.findById(conversationId).orElse(null);
     }
+
     @Transactional
-    public void markMessagesAsRead(Long conversationId, User reader) {
-        messageRepository.markMessagesAsRead(conversationId, reader.getId());
+    public void markMessagesAsRead(Long conversationId, Long readerId) {
+        messageRepository.markMessagesAsRead(conversationId, readerId);
     }
 }
