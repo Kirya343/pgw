@@ -1,0 +1,30 @@
+.rating {
+    display: flex;
+    gap: 2px;
+    color: #000000;
+    font-size: 16px;
+}
+
+.star {
+    font-size: 1.5em;
+    color: #ccc; /* Цвет для невыбранных звезд */
+    cursor: pointer;
+}
+
+.star:hover,
+.star.selected {
+    color: var(--rating-star); /* Цвет для выбранных звезд */
+}
+
+/* Для отображения текущего рейтинга */
+.listing-rating {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    gap: 5px;
+    color: var(--rating-star);
+}
+
+.listing-rating input[type="hidden"] {
+    display: none;
+}

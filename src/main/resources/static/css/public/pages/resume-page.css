@@ -18,12 +18,6 @@
     padding: 0 1rem;
 }
 
-.account-sidebar {
-    flex: 0 0 280px;
-    position: sticky;
-    top: calc(var(--header-height) + 20px);
-}
-
 .account-main {
     flex: 1;
     background: var(--white);
@@ -165,37 +159,6 @@
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-}
-
-.btn-primary {
-    background-color: var(--primary);
-    color: var(--white);
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: var(--radius);
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-dark);
-}
-
-.btn-outline-primary {
-    background-color: transparent;
-    color: var(--primary);
-    border: 1px solid var(--primary);
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--primary);
-    color: var(--white);
 }
 
 .language-item {

@@ -27,20 +27,3 @@ body {
     color: #333;
     font-size: 28px;
 }
-
-/* Google button */
-.btn-google {
-    display: inline-block;
-    background-color: #4285F4;
-    color: white;
-    padding: 12px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-.btn-google:hover {
-    background-color: #357ae8;
-}

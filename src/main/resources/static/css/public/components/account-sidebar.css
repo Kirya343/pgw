@@ -1,0 +1,64 @@
+/* Сайдбар */
+.account-sidebar {
+    flex: 0 0 280px;
+    position: sticky;
+    top: calc(var(--header-height) + 20px);
+}
+
+.profile-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 1rem;
+    border: 3px solid var(--primary-light);
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-name {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-rating {
+    color: var(--rating-star);
+    margin-bottom: 1rem;
+}
+
+.account-menu {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px var(--shadow-color);
+    padding: 1rem 0;
+}
+
+.account-menu-item {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: var(--dark);
+    transition: all 0.2s;
+}
+
+.account-menu-item:hover {
+    background-color: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+}
+
+.account-menu-item.active {
+    background-color: var(--primary);
+    color: var(--white);
+}

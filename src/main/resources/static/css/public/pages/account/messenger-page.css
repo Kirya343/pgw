@@ -1,35 +1,14 @@
-@import url(../../components/lang-switcher.css);
-/* Основные стили мессенджера */
-.messenger-main {
-    flex: 1;
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: 0 2px 8px var(--shadow-color);
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-}
+@import url(../../components/base.css);
 
 .highlight {
     background-color: rgba(0, 150, 255, 0.1);
     transition: all 0.3s ease;
 }
 
-.messenger-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
 .search-container {
     position: relative;
     width: 250px;
 }
-
-
 
 .search-input {
     width: 100%;
@@ -44,18 +23,6 @@
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 2px var(--primary-light);
-}
-
-.search-btn {
-    position: absolute;
-    left: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--gray);
-    cursor: pointer;
-    padding: 0;
 }
 
 .messenger-container {
