@@ -134,8 +134,6 @@ public class CatalogController {
         List<CategoryTab> categories = List.of(
             new CategoryTab("services", messageSource.getMessage("category.service", null, locale), 
                 "services".equals(category)),  // Безопасное сравнение
-            new CategoryTab("offer-service", messageSource.getMessage("category.offer-service", null, locale), 
-                "offer-service".equals(category)),  // Безопасное сравнение
             new CategoryTab("product", messageSource.getMessage("category.product", null, locale), 
                 "product".equals(category)),  // Безопасное сравнение
             new CategoryTab("find-help", messageSource.getMessage("category.helper", null, locale), 
@@ -145,6 +143,26 @@ public class CatalogController {
         model.addAttribute("categories", categories);
 
         return "catalog";
+    }
+
+    @GetMapping("/service-subcategory")
+    public String handleServiceSubcategory(
+            @RequestParam String subcategory,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "date") String sortBy,
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(required = false, defaultValue = "false") boolean hasReviews,
+            Model model,
+            Locale locale,
+            HttpServletRequest request,
+            @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        // Перенаправляем на основной каталог с выбранной подкатегорией
+        return "redirect:/catalog?category=" + subcategory + 
+            "&page=" + page + 
+            "&sortBy=" + sortBy + 
+            (searchQuery != null ? "&searchQuery=" + searchQuery : "") + 
+            "&hasReviews=" + hasReviews;
     }
 
     @GetMapping("/sort")
