@@ -29,7 +29,6 @@ public class ListingMapper {
         dto.setViews(listing.getViews());
         dto.setCreatedAt(listing.getCreatedAt());
         dto.setActive(listing.isActive());
-        dto.setAvailableNow(listing.isAvailableNow());
         dto.setImagePath(listing.getImagePath());
 
         // Получаем перевод из Map по ключу языка

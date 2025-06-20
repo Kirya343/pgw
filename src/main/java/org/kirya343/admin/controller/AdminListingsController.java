@@ -25,7 +25,7 @@ public class AdminListingsController {
     public String listingsList(Model model) {
         List<Listing> listings = listingService.getAllListings();
 
-        Locale locale = new Locale("ru");
+        Locale locale = Locale.of("ru");
 
         for (Listing listing : listings) {
             listingService.localizeListing(listing, locale);

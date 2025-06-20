@@ -33,7 +33,7 @@ public class AdminController {
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
 
-        Locale locale = new Locale("ru");
+        Locale locale = Locale.of("ru");
         
         // Получаем статистику сайта
         Map<String, Object> stats = statService.getSiteStats(locale);
