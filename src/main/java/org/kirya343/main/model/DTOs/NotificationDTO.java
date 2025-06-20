@@ -1,10 +1,8 @@
 package org.kirya343.main.model.DTOs;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class NotificationDTO {
     private String title;
     private String message;

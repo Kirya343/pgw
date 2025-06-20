@@ -1,6 +1,56 @@
 @import url(../../components/base.css);
 @import url(../../components/listing-page/images-grid.css);
 
+.indicator {
+padding: 5px 10px;
+border-radius: 5px;
+font-weight: bold;
+color: white;
+}
+.indicator.green { background-color: green; }
+.indicator.yellow { background-color: goldenrod; }
+
+.languageFields {
+    margin-top:10px; 
+    display:none;
+    padding: 0 2rem;
+}
+
+.languageFields-item {
+    width: 100%;
+}
+
+.language-box {
+    display: flex;
+    flex-direction: row;
+}
+
+.language-box input,
+.language-box select,
+.language-box textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    background-color: var(--light);
+    transition: border-color 0.2s ease;
+}
+
+.delete-cross {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: -10px;
+    right: -8px;
+    padding: auto;
+    background-color: var(--danger);
+    color: var(--white);
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+}
+
+
 .file-name {
     font-size: 0.9rem;
     color: var(--gray);

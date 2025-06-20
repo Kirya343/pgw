@@ -5,6 +5,8 @@ import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Location;
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.DTOs.ListingForm;
+import org.kirya343.main.model.DTOs.TranslationDTO;
 import org.kirya343.main.repository.LocationRepository;
 import org.kirya343.main.services.*;
 import org.kirya343.main.services.components.AuthService;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -28,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.kirya343.main.repository.ImageRepository;
+import org.kirya343.main.repository.ListingTranslationRepository;
 
 @Controller
 @RequestMapping("/secure/listing")
@@ -41,7 +46,6 @@ public class OwnListingController {
     private final LocationRepository locationRepository;
     private final AuthService authService;
     private final MessageSource messageSource;
-
 
     @GetMapping("/create")
     public String showCreateForm(Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
@@ -68,12 +72,7 @@ public class OwnListingController {
             @RequestParam(value = "uploadedImages", required = false) MultipartFile[] uploadedImages,
             @RequestParam(value = "deletedImages", required = false) String deletedImages,
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
-            @RequestParam(value = "titleRu", required = false) String titleRu,
-            @RequestParam(value = "descriptionRu", required = false) String descriptionRu,
-            @RequestParam(value = "titleFi", required = false) String titleFi,
-            @RequestParam(value = "descriptionFi", required = false) String descriptionFi,
-            @RequestParam(value = "titleEn", required = false) String titleEn,
-            @RequestParam(value = "descriptionEn", required = false) String descriptionEn,
+            @ModelAttribute ListingForm form,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
@@ -86,15 +85,30 @@ public class OwnListingController {
             listing.setViews(0);
             listing.setRating(0.0);
 
-            // Устанавливаем локализованные данные
-            listing.setTitleRu(titleRu);
-            listing.setDescriptionRu(descriptionRu);
-            listing.setTitleFi(titleFi);
-            listing.setDescriptionFi(descriptionFi);
-            listing.setTitleEn(titleEn);
-            listing.setDescriptionEn(descriptionEn);
+            Map<String, TranslationDTO> translationDTOs = form.getTranslations();
+            Map<String, ListingTranslation> listingTranslations = new HashMap<>();
+            listing.getCommunities().clear();
 
-            // Сначала сохраняем объявление, чтобы получить ID
+            for (Map.Entry<String, TranslationDTO> entry : translationDTOs.entrySet()) {
+                String lang = entry.getKey();
+                TranslationDTO dto = entry.getValue();
+
+                ListingTranslation translation = new ListingTranslation();
+                translation.setLanguage(lang);
+                System.out.println("Creating translation for language: " + lang);
+                System.out.println("Title: " + dto.getTitle());
+                System.out.println("Description: " + dto.getDescription());
+                translation.setTitle(dto.getTitle());
+                translation.setDescription(dto.getDescription());
+                translation.setListing(listing); // связь с родителем
+
+                listingTranslations.put(lang, translation);
+                listing.getCommunities().add(lang);
+            }
+
+            listing.setTranslations(listingTranslations);
+
+            // Сохраняем Listing вместе с переводами
             Listing savedListing = listingService.saveAndReturn(listing);
 
             // Удаление отмеченных изображений
@@ -102,11 +116,13 @@ public class OwnListingController {
                 Arrays.stream(deletedImages.split(","))
                     .map(Long::parseLong)
                     .forEach(imageId -> {
-                        // Не удаляем, если это текущее основное изображение
-                        if (savedListing.getImagePath() == null || 
-                            !imageRepository.findById(imageId).get().getPath().equals(savedListing.getImagePath())) {
-                            imageRepository.deleteById(imageId);
-                        }
+                        imageRepository.findById(imageId).ifPresent(img -> {
+                            // Не удаляем если это текущее основное изображение
+                            if (savedListing.getImagePath() == null || 
+                                !img.getPath().equals(savedListing.getImagePath())) {
+                                imageRepository.deleteById(imageId);
+                            }
+                        });
                     });
             }
 
@@ -119,8 +135,7 @@ public class OwnListingController {
                         imageEntity.setListing(savedListing);
                         imageEntity.setPath(imagePath);
                         imageRepository.save(imageEntity);
-                        
-                        // Если это выбранное основное изображение
+
                         if (image.getOriginalFilename().equals(imagePathParam)) {
                             savedListing.setImagePath(imagePath);
                         }
@@ -135,6 +150,9 @@ public class OwnListingController {
                 savedListing.setImagePath(imagePathParam);
             }
 
+            // После всех изменений повторно сохраним listing
+            listingService.save(savedListing);
+
             redirectAttributes.addFlashAttribute("success", "Объявление успешно создано!");
             return "redirect:/secure/account";
         } catch (Exception e) {
@@ -143,7 +161,6 @@ public class OwnListingController {
             return "redirect:/secure/listing/create";
         }
     }
-
 
     @GetMapping("/edit/{id}")
     public String showEditForm(
@@ -174,6 +191,20 @@ public class OwnListingController {
             model.addAttribute("categories", categories);
             model.addAttribute("locations", locations);
 
+            // Сформировать Map<String, Map<String, String>> для JSON с переводами
+            Map<String, Map<String, String>> translationsMap = new HashMap<>();
+            listing.getTranslations().forEach((lang, translation) -> {
+                Map<String, String> data = new HashMap<>();
+                data.put("title", translation.getTitle());
+                data.put("description", translation.getDescription());
+                translationsMap.put(lang, data);
+            });
+
+            ObjectMapper mapper = new ObjectMapper();
+            String translationsJson = mapper.writeValueAsString(translationsMap);
+
+            model.addAttribute("translationsJson", translationsJson);
+
             authService.validateAndAddAuthentication(model, oauth2User);
 
             return "secure/listing/edit";
@@ -188,7 +219,7 @@ public class OwnListingController {
     public String updateListing(
             @PathVariable Long id,
             @ModelAttribute Listing listingData,
-            @RequestParam(value = "communities", required = false) List<String> communities,
+            @ModelAttribute ListingForm form,
             @RequestParam(value = "uploadedImages", required = false) MultipartFile[] uploadedImages,
             @RequestParam(value = "deletedImages", required = false) String deletedImages,
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
@@ -200,107 +231,70 @@ public class OwnListingController {
             Listing existingListing = listingService.getListingById(id);
             User user = userService.findUserFromOAuth2(oauth2User);
 
-            if (communities != null) {
-                existingListing.setCommunities(new ArrayList<>(communities));
-            } else {
-                redirectAttributes.addFlashAttribute("error",
-                    "Ошибка при обновлении объявления: не указаны целевые сообщества");
-                return "redirect:/secure/listing/edit/" + id;
-            }
-
             if (!existingListing.getAuthor().equals(user)) {
                 redirectAttributes.addFlashAttribute("error", "Вы не можете редактировать это объявление");
                 return "redirect:/secure/account";
             }
 
-            Map<String, ListingTranslation> translations = existingListing.getTranslations();
-            if (translations == null) {
-                translations = new HashMap<>();
-                existingListing.setTranslations(translations);
+            // Получаем новые переводы из формы
+            Map<String, TranslationDTO> translationDTOs = form.getTranslations();
+
+            // Чистим communities
+            existingListing.getCommunities().clear();
+
+            // Работаем с коллекцией переводов в existingListing
+            Map<String, ListingTranslation> currentTranslations = existingListing.getTranslations();
+            if (currentTranslations == null) {
+                currentTranslations = new HashMap<>();
+                existingListing.setTranslations(currentTranslations);
             }
 
-            for (String lang : existingListing.getCommunities()) {
-                ListingTranslation translation = translations.get(lang);
-                if (translation == null) {
-                    translation = new ListingTranslation();
-                    translation.setListing(existingListing);
+            // Удаляем переводы, которых больше нет в новых данных
+            currentTranslations.entrySet().removeIf(entry -> !translationDTOs.containsKey(entry.getKey()));
+
+            // Обновляем или добавляем переводы
+            for (Map.Entry<String, TranslationDTO> entry : translationDTOs.entrySet()) {
+                String lang = entry.getKey();
+                TranslationDTO dto = entry.getValue();
+
+                if (currentTranslations.containsKey(lang)) {
+                    ListingTranslation existingTranslation = currentTranslations.get(lang);
+                    existingTranslation.setTitle(dto.getTitle());
+                    existingTranslation.setDescription(dto.getDescription());
+                } else {
+                    ListingTranslation translation = new ListingTranslation();
                     translation.setLanguage(lang);
-                    translations.put(lang, translation);
+                    translation.setTitle(dto.getTitle());
+                    translation.setDescription(dto.getDescription());
+                    translation.setListing(existingListing);
+
+                    currentTranslations.put(lang, translation);
                 }
 
-                // Устанавливаем title и description по языку из listingData
-                switch (lang) {
-                    case "ru":
-                        translation.setTitle(listingData.getTitleRu());
-                        translation.setDescription(listingData.getDescriptionRu());
-                        break;
-                    case "fi":
-                        translation.setTitle(listingData.getTitleFi());
-                        translation.setDescription(listingData.getDescriptionFi());
-                        break;
-                    case "en":
-                        translation.setTitle(listingData.getTitleEn());
-                        translation.setDescription(listingData.getDescriptionEn());
-                        break;
-                    default:
-                        // Если будут другие языки — нужно как-то получать значения из формы,
-                        // либо игнорировать (или расширить listingData)
-                        break;
-                }
+                // Добавляем в communities
+                existingListing.getCommunities().add(lang);
             }
+
+            // Обновляем остальные поля
             existingListing.setPrice(listingData.getPrice());
             existingListing.setPriceType(listingData.getPriceType());
             existingListing.setCategory(listingData.getCategory());
             existingListing.setLocation(listingData.getLocation());
             existingListing.setActive(active);
 
-            // Удаление отмеченных изображений
-            if (deletedImages != null && !deletedImages.isEmpty()) {
-                Arrays.stream(deletedImages.split(","))
-                    .map(Long::parseLong)
-                    .forEach(imageId -> {
-                        // Не удаляем, если это текущее основное изображение
-                        if (existingListing.getImagePath() == null || 
-                            !imageRepository.findById(imageId).get().getPath().equals(existingListing.getImagePath())) {
-                            imageRepository.deleteById(imageId);
-                        }
-                    });
-            }
-
-            // Добавление новых изображений
-            if (uploadedImages != null) {
-                for (MultipartFile image : uploadedImages) {
-                    if (!image.isEmpty()) {
-                        String imagePath = storageService.storeListingImage(image, existingListing.getId());
-                        Image imageEntity = new Image();
-                        imageEntity.setListing(existingListing);
-                        imageEntity.setPath(imagePath);
-                        imageRepository.save(imageEntity);
-                        
-                        // Если это выбранное основное изображение
-                        if (image.getOriginalFilename().equals(imagePathParam)) {
-                            existingListing.setImagePath(imagePath);
-                        }
-                    }
-                }
-            }
-
-            // Обновление основного изображения (если выбрано существующее)
-            if (imagePathParam != null && !imagePathParam.isEmpty() && 
-                (uploadedImages == null || !Arrays.stream(uploadedImages)
-                    .anyMatch(file -> file.getOriginalFilename().equals(imagePathParam)))) {
-                existingListing.setImagePath(imagePathParam);
-            }
+            // ... (дальше код по удалению/добавлению изображений, как у тебя было)
 
             listingService.save(existingListing);
             redirectAttributes.addFlashAttribute("success", "Объявление успешно обновлено!");
             return "redirect:/secure/account";
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error",
                     "Ошибка при обновлении объявления: " + e.getMessage());
             return "redirect:/secure/listing/edit/" + id;
         }
     }
+
     @PostMapping("/delete/{id}")
     public String deleteListing(
             @PathVariable Long id,

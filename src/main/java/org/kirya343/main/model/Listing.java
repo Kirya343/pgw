@@ -36,40 +36,9 @@ public class Listing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String community;
-
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @MapKey(name = "language") // ключ — это язык (например, "ru")
     private Map<String, ListingTranslation> translations = new HashMap<>();
-
-    /* // Заголовки на разных языках
-    private String titleRu;
-    private String titleFi;
-    private String titleEn;
-
-    private boolean communityRu;
-    private boolean communityFi;
-    private boolean communityEn;
-
-    public boolean getCommunityFi() {
-        return communityFi;
-    }
-    public boolean getCommunityRu() {
-        return communityRu;
-    }
-    public boolean getCommunityEn() {
-        return communityEn;
-    }
-
-    // Описания на разных языках
-    @Column(length = 2000)
-    private String descriptionRu;
-
-    @Column(length = 2000)
-    private String descriptionFi;
-
-    @Column(length = 2000)
-    private String descriptionEn; */
 
     @PositiveOrZero
     private double price;
@@ -100,8 +69,6 @@ public class Listing {
     private List<Review> reviews;
 
     private double averageRating;
-
-    private boolean availableNow;
 
     @Setter
     @Getter
