@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,32 +22,13 @@ public class AdminListingsController {
     private final ListingService listingService;
 
     @GetMapping
-    public String usersList(Model model) {
+    public String listingsList(Model model) {
         List<Listing> listings = listingService.getAllListings();
 
+        Locale locale = new Locale("ru");
+
         for (Listing listing : listings) {
-            String title = null;
-            String description = null;
-
-            if (listing.getTitleRu() != null && !listing.getTitleRu().isBlank()) {
-                title = listing.getTitleRu();
-            } else if (listing.getTitleFi() != null && !listing.getTitleFi().isBlank()) {
-                title = listing.getTitleFi();
-            } else if (listing.getTitleEn() != null && !listing.getTitleEn().isBlank()) {
-                title = listing.getTitleEn();
-            }
-
-            if (listing.getDescriptionRu() != null && !listing.getDescriptionRu().isBlank()) {
-                description = listing.getDescriptionRu();
-            } else if (listing.getDescriptionFi() != null && !listing.getDescriptionFi().isBlank()) {
-                description = listing.getDescriptionFi();
-            } else if (listing.getDescriptionEn() != null && !listing.getDescriptionEn().isBlank()) {
-                description = listing.getDescriptionEn();
-            }
-
-            // Сохраняем в транзиентные поля
-            listing.setLocalizedTitle(title);
-            listing.setLocalizedDescription(description);
+            listingService.localizeListing(listing, locale);
         }
 
         model.addAttribute("listings", listings);
@@ -55,19 +37,19 @@ public class AdminListingsController {
     }
 
     @GetMapping("/view/{id}")
-    public String currentUser(@PathVariable Long id, Model model) {
+    public String currentListing(@PathVariable Long id, Model model) {
         try {
             Listing listing = listingService.getListingById(id);
             model.addAttribute("listing", listing);
             model.addAttribute("activePage", "admin-listings");
-            return "admin/users/view-listing";
+            return "admin/listings/view-listing";
         } catch (IllegalArgumentException e) {
             return "redirect:/admin/listings-list";
         }
     }
 
     @PostMapping("/update/{id}")
-    public String modifyUser(@PathVariable Long id,
+    public String modifyListing(@PathVariable Long id,
                            @AuthenticationPrincipal OAuth2User oauth2User,
                            RedirectAttributes redirectAttributes) {
         try {

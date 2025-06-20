@@ -1,6 +1,6 @@
 package org.kirya343.main.repository;
 
-import org.kirya343.main.model.Image;
+import org.kirya343.main.model.listingModels.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

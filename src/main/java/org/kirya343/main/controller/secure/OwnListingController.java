@@ -1,6 +1,7 @@
 package org.kirya343.main.controller.secure;
 
-import org.kirya343.main.model.Image;
+import org.kirya343.main.model.listingModels.Image;
+import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Location;
 import org.kirya343.main.model.User;
@@ -19,7 +20,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,8 +35,6 @@ import org.kirya343.main.repository.ImageRepository;
 public class OwnListingController {
 
     private final ImageRepository imageRepository;
-
-
     private final ListingService listingService;
     private final UserService userService;
     private final StorageService storageService;
@@ -187,9 +188,7 @@ public class OwnListingController {
     public String updateListing(
             @PathVariable Long id,
             @ModelAttribute Listing listingData,
-            @RequestParam(value = "communityRu", defaultValue = "false") boolean communityRu,
-            @RequestParam(value = "communityFi", defaultValue = "false") boolean communityFi,
-            @RequestParam(value = "communityEn", defaultValue = "false") boolean communityEn,
+            @RequestParam(value = "communities", required = false) List<String> communities,
             @RequestParam(value = "uploadedImages", required = false) MultipartFile[] uploadedImages,
             @RequestParam(value = "deletedImages", required = false) String deletedImages,
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
@@ -201,26 +200,59 @@ public class OwnListingController {
             Listing existingListing = listingService.getListingById(id);
             User user = userService.findUserFromOAuth2(oauth2User);
 
+            if (communities != null) {
+                existingListing.setCommunities(new ArrayList<>(communities));
+            } else {
+                redirectAttributes.addFlashAttribute("error",
+                    "Ошибка при обновлении объявления: не указаны целевые сообщества");
+                return "redirect:/secure/listing/edit/" + id;
+            }
+
             if (!existingListing.getAuthor().equals(user)) {
                 redirectAttributes.addFlashAttribute("error", "Вы не можете редактировать это объявление");
                 return "redirect:/secure/account";
             }
 
-            // Обновление полей
-            existingListing.setTitleRu(listingData.getTitleRu());
-            existingListing.setTitleEn(listingData.getTitleEn());
-            existingListing.setTitleFi(listingData.getTitleFi());
-            existingListing.setDescriptionRu(listingData.getDescriptionRu());
-            existingListing.setDescriptionEn(listingData.getDescriptionEn());
-            existingListing.setDescriptionFi(listingData.getDescriptionFi());
+            Map<String, ListingTranslation> translations = existingListing.getTranslations();
+            if (translations == null) {
+                translations = new HashMap<>();
+                existingListing.setTranslations(translations);
+            }
+
+            for (String lang : existingListing.getCommunities()) {
+                ListingTranslation translation = translations.get(lang);
+                if (translation == null) {
+                    translation = new ListingTranslation();
+                    translation.setListing(existingListing);
+                    translation.setLanguage(lang);
+                    translations.put(lang, translation);
+                }
+
+                // Устанавливаем title и description по языку из listingData
+                switch (lang) {
+                    case "ru":
+                        translation.setTitle(listingData.getTitleRu());
+                        translation.setDescription(listingData.getDescriptionRu());
+                        break;
+                    case "fi":
+                        translation.setTitle(listingData.getTitleFi());
+                        translation.setDescription(listingData.getDescriptionFi());
+                        break;
+                    case "en":
+                        translation.setTitle(listingData.getTitleEn());
+                        translation.setDescription(listingData.getDescriptionEn());
+                        break;
+                    default:
+                        // Если будут другие языки — нужно как-то получать значения из формы,
+                        // либо игнорировать (или расширить listingData)
+                        break;
+                }
+            }
             existingListing.setPrice(listingData.getPrice());
             existingListing.setPriceType(listingData.getPriceType());
             existingListing.setCategory(listingData.getCategory());
             existingListing.setLocation(listingData.getLocation());
             existingListing.setActive(active);
-            existingListing.setCommunityRu(communityRu);
-            existingListing.setCommunityFi(communityFi);
-            existingListing.setCommunityEn(communityEn);
 
             // Удаление отмеченных изображений
             if (deletedImages != null && !deletedImages.isEmpty()) {

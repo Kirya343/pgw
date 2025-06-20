@@ -49,6 +49,7 @@ public class CatalogController {
             @AuthenticationPrincipal OAuth2User oauth2User) {
 
         // Определяем параметры сортировки
+
         Sort sort = switch (sortBy) {
             case "price" -> Sort.by("price");
             case "rating" -> Sort.by("rating").descending();
@@ -61,53 +62,15 @@ public class CatalogController {
         Page<Listing> listingsPage;
         
         listingsPage = listingService.getListingsSorted(category, sortBy, pageable, searchQuery, hasReviews, locale);
+
         // Интегрируем логику локализации описания и названия
-        for (Listing listing : listingsPage.getContent()) {
-            String title = null;
-            String description = null;
-
-            if ("fi".equals(locale.getLanguage()) && listing.getCommunityFi()) {
-                title = listing.getTitleFi();
-                description = listing.getDescriptionFi();
-            } else if ("ru".equals(locale.getLanguage()) && listing.getCommunityRu()) {
-                title = listing.getTitleRu();
-                description = listing.getDescriptionRu();
-            } else if ("en".equals(locale.getLanguage()) && listing.getCommunityEn()) {
-                title = listing.getTitleEn();
-                description = listing.getDescriptionEn();
-            }
-
-            // Если нет значения для выбранного языка, пробуем другие языки
-            if (title == null || description == null) {
-                if (title == null) {
-                    title = listing.getTitleFi() != null ? listing.getTitleFi() :
-                            listing.getTitleRu() != null ? listing.getTitleRu() :
-                                    listing.getTitleEn();
-                }
-                if (description == null) {
-                    description = listing.getDescriptionFi() != null ? listing.getDescriptionFi() :
-                            listing.getDescriptionRu() != null ? listing.getDescriptionRu() :
-                                    listing.getDescriptionEn();
-                }
-            }
-
-            // Сохраняем в транзиентные поля
-            listing.setLocalizedTitle(title);
-            listing.setLocalizedDescription(description);
-        }
+        listingService.localizeCatalogListings(listingsPage.getContent(), locale);
 
         List<Resume> resumes = new ArrayList<>();
 
         if ("find-help".equals(category)) {
             // Получаем опубликованные резюме
             resumes = resumeService.findPublishedResumes(pageable);
-        } else {
-            // Остальной код для других категорий
-            if (category!=null){
-                listingsPage = listingService.findListingsByCategoryAndCommunity(category, locale, pageable);
-            } else {
-                listingsPage = listingService.findListingsByCommunity(locale, pageable);
-            }
         }
 
         model.addAttribute("resumes", resumes);
@@ -169,39 +132,7 @@ public class CatalogController {
 
         Page<Listing> listingsPage = listingService.getListingsSorted(category, sortBy, pageable, searchQuery, hasReviews, locale);
 
-        for (Listing listing : listingsPage.getContent()) {
-            String title = null;
-            String description = null;
-
-            if ("fi".equals(locale.getLanguage()) && listing.getCommunityFi()) {
-                title = listing.getTitleFi();
-                description = listing.getDescriptionFi();
-            } else if ("ru".equals(locale.getLanguage()) && listing.getCommunityRu()) {
-                title = listing.getTitleRu();
-                description = listing.getDescriptionRu();
-            } else if ("en".equals(locale.getLanguage()) && listing.getCommunityEn()) {
-                title = listing.getTitleEn();
-                description = listing.getDescriptionEn();
-            }
-
-            // Если нет значения для выбранного языка, пробуем другие языки
-            if (title == null || description == null) {
-                if (title == null) {
-                    title = listing.getTitleFi() != null ? listing.getTitleFi() :
-                            listing.getTitleRu() != null ? listing.getTitleRu() :
-                                    listing.getTitleEn();
-                }
-                if (description == null) {
-                    description = listing.getDescriptionFi() != null ? listing.getDescriptionFi() :
-                            listing.getDescriptionRu() != null ? listing.getDescriptionRu() :
-                                    listing.getDescriptionEn();
-                }
-            }
-
-            // Сохраняем в транзиентные поля
-            listing.setLocalizedTitle(title);
-            listing.setLocalizedDescription(description);
-        }
+        listingService.localizeCatalogListings(listingsPage.getContent(), locale);
 
         model.addAttribute("listings", listingsPage);
 

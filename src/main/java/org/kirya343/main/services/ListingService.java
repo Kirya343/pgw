@@ -24,8 +24,6 @@ public interface ListingService {
     Page<Listing> findActiveByCommunity(String community, Pageable pageable);
     List<Listing> getRecentListings(int count);
     Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, Locale locale);
-    Page<Listing> findListingsByCategoryAndCommunity(String category, Locale locale, Pageable pageable);
-    Page<Listing> findListingsByCommunity(Locale locale, Pageable pageable);
 
     // Методы для работы с похожими объявлениями
     List<Listing> findSimilarListings(String category, Long excludeId, Locale locale);
@@ -35,6 +33,7 @@ public interface ListingService {
     void save(Listing listing);
     Listing saveAndReturn(Listing listing);
     void localizeListing(Listing listing, Locale locale);
+    void localizeListingIfLangPass(Listing listing, Locale locale);
 
     List<Listing> searchListings(String searchQuery);
 
@@ -42,4 +41,7 @@ public interface ListingService {
     List<Listing> localizeAccountListings(User user, Locale locale);
     List<Listing> localizeActiveAccountListings(User user, Locale locale);
     List<Listing> localizeFavoriteListings(User user, Locale locale);
+    List<Listing> localizeCatalogListings(List<Listing> listings, Locale locale);
+
+    Page<Listing> findListingsByCategoryAndCommunity(String category, Locale locale, Pageable pageable);
 }

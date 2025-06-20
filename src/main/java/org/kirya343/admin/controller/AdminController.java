@@ -26,12 +26,15 @@ public class AdminController {
     private final UserService userService;
 
     @GetMapping
-    public String index(Model model, Locale locale) {
+    public String index(Model model) {
         return "redirect:/admin/dashboard";
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model, Locale locale) {
+    public String dashboard(Model model) {
+
+        Locale locale = new Locale("ru");
+        
         // Получаем статистику сайта
         Map<String, Object> stats = statService.getSiteStats(locale);
         
@@ -39,30 +42,8 @@ public class AdminController {
         List<Listing> recentListings = listingService.getRecentListings(3);
         List<User> recentUsers = userService.getRecentUsers(3); 
 
-        // Проставляем локализованные поля по схеме: ru -> fi -> en
         for (Listing listing : recentListings) {
-            String title = null;
-            String description = null;
-
-            if (listing.getTitleRu() != null && !listing.getTitleRu().isBlank()) {
-                title = listing.getTitleRu();
-            } else if (listing.getTitleFi() != null && !listing.getTitleFi().isBlank()) {
-                title = listing.getTitleFi();
-            } else if (listing.getTitleEn() != null && !listing.getTitleEn().isBlank()) {
-                title = listing.getTitleEn();
-            }
-
-            if (listing.getDescriptionRu() != null && !listing.getDescriptionRu().isBlank()) {
-                description = listing.getDescriptionRu();
-            } else if (listing.getDescriptionFi() != null && !listing.getDescriptionFi().isBlank()) {
-                description = listing.getDescriptionFi();
-            } else if (listing.getDescriptionEn() != null && !listing.getDescriptionEn().isBlank()) {
-                description = listing.getDescriptionEn();
-            }
-
-            // Сохраняем в транзиентные поля
-            listing.setLocalizedTitle(title);
-            listing.setLocalizedDescription(description);
+            listingService.localizeListing(listing, locale);
         }
 
         // Добавляем данные в модель

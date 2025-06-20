@@ -1,11 +1,11 @@
-package org.kirya343.main.model;
+package org.kirya343.main.model.listingModels;
+
+import org.kirya343.main.model.Listing;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Entity
 public class Image {
     @Id
@@ -17,6 +17,4 @@ public class Image {
     @ManyToOne
     @JoinColumn(name = "listing_id")
     private Listing listing;
-
-    // Геттеры и сеттеры
 }

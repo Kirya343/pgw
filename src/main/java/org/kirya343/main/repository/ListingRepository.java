@@ -33,22 +33,17 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     @Query("SELECT l FROM Listing l WHERE l.active = true AND l.category = :category")
     Page<Listing> findActiveByCategory(@Param("category") String category, Pageable pageable);
     @Query("SELECT l FROM Listing l WHERE l.category = :category AND l.id != :excludeId AND l.active = true ORDER BY l.createdAt DESC")
-    List<Listing> findByCategoryAndIdNot(
-            @Param("category") String category,
-            @Param("excludeId") Long excludeId,
-            Pageable pageable);
+    List<Listing> findByCategoryAndIdNot(@Param("category") String category, @Param("excludeId") Long excludeId, Pageable pageable);
 
+    @Query("SELECT l FROM Listing l WHERE :language MEMBER OF l.communities AND l.category = :category AND l.active = true")
+                Page<Listing> findByCategoryAndLanguageAndActiveTrue(@Param("category") String category,
+                                                     @Param("language") String language,
+                                                     Pageable pageable);
 
+    @Query("SELECT l FROM Listing l JOIN l.communities c WHERE c = :language AND l.active = true ")
+    Page<Listing> findByCommunityAndActiveTrue(@Param("language") String language, Pageable pageable);
 
-    Page<Listing> findByCategoryAndCommunityRuTrueAndActiveTrue(String category, Pageable pageable);
-    Page<Listing> findByCategoryAndCommunityFiTrueAndActiveTrue(String category, Pageable pageable);
-    Page<Listing> findByCategoryAndCommunityEnTrueAndActiveTrue(String category, Pageable pageable);
-
-    Page<Listing> findByCommunityRuTrueAndActiveTrue(Pageable pageable);
-    Page<Listing> findByCommunityFiTrueAndActiveTrue(Pageable pageable);
-    Page<Listing> findByCommunityEnTrueAndActiveTrue(Pageable pageable);
-
-    // 🔥 Новый метод для оптимизированной загрузки
+    // Новый метод для оптимизированной загрузки
     @Query("SELECT DISTINCT l FROM Listing l " +
             "LEFT JOIN FETCH l.author " +
             "LEFT JOIN FETCH l.reviews " +
@@ -63,7 +58,10 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
 
     Page<Listing> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
-    @Query("SELECT l FROM Listing l WHERE " +
+    @Query("SELECT l FROM Listing l WHERE l.active = true")
+       List<Listing> searchAllFields(@Param("query") String query);
+
+    /* @Query("SELECT l FROM Listing l WHERE " +
        "(LOWER(l.titleRu) LIKE LOWER(:query) OR " +
        "LOWER(l.descriptionRu) LIKE LOWER(:query) OR " +
        "LOWER(l.titleFi) LIKE LOWER(:query) OR " +
@@ -72,5 +70,18 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
        "LOWER(l.descriptionEn) LIKE LOWER(:query) OR " +
        "LOWER(l.location) LIKE LOWER(:query)) " +
        "AND l.active = true")
-        List<Listing> searchAllFields(@Param("query") String query);
+       List<Listing> searchAllFields(@Param("query") String query); */
+
+    @Query("""
+    SELECT l FROM Listing l
+    JOIN l.communities c
+    WHERE l.category = :category
+      AND l.id <> :excludeId
+      AND c = :language
+        """)
+        List<Listing> findTop4ByCategoryAndIdNotAndCommunity(
+        @Param("category") String category,
+        @Param("excludeId") Long excludeId,
+        @Param("language") String language,
+        Pageable pageable);
 }

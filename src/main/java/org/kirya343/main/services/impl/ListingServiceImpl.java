@@ -2,12 +2,14 @@ package org.kirya343.main.services.impl;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.chat.Conversation;
+import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.ListingRepository;
 import org.kirya343.main.services.FavoriteListingService;
@@ -92,25 +94,21 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.findById(id).orElse(null);
     }
 
-    @Override
+    @Override // Переписать, он не универсальный
     public List<Listing> findSimilarListings(String category, Long excludeId, Locale locale) {
-        List<Listing> listings = listingRepository.findByCategoryAndIdNot(category, excludeId, PageRequest.of(0, 4));
-
-        // Фильтруем по локали
         String lang = locale.getLanguage();
-        return listings.stream()
-                .filter(listing -> {
-                    if ("fi".equals(lang)) {
-                        return Boolean.TRUE.equals(listing.getCommunityFi());
-                    } else if ("ru".equals(lang)) {
-                        return Boolean.TRUE.equals(listing.getCommunityRu());
-                    } else if ("en".equals(lang)) {
-                        return Boolean.TRUE.equals(listing.getCommunityEn());
-                    } else {
-                        return true; // если язык неизвестен — показываем всё
-                    }
-                })
-                .collect(Collectors.toList());
+
+        // Если язык неизвестен — не фильтруем по сообществам, берем просто по категории и id
+        if (!List.of("fi", "ru", "en").contains(lang)) {
+            return listingRepository.findByCategoryAndIdNot(category, excludeId, PageRequest.of(0, 4));
+        }
+
+        return listingRepository.findTop4ByCategoryAndIdNotAndCommunity(
+            category,
+            excludeId,
+            lang,
+            PageRequest.of(0, 4)
+        );
     }
 
     @Override
@@ -131,32 +129,17 @@ public class ListingServiceImpl implements ListingService {
 
     @Override
     public Page<Listing> findActiveByCategoryAndCommunity(String community, String category, Pageable pageable) {
-        switch (community) {
-            case "fi":
-                return listingRepository.findByCategoryAndCommunityFiTrueAndActiveTrue(category, pageable);
-            case "ru":
-                return listingRepository.findByCategoryAndCommunityRuTrueAndActiveTrue(category, pageable);
-            case "en":
-                return listingRepository.findByCategoryAndCommunityEnTrueAndActiveTrue(category, pageable);
-            default:
-                return listingRepository.findByCategoryAndActiveTrue(category, pageable); // Для всех остальных языков
-        }
+        return listingRepository.findByCategoryAndLanguageAndActiveTrue(category, community, pageable);
     }
 
     @Override
     public Page<Listing> findActiveByCommunity(String community, Pageable pageable) {
-        switch (community) {
-            case "fi":
-                return listingRepository.findByCommunityFiTrueAndActiveTrue(pageable);
-            case "ru":
-                return listingRepository.findByCommunityRuTrueAndActiveTrue(pageable);
-            case "en":
-                return listingRepository.findByCommunityEnTrueAndActiveTrue(pageable);
-            default:
-                return listingRepository.findPageByActiveTrue(pageable); // Для всех остальных языков
+        System.out.println("Finding active listings by community: " + community);
+        if (community == null || community.isBlank()) {
+            return listingRepository.findPageByActiveTrue(pageable); // Если язык не указан — просто все активные
         }
+        return listingRepository.findByCommunityAndActiveTrue(community.toLowerCase(), pageable);
     }
-
 
     @Override
     public Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, Locale locale) {
@@ -180,9 +163,11 @@ public class ListingServiceImpl implements ListingService {
 
     Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
+    String lang = locale.getLanguage();
+
     // Получаем все объявления по категории (если указана) и языковой аудитории
     Page<Listing> baseListings = (category == null || category.isEmpty()) 
-            ? findListingsByCommunity(locale, sortedPageable)
+            ? findActiveByCommunity(lang, sortedPageable)
             : (category.equals("offer-service") || category.equals("find-help") || category.equals("product"))
                 ? findListingsByCategoryAndCommunity(category, locale, sortedPageable)
                 : findListingsByCategoryAndCommunity("services", locale, sortedPageable);
@@ -193,16 +178,16 @@ public class ListingServiceImpl implements ListingService {
         if (searchQuery != null && !searchQuery.isBlank()) {
             String lowered = searchQuery.toLowerCase();
             filtered = filtered.stream()
-                    .filter(l ->
-                            (l.getTitleRu() != null && l.getTitleRu().toLowerCase().contains(lowered)) ||
-                            (l.getDescriptionRu() != null && l.getDescriptionRu().toLowerCase().contains(lowered)) ||
-                            (l.getTitleFi() != null && l.getTitleFi().toLowerCase().contains(lowered)) ||
-                            (l.getDescriptionFi() != null && l.getDescriptionFi().toLowerCase().contains(lowered)) ||
-                            (l.getTitleEn() != null && l.getTitleEn().toLowerCase().contains(lowered)) ||
-                            (l.getDescriptionEn() != null && l.getDescriptionEn().toLowerCase().contains(lowered)) ||
-                            (l.getLocation() != null && l.getLocation().toLowerCase().contains(lowered))
-                    )
-                    .collect(Collectors.toList());
+                .filter(listing -> {
+                    // Получаем перевод по locale
+                    ListingTranslation translation = listing.getTranslations().get(locale);
+
+                    return (translation != null && (
+                            (translation.getTitle() != null && translation.getTitle().toLowerCase().contains(lowered)) ||
+                            (translation.getDescription() != null && translation.getDescription().toLowerCase().contains(lowered))
+                    )) || (listing.getLocation() != null && listing.getLocation().toLowerCase().contains(lowered));
+                })
+                .collect(Collectors.toList());
         }
 
         // Фильтруем по наличию отзывов
@@ -223,28 +208,8 @@ public class ListingServiceImpl implements ListingService {
     @Override
     public Page<Listing> findListingsByCategoryAndCommunity(String category, Locale locale, Pageable pageable) {
         // В зависимости от языка выбираем нужное комьюнити
-        if ("fi".equals(locale.getLanguage())) {
-            return findActiveByCategoryAndCommunity("fi", category, pageable);
-        } else if ("ru".equals(locale.getLanguage())) {
-            return findActiveByCategoryAndCommunity("ru", category, pageable);
-        } else if ("en".equals(locale.getLanguage())) {
-            return findActiveByCategoryAndCommunity("en", category, pageable);
-        } else {
-            return findActiveByCategory(category, pageable); // для других языков
-        }
-    }
-
-    @Override
-    public Page<Listing> findListingsByCommunity(Locale locale, Pageable pageable){
-        if ("fi".equals(locale.getLanguage())) {
-            return findActiveByCommunity("fi", pageable);
-        } else if ("ru".equals(locale.getLanguage())) {
-            return findActiveByCommunity("ru", pageable);
-        } else if ("en".equals(locale.getLanguage())) {
-            return findActiveByCommunity("en", pageable);
-        } else{
-            return null;
-        }
+        String community = locale.getLanguage();
+        return findActiveByCategoryAndCommunity(community, category, pageable);
     }
 
     @Override
@@ -276,7 +241,6 @@ public class ListingServiceImpl implements ListingService {
             localizeListing(listing, locale);
         }
 
-        System.out.println("Объявлений: " + listings.size());
         return listings;
     }
 
@@ -291,46 +255,70 @@ public class ListingServiceImpl implements ListingService {
             localizeListing(listing, locale);
         }
 
-        System.out.println("Объявлений: " + listings.size());
+        return listings;
+    }
+
+    @Override
+    public List<Listing> localizeCatalogListings(List<Listing> listings, Locale locale) {
+        for (Listing listing : listings) {
+            localizeListingIfLangPass(listing, locale);
+        }
+
         return listings;
     }
 
     @Override
     public void localizeListing(Listing listing, Locale locale) {
-        String title = null;
-        String description = null;
-
         String lang = locale.getLanguage();
+        Map<String, ListingTranslation> translations = listing.getTranslations();
 
-        // 1. Основной язык
-        if ("fi".equals(lang) && listing.getCommunityFi()) {
-            title = safe(listing.getTitleFi());
-            description = safe(listing.getDescriptionFi());
-        } else if ("ru".equals(lang) && listing.getCommunityRu()) {
-            title = safe(listing.getTitleRu());
-            description = safe(listing.getDescriptionRu());
-        } else if ("en".equals(lang) && listing.getCommunityEn()) {
-            title = safe(listing.getTitleEn());
-            description = safe(listing.getDescriptionEn());
-        }
+        ListingTranslation selected = translations.get(lang);
 
-        // 2. Fallback — проверяем другие языки
-        if (isBlank(title) || isBlank(description)) {
-            if (isBlank(title)) {
-                if (!isBlank(listing.getTitleFi())) title = listing.getTitleFi();
-                else if (!isBlank(listing.getTitleRu())) title = listing.getTitleRu();
-                else if (!isBlank(listing.getTitleEn())) title = listing.getTitleEn();
-            }
-
-            if (isBlank(description)) {
-                if (!isBlank(listing.getDescriptionFi())) description = listing.getDescriptionFi();
-                else if (!isBlank(listing.getDescriptionRu())) description = listing.getDescriptionRu();
-                else if (!isBlank(listing.getDescriptionEn())) description = listing.getDescriptionEn();
+        // fallback, если нужного языка нет
+        if (selected == null || isBlank(selected.getTitle()) || isBlank(selected.getDescription())) {
+            // Приоритет: fi > ru > en
+            for (String fallbackLang : List.of("fi", "ru", "en")) {
+                selected = translations.get(fallbackLang);
+                if (selected != null && !isBlank(selected.getTitle()) && !isBlank(selected.getDescription())) {
+                    break;
+                }
             }
         }
 
-        listing.setLocalizedTitle(title);
-        listing.setLocalizedDescription(description);
+        if (selected != null) {
+            listing.setLocalizedTitle(safe(selected.getTitle()));
+            listing.setLocalizedDescription(safe(selected.getDescription()));
+        } else {
+            listing.setLocalizedTitle(null);
+            listing.setLocalizedDescription(null);
+        }
+    }
+
+    @Override
+    public void localizeListingIfLangPass(Listing listing, Locale locale) {
+        String lang = locale.getLanguage();
+        Map<String, ListingTranslation> translations = listing.getTranslations();
+
+        ListingTranslation selected = translations.get(lang);
+
+        // fallback, если нужного языка нет
+        if (selected == null || isBlank(selected.getTitle()) || isBlank(selected.getDescription())) {
+            // Приоритет: fi > ru > en
+            for (String fallbackLang : List.of("fi", "ru", "en")) {
+                selected = translations.get(fallbackLang);
+                if (selected != null && !isBlank(selected.getTitle()) && !isBlank(selected.getDescription())) {
+                    break;
+                }
+            }
+        }
+
+        if (selected != null) {
+            listing.setLocalizedTitle(safe(selected.getTitle()));
+            listing.setLocalizedDescription(safe(selected.getDescription()));
+        } else {
+            listing.setLocalizedTitle(null);
+            listing.setLocalizedDescription(null);
+        }
     }
 
     private String safe(String value) {

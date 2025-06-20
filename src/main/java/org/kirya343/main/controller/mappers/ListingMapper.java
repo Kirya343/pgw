@@ -2,6 +2,7 @@ package org.kirya343.main.controller.mappers;
 
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.DTOs.ListingDTO;
+import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -16,17 +17,10 @@ public class ListingMapper {
         }
 
         Locale locale = LocaleContextHolder.getLocale();
+        String lang = locale.getLanguage();
 
         ListingDTO dto = new ListingDTO();
         dto.setId(listing.getId());
-        dto.setTitleRu(listing.getTitleRu());
-        dto.setTitleEn(listing.getTitleEn());
-        dto.setTitleFi(listing.getTitleFi());
-        dto.setDescriptionRu(listing.getDescriptionRu());
-        dto.setDescriptionEn(listing.getDescriptionEn());
-        dto.setDescriptionFi(listing.getDescriptionFi());
-        dto.setLocalizedTitle(listing.getLocalizedTitle());
-        dto.setLocalizedDescription(listing.getLocalizedDescription());
         dto.setPrice(listing.getPrice());
         dto.setPriceType(listing.getPriceType());
         dto.setCategory(listing.getCategory());
@@ -38,42 +32,22 @@ public class ListingMapper {
         dto.setAvailableNow(listing.isAvailableNow());
         dto.setImagePath(listing.getImagePath());
 
-        String title = null;
-        String description = null;
+        // Получаем перевод из Map по ключу языка
+        ListingTranslation translation = listing.getTranslations().get(lang);
 
-        if ("fi".equals(locale.getLanguage()) && listing.getCommunityFi()) {
-            title = listing.getTitleFi();
-            description = listing.getDescriptionFi();
-        } else if ("ru".equals(locale.getLanguage()) && listing.getCommunityRu()) {
-            title = listing.getTitleRu();
-            description = listing.getDescriptionRu();
-        } else if ("en".equals(locale.getLanguage()) && listing.getCommunityEn()) {
-            title = listing.getTitleEn();
-            description = listing.getDescriptionEn();
+        // Фоллбек — если нет перевода на текущий язык, возьмём первый доступный
+        if (translation == null && !listing.getTranslations().isEmpty()) {
+            translation = listing.getTranslations().values().iterator().next();
         }
 
-        // Резервный выбор
-        if (title == null || description == null) {
-            if (title == null) {
-                title = firstNonNull(listing.getTitleFi(), listing.getTitleRu(), listing.getTitleEn());
-            }
-            if (description == null) {
-                description = firstNonNull(listing.getDescriptionFi(), listing.getDescriptionRu(), listing.getDescriptionEn());
-            }
+        if (translation != null) {
+            dto.setLocalizedTitle(translation.getTitle());
+            dto.setLocalizedDescription(translation.getDescription());
+        } else {
+            dto.setLocalizedTitle(null);
+            dto.setLocalizedDescription(null);
         }
-
-        dto.setLocalizedTitle(title);
-        dto.setLocalizedDescription(description);
 
         return dto;
-    }
-
-    private String firstNonNull(String... values) {
-        for (String value : values) {
-            if (value != null) {
-                return value;
-            }
-        }
-        return null;
     }
 }

@@ -1,6 +1,5 @@
 package org.kirya343.main.services.impl;
 
-import org.checkerframework.checker.units.qual.N;
 import org.kirya343.main.model.DTOs.NotificationDTO;
 import org.kirya343.main.model.chat.PersistentNotification;
 import org.kirya343.main.repository.NotificationRepository;
