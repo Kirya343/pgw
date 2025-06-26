@@ -8,8 +8,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 @Service
 public class StorageService {
@@ -55,8 +58,7 @@ public class StorageService {
         public Set<String> getAllowedExtensions() { return allowedExtensions; }
     }
 
-    public String storeFile(MultipartFile file, FileType fileType, Long entityId) throws IOException {
-        // Базовые проверки
+        public String storeFile(MultipartFile file, FileType fileType, Long entityId) throws IOException {
         if (file.isEmpty()) {
             throw new RuntimeException("Failed to store empty file");
         }
@@ -64,7 +66,7 @@ public class StorageService {
             throw new RuntimeException("File size exceeds size limit");
         }
 
-        // Проверка расширения файла
+        // Получаем расширение оригинального файла
         String originalFilename = file.getOriginalFilename();
         String fileExtension = originalFilename != null ?
                 originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase() : "";
@@ -73,37 +75,40 @@ public class StorageService {
             throw new RuntimeException("Only " + fileType.getAllowedExtensions() + " files are allowed");
         }
 
-        // Создаем подпапку
+        // Папка для хранения
         Path targetPath = this.rootLocation.resolve(fileType.getDirectory());
         if (!Files.exists(targetPath)) {
             Files.createDirectories(targetPath);
         }
 
-        // Формируем имя файла
-        String filename = fileType.getPrefix() + 
-                        (entityId != null ? entityId + "_" : "") + 
-                        UUID.randomUUID().toString() + fileExtension;
-        
+        // Новое имя файла — с .webp если изображение
+        String finalExtension = (fileType.getWidth() != null) ? ".webp" : fileExtension;
+        String filename = fileType.getPrefix() +
+                (entityId != null ? entityId + "_" : "") +
+                UUID.randomUUID().toString() + finalExtension;
+
         Path destinationFile = targetPath.resolve(filename).normalize();
 
         if (!destinationFile.getParent().equals(targetPath)) {
             throw new RuntimeException("Cannot store file outside the target directory");
         }
 
-        // Обработка файла
-        if (fileType.getWidth() != null) { // Это изображение
+        // Обработка
+        if (fileType.getWidth() != null) {
             try (var inputStream = file.getInputStream()) {
                 Thumbnails.of(inputStream)
                         .size(fileType.getWidth(), fileType.getHeight())
                         .outputQuality(fileType.getQuality())
+                        .outputFormat("webp")
                         .toFile(destinationFile.toFile());
             }
-        } else { // Не изображение (например, PDF)
+        } else {
             Files.copy(file.getInputStream(), destinationFile);
         }
 
         return "/" + fileType.getDirectory() + "/" + filename;
     }
+
 
     public String storeListingImage(MultipartFile file, Long listingId) throws IOException {
         return storeFile(file, FileType.LISTING_IMAGE, listingId);
@@ -129,5 +134,56 @@ public class StorageService {
     public void deleteImage(String filename) throws IOException {
         Path filePath = rootLocation.resolve(filename).normalize();
         Files.deleteIfExists(filePath);
+    }
+
+    public void convertAllImagesToWebp() throws IOException {
+        System.out.println("ImageIO writer formats: " + Arrays.toString(ImageIO.getWriterFormatNames()));
+        System.out.println("ImageIO reader formats: " + Arrays.toString(ImageIO.getReaderFormatNames()));
+        Path oldRoot = this.rootLocation;
+        Path newRoot = Paths.get("uploads_new").toAbsolutePath().normalize();
+        Files.createDirectories(newRoot);
+
+        for (FileType fileType : FileType.values()) {
+            if (fileType.getWidth() == null) continue;
+
+            Path oldDir = oldRoot.resolve(fileType.getDirectory());
+            Path newDir = newRoot.resolve(fileType.getDirectory());
+
+            if (!Files.exists(oldDir)) continue;
+            Files.createDirectories(newDir);
+
+            Files.walk(oldDir)
+                .filter(path -> !Files.isDirectory(path))
+                .filter(path -> {
+                    String ext = getExtension(path.getFileName().toString());
+                    return fileType.getAllowedExtensions().contains(ext.toLowerCase());
+                })
+                .forEach(path -> {
+                    try {
+                        String baseName = getBaseName(path.getFileName().toString());
+                        Path output = newDir.resolve(baseName + ".webp");
+
+                        Thumbnails.of(path.toFile())
+                            .size(fileType.getWidth(), fileType.getHeight())
+                            .outputQuality(fileType.getQuality())
+                            .outputFormat("webp")  // формат должен поддерживаться ImageIO
+                            .toFile(output.toFile());
+
+                        System.out.println("✔ Converted: " + path + " → " + output);
+                    } catch (IOException e) {
+                        System.err.println("✖ Failed to convert: " + path + " (" + e.getMessage() + ")");
+                    }
+                });
+        }
+    }
+
+    private String getExtension(String filename) {
+        int lastDot = filename.lastIndexOf(".");
+        return lastDot != -1 ? filename.substring(lastDot).toLowerCase() : "";
+    }
+
+    private String getBaseName(String filename) {
+        int lastDot = filename.lastIndexOf(".");
+        return lastDot != -1 ? filename.substring(0, lastDot) : filename;
     }
 }

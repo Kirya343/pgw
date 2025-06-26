@@ -277,7 +277,7 @@ public class ListingServiceImpl implements ListingService {
         // fallback, если нужного языка нет
         if (selected == null || isBlank(selected.getTitle()) || isBlank(selected.getDescription())) {
             // Приоритет: fi > ru > en
-            for (String fallbackLang : List.of("fi", "ru", "en")) {
+            for (String fallbackLang : List.of("fi", "ru", "en", "it")) {
                 selected = translations.get(fallbackLang);
                 if (selected != null && !isBlank(selected.getTitle()) && !isBlank(selected.getDescription())) {
                     break;
