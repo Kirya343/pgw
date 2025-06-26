@@ -11,7 +11,6 @@ function updateFileNames() {
 }
 
 // Обработка загрузки новых изображений
-// Обработка загрузки новых изображений
 function handleImageUpload(input) {
     if (input.files && input.files.length > 0) {
         Array.from(input.files).forEach(file => {
