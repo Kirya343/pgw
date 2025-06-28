@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.DTOs.ListingDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -27,6 +28,8 @@ public interface ListingService {
 
     // Методы для работы с похожими объявлениями
     List<Listing> findSimilarListings(String category, Long excludeId, Locale locale);
+
+    ListingDTO getListingDtoById(Long id);
 
     // Методы для работы с объявлениями
     void deleteListing(Long id);

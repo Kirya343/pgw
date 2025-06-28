@@ -7,11 +7,12 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
+import java.util.Map;
 
 @Component
 public class ListingMapper {
 
-    public ListingDTO convertToDTO(Listing listing) {
+    public ListingDTO convertToDTO(Listing listing, Map<String, ListingTranslation> translations) {
         if (listing == null) {
             return null;
         }
@@ -32,7 +33,7 @@ public class ListingMapper {
         dto.setImagePath(listing.getImagePath());
 
         // Получаем перевод из Map по ключу языка
-        ListingTranslation translation = listing.getTranslations().get(lang);
+        ListingTranslation translation = translations.get(lang);
 
         // Фоллбек — если нет перевода на текущий язык, возьмём первый доступный
         if (translation == null && !listing.getTranslations().isEmpty()) {

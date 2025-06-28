@@ -1,6 +1,5 @@
 package org.kirya343.main.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -9,7 +8,6 @@ import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Resume;
 import org.kirya343.main.services.ListingService;
 import org.kirya343.main.services.ResumeService;
-import org.kirya343.main.services.StorageService;
 import org.kirya343.main.services.components.AuthService;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -36,7 +34,6 @@ public class CatalogController {
     private final ResumeService resumeService;
     private final AuthService authService;
     private final MessageSource messageSource;
-    private final StorageService storageService;
 
     @GetMapping
     public String showCatalog(
@@ -128,10 +125,12 @@ public class CatalogController {
         System.out.println("SortBy: " + sortBy);
         System.out.println("Page: " + page);
         System.out.println("Locale: " + locale);
+        System.out.println("SearchQuery: " + searchQuery);
 
         Pageable pageable = PageRequest.of(page, 12);
 
         Page<Listing> listingsPage = listingService.getListingsSorted(category, sortBy, pageable, searchQuery, hasReviews, locale);
+        System.out.println("Found listings: " + listingsPage.getTotalElements());
 
         listingService.localizeCatalogListings(listingsPage.getContent(), locale);
 

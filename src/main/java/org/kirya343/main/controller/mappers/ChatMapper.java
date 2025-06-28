@@ -3,9 +3,11 @@ package org.kirya343.main.controller.mappers;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.DTOs.ConversationDTO;
+import org.kirya343.main.model.DTOs.ListingDTO;
 import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.services.chat.ChatService;
+import org.kirya343.main.services.ListingService;
 import org.kirya343.main.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -23,7 +25,7 @@ public class ChatMapper {
     private AvatarService avatarService;
 
     @Autowired
-    private ListingMapper listingMapper;
+    private ListingService listingService;
 
     @Autowired
     @Lazy
@@ -41,7 +43,9 @@ public class ChatMapper {
 
         // Проверка на наличие привязанного объявления
         if (conversation.getListing() != null) {
-            dto.setListing(listingMapper.convertToDTO(conversation.getListing()));
+            Long listingId = conversation.getListing().getId();
+            ListingDTO listingDto = listingService.getListingDtoById(listingId);
+            dto.setListing(listingDto);
         } else {
             dto.setListing(null);
         }
