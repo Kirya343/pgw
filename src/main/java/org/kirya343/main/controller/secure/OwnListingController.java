@@ -152,7 +152,8 @@ public class OwnListingController {
             @PathVariable Long id,
             Model model,
             @AuthenticationPrincipal OAuth2User oauth2User,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            Locale locale
     ) {
         try {
             // Проверка, что текущий пользователь - автор объявления
@@ -165,9 +166,9 @@ public class OwnListingController {
             }
 
             Map<String, String> categories = Map.of(
-                    "services", "Услуга",
-                    "offer-service", "Запрос на услугу",
-                    "product", "Товар"
+                "services", messageSource.getMessage("category.service", null, locale),
+                "offer-service", messageSource.getMessage("category.offer-service", null, locale),
+                "product", messageSource.getMessage("category.product", null, locale)
             );
 
             List<Location> locations = locationRepository.findAllByOrderByNameAsc();

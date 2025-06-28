@@ -88,12 +88,15 @@
                     <label th:text="#{resume.languages}">Знание языков</label>
                     <div id="language-container">
                         <div class="language-item" th:each="entry, stat : ${resume.languages}">
-                            <select name="languages[]" class="form-control" style="margin-bottom: 10px;">
+                            <select name="languages[]" class="form-control">
                                 <option value="russian" th:selected="${entry.key == 'russian'}" th:text="#{language.russian}">Русский</option>
                                 <option value="finnish" th:selected="${entry.key == 'finnish'}" th:text="#{language.finnish}">Финский</option>
                                 <option value="english" th:selected="${entry.key == 'english'}" th:text="#{language.english}">Английский</option>
                                 <option value="german" th:selected="${entry.key == 'german'}" th:text="#{language.german}">Немецкий</option>
                                 <option value="french" th:selected="${entry.key == 'french'}" th:text="#{language.french}">Французский</option>
+                                <option value="french" th:selected="${entry.key == 'french'}" th:text="#{language.italian}">Итальянский</option>
+                                <option value="french" th:selected="${entry.key == 'french'}" th:text="#{language.spanish}">Испанский</option>
+                                <option value="french" th:selected="${entry.key == 'french'}" th:text="#{language.chinese}">Китайский</option>
                             </select>
                             <select name="languageLevels[]" class="form-control">
                                 <option value="beginner" th:selected="${entry.value == 'beginner'}" th:text="#{language.level.beginner}">Начальный</option>
@@ -186,12 +189,16 @@
                     <div id="language-container-create">
                         <!-- Начальный блок языка -->
                         <div class="language-item">
-                            <select name="languages[]" class="form-control" style="margin-bottom: 10px;">
-                                <option value="russian" th:text="#{language.russian}">Русский</option>
-                                <option value="finnish" th:text="#{language.finnish}">Финский</option>
-                                <option value="english" th:text="#{language.english}">Английский</option>
-                                <option value="german" th:text="#{language.german}">Немецкий</option>
-                                <option value="french" th:text="#{language.french}">Французский</option>
+                            <select th:field="*{resume.education}" class="form-control" required>
+                                <option value="" disabled th:text="#{resume.education.select}">Выберите уровень образования</option>
+                                <option value="secondary" th:text="#{education.secondary}">Среднее</option>
+                                <option value="special_secondary" th:text="#{education.special_secondary}">Среднее специальное</option>
+                                <option value="incomplete_higher" th:text="#{education.incomplete_higher}">Неоконченное высшее</option>
+                                <option value="higher" th:text="#{education.higher}">Высшее</option>
+                                <option value="bachelor" th:text="#{education.bachelor}">Бакалавр</option>
+                                <option value="master" th:text="#{education.master}">Магистр</option>
+                                <option value="phd" th:text="#{education.phd}">Кандидат наук</option>
+                                <option value="doctor" th:text="#{education.doctor}">Доктор наук</option>
                             </select>
                             <select name="languageLevels[]" class="form-control">
                                 <option value="beginner" th:text="#{language.level.beginner}">Начальный</option>
@@ -229,6 +236,7 @@
         </main>
     </div>
 </div>
+
 <!-- Футер и скрипты как в предыдущих шаблонах -->
 <script>
     function showForm() {
@@ -238,26 +246,9 @@
 
     function addLanguageField(containerId = 'language-container') {
         const container = document.getElementById(containerId);
-        const newItem = document.createElement('div');
-        newItem.className = 'language-item';
-        newItem.innerHTML = `
-        <select name="languages[]" class="form-control" style="margin-bottom: 10px;">
-            <option value="russian">Русский</option>
-            <option value="finnish">Финский</option>
-            <option value="english">Английский</option>
-            <option value="german">Немецкий</option>
-            <option value="french">Французский</option>
-        </select>
-        <select name="languageLevels[]" class="form-control">
-            <option value="beginner">Начальный</option>
-            <option value="intermediate">Средний</option>
-            <option value="advanced">Продвинутый</option>
-            <option value="fluent">Свободный</option>
-            <option value="native">Родной</option>
-        </select>
-        <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.parentNode.remove()">Удалить</button>
-    `;
-        container.appendChild(newItem);
+        const template = document.querySelector('#language-container .language-item');
+        const clone = template.cloneNode(true);
+        container.appendChild(clone);
     }
 </script>
 <!-- Файл импортов для защищённых страниц -->

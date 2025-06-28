@@ -98,9 +98,9 @@ public class CatalogController {
             new CategoryTab("offer-service", messageSource.getMessage("category.offer-service", null, locale), 
                 "offer-service".equals(category)),  // Безопасное сравнение
             new CategoryTab("product", messageSource.getMessage("category.product", null, locale), 
-                "product".equals(category)),  // Безопасное сравнение
-            new CategoryTab("find-help", messageSource.getMessage("category.helper", null, locale), 
-                "find-help".equals(category))  // Безопасное сравнение
+                "product".equals(category))  // Безопасное сравнение
+            /* new CategoryTab("find-help", messageSource.getMessage("category.helper", null, locale), 
+                "find-help".equals(category))  // Безопасное сравнение */
         );
 
         model.addAttribute("categories", categories);

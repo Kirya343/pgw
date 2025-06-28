@@ -42,7 +42,7 @@
             <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
 
             <!-- Для неавторизованных пользователей -->
-            <a href="/login" class="btn btn-outline-primary account-link" th:unless="${isAuthenticated}">
+            <a href="/login" style="display: flex; flex-direction: row" class="btn btn-outline-primary account-link" th:unless="${isAuthenticated}">
                 <img src="/images/google.png" class="logo">
                 <span th:text="#{header.login}">Войти через Google</span>
             </a>

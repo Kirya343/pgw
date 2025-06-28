@@ -80,7 +80,6 @@
 .sorting-sidebar {
     margin-top: 20px;
     width: var(--sidebar-width);
-    position: sticky;
     top: calc(var(--header-height) + 60px);
     align-self: flex-start;
     background: var(--white);

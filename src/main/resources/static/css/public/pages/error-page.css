@@ -1,13 +1,5 @@
 @import url(terms-page.css);
 
-body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-.container {
-    flex: 1;
-}
 .error-container {
     margin-top: 20%;
     text-align: center;

@@ -155,6 +155,7 @@ header {
 
 .account-link {
     display: flex;
+    flex-direction: row;
     margin: 0 auto;
     align-items: center;
     text-decoration: none;

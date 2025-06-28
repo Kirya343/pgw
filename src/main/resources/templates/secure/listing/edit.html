@@ -48,13 +48,13 @@
                 <!-- Основная информация -->
                 <!-- Аудитория -->
                 <div class="form-group">
-                    <button id="addLangBtn" class="btn btn-primary" type="button">Добавить язык</button>
+                    <button id="addLangBtn" class="btn btn-primary" type="button" th:text="#{listing.editing.language.add}">Добавить язык</button>
         
                     <div id="languageIndicators" style="margin-top: 15px; display:flex; gap: 20px;"></div>
 
                     <div id="languageSelectorContainer" style="display:none; margin-top:10px;">
                         <select id="languageSelect">
-                            <option value="" disabled selected>Выберите язык</option>
+                            <option value="" disabled selected th:text="#{listing.editing.language.select}">Выберите язык</option>
                             <option value="ru">Русский</option>
                             <option value="fi">Suomi</option>
                             <option value="en">English</option>
@@ -63,10 +63,18 @@
 
                         <div id="languageFields" class="languageFields">
                             <br>
-                            <label class="languageFields-item">Название (<span id="langLabel"></span>):</label>
+                            <span th:text="#{listing.editing.title}"></span>
+                                <span>(</span>
+                                <span id="langLabel"></span>
+                                <span>):</span>
                             <input class="languageFields-item" type="text" id="titleInput" name="titles" /><br>
 
-                            <label class="languageFields-item" >Описание (<span id="langLabelDesc"></span>):</label>
+                            <label class="languageFields-item">
+                                <span th:text="#{listing.editing.description}"></span>
+                                <span>(</span>
+                                <span id="langLabelDesc"></span>
+                                <span>):</span>
+                            </label>
                             <textarea class="languageFields-item" id="descriptionInput" name="descriptions" rows="4"></textarea><br>
 
                             <button id="okBtn" class="btn btn-outline-primary" type="button">ОК</button>
