@@ -1,4 +1,4 @@
-package org.kirya343.main.model;
+package org.kirya343.main.model.listingModels;
 
 import jakarta.persistence.*;
 import lombok.Data;

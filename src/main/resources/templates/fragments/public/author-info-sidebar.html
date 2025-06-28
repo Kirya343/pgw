@@ -1,5 +1,5 @@
 <aside class="listing-sidebar" th:fragment="authorInfoSidebar">
-    <div class="seller-card" th:if="${listing.author != null}" style="cursor: pointer;" th:onclick="window.location.href = '/profile/' + [[${listing.author.id}]]">
+    <div class="seller-card hover-animation-card" th:if="${listing.author != null}" style="cursor: pointer;" th:onclick="window.location.href = '/profile/' + [[${listing.author.id}]]">
         <div class="seller-avatar">
             <img th:src="@{${listing.author.avatarUrl}}"
                     th:onerror="this.src='/images/avatar-placeholder.png'"
@@ -57,7 +57,7 @@
 </aside>
 
 <aside class="resume-sidebar" th:fragment="authorInfoSidebarResume">
-    <div class="seller-card" style="cursor: pointer;" th:onclick="window.location.href = '/profile/' + [[${resume.user.id}]]">
+    <div class="seller-card hover-animation-card" style="cursor: pointer;" th:onclick="window.location.href = '/profile/' + [[${resume.user.id}]]">
         <div class="seller-avatar">
             <img th:src="@{${sellerAvatarPath}}"
                     th:onerror="this.src='/images/avatar-placeholder.png'"
@@ -162,19 +162,17 @@
             <span th:if="${!(profileUser.phoneVisible and profileUser.phone != null) and !(profileUser.emailVisible and profileUser.email != null)}" th:text="#{no.contacts}"></span>
         </div>
     </div>
-
-    <div class="resume-card" th:if="${resume} != null">
-        <a th:href="@{'/resume/' + ${resume.id}}" class="resume-card-link">
-            <img th:src="@{${profileUser.avatarUrl}}"
-                    class="resume-avatar"
-                    alt="Аватар"
-                    th:onerror="this.src='/images/avatar-placeholder.png'">
-            <div class="resume-info">
-                <h3 th:text="${resume.profession}">Специальность</h3>
-                <div class="resume-meta">
-                    <span class="resume-education" th:text="#{'education.' + ${resume.education}}">Образование</span>
-                </div>
+    
+    <div class="resume-card hover-animation-card" th:if="${resume} != null" th:onclick="window.location.href = '/resume/' + [[${resume.id}]]">
+        <img th:src="@{${profileUser.avatarUrl}}"
+                class="resume-avatar"
+                alt="Аватар"
+                th:onerror="this.src='/images/avatar-placeholder.png'">
+        <div class="resume-info">
+            <h3 th:text="${resume.profession}">Специальность</h3>
+            <div class="resume-meta">
+                <span class="resume-education" th:text="#{'education.' + ${resume.education}}">Образование</span>
             </div>
-        </a>
+        </div>
     </div>
 </aside>

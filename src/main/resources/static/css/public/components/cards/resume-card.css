@@ -11,6 +11,8 @@
     padding: 15px;
     background: var(--white);
     transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: row;
 }
 
 .resume-card:hover {

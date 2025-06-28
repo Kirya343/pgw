@@ -1,9 +1,9 @@
 package org.kirya343.main.controller.mappers;
 
 import org.kirya343.main.model.User;
-import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.DTOs.ConversationDTO;
 import org.kirya343.main.model.DTOs.ListingDTO;
+import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.services.chat.ChatService;

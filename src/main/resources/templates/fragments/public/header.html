@@ -7,6 +7,16 @@
         <div class="navbar-collapse">
 
             <div class="sorting-sidebar-top" th:if="${activePage == 'catalog'}" th:unless="${category == 'find-help'}">
+                <form id="searchForm" method="get" action="/catalog">
+                    <div class="input-group">
+                        <input type="text" class="search-input" name="searchQuery" th:value="${searchQuery}"placeholder="Поиск...">
+                        <input type="hidden" name="category" th:value="${category}">
+                        <input type="hidden" name="sortBy" th:value="${sortBy}">
+                        <button class="btn btn-search" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </form>
                 <h5 th:text="#{catalog.sorting.title}">Сортировка</h5>
                 <div class="list-group list-group-flush">
                     <a th:href="@{/catalog(category=${category}, sortBy='date')}"

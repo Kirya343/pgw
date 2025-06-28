@@ -34,15 +34,11 @@
             <div th:unless="${category == 'find-help'}" class="sorting-sidebar">
                 <h5 th:text="#{catalog.search.title}">Поиск</h5>
                 <form id="searchForm" method="get" action="/catalog">
-                    <div class="input-group mb-3">
-                        <input type="text" 
-                            class="form-control" 
-                            name="searchQuery" 
-                            th:value="${searchQuery}"
-                            placeholder="Поиск...">
+                    <div class="input-group">
+                        <input type="text" class="search-input" name="searchQuery" th:value="${searchQuery}"placeholder="Поиск...">
                         <input type="hidden" name="category" th:value="${category}">
                         <input type="hidden" name="sortBy" th:value="${sortBy}">
-                        <button class="btn btn-outline-secondary" type="submit">
+                        <button class="btn btn-search" type="submit">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>

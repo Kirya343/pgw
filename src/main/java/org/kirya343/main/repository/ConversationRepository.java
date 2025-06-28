@@ -1,8 +1,8 @@
 package org.kirya343.main.repository;
 
-import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.chat.Conversation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

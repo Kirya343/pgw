@@ -94,3 +94,12 @@
 .btn-google:hover {
     background-color: #357ae8;
 }
+
+.btn-search {
+    border-radius: 0 var(--radius) var(--radius) 0;
+    border-left: none;
+    background-color: var(--primary);
+    color: var(--white);
+    max-width: 80px;
+    margin-bottom: 0;
+}

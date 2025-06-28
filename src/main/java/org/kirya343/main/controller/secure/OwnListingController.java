@@ -2,8 +2,8 @@ package org.kirya343.main.controller.secure;
 
 import org.kirya343.main.model.listingModels.Image;
 import org.kirya343.main.model.listingModels.ListingTranslation;
+import org.kirya343.main.model.listingModels.Location;
 import org.kirya343.main.model.Listing;
-import org.kirya343.main.model.Location;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.DTOs.ListingForm;
 import org.kirya343.main.model.DTOs.TranslationDTO;
@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.kirya343.main.repository.ImageRepository;
 
@@ -118,7 +119,7 @@ public class OwnListingController {
                         imageEntity.setPath(imagePath);
                         imageRepository.save(imageEntity);
 
-                        if (image.getOriginalFilename().equals(imagePathParam)) {
+                        if (Objects.equals(image.getOriginalFilename(), imagePathParam)) {
                             savedListing.setImagePath(imagePath);
                         }
                     }
@@ -126,9 +127,11 @@ public class OwnListingController {
             }
 
             // Обновление основного изображения (если выбрано существующее)
-            if (imagePathParam != null && !imagePathParam.isEmpty() && 
-                (uploadedImages == null || !Arrays.stream(uploadedImages)
-                    .anyMatch(file -> file.getOriginalFilename().equals(imagePathParam)))) {
+            if (imagePathParam != null && !imagePathParam.isEmpty() &&
+                    (uploadedImages == null || Arrays.stream(uploadedImages)
+                        .map(MultipartFile::getOriginalFilename)
+                        .filter(Objects::nonNull)
+                        .noneMatch(name -> name.equals(imagePathParam)))) {
                 savedListing.setImagePath(imagePathParam);
             }
 
@@ -292,7 +295,7 @@ public class OwnListingController {
                         imageEntity.setPath(imagePath);
                         imageRepository.save(imageEntity);
 
-                        if (image.getOriginalFilename().equals(imagePathParam)) {
+                        if (Objects.equals(image.getOriginalFilename(), imagePathParam)) {
                             savedListing.setImagePath(imagePath);
                         }
                     }
@@ -300,9 +303,11 @@ public class OwnListingController {
             }
 
             // Обновление основного изображения (если выбрано существующее)
-            if (imagePathParam != null && !imagePathParam.isEmpty() && 
-                (uploadedImages == null || !Arrays.stream(uploadedImages)
-                    .anyMatch(file -> file.getOriginalFilename().equals(imagePathParam)))) {
+            if (imagePathParam != null && !imagePathParam.isEmpty() &&
+                    (uploadedImages == null || Arrays.stream(uploadedImages)
+                        .map(MultipartFile::getOriginalFilename)
+                        .filter(Objects::nonNull)
+                        .noneMatch(name -> name.equals(imagePathParam)))) {
                 savedListing.setImagePath(imagePathParam);
             }
 

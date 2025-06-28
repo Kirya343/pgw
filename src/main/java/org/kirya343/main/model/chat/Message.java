@@ -3,9 +3,10 @@ package org.kirya343.main.model.chat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.kirya343.main.model.User;
 
 import java.time.LocalDateTime;
+
+import org.kirya343.main.model.User;
 
 @Setter
 @Getter
