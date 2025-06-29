@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.kirya343.main.controller.mappers.ListingMapper;
+import org.kirya343.main.model.DTOs.ListingDTO;
 import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
-import org.kirya343.main.model.DTOs.ListingDTO;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.kirya343.main.repository.ConversationRepository;
@@ -173,7 +173,7 @@ public class ListingServiceImpl implements ListingService {
     Page<Listing> baseListings;
     if (category == null || category.isEmpty() || category.equalsIgnoreCase("all")) {
         baseListings = findActiveByCommunity(lang, sortedPageable);
-    } else if (category.equals("offer-service") || category.equals("find-help") || category.equals("product")) {
+    } else if (category.equals("offer-service") || category.equals("services") || category.equals("product")) {
         baseListings = findListingsByCategoryAndCommunity(category, locale, sortedPageable);
     } else {
         baseListings = findListingsByCategoryAndCommunity(null, locale, sortedPageable);
