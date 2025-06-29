@@ -20,7 +20,7 @@
                 </div>
             </div>
             <span class="partner-sign" th:if="${listing.author.role.name() == 'BUSINESS'}" th:text="#{partner}"></span>
-            <span class="listing-location" th:text="${listing.location ?: 'Finland'}">Локация</span>
+            <span class="listing-location" th:text="${listing.location.name}">Локация</span>
         </div>
     </div>
 </article>
@@ -101,7 +101,7 @@
                     </th:block>
                 </div>
             </div>
-            <span class="location" th:text="${similarListing.location ?: 'Хельсинки'}">Локация</span>
+            <span class="location" th:text="${similarListing.location.name}">Локация</span>
         </div>
     </div>
 </article>
