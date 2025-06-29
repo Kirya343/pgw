@@ -97,7 +97,7 @@
 
                 <div class="form-group">
                     <label for="location" th:text="#{listing.editing.location}">Местоположение</label>
-                    <select id="location" name="location" class="form-control" required>
+                    <select id="location" name="locationName" class="form-control" required>
                         <option value="" disabled selected th:text="#{listing.editing.location.select}">Выберите местоположение</option>
                         <option th:each="loc : ${locations}"
                                 th:value="${loc.name}"

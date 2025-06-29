@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.kirya343.main.repository.ImageRepository;
 
@@ -71,17 +72,22 @@ public class OwnListingController {
             @RequestParam(value = "uploadedImages", required = false) MultipartFile[] uploadedImages,
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
             @ModelAttribute ListingForm form,
+            @RequestParam String locationName,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
         try {
             String email = oauth2User.getAttribute("email");
             User currentUser = userService.findByEmail(email);
-
+            Location location = locationRepository.findByName(locationName)
+                   .orElseThrow(() -> new IllegalArgumentException("Location not found: " + locationName));
+            listing.setLocation(location);
             listing.setAuthor(currentUser);
             listing.setCreatedAt(LocalDateTime.now());
             listing.setViews(0);
             listing.setRating(0.0);
+
+            System.out.println("Базовые параметры сохранены");
 
             Map<String, TranslationDTO> translationDTOs = form.getTranslations();
             Map<String, ListingTranslation> listingTranslations = new HashMap<>();
@@ -210,6 +216,7 @@ public class OwnListingController {
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
             @RequestParam(value = "active", defaultValue = "false") boolean active,
             @RequestParam(value = "testMode", defaultValue = "false") boolean testMode,
+            @RequestParam String locationName,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
@@ -222,6 +229,10 @@ public class OwnListingController {
                 redirectAttributes.addFlashAttribute("error", "Вы не можете редактировать это объявление");
                 return "redirect:/secure/account";
             }
+
+            Location location = locationRepository.findByName(locationName)
+                   .orElseThrow(() -> new IllegalArgumentException("Location not found: " + locationName));
+            existingListing.setLocation(location);
 
             // Получаем новые переводы из формы
             Map<String, TranslationDTO> translationDTOs = form.getTranslations();

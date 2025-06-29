@@ -123,7 +123,7 @@
 
                 <div class="form-group">
                     <label for="location" th:text="#{listing.editing.location}">Местоположение</label>
-                    <select id="location" name="location" required>
+                    <select id="location" name="locationName" required>
                         <option value="" disabled th:text="#{listing.editing.location.select}">Выберите местоположение</option>
                         <option th:each="loc : ${locations}"
                                 th:value="${loc.name}"
