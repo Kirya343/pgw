@@ -1,15 +1,16 @@
 package org.kirya343.main.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.kirya343.main.controller.mappers.ListingMapper;
+import org.kirya343.main.model.DTOs.ListingDTO;
 import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
-import org.kirya343.main.model.DTOs.ListingDTO;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.kirya343.main.repository.ConversationRepository;
@@ -103,7 +104,7 @@ public class ListingServiceImpl implements ListingService {
         String lang = locale.getLanguage();
 
         // Если язык неизвестен — не фильтруем по сообществам, берем просто по категории и id
-        if (!List.of("fi", "ru", "en").contains(lang)) {
+        if (!List.of("fi", "ru", "en", "it").contains(lang)) {
             return listingRepository.findByCategoryAndIdNot(category, excludeId, PageRequest.of(0, 4));
         }
 
@@ -145,39 +146,64 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.findByCommunityAndActiveTrue(community.toLowerCase(), pageable);
     }
 
-    @Override
+@Override
     public Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, Locale locale) {
-    Sort sort;
+        Sort sort;
 
-    switch (sortBy) {
-        case "price":
-            sort = Sort.by(Sort.Direction.ASC, "price");
-            break;
-        case "rating":
-            sort = Sort.by(Sort.Direction.DESC, "rating");
-            break;
-        case "popularity":
-            sort = Sort.by(Sort.Direction.DESC, "views");
-            break;
-        case "date":
-        default:
-            sort = Sort.by(Sort.Direction.DESC, "createdAt");
-            break;
-    }
+        switch (sortBy) {
+            case "price":
+                sort = Sort.by(Sort.Direction.ASC, "price");
+                break;
+            case "rating":
+                sort = Sort.by(Sort.Direction.DESC, "rating");
+                break;
+            case "popularity":
+                sort = Sort.by(Sort.Direction.DESC, "views");
+                break;
+            case "date":
+            default:
+                sort = Sort.by(Sort.Direction.DESC, "createdAt");
+                break;
+        }
 
-    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-    String lang = locale.getLanguage();
+        String lang = locale.getLanguage();
 
-    // Получаем все объявления по категории (если указана) и языковой аудитории
-    Page<Listing> baseListings;
-    if (category == null || category.isEmpty() || category.equalsIgnoreCase("all")) {
-        baseListings = findActiveByCommunity(lang, sortedPageable);
-    } else if (category.equals("offer-service") || category.equals("find-help") || category.equals("product")) {
-        baseListings = findListingsByCategoryAndCommunity(category, locale, sortedPageable);
-    } else {
-        baseListings = findListingsByCategoryAndCommunity(null, locale, sortedPageable);
-    }
+        // Получаем все объявления по категории (если указана) и языковой аудитории
+        Page<Listing> baseListings;
+        if (category == null || category.isEmpty() || category.equalsIgnoreCase("all")) {
+            baseListings = findActiveByCommunity(lang, sortedPageable);
+        } else if (category.equals("services") || category.equals("all-services")) {
+            // Для категории "services" и "all-services" показываем все услуги
+            baseListings = findListingsByCategoryAndCommunity("offer-service", locale, sortedPageable);
+            // Добавляем запросы услуг к результатам
+            Page<Listing> requestServices = findListingsByCategoryAndCommunity("find-service", locale, sortedPageable);
+            List<Listing> combined = new ArrayList<>();
+            combined.addAll(baseListings.getContent());
+            combined.addAll(requestServices.getContent());
+            // Сортируем объединенный список согласно выбранной сортировке
+            combined.sort((l1, l2) -> {
+                switch (sortBy) {
+                    case "price":
+                        return Double.compare(l1.getPrice(), l2.getPrice());
+                    case "rating":
+                        return Double.compare(l2.getRating(), l1.getRating());
+                    case "popularity":
+                        return Integer.compare(l2.getViews(), l1.getViews());
+                    default: // "date" или любой другой случай
+                        return l2.getCreatedAt().compareTo(l1.getCreatedAt());
+                }
+            });
+            // Возвращаем постранично
+            int start = (int) sortedPageable.getOffset();
+            int end = Math.min(start + sortedPageable.getPageSize(), combined.size());
+            List<Listing> pageContent = (start <= end) ? combined.subList(start, end) : List.of();
+            baseListings = new PageImpl<>(pageContent, sortedPageable, combined.size());
+        } else {
+            // Для конкретных категорий ("offer-service", "request-service", "product")
+            baseListings = findListingsByCategoryAndCommunity(category, locale, sortedPageable);
+        }
 
         // Фильтруем по поиску
         List<Listing> filtered = baseListings.getContent();

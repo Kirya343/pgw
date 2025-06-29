@@ -56,12 +56,7 @@ public class CatalogController {
         };
         Pageable pageable = PageRequest.of(page, 12, sort);
 
-        // Получаем объявления по категории и языку
-        Page<Listing> listingsPage;
-        
-        listingsPage = listingService.getListingsSorted(category, sortBy, pageable, searchQuery, hasReviews, locale);
-
-        // Интегрируем логику локализации описания и названия
+        Page<Listing> listingsPage = listingService.getListingsSorted(category, sortBy, pageable, searchQuery, hasReviews, locale);
         listingService.localizeCatalogListings(listingsPage.getContent(), locale);
 
         List<Resume> resumes = new ArrayList<>();
@@ -94,16 +89,13 @@ public class CatalogController {
 
         List<CategoryTab> categories = List.of(
             new CategoryTab("services", messageSource.getMessage("category.service", null, locale), 
-                "services".equals(category)),  // Безопасное сравнение
-            new CategoryTab("offer-service", messageSource.getMessage("category.offer-service", null, locale), 
-                "offer-service".equals(category)),  // Безопасное сравнение
+                "services".equals(category) || "offer-service".equals(category) || "find-service".equals(category)),
             new CategoryTab("product", messageSource.getMessage("category.product", null, locale), 
-                "product".equals(category))  // Безопасное сравнение
-            /* new CategoryTab("find-help", messageSource.getMessage("category.helper", null, locale), 
-                "find-help".equals(category))  // Безопасное сравнение */
+                "product".equals(category))
         );
 
         model.addAttribute("categories", categories);
+        model.addAttribute("category", category); // важно сохранить исходное значение category
 
         return "catalog";
     }

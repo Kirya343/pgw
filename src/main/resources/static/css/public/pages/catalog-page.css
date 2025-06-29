@@ -374,3 +374,70 @@
         display: none;
     }
 }
+
+/* Основные стили выпадающего меню */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    min-width: 240px; /* Немного увеличили ширину */
+    padding: 8px 0 !important;
+    margin: 0 !important;
+    background-color: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    list-style: none !important;
+}
+
+/* Сброс стилей для списка */
+.dropdown-menu,
+.dropdown-menu ul,
+.dropdown-menu li {
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+/* Пункты меню с симметричными отступами */
+.dropdown-item {
+    padding: 10px 20px !important; /* Увеличили отступы до 20px с обеих сторон */
+    margin: 4px 12px !important;   /* Увеличили отступы между пунктами */
+    font-size: 15px;
+    color: #333;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    display: block;
+    text-decoration: none;
+    width: calc(100% - 24px); /* Корректировка ширины с учетом новых отступов */
+}
+
+/* Состояния пунктов */
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #f0f7ff;
+    color: var(--primary);
+}
+
+/* Активный пункт */
+.dropdown-item.active {
+    background-color: var(--primary);
+    color: white !important;
+}
+
+/* Анимация появления */
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
