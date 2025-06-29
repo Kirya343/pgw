@@ -12,15 +12,53 @@
 <header>
     <div th:replace="~{fragments/public/header :: header(${activePage})}"></div>
 </header>
-<!-- Шапка каталога -->
 <div class="catalog-header py-3">
     <div class="container">
         <ul class="nav nav-pills justify-content-center">
-            <li th:each="tab : ${categories}"
-                th:class="${tab.active} ? 'nav-item active' : 'nav-item'">
-                <a th:href="${tab.active} ? @{/catalog} : @{/catalog(category=${tab.id})}"
-                    th:text="${tab.title}"
-                    class="nav-link"></a>
+            <!-- Выпадающее меню для услуг (теперь первое) -->
+            <li class="nav-item dropdown" 
+                th:classappend="${category == 'services' or category == 'offer-service' or category == 'find-service'} ? 'active' : ''">
+                <a class="nav-link dropdown-toggle" 
+                th:href="@{${category == 'services' ? '/catalog' : '/catalog?category=services'}}"
+                th:text="#{category.service}"
+                onclick="handleServicesClick(event)">
+                    Услуги
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                    <li>
+                        <a class="dropdown-item"
+                            th:href="@{${category == 'services' ? '/catalog' : '/catalog?category=services'}}" 
+                            th:classappend="${category == 'services'} ? 'active' : ''"
+                            th:text="#{category.all-services}">
+                            Все услуги
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item"
+                            th:href="@{${category == 'offer-service' ? '/catalog' : '/catalog?category=offer-service'}}" 
+                            th:classappend="${category == 'offer-service'} ? 'active' : ''"
+                            th:text="#{category.offer-service}">
+                            Предложения услуг
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item"
+                            th:href="@{${category == 'find-service' ? '/catalog' : '/catalog?category=find-service'}}" 
+                            th:classappend="${category == 'find-service'} ? 'active' : ''"
+                            th:text="#{category.find-service}">
+                            Нужна услуга
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <!-- Остальные категории -->
+            <li class="nav-item" th:classappend="${category == 'product'} ? 'active' : ''">
+                <a class="nav-link"
+                    th:href="@{${category == 'product' ? '/catalog' : '/catalog?category=product'}}" 
+                    th:text="#{category.product}">
+                    Товары
+                </a>
             </li>
         </ul>
     </div>

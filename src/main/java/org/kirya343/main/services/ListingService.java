@@ -3,9 +3,9 @@ package org.kirya343.main.services;
 import java.util.List;
 import java.util.Locale;
 
+import org.kirya343.main.model.DTOs.ListingDTO;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
-import org.kirya343.main.model.DTOs.ListingDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
