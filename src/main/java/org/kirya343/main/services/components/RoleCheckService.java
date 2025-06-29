@@ -35,4 +35,11 @@ public class RoleCheckService {
             model.addAttribute("roleAdmin", true);
         }
     }
+
+    public boolean hasRoleAdmin(User user) {
+        if(user.getRole() == Role.ADMIN) {
+            return true;
+        }
+        return false;
+    }
 }

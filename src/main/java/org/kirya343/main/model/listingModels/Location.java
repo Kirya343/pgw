@@ -10,6 +10,12 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String country; // Например: "Финляндия", "Россия"
+
     @Column(nullable = false, unique = true)
-    private String name; // Например: "Москва", "Санкт-Петербург"
+    private String city; // Например: "Куопио", "Санкт-Петербург"
+
+    @Column(nullable = false, unique = true)
+    private String name; // Например: "Финляндия, Копио", "Россия, Санкт-Петербург"
 }

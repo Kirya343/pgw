@@ -53,11 +53,11 @@
         <div class="listing-actions" th:if="${activePage == 'account'}">
             <a th:href="@{/secure/listing/edit/{id}(id=${listing.id})}"
                 class="btn btn-sm btn-outline-primary" th:text="#{listing.edit}"></a>
-            <form th:action="@{/secure/listing/delete/{id}(id=${listing.id})}"
+            <form th:action="@{/listing/{id}/delete(id=${listing.id})}"
                     method="post"
                     style="display: inline;">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{my.listings.button.delete}"></button>
+                <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{my.listings.button.delete}" onclick="return confirm('Удалить это объявление?');"></button>
             </form>
         </div>
         <!-- кнопки только в "избранных" -->
