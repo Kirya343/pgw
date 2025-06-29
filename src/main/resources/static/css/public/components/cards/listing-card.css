@@ -13,6 +13,11 @@
     flex-direction: column;
     flex-grow: 1;
     padding: 1rem;
+    gap: 1rem;
+}
+
+.card-body a {
+    height: 100%;
 }
 
 .card-text {
@@ -33,6 +38,7 @@
     padding-top: 1rem;
     border-top: 1px solid var(--border-color);
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
 }
@@ -50,12 +56,6 @@
     transition: all 0.3s ease;
     overflow: hidden; /* Это предотвратит выход изображения за границы */
     position: relative;
-}
-
-.listing-card:hover {
-    transform: translateY(-5px);
-    transition: transform 0.5s;
-    box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 .listing-status {
@@ -135,9 +135,12 @@
 }
 
 .listing-actions {
+    padding: 1rem 1rem 0;
+    border-top: 1px solid var(--border-color);
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    justify-content: space-between;
 }
 
 .listing-actions .btn {

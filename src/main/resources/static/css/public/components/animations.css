@@ -1,0 +1,9 @@
+.hover-animation-card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.5s;
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.hover-animation-card {
+    cursor: pointer;
+}

@@ -38,3 +38,9 @@
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
 }
+
+@media (max-width: 576px) {
+    .image-gallery-grid {
+        grid-template-columns: repeat(1, minmax(150px, 1fr));
+    }
+}

@@ -5,9 +5,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.kirya343.main.controller.mappers.ListingMapper;
 import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.DTOs.ListingDTO;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.kirya343.main.repository.ConversationRepository;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,6 +33,7 @@ public class ListingServiceImpl implements ListingService {
     private final ListingRepository listingRepository;
     private final ConversationRepository conversationRepository;
     private final FavoriteListingService favoriteListingService;
+    private final ListingMapper listingMapper;
     
     @Override
     public Page<Listing> findByCategory(String category, Pageable pageable) {
@@ -166,11 +170,14 @@ public class ListingServiceImpl implements ListingService {
     String lang = locale.getLanguage();
 
     // Получаем все объявления по категории (если указана) и языковой аудитории
-    Page<Listing> baseListings = (category == null || category.isEmpty()) 
-            ? findActiveByCommunity(lang, sortedPageable)
-            : (category.equals("offer-service") || category.equals("find-help") || category.equals("product"))
-                ? findListingsByCategoryAndCommunity(category, locale, sortedPageable)
-                : findListingsByCategoryAndCommunity("services", locale, sortedPageable);
+    Page<Listing> baseListings;
+    if (category == null || category.isEmpty() || category.equalsIgnoreCase("all")) {
+        baseListings = findActiveByCommunity(lang, sortedPageable);
+    } else if (category.equals("offer-service") || category.equals("find-help") || category.equals("product")) {
+        baseListings = findListingsByCategoryAndCommunity(category, locale, sortedPageable);
+    } else {
+        baseListings = findListingsByCategoryAndCommunity(null, locale, sortedPageable);
+    }
 
         // Фильтруем по поиску
         List<Listing> filtered = baseListings.getContent();
@@ -180,7 +187,7 @@ public class ListingServiceImpl implements ListingService {
             filtered = filtered.stream()
                 .filter(listing -> {
                     // Получаем перевод по locale
-                    ListingTranslation translation = listing.getTranslations().get(locale);
+                    ListingTranslation translation = listing.getTranslations().get(locale.getLanguage());
 
                     return (translation != null && (
                             (translation.getTitle() != null && translation.getTitle().toLowerCase().contains(lowered)) ||
@@ -327,5 +334,12 @@ public class ListingServiceImpl implements ListingService {
 
     private boolean isBlank(String value) {
         return value == null || value.isBlank();
+    }
+
+    @Transactional
+    public ListingDTO getListingDtoById(Long id) {
+        Listing listing = listingRepository.findWithTranslationsById(id).orElseThrow();
+        Map<String, ListingTranslation> translations = listing.getTranslations(); // теперь работает
+        return listingMapper.convertToDTO(listing, translations);
     }
 }

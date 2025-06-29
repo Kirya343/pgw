@@ -1,6 +1,6 @@
 package org.kirya343.main.repository;
 
-import org.kirya343.main.model.Location;
+import org.kirya343.main.model.listingModels.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

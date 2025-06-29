@@ -1,4 +1,4 @@
-package org.kirya343.main.controller.chat;
+package org.kirya343.main.controller;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

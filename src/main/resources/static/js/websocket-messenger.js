@@ -239,11 +239,13 @@ function showMessage(message) {
 
 function initializeDialogClickListeners() {
     const dialogItems = document.querySelectorAll('.dialog-item');
+    const dialogsList = document.querySelector('.dialogs-list');
 
     dialogItems.forEach(item => {
         // Удаляем предыдущие обработчики
         item.removeEventListener('click', handleDialogClick);
         item.addEventListener('click', handleDialogClick);
+        dialogsList.classList.remove('show');
     });
 }
 

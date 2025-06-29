@@ -2,8 +2,8 @@ package org.kirya343.main.controller.secure;
 
 import org.kirya343.main.model.listingModels.Image;
 import org.kirya343.main.model.listingModels.ListingTranslation;
+import org.kirya343.main.model.listingModels.Location;
 import org.kirya343.main.model.Listing;
-import org.kirya343.main.model.Location;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.DTOs.ListingForm;
 import org.kirya343.main.model.DTOs.TranslationDTO;
@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.kirya343.main.repository.ImageRepository;
 
@@ -68,7 +69,6 @@ public class OwnListingController {
     public String createListing(
             @ModelAttribute Listing listing,
             @RequestParam(value = "uploadedImages", required = false) MultipartFile[] uploadedImages,
-            @RequestParam(value = "deletedImages", required = false) String deletedImages,
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
             @ModelAttribute ListingForm form,
             @AuthenticationPrincipal OAuth2User oauth2User,
@@ -109,21 +109,6 @@ public class OwnListingController {
             // Сохраняем Listing вместе с переводами
             Listing savedListing = listingService.saveAndReturn(listing);
 
-            // Удаление отмеченных изображений
-            if (deletedImages != null && !deletedImages.isEmpty()) {
-                Arrays.stream(deletedImages.split(","))
-                    .map(Long::parseLong)
-                    .forEach(imageId -> {
-                        imageRepository.findById(imageId).ifPresent(img -> {
-                            // Не удаляем если это текущее основное изображение
-                            if (savedListing.getImagePath() == null || 
-                                !img.getPath().equals(savedListing.getImagePath())) {
-                                imageRepository.deleteById(imageId);
-                            }
-                        });
-                    });
-            }
-
             // Добавление новых изображений
             if (uploadedImages != null) {
                 for (MultipartFile image : uploadedImages) {
@@ -134,7 +119,7 @@ public class OwnListingController {
                         imageEntity.setPath(imagePath);
                         imageRepository.save(imageEntity);
 
-                        if (image.getOriginalFilename().equals(imagePathParam)) {
+                        if (Objects.equals(image.getOriginalFilename(), imagePathParam)) {
                             savedListing.setImagePath(imagePath);
                         }
                     }
@@ -142,9 +127,11 @@ public class OwnListingController {
             }
 
             // Обновление основного изображения (если выбрано существующее)
-            if (imagePathParam != null && !imagePathParam.isEmpty() && 
-                (uploadedImages == null || !Arrays.stream(uploadedImages)
-                    .anyMatch(file -> file.getOriginalFilename().equals(imagePathParam)))) {
+            if (imagePathParam != null && !imagePathParam.isEmpty() &&
+                    (uploadedImages == null || Arrays.stream(uploadedImages)
+                        .map(MultipartFile::getOriginalFilename)
+                        .filter(Objects::nonNull)
+                        .noneMatch(name -> name.equals(imagePathParam)))) {
                 savedListing.setImagePath(imagePathParam);
             }
 
@@ -165,7 +152,8 @@ public class OwnListingController {
             @PathVariable Long id,
             Model model,
             @AuthenticationPrincipal OAuth2User oauth2User,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            Locale locale
     ) {
         try {
             // Проверка, что текущий пользователь - автор объявления
@@ -178,9 +166,9 @@ public class OwnListingController {
             }
 
             Map<String, String> categories = Map.of(
-                    "services", "Услуга",
-                    "offer-service", "Запрос на услугу",
-                    "product", "Товар"
+                "services", messageSource.getMessage("category.service", null, locale),
+                "offer-service", messageSource.getMessage("category.offer-service", null, locale),
+                "product", messageSource.getMessage("category.product", null, locale)
             );
 
             List<Location> locations = locationRepository.findAllByOrderByNameAsc();
@@ -226,6 +214,7 @@ public class OwnListingController {
             RedirectAttributes redirectAttributes
     ) {
         try {
+
             Listing existingListing = listingService.getListingById(id);
             User user = userService.findUserFromOAuth2(oauth2User);
 
@@ -280,9 +269,51 @@ public class OwnListingController {
             existingListing.setLocation(listingData.getLocation());
             existingListing.setActive(active);
 
-            // ... (дальше код по удалению/добавлению изображений, как у тебя было)
+            // Сохраняем Listing вместе с переводами
+            Listing savedListing = listingService.saveAndReturn(existingListing);
 
-            listingService.save(existingListing);
+            if (deletedImages != null && !deletedImages.isEmpty()) {
+                Arrays.stream(deletedImages.split(","))
+                    .map(Long::parseLong)
+                    .forEach(imageId -> {
+                        imageRepository.findById(imageId).ifPresent(img -> {
+                            // Не удаляем если это текущее основное изображение
+                            if (savedListing.getImagePath() == null || 
+                                !img.getPath().equals(savedListing.getImagePath())) {
+                                imageRepository.deleteById(imageId);
+                            }
+                        });
+                    });
+            }
+
+            // Добавление новых изображений
+            if (uploadedImages != null) {
+                for (MultipartFile image : uploadedImages) {
+                    if (!image.isEmpty()) {
+                        String imagePath = storageService.storeListingImage(image, savedListing.getId());
+                        Image imageEntity = new Image();
+                        imageEntity.setListing(savedListing);
+                        imageEntity.setPath(imagePath);
+                        imageRepository.save(imageEntity);
+
+                        if (Objects.equals(image.getOriginalFilename(), imagePathParam)) {
+                            savedListing.setImagePath(imagePath);
+                        }
+                    }
+                }
+            }
+
+            // Обновление основного изображения (если выбрано существующее)
+            if (imagePathParam != null && !imagePathParam.isEmpty() &&
+                    (uploadedImages == null || Arrays.stream(uploadedImages)
+                        .map(MultipartFile::getOriginalFilename)
+                        .filter(Objects::nonNull)
+                        .noneMatch(name -> name.equals(imagePathParam)))) {
+                savedListing.setImagePath(imagePathParam);
+            }
+
+            // После всех изменений повторно сохраним listing
+            listingService.save(savedListing);
             redirectAttributes.addFlashAttribute("success", "Объявление успешно обновлено!");
             return "redirect:/secure/account";
 

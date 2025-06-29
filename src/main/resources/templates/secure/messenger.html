@@ -27,18 +27,15 @@
         <main class="account-main">
             <div class="account-header">
                 <h2 th:text="#{my.messages}">Сообщения</h2>
-                <div class="search-container">
+                <!-- <div class="search-container">
                     <input type="text" th:placeholder="#{my.messages.search}" class="search-input">
                     <button class="search-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                         </svg>
                     </button>
-                </div>
-            </div>
-
-            <div class="mobile-dialogs-toggle">
-                <button id="dialogsToggleBtn">
+                </div> -->
+                <button id="dialogsToggleBtn" class="btn btn-primary mobile-dialogs-toggle">
                     <i class="fa fa-comments"></i>
                 </button>
             </div>
@@ -127,17 +124,6 @@
                             </button>
                         </div>
                     </div>
-
-                    <!--<div th:if="${selectedConversation == null}" class="no-chat-selected">
-                        <div class="no-chat-content">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-                                <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
-                            </svg>
-                            <h3 th:text="#{my.messages.select.dialog}">Выберите диалог</h3>
-                            <p th:text="#{my.messages.select.start.dialog}">Выберите диалог из списка слева или начните новый</p>
-                        </div>
-                    </div>-->
                 </div>
             </div>
         </main>

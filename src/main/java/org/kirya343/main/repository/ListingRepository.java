@@ -7,10 +7,13 @@ import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
+
 
 @Repository
 public interface ListingRepository extends JpaRepository<Listing, Long> {
@@ -36,9 +39,8 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     List<Listing> findByCategoryAndIdNot(@Param("category") String category, @Param("excludeId") Long excludeId, Pageable pageable);
 
     @Query("SELECT l FROM Listing l WHERE :language MEMBER OF l.communities AND l.category = :category AND l.active = true")
-                Page<Listing> findByCategoryAndLanguageAndActiveTrue(@Param("category") String category,
-                                                     @Param("language") String language,
-                                                     Pageable pageable);
+    Page<Listing> findByCategoryAndLanguageAndActiveTrue(@Param("category") String category,
+            @Param("language") String language, Pageable pageable);
 
     @Query("SELECT l FROM Listing l JOIN l.communities c WHERE c = :language AND l.active = true ")
     Page<Listing> findByCommunityAndActiveTrue(@Param("language") String language, Pageable pageable);
@@ -58,30 +60,31 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
 
     Page<Listing> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
-    @Query("SELECT l FROM Listing l WHERE l.active = true")
-       List<Listing> searchAllFields(@Param("query") String query);
-
-    /* @Query("SELECT l FROM Listing l WHERE " +
-       "(LOWER(l.titleRu) LIKE LOWER(:query) OR " +
-       "LOWER(l.descriptionRu) LIKE LOWER(:query) OR " +
-       "LOWER(l.titleFi) LIKE LOWER(:query) OR " +
-       "LOWER(l.descriptionFi) LIKE LOWER(:query) OR " +
-       "LOWER(l.titleEn) LIKE LOWER(:query) OR " +
-       "LOWER(l.descriptionEn) LIKE LOWER(:query) OR " +
-       "LOWER(l.location) LIKE LOWER(:query)) " +
-       "AND l.active = true")
-       List<Listing> searchAllFields(@Param("query") String query); */
+    @Query("""
+        SELECT DISTINCT l FROM Listing l
+        JOIN l.translations t
+        WHERE (
+            LOWER(t.title) LIKE LOWER(CONCAT('%', :query, '%')) OR
+            LOWER(t.description) LIKE LOWER(CONCAT('%', :query, '%'))
+        )
+        AND l.active = true
+    """)
+    List<Listing> searchAllFields(@Param("query") String query);
 
     @Query("""
-    SELECT l FROM Listing l
-    JOIN l.communities c
-    WHERE l.category = :category
-      AND l.id <> :excludeId
-      AND c = :language
+        SELECT l FROM Listing l
+        JOIN l.communities c
+        WHERE l.category = :category
+        AND l.id <> :excludeId
+        AND c = :language 
         """)
-        List<Listing> findTop4ByCategoryAndIdNotAndCommunity(
+    List<Listing> findTop4ByCategoryAndIdNotAndCommunity(
         @Param("category") String category,
         @Param("excludeId") Long excludeId,
         @Param("language") String language,
         Pageable pageable);
+
+        
+    @EntityGraph(attributePaths = "translations")
+    Optional<Listing> findWithTranslationsById(@NonNull Long id);
 }

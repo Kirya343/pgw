@@ -34,15 +34,11 @@
             <div th:unless="${category == 'find-help'}" class="sorting-sidebar">
                 <h5 th:text="#{catalog.search.title}">Поиск</h5>
                 <form id="searchForm" method="get" action="/catalog">
-                    <div class="input-group mb-3">
-                        <input type="text" 
-                            class="form-control" 
-                            name="searchQuery" 
-                            th:value="${searchQuery}"
-                            placeholder="Поиск...">
+                    <div class="input-group">
+                        <input type="text" class="search-input" name="searchQuery" th:value="${searchQuery}"placeholder="Поиск...">
                         <input type="hidden" name="category" th:value="${category}">
                         <input type="hidden" name="sortBy" th:value="${sortBy}">
-                        <button class="btn btn-outline-secondary" type="submit">
+                        <button class="btn btn-search" type="submit">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -76,7 +72,7 @@
                     </div>
                 </form>
             </div>
-            <div class="sorting-sidebar">
+            <div class="sorting-sidebar sidebar-links">
                 <h5 th:text="#{catalog.sorting.links}">Полезные ссылки</h5>
                 <a href="info" class="catalog-sidebar-btn" th:text="#{links.info}"></a>
                 <a href="secure/account" class="catalog-sidebar-btn" th:text="#{links.account}"></a>
@@ -87,13 +83,13 @@
         </aside>
 
         <main class="catalog-main">
-            <div th:if="${category == 'find-help'}" class="listings-grid">
+            <!-- <div th:if="${category == 'find-help'}" class="listings-grid">
                 <div th:each="resume : ${resumes}" class="resume-card">
                     <a th:href="@{'/resume/' + ${resume.id}}" class="resume-link">
                         <img th:src="@{${resume.user.avatarUrl}}"
-                             class="resume-avatar"
-                             alt="Аватар"
-                             th:onerror="this.src='/images/avatar-placeholder.png'">
+                                class="resume-avatar"
+                                alt="Аватар"
+                                th:onerror="this.src='/images/avatar-placeholder.png'">
                         <div class="resume-info">
                             <h3 th:text="${resume.profession}">Специальность</h3>
                             <div class="resume-meta">
@@ -102,7 +98,7 @@
                         </div>
                     </a>
                 </div>
-            </div>
+            </div> -->
 
             <!-- <div th:unless="${category == 'find-help'}" class="listings-grid">
                 <th:block th:each="listing : ${listings}" th:insert="fragments/cards/listing-card :: listingCard(${listing})">
@@ -120,7 +116,7 @@
             </div>
 
             <!-- Пагинация -->
-            <nav aria-label="Page navigation">
+            <!-- <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
                         <a th:href="@{/catalog(category=${category}, page=${currentPage - 1}, searchQuery=${searchQuery}, hasReviews=${hasReviews}, sortBy=${sortBy})}"
@@ -136,15 +132,10 @@
                            class="page-link" th:text="#{pagination.forward}">Вперед</a>
                     </li>
                 </ul>
-            </nav>
+            </nav> -->
         </main>
     </div>
 </div>
-<!-- <script>
-    document.getElementById('filterForm').addEventListener('change', function() {
-        this.submit();
-    });
-</script> -->
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 
@@ -153,7 +144,6 @@
 
 <!-- Сортировка без перезагрузки -->
 <script>
-
     function loadSortedCatalog() {
         const params = new URLSearchParams(window.location.search);
 
