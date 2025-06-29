@@ -59,7 +59,7 @@
 <aside class="resume-sidebar" th:fragment="authorInfoSidebarResume">
     <div class="seller-card hover-animation-card" style="cursor: pointer;" th:onclick="window.location.href = '/profile/' + [[${resume.user.id}]]">
         <div class="seller-avatar">
-            <img th:src="@{${sellerAvatarPath}}"
+            <img th:src="@{${resume.user.avatarUrl}}"
                     th:onerror="this.src='/images/avatar-placeholder.png'"
                     alt="Аватар кандидата">
         </div>
@@ -163,7 +163,7 @@
         </div>
     </div>
     
-    <div class="resume-card hover-animation-card" th:if="${resume} != null" th:onclick="window.location.href = '/resume/' + [[${resume.id}]]">
+    <div class="resume-card hover-animation-card" th:if="${resume != null and resume.published}" th:onclick="window.location.href = '/resume/' + [[${resume.id}]]">
         <img th:src="@{${profileUser.avatarUrl}}"
                 class="resume-avatar"
                 alt="Аватар"

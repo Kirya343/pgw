@@ -1,4 +1,4 @@
-package org.kirya343.admin.controller;
+package org.kirya343.main.controller;
 
 import org.kirya343.main.model.News;
 import org.kirya343.main.services.NewsService;

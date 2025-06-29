@@ -29,6 +29,7 @@
         class="admin-nav-item" 
         th:classappend="${activePage == 'admin-resumes'} ? ' active'">
         <i class="fas fa-file-alt"></i> Резюме
+        <i class="fa-solid fa-square-xmark" style="color: red;"></i>
     </a>
 
     <a href="/admin/users" 
@@ -46,10 +47,12 @@
 
     <a href="#" class="admin-nav-item">
         <i class="fas fa-comments"></i> Отзывы
+        <i class="fa-solid fa-square-xmark" style="color: red;"></i>
     </a>
 
     <a href="#" class="admin-nav-item">
         <i class="fas fa-question-circle"></i> Вопросы
+        <i class="fa-solid fa-square-xmark" style="color: red;"></i>
     </a>
 
 
@@ -57,9 +60,19 @@
 
     <a href="#" class="admin-nav-item">
         <i class="fas fa-cog"></i> Системные
+        <i class="fa-solid fa-square-xmark" style="color: red;"></i>
     </a>
 
     <a href="#" class="admin-nav-item">
         <i class="fas fa-language"></i> Локализация
+        <i class="fa-solid fa-square-xmark" style="color: red;"></i>
+    </a>
+
+    <div class="admin-nav-title">Настройки данных</div>
+
+    <a href="/admin/locations" 
+        class="admin-nav-item" 
+        th:classappend="${activePage == 'admin-users'} ? ' active'">
+        <i class="fas fa-users"></i> Локации
     </a>
 </nav>

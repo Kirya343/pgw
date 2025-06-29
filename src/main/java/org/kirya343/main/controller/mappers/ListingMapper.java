@@ -25,7 +25,7 @@ public class ListingMapper {
         dto.setPrice(listing.getPrice());
         dto.setPriceType(listing.getPriceType());
         dto.setCategory(listing.getCategory());
-        dto.setLocation(listing.getLocation());
+        dto.setLocation(listing.getLocation() != null ? listing.getLocation().getName() : null);
         dto.setRating(listing.getRating());
         dto.setViews(listing.getViews());
         dto.setCreatedAt(listing.getCreatedAt());

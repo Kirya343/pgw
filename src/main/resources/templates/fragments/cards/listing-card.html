@@ -1,5 +1,9 @@
 <!-- карточка объявления для показа на публичных страницах (с рейтингом, локацией) -->
-<article class="listing-card hover-animation-card" th:fragment="listingCard(listing)" th:each="listing : ${listings}" th:onclick="window.location.href = '/listing/' + [[${listing.id}]]">
+<article th:each="listing : ${listings}" 
+         class="listing-card hover-animation-card" 
+         th:fragment="listingCard(listing)" 
+         th:onclick="window.location.href = '/listing/' + [[${listing.id}]]"
+         th:if="${(user != null and user.role != null and user.role.name() == 'ADMIN') or !listing.testMode}">
     <img th:src="@{${listing.imagePath}}"
             class="listing-img" th:onerror="this.src='/images/default-listing.png'"
             alt="Изображение объявления">
@@ -20,7 +24,7 @@
                 </div>
             </div>
             <span class="partner-sign" th:if="${listing.author.role.name() == 'BUSINESS'}" th:text="#{partner}"></span>
-            <span class="listing-location" th:text="${listing.location ?: 'Finland'}">Локация</span>
+            <span class="listing-location" th:text="${listing.location.name}">Локация</span>
         </div>
     </div>
 </article>
@@ -53,11 +57,11 @@
         <div class="listing-actions" th:if="${activePage == 'account'}">
             <a th:href="@{/secure/listing/edit/{id}(id=${listing.id})}"
                 class="btn btn-sm btn-outline-primary" th:text="#{listing.edit}"></a>
-            <form th:action="@{/secure/listing/delete/{id}(id=${listing.id})}"
+            <form th:action="@{/listing/{id}/delete(id=${listing.id})}"
                     method="post"
                     style="display: inline;">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{my.listings.button.delete}"></button>
+                <button type="submit" class="btn btn-sm btn-outline-danger" th:text="#{my.listings.button.delete}" onclick="return confirm('Удалить это объявление?');"></button>
             </form>
         </div>
         <!-- кнопки только в "избранных" -->
@@ -101,7 +105,7 @@
                     </th:block>
                 </div>
             </div>
-            <span class="location" th:text="${similarListing.location ?: 'Хельсинки'}">Локация</span>
+            <span class="location" th:text="${similarListing.location.name}">Локация</span>
         </div>
     </div>
 </article>

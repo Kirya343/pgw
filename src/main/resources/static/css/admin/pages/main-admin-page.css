@@ -1,6 +1,4 @@
-@import url(../../public/components/footer.css);
 @import url(../../public/components/base.css);
-@import url(../../public/components/header.css);
 @import url(../../admin/components/buttons.css); 
 @import url(../../admin/components/admin-base.css); 
 @import url(../../variables.css);
@@ -45,7 +43,7 @@ h2 {
     box-shadow: 0 2px 4px var(--shadow-color);
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 100;
     margin-bottom: 2rem;
 }
 
@@ -97,7 +95,7 @@ h2 {
 }
 
 .admin-nav-item.active {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(139, 107, 107, 0.15);
     border-left-color: var(--white);
 }
 

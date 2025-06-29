@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.kirya343.main.model.listingModels.Image;
 import org.kirya343.main.model.listingModels.ListingTranslation;
+import org.kirya343.main.model.listingModels.Location;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -26,11 +27,6 @@ import jakarta.persistence.Transient;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
 @Data
 @Entity
 public class Listing {
@@ -46,15 +42,12 @@ public class Listing {
     private double price;
     private String priceType; // "час", "фиксированная" и т.д.
     private String category;
-    private String location;
     private double rating;
     private int views;
     
     @PastOrPresent
     private LocalDateTime createdAt;
 
-    @Setter
-    @Getter
     private boolean active = true;
 
     @ManyToOne
@@ -72,8 +65,6 @@ public class Listing {
 
     private double averageRating;
 
-    @Setter
-    @Getter
     private String imagePath;
 
     // Новые флаги для целевой аудитории
@@ -81,6 +72,12 @@ public class Listing {
     @CollectionTable(name = "listing_communities", joinColumns = @JoinColumn(name = "listing_id"))
     @Column(name = "language")
     private List<String> communities = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "location")
+    private Location location;
+
+    private boolean testMode;
 
     @Transient
     private String localizedTitle;

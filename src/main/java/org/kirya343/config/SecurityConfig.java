@@ -23,7 +23,6 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -87,12 +86,13 @@ public class SecurityConfig {
                             .failureUrl("/login?error")
                             .permitAll();
                 })
-                .logout(logout -> {
-                    logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                            .logoutSuccessUrl("/")
-                            .invalidateHttpSession(true)
-                            .deleteCookies("JSESSIONID");
-                })
+                .logout(logout -> logout
+                    .logoutUrl("/logout") // URL для logout
+                    .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .permitAll()
+                )
                 .csrf(csrf -> {
                     csrf.ignoringRequestMatchers(
                         "/api/applications/**",

@@ -5,11 +5,13 @@ import org.kirya343.main.model.Review;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.*;
 import org.kirya343.main.services.components.AuthService;
+import org.kirya343.main.services.components.RoleCheckService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +29,7 @@ public class ListingsController {
     private final FavoriteListingService favoriteListingService;
     private final AuthService authService;
     private final ReviewService reviewService;
+    private final RoleCheckService roleCheckService;
 
 
     @GetMapping("/{id}")
@@ -144,5 +147,39 @@ public class ListingsController {
         double newUserRating = reviewService.calculateAverageRatingForUser(author);
         author.setAverageRating(newUserRating);
         userService.save(author);
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteListing(
+            @PathVariable Long id,
+            @AuthenticationPrincipal OAuth2User oauth2User,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            Listing listing = listingService.getListingById(id);
+
+            // Проверка авторства
+            User user = userService.findUserFromOAuth2(oauth2User);
+
+            if (!roleCheckService.hasRoleAdmin(user) && !listing.getAuthor().equals(user)) {
+                redirectAttributes.addFlashAttribute("error", "Вы не можете удалить это объявление");
+                return "redirect:/secure/account";
+            }
+
+            if (roleCheckService.hasRoleAdmin(user)) {
+                listingService.deleteListing(id);
+                redirectAttributes.addFlashAttribute("success", "Объявление успешно удалено!");
+                return "redirect:/admin/dashboard";
+            } else if (listing.getAuthor().equals(user)) {
+                listingService.deleteListing(id);
+                redirectAttributes.addFlashAttribute("success", "Объявление успешно удалено!");
+                return "redirect:/secure/account";
+            }
+            return "redirect:/secure/account";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Ошибка при удалении объявления: " + e.getMessage());
+            return "redirect:/secure/account";
+        }
     }
 }

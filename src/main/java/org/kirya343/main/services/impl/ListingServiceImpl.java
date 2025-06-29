@@ -192,7 +192,7 @@ public class ListingServiceImpl implements ListingService {
                     return (translation != null && (
                             (translation.getTitle() != null && translation.getTitle().toLowerCase().contains(lowered)) ||
                             (translation.getDescription() != null && translation.getDescription().toLowerCase().contains(lowered))
-                    )) || (listing.getLocation() != null && listing.getLocation().toLowerCase().contains(lowered));
+                    )) || (listing.getLocation() != null && listing.getLocation().getName().toLowerCase().contains(lowered));
                 })
                 .collect(Collectors.toList());
         }

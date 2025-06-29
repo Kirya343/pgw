@@ -1,4 +1,4 @@
-package org.kirya343.admin.controller;
+package org.kirya343.main.controller;
 
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.UserService;
