@@ -37,7 +37,11 @@
                 <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
             </div>
             <div class="nav-buttons">
-                <a href="/logout" class="logout-btn" th:text="#{logout.button}">Выйти</a>
+                <form id="logoutForm" action="/logout" method="post" style="display:none;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                </form>
+                <a href="#" class="logout-btn" th:text="#{logout.button}" 
+                    onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">Выйти</a>
             </div>
         </nav>
     </nav>
