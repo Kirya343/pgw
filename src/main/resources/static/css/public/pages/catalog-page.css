@@ -30,7 +30,7 @@
     border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: var(--header-height);
-    z-index: 990;
+    z-index: 99;
     padding: 1rem 0;
 }
 

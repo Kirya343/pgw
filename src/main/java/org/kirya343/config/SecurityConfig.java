@@ -87,10 +87,11 @@ public class SecurityConfig {
                             .permitAll();
                 })
                 .logout(logout -> logout
-                    .logoutUrl("/logout") // Указывает URL для logout без использования AntPathRequestMatcher
-                    .logoutSuccessUrl("/") // Куда редиректить после logout
+                    .logoutUrl("/logout") // URL для logout
+                    .logoutSuccessUrl("/")
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID")
+                    .permitAll()
                 )
                 .csrf(csrf -> {
                     csrf.ignoringRequestMatchers(

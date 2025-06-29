@@ -4,6 +4,7 @@ import org.kirya343.main.exceptions.UserNotRegisteredException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -27,5 +28,11 @@ public class GlobalExceptionHandler {
     public String handleMaxSizeException(RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMessage", "Файл слишком большой. Максимальный размер — 10MB.");
         return "redirect:/secure/account"; // или другая нужная страница
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public String handleMultipartException(MultipartException e, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("error", "Ошибка при разборе загружаемых файлов.");
+        return "redirect:/secure/error"; // или другая страница с ошибкой
     }
 }

@@ -1,5 +1,9 @@
 <!-- карточка объявления для показа на публичных страницах (с рейтингом, локацией) -->
-<article class="listing-card hover-animation-card" th:fragment="listingCard(listing)" th:each="listing : ${listings}" th:onclick="window.location.href = '/listing/' + [[${listing.id}]]">
+<article th:each="listing : ${listings}" 
+         class="listing-card hover-animation-card" 
+         th:fragment="listingCard(listing)" 
+         th:onclick="window.location.href = '/listing/' + [[${listing.id}]]"
+         th:if="${(user != null and user.role != null and user.role.name() == 'ADMIN') or !listing.testMode}">
     <img th:src="@{${listing.imagePath}}"
             class="listing-img" th:onerror="this.src='/images/default-listing.png'"
             alt="Изображение объявления">

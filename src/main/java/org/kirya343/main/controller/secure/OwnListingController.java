@@ -204,12 +204,12 @@ public class OwnListingController {
     @PostMapping("/update/{id}")
     public String updateListing(
             @PathVariable Long id,
-            @ModelAttribute Listing listingData,
             @ModelAttribute ListingForm form,
             @RequestParam(value = "uploadedImages", required = false) MultipartFile[] uploadedImages,
             @RequestParam(value = "deletedImages", required = false) String deletedImages,
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
             @RequestParam(value = "active", defaultValue = "false") boolean active,
+            @RequestParam(value = "testMode", defaultValue = "false") boolean testMode,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
@@ -263,11 +263,12 @@ public class OwnListingController {
             }
 
             // Обновляем остальные поля
-            existingListing.setPrice(listingData.getPrice());
-            existingListing.setPriceType(listingData.getPriceType());
-            existingListing.setCategory(listingData.getCategory());
-            existingListing.setLocation(listingData.getLocation());
+            existingListing.setPrice(form.getListing().getPrice());
+            existingListing.setPriceType(form.getListing().getPriceType());
+            existingListing.setCategory(form.getListing().getCategory());
+            existingListing.setLocation(form.getListing().getLocation());
             existingListing.setActive(active);
+            existingListing.setTestMode(testMode);
 
             // Сохраняем Listing вместе с переводами
             Listing savedListing = listingService.saveAndReturn(existingListing);
