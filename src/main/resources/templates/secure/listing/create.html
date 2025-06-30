@@ -84,14 +84,34 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="category" th:text="#{listing.editing.category}">Категория</label>
-                    <select id="category" name="category" class="form-control" required>
+                    <label th:text="#{listing.editing.category}">Категория</label>
+                    
+                    <!-- Уровень 1: Корневые категории -->
+                    <select id="rootCategory" class="form-control category-select" required
+                            onchange="loadSubcategories(this.value, 'subCategory1')">
                         <option value="" disabled selected th:text="#{listing.editing.category.select}">Выберите категорию</option>
-                        <option th:each="entry : ${categories}"
-                                th:value="${entry.key}"
-                                th:text="${entry.value}">
+                        <option th:each="cat : ${rootCategories}"
+                                th:value="${cat.id}"
+                                th:text="${cat.name}">
                         </option>
                     </select>
+                    
+                    <!-- Уровень 2: Подкатегории -->
+                    <select id="subCategory1" class="form-control category-select" style="display: none; margin-top: 10px;" 
+                            onchange="loadSubcategories(this.value, 'subCategory2')" disabled>
+                        <option value="" disabled selected>Выберите подкатегорию</option>
+                    </select>
+                    
+                    <!-- Уровень 3: Подподкатегории -->
+                    <select id="subCategory2" class="form-control category-select" style="display: none; margin-top: 10px;" 
+                            onchange="checkLeafCategory(this.value)" disabled>
+                        <option value="" disabled selected>Выберите подкатегорию</option>
+                    </select> 
+                    
+                    <!-- Скрытое поле для ID конечной категории -->
+                    <input type="hidden" id="finalCategoryId" name="categoryId" required>
+                    <div id="categoryError" class="text-danger" style="display: none;"></div>
+                    <div id="categoryPath" class="category-path"></div>
                 </div>
 
                 <div class="form-group">
@@ -105,7 +125,7 @@
                     </select>
                 </div>
 
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label th:text="#{listing.editing.image}">Изображения</label>
                     
                     <div class="current-main-image">
@@ -148,7 +168,7 @@
                     </div>
                     
                     <input type="hidden" id="deletedImages" name="deletedImages" value="">
-                </div>
+                </div> -->
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary" th:text="#{listing.creating.button.save}">Опубликовать</button>
@@ -161,5 +181,6 @@
 <!-- Файл импортов для защищённых страниц -->
 <th:block th:replace="~{fragments/global-imports :: secureImports(${user})}" />
 <script src="/js/components/toggle-language-fields.js"></script>
+<script src="/js/components/listing-categories.js"></script>
 </body>
 </html>

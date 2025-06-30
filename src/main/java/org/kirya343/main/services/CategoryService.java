@@ -13,4 +13,7 @@ public interface CategoryService {
     Category updateCategory(Long id, CategoryDTO dto);
     List<Category> getLeafCategories();
     List<Category> getChildCategories(Long parentId);
+    List<Category> getRootCategories();
+    boolean isLeafCategory(Long categoryId);
+    List<Category> getCategoryPath(Long categoryId);
 }

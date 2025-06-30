@@ -1,5 +1,6 @@
 package org.kirya343.main.services.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.kirya343.main.model.Category;
@@ -9,6 +10,7 @@ import org.kirya343.main.services.CategoryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -102,5 +104,37 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     public List<Category> getChildCategories(Long parentId) {
         return categoryRepository.findByParentId(parentId);
+    }
+
+    @Override
+    public List<Category> getRootCategories() {
+        return categoryRepository.findByParentIsNull();
+    }
+
+    @Override
+    public boolean isLeafCategory(Long categoryId) {
+        if (categoryId == null) {
+            return false;
+        }
+        
+        return categoryRepository.findById(categoryId)
+                .map(Category::isLeaf)
+                .orElseThrow(() -> new EntityNotFoundException(
+                    "Категория с ID " + categoryId + " не найдена"
+                ));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Category> getCategoryPath(Long categoryId) {
+        if (categoryId == null) {
+            return Collections.emptyList();
+        }
+        
+        // Вариант 1: Используем рекурсивный CTE запрос (для PostgreSQL)
+        return categoryRepository.findCategoryPathWithNativeQuery(categoryId);
+        
+        // ИЛИ Вариант 2: Рекурсивный обход в Java (если БД не поддерживает CTE)
+        // return findCategoryPathInMemory(categoryId);
     }
 }
