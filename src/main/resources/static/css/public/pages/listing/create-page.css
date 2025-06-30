@@ -2,10 +2,10 @@
 @import url(../../components/listing-page/images-grid.css);
 
 .indicator {
-padding: 5px 10px;
-border-radius: 5px;
-font-weight: bold;
-color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
 }
 .indicator.green { background-color: green; }
 .indicator.yellow { background-color: goldenrod; }
@@ -75,6 +75,7 @@ color: white;
 
 /* Поля формы */
 .form-group {
+    margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
 }
@@ -89,6 +90,7 @@ color: white;
 .form-lang {
     flex: 1; /* чтобы каждая колонка равномерно растягивалась */
 }
+
 .form-group label {
     font-weight: 600;
     display: block;

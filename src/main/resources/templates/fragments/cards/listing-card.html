@@ -8,13 +8,13 @@
             class="listing-img" th:onerror="this.src='/images/default-listing.png'"
             alt="Изображение объявления">
 
-    <div class="card-body">
+    <div class="listing-card-body">
         <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
         <p class="card-text" th:text="${#strings.length(listing.localizedDescription) > 100} ? ${#strings.substring(listing.localizedDescription, 0, 100)} + '...' : ${listing.localizedDescription}">Описание</p>
-        <div class="card-footer">
+        <div class="listing-card-footer">
             <div>
                 <!-- компонент для отображение цены (с типом) -->
-                <span th:replace="fragments/small-components :: priceTypes"></span>
+                <span th:replace="~{fragments/small-components :: priceTypes}"></span>
                 <div class="rating">
                     <th:block th:each="i : ${#numbers.sequence(1,5)}">
                         <i class="fa"
@@ -40,13 +40,13 @@
             class="listing-img"
             alt="Изображение объявления">
 
-    <div class="card-body">
+    <div class="listing-card-body">
         <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
         <p class="card-text" th:text="${#strings.abbreviate(listing.localizedDescription, 100)}">Описание</p>
-        <div class="card-footer">
+        <div class="listing-card-footer">
             <div>
                 <!-- компонент для отображение цены (с типом) -->
-                <span th:replace="fragments/small-components :: priceTypes"></span>
+                <span th:replace="~{fragments/small-components :: priceTypes}"></span>
                 <div class="listing-views">
                     <span th:text="#{listings.views}">0</span>
                     <span th:text="${listing.views}">0</span>
@@ -80,7 +80,7 @@
     <img th:src="@{${similarListing.imagePath ?: '/images/default-listing.png'}}"
             class="listing-img"
             alt="Изображение объявления">
-    <div class="card-body">
+    <div class="listing-card-body">
         <h3 class="card-title">
             <a th:href="@{/listing/{id}(id=${similarListing.id})}"
                 th:text="${similarListing.localizedTitle}">
@@ -88,7 +88,7 @@
             </a>
         </h3>
         <p class="card-text" th:text="${#strings.abbreviate(listing.localizedDescription, 100)}">Описание</p>
-        <div class="card-footer">
+        <div class="listing-card-footer">
             <div>
                 <span class="price" th:switch="${similarListing.priceType}">
                     <span th:case="'negotiable'" th:text="#{price.negotiable}">Договорная</span>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{title.listing.new}">Новое объявление | WorkSwap</title>
-    <link href="/css/public/pages/listing/create-page.css" rel="stylesheet">
+    <link href="/css/public/pages/listing-edit-page.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="shortcut icon" href="/favicon.ico">
 </head>
@@ -152,7 +152,7 @@
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary" th:text="#{listing.creating.button.save}">Опубликовать</button>
-                    <a href="/secure/account" class="btn btn-outline-secondary" th:text="#{listing.editing.button.exit}">Отмена</a>
+                    <a href="/secure/account" class="btn btn-outline-primary" th:text="#{listing.editing.button.exit}">Отмена</a>
                 </div>
             </form>
         </main>

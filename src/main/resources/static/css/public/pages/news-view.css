@@ -128,37 +128,6 @@
     object-fit: cover;
 }
 
-.card-body {
-    padding: 1rem;
-}
-
-.card-title {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-}
-
-.card-title a {
-    color: var(--dark);
-    text-decoration: none;
-}
-
-.card-title a:hover {
-    color: var(--primary);
-}
-
-.card-text {
-    color: var(--gray);
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-}
-
-.card-footer {
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-color);
-    font-size: 0.8rem;
-    color: var(--gray);
-}
-
 /* Стиль для модального окна */
 .fullscreen-modal {
     display: none;

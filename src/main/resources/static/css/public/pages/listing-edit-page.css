@@ -1,5 +1,5 @@
-@import url(../../components/base.css);
-@import url(../../components/listing-page/images-grid.css);
+@import url(../components/base.css);
+@import url(../components/listing-page/images-grid.css);
 
 
 .indicator {
@@ -60,6 +60,8 @@ color: white;
 /* Группы полей формы */
 .form-group {
     margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-lang-grid {

@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public String handleException(Exception ex) {
-        ex.printStackTrace(); // Выведет полную ошибку в консоль
+        //ex.printStackTrace(); // Выведет полную ошибку в консоль
         return "redirect:/error"; // Любая твоя страница
     }
 

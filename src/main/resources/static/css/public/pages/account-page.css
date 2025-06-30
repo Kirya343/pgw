@@ -1,22 +1,8 @@
 @import url(../components/base.css);
 
-.no-listings {
-    text-align: center;
-    padding: 2rem;
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: 0 2px 8px var(--shadow-color);
-    margin-top: 1.5rem;
-}
-
-.no-listings p {
-    margin-bottom: 1rem;
-    color: var(--dark);
-}
-
 /* Статистика */
 .stats-section {
-    margin-top: 2rem;
+    margin-top: auto;
     padding-top: 1.5rem;
     border-top: 1px solid var(--border-color);
 }

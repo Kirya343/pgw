@@ -2,3 +2,7 @@ a.text-link:hover{
     text-decoration: underline;
     color: var(--link-blue);
 }
+
+textarea {
+    font-family: Arial;
+}

@@ -73,7 +73,7 @@
                 <h5 th:text="#{catalog.search.title}">Поиск</h5>
                 <form id="searchForm" method="get" action="/catalog">
                     <div class="input-group">
-                        <input type="text" class="search-input" name="searchQuery" th:value="${searchQuery}"placeholder="Поиск...">
+                        <input type="text" class="search-input" name="searchQuery" th:value="${searchQuery}" placeholder="Поиск...">
                         <input type="hidden" name="category" th:value="${category}">
                         <input type="hidden" name="sortBy" th:value="${sortBy}">
                         <button class="btn btn-search" type="submit">
@@ -103,10 +103,12 @@
 
                 <h5 class="mt-4" th:text="#{catalog.sorting.filters}">Фильтры</h5>
                 <form id="filterForm" method="get" action="/catalog">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="filter2" name="hasReviews"
-                               th:checked="${hasReviews}">
-                        <label class="form-check-label" for="filter2" th:text="#{catalog.sorting.reviews}">С отзывами</label>
+                    <div class="form-check custom-checkbox">
+                        <input class="form-check-input" type="checkbox" id="filter2" name="hasReviews" th:checked="${hasReviews}">
+                        <label class="form-check-label" for="filter2">
+                            <span class="checkmark"></span>
+                            <span th:text="#{catalog.sorting.reviews}">С отзывами</span>
+                        </label>
                     </div>
                 </form>
             </div>
