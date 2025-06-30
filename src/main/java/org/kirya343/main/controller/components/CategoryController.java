@@ -1,6 +1,7 @@
-package org.kirya343.main.controller;
+package org.kirya343.main.controller.components;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.kirya343.main.model.Category;
 import org.kirya343.main.model.DTOs.CategoryDTO;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -48,12 +48,11 @@ public class CategoryController {
         return categoryService.getRootCategories();
     }
 
-    @ResponseBody
     @GetMapping("/children/{parentId}")
-    public List<Category> getChildCategories(@PathVariable Long parentId) {
-        List<Category> categories = categoryService.getChildCategories(parentId);
-        System.out.println("размер "+categories.size());
-        return categories;
+    public List<CategoryDTO> getChildCategories(@PathVariable Long parentId) {
+        return categoryService.getChildCategories(parentId).stream()
+                .map(categoryService::toDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/is-leaf/{categoryId}")
@@ -62,7 +61,9 @@ public class CategoryController {
     }
 
     @GetMapping("/path/{categoryId}")
-    public List<Category> getCategoryPath(@PathVariable Long categoryId) {
-        return categoryService.getCategoryPath(categoryId);
+    public List<CategoryDTO> getCategoryPath(@PathVariable Long categoryId) {
+        return categoryService.getCategoryPath(categoryId).stream()
+                .map(categoryService::toDTO)
+                .collect(Collectors.toList());
     }
 }

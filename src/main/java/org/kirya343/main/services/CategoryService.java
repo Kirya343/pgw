@@ -16,4 +16,5 @@ public interface CategoryService {
     List<Category> getRootCategories();
     boolean isLeafCategory(Long categoryId);
     List<Category> getCategoryPath(Long categoryId);
+    CategoryDTO toDTO(Category category);
 }

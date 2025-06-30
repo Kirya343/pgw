@@ -127,14 +127,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public List<Category> getCategoryPath(Long categoryId) {
+
         if (categoryId == null) {
             return Collections.emptyList();
         }
-        
-        // Вариант 1: Используем рекурсивный CTE запрос (для PostgreSQL)
-        return categoryRepository.findCategoryPathWithNativeQuery(categoryId);
-        
-        // ИЛИ Вариант 2: Рекурсивный обход в Java (если БД не поддерживает CTE)
-        // return findCategoryPathInMemory(categoryId);
+
+        return categoryRepository.findCategoryPathWithNativeQuery(categoryId); 
+    }
+
+    @Override
+    public CategoryDTO toDTO(Category category) {
+        Long parentId = category.getParent() != null ? category.getParent().getId() : null;
+        return new CategoryDTO(category.getId(), category.getName(), parentId, category.isLeaf());
     }
 }

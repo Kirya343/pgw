@@ -101,9 +101,15 @@
                             onchange="loadSubcategories(this.value, 'subCategory2')" disabled>
                         <option value="" disabled selected>Выберите подкатегорию</option>
                     </select>
-                    
+
                     <!-- Уровень 3: Подподкатегории -->
                     <select id="subCategory2" class="form-control category-select" style="display: none; margin-top: 10px;" 
+                            onchange="loadSubcategories(this.value, 'subCategory3')" disabled>
+                        <option value="" disabled selected>Выберите подкатегорию</option>
+                    </select>
+                    
+                    <!-- Уровень 4: чивапчичи -->
+                    <select id="subCategory3" class="form-control category-select" style="display: none; margin-top: 10px;" 
                             onchange="checkLeafCategory(this.value)" disabled>
                         <option value="" disabled selected>Выберите подкатегорию</option>
                     </select> 
@@ -125,21 +131,21 @@
                     </select>
                 </div>
 
-                <!-- <div class="form-group">
+                <div class="form-group">
                     <label th:text="#{listing.editing.image}">Изображения</label>
                     
                     <div class="current-main-image">
-                        <img th:src="${listing.imagePath != null ? listing.imagePath : '/images/default-listing.png'}"
+                        <img th:src="${'/images/default-listing.png'}"
                             th:onerror="this.src='/images/default-listing.png'"
                             class="current-image img-thumbnail"
                             alt="Текущее основное изображение"
                             id="mainImagePreview">
-                        <input type="hidden" id="mainImagePath" name="imagePath" th:value="${listing.imagePath}">
+                        <input type="hidden" id="mainImagePath" name="imagePath">
                     </div>
                     
                     <div class="image-gallery">
                         <div class="image-gallery-grid" id="imageGallery">
-                            <div class="image-item" th:each="image : ${listing.images}">
+                            <!-- <div class="image-item" th:each="image : ${listing.images}" th:if="${listing.images != null}">
                                 <div class="image-card">
                                     <img th:src="${image.path}" 
                                         th:onerror="this.src='/images/default-listing.png'"
@@ -157,7 +163,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     
@@ -168,7 +174,7 @@
                     </div>
                     
                     <input type="hidden" id="deletedImages" name="deletedImages" value="">
-                </div> -->
+                </div>
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary" th:text="#{listing.creating.button.save}">Опубликовать</button>

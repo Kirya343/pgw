@@ -110,15 +110,40 @@
 
                 <!-- Категория и местоположение -->
                 <div class="form-group">
-                    <label for="category" th:text="#{listing.editing.category}">Категория</label>
-                    <select id="category" name="category" required>
-                        <option value="" disabled th:text="#{listing.editing.category.select}">Выберите категорию</option>
-                        <option th:each="entry : ${categories}"
-                                th:value="${entry.key}"
-                                th:selected="${entry.key == listing.category}"
-                                th:text="${entry.value}">
+                    <label th:text="#{listing.editing.category}">Категория</label>
+                    
+                    <!-- Уровень 1: Корневые категории -->
+                    <select id="rootCategory" class="form-control category-select" required
+                            onchange="loadSubcategories(this.value, 'subCategory1')">
+                        <option value="" disabled selected th:text="#{listing.editing.category.select}">Выберите категорию</option>
+                        <option th:each="cat : ${rootCategories}"
+                                th:value="${cat.id}"
+                                th:text="${cat.name}">
                         </option>
                     </select>
+                    
+                    <!-- Уровень 2: Подкатегории -->
+                    <select id="subCategory1" class="form-control category-select" style="display: none; margin-top: 10px;" 
+                            onchange="loadSubcategories(this.value, 'subCategory2')" disabled>
+                        <option value="" disabled selected>Выберите подкатегорию</option>
+                    </select>
+
+                    <!-- Уровень 3: Подподкатегории -->
+                    <select id="subCategory2" class="form-control category-select" style="display: none; margin-top: 10px;" 
+                            onchange="loadSubcategories(this.value, 'subCategory3')" disabled>
+                        <option value="" disabled selected>Выберите подкатегорию</option>
+                    </select>
+                    
+                    <!-- Уровень 4: чивапчичи -->
+                    <select id="subCategory3" class="form-control category-select" style="display: none; margin-top: 10px;" 
+                            onchange="checkLeafCategory(this.value)" disabled>
+                        <option value="" disabled selected>Выберите подкатегорию</option>
+                    </select> 
+                    
+                    <!-- Скрытое поле для ID конечной категории -->
+                    <input type="hidden" id="finalCategoryId" name="categoryId" required>
+                    <div id="categoryError" class="text-danger" style="display: none;"></div>
+                    <div id="categoryPath" class="category-path"></div>
                 </div>
 
                 <div class="form-group">
@@ -206,5 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <!-- Скрипт управления отображением полей -->
 <script src="/js/components/toggle-language-fields.js"></script>
+<script src="/js/components/listing-categories.js"></script>
 </body>
 </html>

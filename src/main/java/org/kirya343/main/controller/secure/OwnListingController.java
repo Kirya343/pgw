@@ -23,7 +23,6 @@ import org.kirya343.main.services.ListingService;
 import org.kirya343.main.services.StorageService;
 import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.AuthService;
-import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -52,7 +51,6 @@ public class OwnListingController {
     private final StorageService storageService;
     private final LocationRepository locationRepository;
     private final AuthService authService;
-    private final MessageSource messageSource;
     private final CategoryService categoryService;
 
     @GetMapping("/create")
@@ -83,6 +81,7 @@ public class OwnListingController {
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
             @ModelAttribute ListingForm form,
             @ModelAttribute Listing listing,
+            @RequestParam Long categoryId,
             @RequestParam String locationName,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
@@ -101,6 +100,7 @@ public class OwnListingController {
             listing.setCreatedAt(LocalDateTime.now());
             listing.setViews(0);
             listing.setRating(0.0);
+            listing.setCategory(categoryService.getCategoryById(categoryId));
 
             // Получаем новые переводы из формы
             Map<String, TranslationDTO> translationDTOs = form.getTranslations();
@@ -185,16 +185,12 @@ public class OwnListingController {
                 return "redirect:/secure/account";
             }
 
-            Map<String, String> categories = Map.of(
-                "services", messageSource.getMessage("category.service", null, locale),
-                "offer-service", messageSource.getMessage("category.offer-service", null, locale),
-                "product", messageSource.getMessage("category.product", null, locale)
-            );
+            Long сategoryId = listing.getCategory().getId();
 
             List<Location> locations = locationRepository.findAllByOrderByNameAsc();
 
             model.addAttribute("listing", listing);
-            model.addAttribute("categories", categories);
+            model.addAttribute("сategoryId", сategoryId);
             model.addAttribute("locations", locations);
 
             // Сформировать Map<String, Map<String, String>> для JSON с переводами
