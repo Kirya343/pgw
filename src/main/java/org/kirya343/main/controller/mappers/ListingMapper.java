@@ -1,13 +1,13 @@
 package org.kirya343.main.controller.mappers;
 
-import org.kirya343.main.model.Listing;
+import java.util.Locale;
+import java.util.Map;
+
 import org.kirya343.main.model.DTOs.ListingDTO;
+import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
-
-import java.util.Locale;
-import java.util.Map;
 
 @Component
 public class ListingMapper {
@@ -24,7 +24,7 @@ public class ListingMapper {
         dto.setId(listing.getId());
         dto.setPrice(listing.getPrice());
         dto.setPriceType(listing.getPriceType());
-        dto.setCategory(listing.getCategory());
+        dto.setCategory(listing.getCategory() != null ? listing.getCategory().getName() : null);
         dto.setLocation(listing.getLocation() != null ? listing.getLocation().getName() : null);
         dto.setRating(listing.getRating());
         dto.setViews(listing.getViews());

@@ -41,7 +41,11 @@ public class Listing {
     @PositiveOrZero
     private double price;
     private String priceType; // "час", "фиксированная" и т.д.
-    private String category;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     private double rating;
     private int views;
     
