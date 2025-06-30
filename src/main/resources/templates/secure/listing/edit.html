@@ -30,7 +30,7 @@
             <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
             <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-            <form id="listingForm" th:action="@{/secure/listing/update/{id}(id=${listing.id})}" method="post" enctype="multipart/form-data" class="edit-listing-form">
+            <form id="listingForm" th:action="@{/secure/listing/update/{id}(id=${listing.id})}" enctype="multipart/form-data" method="post" class="edit-listing-form">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <!-- Статус объявления -->
@@ -95,7 +95,7 @@
                 <!-- Цена -->
                 <div class="form-group">
                     <label for="price" th:text="#{listing.editing.price}">Цена</label>
-                    <input type="number" id="price" name="price" th:value="${listing.price}" step="0.01" required>
+                    <input type="number" id="price" name="listing.price" th:value="${listing.price}" step="0.01" required>
                 </div>
 
                 <div class="form-group">
@@ -123,11 +123,11 @@
 
                 <div class="form-group">
                     <label for="location" th:text="#{listing.editing.location}">Местоположение</label>
-                    <select id="location" name="location" required>
+                    <select id="location" name="locationName" required>
                         <option value="" disabled th:text="#{listing.editing.location.select}">Выберите местоположение</option>
                         <option th:each="loc : ${locations}"
                                 th:value="${loc.name}"
-                                th:selected="${loc.name == listing.location}"
+                                th:selected="${loc.name == listing.location.name}"
                                 th:text="${loc.name}">
                         </option>
                     </select>

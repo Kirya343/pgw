@@ -67,23 +67,28 @@ public class OwnListingController {
 
     @PostMapping("/create")
     public String createListing(
-            @ModelAttribute Listing listing,
             @RequestParam(value = "uploadedImages", required = false) MultipartFile[] uploadedImages,
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
             @ModelAttribute ListingForm form,
+            @ModelAttribute Listing listing,
+            @RequestParam String locationName,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
         try {
             String email = oauth2User.getAttribute("email");
             User currentUser = userService.findByEmail(email);
-
+            Location location = locationRepository.findByName(locationName)
+                   .orElseThrow(() -> new IllegalArgumentException("Location not found: " + locationName));
+            listing.setLocation(location);
             listing.setAuthor(currentUser);
             listing.setCreatedAt(LocalDateTime.now());
             listing.setViews(0);
             listing.setRating(0.0);
 
+            // Получаем новые переводы из формы
             Map<String, TranslationDTO> translationDTOs = form.getTranslations();
+
             Map<String, ListingTranslation> listingTranslations = new HashMap<>();
             listing.getCommunities().clear();
 
@@ -91,11 +96,10 @@ public class OwnListingController {
                 String lang = entry.getKey();
                 TranslationDTO dto = entry.getValue();
 
+                System.out.println("LANG: " + lang + ", DTO: " + dto);
+
                 ListingTranslation translation = new ListingTranslation();
                 translation.setLanguage(lang);
-                System.out.println("Creating translation for language: " + lang);
-                System.out.println("Title: " + dto.getTitle());
-                System.out.println("Description: " + dto.getDescription());
                 translation.setTitle(dto.getTitle());
                 translation.setDescription(dto.getDescription());
                 translation.setListing(listing); // связь с родителем
@@ -108,7 +112,7 @@ public class OwnListingController {
 
             // Сохраняем Listing вместе с переводами
             Listing savedListing = listingService.saveAndReturn(listing);
-
+            
             // Добавление новых изображений
             if (uploadedImages != null) {
                 for (MultipartFile image : uploadedImages) {
@@ -205,15 +209,21 @@ public class OwnListingController {
     public String updateListing(
             @PathVariable Long id,
             @ModelAttribute ListingForm form,
+            @ModelAttribute Listing listing,
             @RequestParam(value = "uploadedImages", required = false) MultipartFile[] uploadedImages,
             @RequestParam(value = "deletedImages", required = false) String deletedImages,
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
             @RequestParam(value = "active", defaultValue = "false") boolean active,
             @RequestParam(value = "testMode", defaultValue = "false") boolean testMode,
+            @RequestParam String locationName,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
         try {
+
+            if (uploadedImages == null) {
+                uploadedImages = new MultipartFile[0];
+            }
 
             Listing existingListing = listingService.getListingById(id);
             User user = userService.findUserFromOAuth2(oauth2User);
@@ -222,6 +232,9 @@ public class OwnListingController {
                 redirectAttributes.addFlashAttribute("error", "Вы не можете редактировать это объявление");
                 return "redirect:/secure/account";
             }
+
+            Location location = locationRepository.findByName(locationName)
+                   .orElseThrow(() -> new IllegalArgumentException("Location not found: " + locationName));
 
             // Получаем новые переводы из формы
             Map<String, TranslationDTO> translationDTOs = form.getTranslations();
@@ -263,10 +276,10 @@ public class OwnListingController {
             }
 
             // Обновляем остальные поля
-            existingListing.setPrice(form.getListing().getPrice());
-            existingListing.setPriceType(form.getListing().getPriceType());
-            existingListing.setCategory(form.getListing().getCategory());
-            existingListing.setLocation(form.getListing().getLocation());
+            existingListing.setPrice(listing.getPrice());
+            existingListing.setPriceType(listing.getPriceType());
+            existingListing.setCategory(listing.getCategory());
+            existingListing.setLocation(location);
             existingListing.setActive(active);
             existingListing.setTestMode(testMode);
 
@@ -290,13 +303,17 @@ public class OwnListingController {
             // Добавление новых изображений
             if (uploadedImages != null) {
                 for (MultipartFile image : uploadedImages) {
+                    System.out.println("Received file: " + image.getOriginalFilename() + ", size=" + image.getSize());
                     if (!image.isEmpty()) {
                         String imagePath = storageService.storeListingImage(image, savedListing.getId());
+                        System.out.println("Stored image path: " + imagePath);
+
                         Image imageEntity = new Image();
                         imageEntity.setListing(savedListing);
                         imageEntity.setPath(imagePath);
                         imageRepository.save(imageEntity);
 
+                        // Логика с основным изображением — проверь внимательно
                         if (Objects.equals(image.getOriginalFilename(), imagePathParam)) {
                             savedListing.setImagePath(imagePath);
                         }

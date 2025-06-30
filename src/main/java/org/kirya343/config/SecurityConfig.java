@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.kirya343.main.exceptions.UserNotRegisteredException;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.UserRepository;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -97,7 +99,7 @@ public class SecurityConfig {
                     csrf.ignoringRequestMatchers(
                         "/api/applications/**",
                         "/ws/**",
-                        "/api/users/accept-terms" // 🔹 добавлено
+                        "/api/users/accept-terms"
                     );
                 });
         return http.build();
@@ -130,8 +132,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    MultipartConfigElement multipartConfigElement() {
-        return new MultipartConfigElement("", 10 * 1024 * 1024, 10 * 1024 * 1024, 0);
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize(DataSize.ofMegabytes(50));
+        factory.setMaxRequestSize(DataSize.ofMegabytes(100));
+        return factory.createMultipartConfig();
     }
 
     @Bean
