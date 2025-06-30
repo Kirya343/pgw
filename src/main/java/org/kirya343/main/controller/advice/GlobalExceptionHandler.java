@@ -11,6 +11,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception ex) {
+        ex.printStackTrace(); // Выведет полную ошибку в консоль
+        return "redirect:/error"; // Любая твоя страница
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ModelAndView handleRuntimeException(RuntimeException ex) {
         ModelAndView modelAndView = new ModelAndView();
@@ -32,6 +38,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MultipartException.class)
     public String handleMultipartException(MultipartException e, RedirectAttributes redirectAttributes) {
+        System.out.println("Ошибка Multipart: " + e);
+        System.out.println(e.getMessage());
+        e.printStackTrace(); 
         redirectAttributes.addFlashAttribute("error", "Ошибка при разборе загружаемых файлов.");
         return "redirect:/secure/error"; // или другая страница с ошибкой
     }

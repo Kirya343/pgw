@@ -146,7 +146,7 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.findByCommunityAndActiveTrue(community.toLowerCase(), pageable);
     }
 
-@Override
+    @Override
     public Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, Locale locale) {
         Sort sort;
 

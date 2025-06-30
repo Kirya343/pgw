@@ -1,5 +1,10 @@
 server:
   port: 8080
+  tomcat:
+    max-http-form-post-data-size: 100MB # Default, but good to know
+    max-swallow-size: -1 # Allows unlimited size for multipart requests, if needed
+    max-part-count: 1000
+    max-http-form-post-size: 20971520  # 20MB
 
 spring:
   config:
@@ -25,6 +30,12 @@ spring:
       auto-commit: false
   mvc:
     static-path-pattern: /**
+  servlet:
+    multipart:
+      enabled: true                # Включить поддержку multipart (по умолчанию true, но лучше указать явно)
+      max-file-size: 100MB          # Максимальный размер одного файла
+      max-request-size: 200MB       # Максимальный общий размер всех файлов в одном запросе
+      file-size-threshold: 2MB      # Порог после которого данные пишутся на диск (0 — сразу на диск)
   jpa:
     hibernate:
         ddl-auto: update
@@ -42,6 +53,7 @@ logging:
     org:
       springframework:
         web:
+          multipart: DEBUG
           servlet:
             resource: DEBUG
         security: DEBUG
