@@ -1,23 +1,31 @@
 package org.kirya343.main.controller;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Locale;
+
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Review;
 import org.kirya343.main.model.User;
-import org.kirya343.main.services.*;
+import org.kirya343.main.services.FavoriteListingService;
+import org.kirya343.main.services.ListingService;
+import org.kirya343.main.services.ReviewService;
+import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.RoleCheckService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Locale;
 
 @Controller
 @RequestMapping("/listing")
@@ -70,7 +78,7 @@ public class ListingsController {
         model.addAttribute("listing", listing);
         model.addAttribute("reviews", reviews);
 
-        model.addAttribute("similarListings", listingService.findSimilarListings(listing.getCategory(), id, locale));
+        model.addAttribute("similarListings", listingService.findSimilarListings(listing.getCategory().getName(), id, locale));
 
         return "listing";
     }

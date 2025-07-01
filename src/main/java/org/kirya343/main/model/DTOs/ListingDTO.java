@@ -1,9 +1,9 @@
 package org.kirya343.main.model.DTOs;
 
+import java.time.LocalDateTime;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -20,6 +20,7 @@ public class ListingDTO {
     private double price;
     private String priceType;
     private String category;
+    private Long categoryId;
     private String location;
     private double rating;
     private int views;

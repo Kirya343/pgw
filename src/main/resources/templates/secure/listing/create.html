@@ -84,14 +84,43 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="category" th:text="#{listing.editing.category}">Категория</label>
-                    <select id="category" name="category" class="form-control" required>
+                    <div style="display: flex; flex-direction: row;">
+                        <label th:text="#{listing.editing.category}">Категория</label>
+                        <div id="categoryPath" class="category-path"></div>
+                    </div>
+                    
+                    <!-- Уровень 1: Корневые категории -->
+                    <select id="rootCategory" class="form-control category-select" required
+                            onchange="loadSubcategories(this.value, 'subCategory1')">
                         <option value="" disabled selected th:text="#{listing.editing.category.select}">Выберите категорию</option>
-                        <option th:each="entry : ${categories}"
-                                th:value="${entry.key}"
-                                th:text="${entry.value}">
+                        <option th:each="cat : ${rootCategories}"
+                                th:value="${cat.id}"
+                                th:text="${cat.name}">
                         </option>
                     </select>
+                    
+                    <!-- Уровень 2: Подкатегории -->
+                    <select id="subCategory1" class="form-control category-select" style="display: none; margin-top: 10px;" 
+                            onchange="loadSubcategories(this.value, 'subCategory2')" disabled>
+                        <option value="" disabled selected>Выберите подкатегорию</option>
+                    </select>
+
+                    <!-- Уровень 3: Подподкатегории -->
+                    <select id="subCategory2" class="form-control category-select" style="display: none; margin-top: 10px;" 
+                            onchange="loadSubcategories(this.value, 'subCategory3')" disabled>
+                        <option value="" disabled selected>Выберите подкатегорию</option>
+                    </select>
+                    
+                    <!-- Уровень 4: чивапчичи -->
+                    <select id="subCategory3" class="form-control category-select" style="display: none; margin-top: 10px;" 
+                            onchange="checkLeafCategory(this.value)" disabled>
+                        <option value="" disabled selected>Выберите подкатегорию</option>
+                    </select> 
+                    
+                    <!-- Скрытое поле для ID конечной категории -->
+                    <input type="hidden" id="finalCategoryId" name="categoryId" required>
+                    <div id="categoryError" class="text-danger" style="display: none;"></div>
+                    <div id="categoryPath" class="category-path"></div>
                 </div>
 
                 <div class="form-group">
@@ -109,17 +138,17 @@
                     <label th:text="#{listing.editing.image}">Изображения</label>
                     
                     <div class="current-main-image">
-                        <img th:src="${listing.imagePath != null ? listing.imagePath : '/images/default-listing.png'}"
+                        <img th:src="${'/images/default-listing.png'}"
                             th:onerror="this.src='/images/default-listing.png'"
                             class="current-image img-thumbnail"
                             alt="Текущее основное изображение"
                             id="mainImagePreview">
-                        <input type="hidden" id="mainImagePath" name="imagePath" th:value="${listing.imagePath}">
+                        <input type="hidden" id="mainImagePath" name="imagePath">
                     </div>
                     
                     <div class="image-gallery">
                         <div class="image-gallery-grid" id="imageGallery">
-                            <div class="image-item" th:each="image : ${listing.images}">
+                            <!-- <div class="image-item" th:each="image : ${listing.images}" th:if="${listing.images != null}">
                                 <div class="image-card">
                                     <img th:src="${image.path}" 
                                         th:onerror="this.src='/images/default-listing.png'"
@@ -137,7 +166,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     
@@ -161,5 +190,6 @@
 <!-- Файл импортов для защищённых страниц -->
 <th:block th:replace="~{fragments/global-imports :: secureImports(${user})}" />
 <script src="/js/components/toggle-language-fields.js"></script>
+<script src="/js/components/listing-categories.js"></script>
 </body>
 </html>

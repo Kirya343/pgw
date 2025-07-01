@@ -196,4 +196,20 @@ color: white;
     .navbar-collapse {
         top: 0;
     }
+    .category-select {
+        transition: all 0.3s ease;
+        margin-bottom: 5px;
+    }
+
+    .category-select:disabled {
+        opacity: 0.6;
+        background-color: #f8f9fa;
+    }
+
+    .category-path {
+        margin-top: 5px;
+        font-size: 0.9em;
+        color: #6c757d;
+    }
 }
+

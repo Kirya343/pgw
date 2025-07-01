@@ -1,28 +1,5 @@
 package org.kirya343.main.controller.secure;
 
-import org.kirya343.main.model.listingModels.Image;
-import org.kirya343.main.model.listingModels.ListingTranslation;
-import org.kirya343.main.model.listingModels.Location;
-import org.kirya343.main.model.Listing;
-import org.kirya343.main.model.User;
-import org.kirya343.main.model.DTOs.ListingForm;
-import org.kirya343.main.model.DTOs.TranslationDTO;
-import org.kirya343.main.repository.LocationRepository;
-import org.kirya343.main.services.*;
-import org.kirya343.main.services.components.AuthService;
-import org.springframework.context.MessageSource;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,7 +8,37 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import org.kirya343.main.model.Category;
+import org.kirya343.main.model.DTOs.ListingForm;
+import org.kirya343.main.model.DTOs.TranslationDTO;
+import org.kirya343.main.model.Listing;
+import org.kirya343.main.model.User;
+import org.kirya343.main.model.listingModels.Image;
+import org.kirya343.main.model.listingModels.ListingTranslation;
+import org.kirya343.main.model.listingModels.Location;
 import org.kirya343.main.repository.ImageRepository;
+import org.kirya343.main.repository.LocationRepository;
+import org.kirya343.main.services.CategoryService;
+import org.kirya343.main.services.ListingService;
+import org.kirya343.main.services.StorageService;
+import org.kirya343.main.services.UserService;
+import org.kirya343.main.services.components.AuthService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/secure/listing")
@@ -44,24 +51,27 @@ public class OwnListingController {
     private final StorageService storageService;
     private final LocationRepository locationRepository;
     private final AuthService authService;
-    private final MessageSource messageSource;
+    private final CategoryService categoryService;
 
     @GetMapping("/create")
-    public String showCreateForm(Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
-
-        Map<String, String> categories = Map.of(
-                "services", messageSource.getMessage("category.service", null, locale),
-                "offer-service", messageSource.getMessage("category.offer-service", null, locale),
-                "product", messageSource.getMessage("category.product", null, locale)
-        );
-        model.addAttribute("categories", categories);
-
+    public String showCreateForm(Model model, 
+                            @AuthenticationPrincipal OAuth2User oauth2User, 
+                            Locale locale) {
+        
+        // 1. Получаем только корневые категории (без родителя)
+        List<Category> rootCategories = categoryService.getRootCategories();
+        model.addAttribute("rootCategories", rootCategories);
+        
+        // 2. Добавляем локации (оставляем как было)
         List<Location> locations = locationRepository.findAllByOrderByNameAsc();
         model.addAttribute("locations", locations);
-
+        
+        // 3. Добавляем пустую форму
+        model.addAttribute("listingForm", new ListingForm());
+        
+        // 4. Аутентификация (оставляем как было)
         authService.validateAndAddAuthentication(model, oauth2User);
-
-        model.addAttribute("listing", new Listing());
+        
         return "secure/listing/create";
     }
 
@@ -71,10 +81,15 @@ public class OwnListingController {
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
             @ModelAttribute ListingForm form,
             @ModelAttribute Listing listing,
+            @RequestParam Long categoryId,
             @RequestParam String locationName,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
+        if (listing.getCategory() != null && !listing.getCategory().isLeaf()) {
+            redirectAttributes.addFlashAttribute("error", "Можно выбрать только конечную категорию");
+            return "redirect:/secure/listing/create";
+        }
         try {
             String email = oauth2User.getAttribute("email");
             User currentUser = userService.findByEmail(email);
@@ -85,6 +100,7 @@ public class OwnListingController {
             listing.setCreatedAt(LocalDateTime.now());
             listing.setViews(0);
             listing.setRating(0.0);
+            listing.setCategory(categoryService.getCategoryById(categoryId));
 
             // Получаем новые переводы из формы
             Map<String, TranslationDTO> translationDTOs = form.getTranslations();
@@ -160,6 +176,10 @@ public class OwnListingController {
             Locale locale
     ) {
         try {
+
+            List<Category> rootCategories = categoryService.getRootCategories();
+            model.addAttribute("rootCategories", rootCategories);
+            
             // Проверка, что текущий пользователь - автор объявления
             User user = userService.findUserFromOAuth2(oauth2User);
             Listing listing = listingService.getListingById(id);
@@ -169,16 +189,12 @@ public class OwnListingController {
                 return "redirect:/secure/account";
             }
 
-            Map<String, String> categories = Map.of(
-                "services", messageSource.getMessage("category.service", null, locale),
-                "offer-service", messageSource.getMessage("category.offer-service", null, locale),
-                "product", messageSource.getMessage("category.product", null, locale)
-            );
+            Long categoryId = listing.getCategory().getId();
 
             List<Location> locations = locationRepository.findAllByOrderByNameAsc();
 
             model.addAttribute("listing", listing);
-            model.addAttribute("categories", categories);
+            model.addAttribute("categoryId", categoryId);
             model.addAttribute("locations", locations);
 
             // Сформировать Map<String, Map<String, String>> для JSON с переводами
