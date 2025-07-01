@@ -176,6 +176,10 @@ public class OwnListingController {
             Locale locale
     ) {
         try {
+
+            List<Category> rootCategories = categoryService.getRootCategories();
+            model.addAttribute("rootCategories", rootCategories);
+            
             // Проверка, что текущий пользователь - автор объявления
             User user = userService.findUserFromOAuth2(oauth2User);
             Listing listing = listingService.getListingById(id);
@@ -185,12 +189,12 @@ public class OwnListingController {
                 return "redirect:/secure/account";
             }
 
-            Long сategoryId = listing.getCategory().getId();
+            Long categoryId = listing.getCategory().getId();
 
             List<Location> locations = locationRepository.findAllByOrderByNameAsc();
 
             model.addAttribute("listing", listing);
-            model.addAttribute("сategoryId", сategoryId);
+            model.addAttribute("categoryId", categoryId);
             model.addAttribute("locations", locations);
 
             // Сформировать Map<String, Map<String, String>> для JSON с переводами

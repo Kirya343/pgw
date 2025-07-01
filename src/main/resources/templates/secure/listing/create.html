@@ -84,7 +84,10 @@
                 </div>
 
                 <div class="form-group">
-                    <label th:text="#{listing.editing.category}">Категория</label>
+                    <div style="display: flex; flex-direction: row;">
+                        <label th:text="#{listing.editing.category}">Категория</label>
+                        <div id="categoryPath" class="category-path"></div>
+                    </div>
                     
                     <!-- Уровень 1: Корневые категории -->
                     <select id="rootCategory" class="form-control category-select" required
