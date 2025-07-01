@@ -49,10 +49,6 @@
         display: none;
     }
 
-    .listings-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    }
-
     .navbar-collapse {
         top: 0;
     }

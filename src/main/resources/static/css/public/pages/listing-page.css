@@ -78,6 +78,26 @@
     box-shadow: 0 2px 8px var(--shadow-color);
 }
 
+.listing-description {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.listing-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.listing-views {
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
 .main-image {
     width: 100%;
     height: 400px;

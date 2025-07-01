@@ -20,3 +20,10 @@
     margin-bottom: 1rem;
     color: var(--dark);
 }
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .listings-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}

@@ -85,8 +85,8 @@
                             <span th:replace="fragments/small-components :: priceTypes"></span>
                         </div>
                         <div class="detail-item">
-                            <span class="detail-label" th:text="#{listing.location}">Локация:</span>
-                            <span class="detail-value" th:text="${listing.location ?: 'Хельсинки'}">Хельсинки</span>
+                            <span class="detail-label" th:text="#{listing.location.name}">Локация:</span>
+                            <span class="detail-value" th:text="${listing.location.name ?: 'Хельсинки'}">Хельсинки</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label" th:text="#{listing.category}">Категория:</span>

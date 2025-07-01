@@ -28,28 +28,6 @@
                 </div>
             </div>
 
-            <!-- Галерея изображений -->
-            <!-- <div class="listing-gallery">
-                <div class="main-image">
-                    <img th:src="@{'/' + ${listing.imagePath}}"
-                         th:onerror="this.src='/images/default-listing.png'"
-                         alt="Основное изображение"
-                         class="clickable-image" th:data-fullscreen="@{'/' + ${listing.imagePath}}">
-                </div>
-                <div class="thumbnails" th:if="${listing.images != null and !listing.images.isEmpty()}">
-                    <div class="thumbnail" th:each="image : ${listing.images}">
-                        <img th:src="@{'/' + ${image.path}}"
-                             th:onerror="this.src='/images/default-listing.png'"
-                             alt="Дополнительное изображение"
-                             class="clickable-image" data-fullscreen="@{'/' + ${image.path}}">
-                    </div>
-                </div>
-            </div>
-            <div id="fullscreen-modal" class="fullscreen-modal">
-                <span class="close" id="close-modal">&times;</span>
-                <img id="fullscreen-image" src="" alt='/images/default-listing.png'>
-            </div> -->
-
             <!-- Факты о пользователе -->
             <div class="listing-content">
                 <div class="listing-details">
