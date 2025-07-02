@@ -3,6 +3,7 @@ package org.kirya343.main.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.kirya343.main.model.Category;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.springframework.data.domain.Page;
@@ -36,7 +37,7 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     @Query("SELECT l FROM Listing l WHERE l.active = true AND l.category = :category")
     Page<Listing> findActiveByCategory(@Param("category") String category, Pageable pageable);
     @Query("SELECT l FROM Listing l WHERE l.category = :category AND l.id != :excludeId AND l.active = true ORDER BY l.createdAt DESC")
-    List<Listing> findByCategoryAndIdNot(@Param("category") String category, @Param("excludeId") Long excludeId, Pageable pageable);
+    List<Listing> findByCategoryAndIdNot(@Param("category") Category category, @Param("excludeId") Long excludeId, Pageable pageable);
 
     @Query("SELECT l FROM Listing l WHERE :language MEMBER OF l.communities AND l.category = :category AND l.active = true")
     Page<Listing> findByCategoryAndLanguageAndActiveTrue(@Param("category") String category,
@@ -79,7 +80,7 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
         AND c = :language 
         """)
     List<Listing> findTop4ByCategoryAndIdNotAndCommunity(
-        @Param("category") String category,
+        @Param("category") Category category,
         @Param("excludeId") Long excludeId,
         @Param("language") String language,
         Pageable pageable);

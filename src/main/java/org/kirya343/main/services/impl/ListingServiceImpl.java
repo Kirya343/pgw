@@ -6,8 +6,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.kirya343.config.LocalisationConfig.LanguageUtils;
 import org.kirya343.main.controller.mappers.ListingMapper;
 import org.kirya343.main.model.DTOs.ListingDTO;
+import org.kirya343.main.model.Category;
 import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
@@ -100,11 +102,11 @@ public class ListingServiceImpl implements ListingService {
     }
 
     @Override // Переписать, он не универсальный
-    public List<Listing> findSimilarListings(String category, Long excludeId, Locale locale) {
+    public List<Listing> findSimilarListings(Category category, Long excludeId, Locale locale) {
         String lang = locale.getLanguage();
 
         // Если язык неизвестен — не фильтруем по сообществам, берем просто по категории и id
-        if (!List.of("fi", "ru", "en", "it").contains(lang)) {
+        if (!LanguageUtils.SUPPORTED_LANGUAGES.contains(lang)) {
             return listingRepository.findByCategoryAndIdNot(category, excludeId, PageRequest.of(0, 4));
         }
 
@@ -310,7 +312,7 @@ public class ListingServiceImpl implements ListingService {
         // fallback, если нужного языка нет
         if (selected == null || isBlank(selected.getTitle()) || isBlank(selected.getDescription())) {
             // Приоритет: fi > ru > en
-            for (String fallbackLang : List.of("fi", "ru", "en", "it")) {
+            for (String fallbackLang : LanguageUtils.SUPPORTED_LANGUAGES) {
                 selected = translations.get(fallbackLang);
                 if (selected != null && !isBlank(selected.getTitle()) && !isBlank(selected.getDescription())) {
                     break;
@@ -337,7 +339,7 @@ public class ListingServiceImpl implements ListingService {
         // fallback, если нужного языка нет
         if (selected == null || isBlank(selected.getTitle()) || isBlank(selected.getDescription())) {
             // Приоритет: fi > ru > en
-            for (String fallbackLang : List.of("fi", "ru", "en")) {
+            for (String fallbackLang : LanguageUtils.SUPPORTED_LANGUAGES) {
                 selected = translations.get(fallbackLang);
                 if (selected != null && !isBlank(selected.getTitle()) && !isBlank(selected.getDescription())) {
                     break;

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.kirya343.main.model.DTOs.ListingDTO;
+import org.kirya343.main.model.Category;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public interface ListingService {
     Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, Locale locale);
 
     // Методы для работы с похожими объявлениями
-    List<Listing> findSimilarListings(String category, Long excludeId, Locale locale);
+    List<Listing> findSimilarListings(Category category, Long excludeId, Locale locale);
 
     ListingDTO getListingDtoById(Long id);
 

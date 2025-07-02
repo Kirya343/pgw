@@ -78,7 +78,7 @@ public class ListingsController {
         model.addAttribute("listing", listing);
         model.addAttribute("reviews", reviews);
 
-        model.addAttribute("similarListings", listingService.findSimilarListings(listing.getCategory().getName(), id, locale));
+        model.addAttribute("similarListings", listingService.findSimilarListings(listing.getCategory(), id, locale));
 
         return "listing";
     }

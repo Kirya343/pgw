@@ -55,7 +55,7 @@ public class AdminUsersController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteNews(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             userService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", "Пользователь успешно удален");

@@ -1,7 +1,16 @@
 package org.kirya343.main.services.impl;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import org.kirya343.main.model.Category;
 import org.kirya343.main.model.DTOs.CategoryDTO;
@@ -21,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public Category createCategory(CategoryDTO dto) {
+    public Category createCategory(CategoryDTO dto, List<String> translations) throws IOException {
         if (categoryRepository.existsByName(dto.getName())) {
             throw new IllegalArgumentException("Category with name '" + dto.getName() + "' already exists");
         }
@@ -38,6 +47,22 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = new Category(dto.getName(), parent);
         category.setLeaf(dto.isLeaf());
+
+        if (translations != null) {
+            for (String translation : translations) {
+                String[] parts = translation.split("\\.");
+
+                if (parts.length == 2) {
+                    String text = parts[0];   // "перевод"
+                    String lang = parts[1];   // "ru"
+                    addCategoryTranslation(category.getName(), lang, text);
+                } else {
+                    // Обработка ошибки: неверный формат
+                    throw new IllegalArgumentException("Неверный формат строки. Ожидалось: текст.язык");
+                }
+            }
+        }
+
         return categoryRepository.save(category);
     }
 
@@ -139,5 +164,39 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO toDTO(Category category) {
         Long parentId = category.getParent() != null ? category.getParent().getId() : null;
         return new CategoryDTO(category.getId(), category.getName(), parentId, category.isLeaf());
+    }
+
+    @Override
+    public void addCategoryTranslation(String categoryName, String lang, String translation) throws IOException {
+        String key = "category." + categoryName;
+        String lineToAdd = key + "=" + translation;
+
+        // Формируем путь к файлу локализации
+        String filename = "src/main/resources/lang/categories/categories_" + lang + ".properties";
+        File file = new File(filename);
+
+        // Убедимся, что файл существует
+        if (!file.exists()) {
+            file.getParentFile().mkdirs(); // Создаём папки, если нужно
+            file.createNewFile();          // Создаём сам файл
+        }
+
+        // Загружаем все свойства из файла
+        Properties props = new Properties();
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
+            props.load(reader);
+        }
+
+        // Проверяем, есть ли уже такой ключ
+        if (props.containsKey(key)) {
+            return; // Ничего не делаем — перевод уже есть
+        }
+
+        // Добавляем новую строку в конец файла
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
+            writer.newLine();
+            writer.write(lineToAdd);
+        }
     }
 }

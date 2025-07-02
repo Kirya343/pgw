@@ -57,55 +57,6 @@ color: white;
     gap: 1.5rem;
 }
 
-/* Группы полей формы */
-.form-group {
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
-}
-
-.form-lang-grid {
-    display: flex;
-    gap: 20px; /* расстояние между языками */
-    flex-wrap: wrap; /* чтобы на маленьком экране переносились вниз */
-    margin-top: 20px;
-}
-
-.form-lang {
-    flex: 1; /* чтобы каждая колонка равномерно растягивалась */
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: var(--dark);
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    font-size: 1rem;
-    background-color: var(--light);
-    transition: border-color 0.2s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: var(--primary);
-    outline: none;
-}
-
-.form-group textarea {
-    resize: vertical;
-    min-height: 120px;
-}
-
 /* Загрузка изображений */
 .image-upload {
     margin-top: 1rem;
@@ -199,11 +150,27 @@ color: white;
     border: 1px solid rgba(248, 113, 113, 0.2);
 }
 
+.form-lang-grid {
+    display: flex;
+    gap: 20px; /* расстояние между языками */
+    flex-wrap: wrap; /* чтобы на маленьком экране переносились вниз */
+    margin-top: 20px;
+}
+
+.form-lang {
+    flex: 1; /* чтобы каждая колонка равномерно растягивалась */
+}
+
+
 /* Дополнительные стили для формы */
 .form-text {
     font-size: 0.8rem;
     color: var(--gray);
     margin-top: 0.25rem;
+}
+
+.category-path {
+    margin-left: 2rem;
 }
 
 /* Адаптивность */

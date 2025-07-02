@@ -72,7 +72,13 @@
 
     <a href="/admin/locations" 
         class="admin-nav-item" 
-        th:classappend="${activePage == 'admin-users'} ? ' active'">
+        th:classappend="${activePage == 'admin-locations'} ? ' active'">
         <i class="fas fa-users"></i> Локации
+    </a>
+
+    <a href="/admin/categories" 
+        class="admin-nav-item" 
+        th:classappend="${activePage == 'admin-categories'} ? ' active'">
+        <i class="fas fa-users"></i> Категории
     </a>
 </nav>
