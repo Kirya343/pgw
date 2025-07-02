@@ -206,6 +206,10 @@ color: white;
     margin-top: 0.25rem;
 }
 
+.category-path {
+    margin-left: 2rem;
+}
+
 /* Адаптивность */
 @media (max-width: 992px) {
     .form-lang-grid {

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.kirya343.main.controller.mappers.ListingMapper;
 import org.kirya343.main.model.DTOs.ListingDTO;
+import org.kirya343.main.model.Category;
 import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
@@ -100,7 +101,7 @@ public class ListingServiceImpl implements ListingService {
     }
 
     @Override // Переписать, он не универсальный
-    public List<Listing> findSimilarListings(String category, Long excludeId, Locale locale) {
+    public List<Listing> findSimilarListings(Category category, Long excludeId, Locale locale) {
         String lang = locale.getLanguage();
 
         // Если язык неизвестен — не фильтруем по сообществам, берем просто по категории и id

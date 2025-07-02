@@ -116,7 +116,7 @@
                     </div>
                     <!-- Уровень 1: Корневые категории -->
                     <select id="rootCategory" class="form-control category-select" required
-                            onchange="loadSubcategories(this.value, 'subCategory1')">
+                            onchange="checkAndLoad(this.value, 'subCategory1')">
                         <option value="" disabled selected th:text="#{listing.editing.category.select}">Выберите категорию</option>
                         <option th:each="cat : ${rootCategories}"
                                 th:value="${cat.id}"
@@ -126,19 +126,19 @@
                     
                     <!-- Уровень 2: Подкатегории -->
                     <select id="subCategory1" class="form-control category-select" style="display: none; margin-top: 10px;" 
-                            onchange="loadSubcategories(this.value, 'subCategory2')" disabled>
+                            onchange="checkAndLoad(this.value, 'subCategory2')" disabled>
                         <option value="" disabled selected>Выберите подкатегорию</option>
                     </select>
 
                     <!-- Уровень 3: Подподкатегории -->
                     <select id="subCategory2" class="form-control category-select" style="display: none; margin-top: 10px;" 
-                            onchange="loadSubcategories(this.value, 'subCategory3')" disabled>
+                            onchange="checkAndLoad(this.value, 'subCategory3')" disabled>
                         <option value="" disabled selected>Выберите подкатегорию</option>
                     </select>
                     
                     <!-- Уровень 4: чивапчичи -->
                     <select id="subCategory3" class="form-control category-select" style="display: none; margin-top: 10px;" 
-                            onchange="checkLeafCategory(this.value)" disabled>
+                            onchange="checkAndLoad(this.value, null)" disabled>
                         <option value="" disabled selected>Выберите подкатегорию</option>
                     </select> 
                     

@@ -8,11 +8,7 @@
 </span>
 
 <!-- Компонент типов категорий объявления -->
-<span th:switch="${listing.category}" th:fragment="categoryTypes">
-    <span th:case="'services'" th:text="#{category.service}">Услуга</span>
-    <span th:case="'product'" th:text="#{category.product}">Товар</span>
-    <span th:case="'offer-service'" th:text="#{category.offer-service}">Запрос на услугу3</span>
-</span>
+<span th:with="key='listing.category.' + ${listing.category.name}" th:text="#{${key}}" th:fragment="categoryTypes"></span>
 
 <!-- Компонент кнопки загрузки файлов -->
 <div class="upload-controls" th:fragment="uploadControls">
