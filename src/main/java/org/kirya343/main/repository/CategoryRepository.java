@@ -23,6 +23,11 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     // Найти категории по флагу leaf (конечные/не конечные)
     List<Category> findByLeaf(boolean leaf);
 
+    // Найти все корневые категории (без родителя)
+    Category findByName(String categoryName);
+
+    List<Category> findByParent(Category parent);
+
     @Query(value = """
         WITH RECURSIVE category_path AS (
             SELECT id, name, parent_id, leaf

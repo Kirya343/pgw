@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -198,5 +199,18 @@ public class CategoryServiceImpl implements CategoryService {
             writer.newLine();
             writer.write(lineToAdd);
         }
+    }
+
+    @Override
+    public List<Category> getAllDescendants(Category parent) {
+        List<Category> descendants = new ArrayList<>();
+        descendants.add(parent);
+        List<Category> children = categoryRepository.findByParent(parent);
+        for (Category child : children) {
+            descendants.add(child);
+            descendants.addAll(getAllDescendants(child));
+            System.out.println("Дочерняя категория найдена: " + child.getName());
+        }
+        return descendants;
     }
 }

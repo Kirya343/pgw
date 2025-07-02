@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.kirya343.main.model.Category;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.Resume;
+import org.kirya343.main.repository.CategoryRepository;
+import org.kirya343.main.services.CategoryService;
 import org.kirya343.main.services.ListingService;
 import org.kirya343.main.services.ResumeService;
 import org.kirya343.main.services.components.AuthService;
@@ -31,9 +34,11 @@ import lombok.RequiredArgsConstructor;
 public class CatalogController {
 
     private final ListingService listingService;
+    private final CategoryRepository categoryRepository;
     private final ResumeService resumeService;
     private final AuthService authService;
     private final MessageSource messageSource;
+    private final CategoryService categoryService;
 
     @GetMapping
     public String showCatalog(
@@ -48,6 +53,8 @@ public class CatalogController {
             HttpServletRequest request,
             @AuthenticationPrincipal OAuth2User oauth2User) {
 
+        Category categoryType = categoryRepository.findByName(category);
+
         Sort sort = switch (sortBy) {
             case "price" -> Sort.by("price");
             case "rating" -> Sort.by("rating").descending();
@@ -56,7 +63,7 @@ public class CatalogController {
         };
         Pageable pageable = PageRequest.of(page, 12, sort);
 
-        Page<Listing> listingsPage = listingService.getListingsSorted(category, sortBy, pageable, searchQuery, hasReviews, locale);
+        Page<Listing> listingsPage = listingService.getListingsSorted(categoryType, sortBy, pageable, searchQuery, hasReviews, locale);
         listingService.localizeCatalogListings(listingsPage.getContent(), locale);
 
         List<Resume> resumes = new ArrayList<>();
@@ -80,6 +87,9 @@ public class CatalogController {
         model.addAttribute("category", category);
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("hasReviews", hasReviews);
+        
+        List<Category> rootCategories = categoryService.getRootCategories();
+        model.addAttribute("rootCategories", rootCategories);
 
         // Переменная для отображения активной страницы
         model.addAttribute("searchQuery", searchQuery);
@@ -95,7 +105,6 @@ public class CatalogController {
         );
 
         model.addAttribute("categories", categories);
-        model.addAttribute("category", category); // важно сохранить исходное значение category
 
         return "catalog";
     }
@@ -121,7 +130,9 @@ public class CatalogController {
 
         Pageable pageable = PageRequest.of(page, 12);
 
-        Page<Listing> listingsPage = listingService.getListingsSorted(category, sortBy, pageable, searchQuery, hasReviews, locale);
+        Category categoryType = categoryRepository.findByName(category);
+
+        Page<Listing> listingsPage = listingService.getListingsSorted(categoryType, sortBy, pageable, searchQuery, hasReviews, locale);
         System.out.println("Found listings: " + listingsPage.getTotalElements());
 
         listingService.localizeCatalogListings(listingsPage.getContent(), locale);

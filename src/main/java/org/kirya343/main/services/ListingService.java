@@ -22,10 +22,10 @@ public interface ListingService {
     Page<Listing> findActiveByCategory(String category, Pageable pageable);
     Listing getListingById(Long id);
     Listing getListingByIdWithAuthorAndReviews(Long id);
-    Page<Listing> findActiveByCategoryAndCommunity(String community, String category, Pageable pageable);
+    Page<Listing> findActiveByCategoryAndCommunity(String community, Category category, Pageable pageable);
     Page<Listing> findActiveByCommunity(String community, Pageable pageable);
     List<Listing> getRecentListings(int count);
-    Page<Listing> getListingsSorted(String category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, Locale locale);
+    Page<Listing> getListingsSorted(Category category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, Locale locale);
 
     // Методы для работы с похожими объявлениями
     List<Listing> findSimilarListings(Category category, Long excludeId, Locale locale);
@@ -47,5 +47,5 @@ public interface ListingService {
     List<Listing> localizeFavoriteListings(User user, Locale locale);
     List<Listing> localizeCatalogListings(List<Listing> listings, Locale locale);
 
-    Page<Listing> findListingsByCategoryAndCommunity(String category, Locale locale, Pageable pageable);
+    Page<Listing> findListingsByCategoryAndCommunity(Category category, Locale locale, Pageable pageable);
 }
