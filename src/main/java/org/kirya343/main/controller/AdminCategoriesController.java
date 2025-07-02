@@ -1,7 +1,11 @@
 package org.kirya343.main.controller;
 
+import org.kirya343.main.model.Category;
+import org.kirya343.main.model.DTOs.CategoryDTO;
 import org.kirya343.main.model.listingModels.Location;
+import org.kirya343.main.repository.CategoryRepository;
 import org.kirya343.main.repository.LocationRepository;
+import org.kirya343.main.services.CategoryService;
 import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.RoleCheckService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,55 +17,64 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/locations")
-public class AdminLocationsController {
+@RequestMapping("/admin/categories")
+public class AdminCategoriesController {
 
-    private final LocationRepository locationRepository;
+    private final CategoryRepository categoryRepository;
     private final RoleCheckService roleCheckService;
+    private final CategoryService categoryService;
     private final UserService userService;
 
     @GetMapping
-    public String locationsList(Model model) {
-        List<Location> locations = locationRepository.findAll() ;
-        model.addAttribute("locations", locations);
-        model.addAttribute("activePage", "admin-locations");
-        return "admin/locations/locations-list";
+    public String categoryList(Model model, Locale locale) {
+
+        locale = Locale.of("ru");
+
+        List<Category> rootCategories = categoryService.getRootCategories();
+        model.addAttribute("rootCategories", rootCategories);
+
+        List<Category> categories = categoryRepository.findAll();
+        model.addAttribute("categories", categories);
+        model.addAttribute("activePage", "admin-categories");
+        return "admin/categories/categories-list";
     }
 
     @PostMapping("/add")
-    public String addLocation(@RequestParam String city,
-                                @RequestParam String country,
+    public String addCategory(@RequestParam("translations") String translationsRaw,
+                                @RequestParam(value = "categoryName") String categoryName,
+                                @RequestParam(value = "leaf", defaultValue = "false") Boolean leaf,
+                                @RequestParam(value = "parentCategoryId", required = false) Long parentCategoryId,
                                 @AuthenticationPrincipal OAuth2User oauth2User,
                                 RedirectAttributes redirectAttributes) {
         try {
-            Location location = new Location();
-            location.setCountry(country);
-            location.setCity(city);
-            location.setName(city + ", " + country);
-            if (locationRepository.findByName(location.getName()).isPresent()) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Такая локация уже существует");
-                return "redirect:/admin/locations";
-            }
-            locationRepository.save(location);
+            List<String> translations = Arrays.asList(translationsRaw.split(","));
+            CategoryDTO categoryDto = new CategoryDTO();
+            categoryDto.setName(categoryName);
+            categoryDto.setLeaf(leaf);
+            categoryDto.setParentId(parentCategoryId);
+            System.out.println("Начинаем создавать категорию");
+            categoryService.createCategory(categoryDto, translations);
             redirectAttributes.addFlashAttribute("successMessage", "Локация добавлена");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при добавлении локации");
         }
-        return "redirect:/admin/locations";
+        return "redirect:/admin/categories";
     }
 
     @GetMapping("/{id}/delete")
-    public String deleteLocation(@PathVariable Long id, RedirectAttributes redirectAttributes, @AuthenticationPrincipal OAuth2User oAuth2User) {
+    public String deleteCategory(@PathVariable Long id, RedirectAttributes redirectAttributes, @AuthenticationPrincipal OAuth2User oAuth2User) {
         try {
             if (!roleCheckService.hasRoleAdmin(userService.findUserFromOAuth2(oAuth2User))) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при удалении локации, вы не являетесь админом");
                 return "redirect:/error";
             }
-            locationRepository.deleteById(id);
+            categoryRepository.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", "Локация успешно удалена");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при удалении локации");

@@ -11,6 +11,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Locale;
 
 @Configuration
@@ -19,7 +20,7 @@ public class LocalisationConfig implements WebMvcConfigurer {
     @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        source.setBasename("lang/messages");
+        source.setBasenames("lang/messages", "lang/categories/categories");
         source.setDefaultEncoding("UTF-8");
         return source;
     }
@@ -42,6 +43,10 @@ public class LocalisationConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(@SuppressWarnings("null") InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
+    }
+
+    public class LanguageUtils {
+        public static final List<String> SUPPORTED_LANGUAGES = List.of("ru", "fi", "en", "it");
     }
 }
 

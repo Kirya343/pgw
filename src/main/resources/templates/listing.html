@@ -22,7 +22,7 @@
             <nav class="breadcrumbs">
                 <a href="/catalog" th:text="#{breadcrumbs.catalog}">Каталог</a>
                 <span> / </span>
-                <a th:href="@{/catalog}"> <!-- (category=${listing.category.name}) -->
+                <a th:href="@{/catalog}">
                     <span th:replace="fragments/small-components :: categoryTypes"></span>
                 </a>
                 <span> / </span>

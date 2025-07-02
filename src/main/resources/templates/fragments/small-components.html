@@ -8,7 +8,7 @@
 </span>
 
 <!-- Компонент типов категорий объявления -->
-<span th:with="key='listing.category.' + ${listing.category.name}" th:text="#{${key}}" th:fragment="categoryTypes"></span>
+<span th:with="key='category.' + ${listing.category.name}" th:text="#{${key}}" th:fragment="categoryTypes"></span>
 
 <!-- Компонент кнопки загрузки файлов -->
 <div class="upload-controls" th:fragment="uploadControls">
