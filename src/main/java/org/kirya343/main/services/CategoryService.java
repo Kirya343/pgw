@@ -19,6 +19,9 @@ public interface CategoryService {
     List<Category> getCategoryPath(Long categoryId);
     CategoryDTO toDTO(Category category);
 
+    //метод получения всех дочерних категорий
+    List<Category> getAllDescendants(Category parent);
+
     // Метод для записи переводов категорий
     void addCategoryTranslation(String categoryName, String lang, String translation) throws IOException;
 }

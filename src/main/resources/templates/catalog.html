@@ -14,56 +14,43 @@
 </header>
 <div class="catalog-header py-3">
     <div class="container">
-        <ul class="nav nav-pills justify-content-center">
-            <!-- Выпадающее меню для услуг (теперь первое) -->
-            <li class="nav-item dropdown" 
-                th:classappend="${category == 'services' or category == 'offer-service' or category == 'find-service'} ? 'active' : ''">
-                <a class="nav-link dropdown-toggle" 
-                th:href="@{${category == 'services' ? '/catalog' : '/catalog?category=services'}}"
-                th:text="#{category.service}"
-                onclick="handleServicesClick(event)">
-                    Услуги
+        <ul class="nav nav-pills justify-content-center" id="categoryMenu">
+            <li class="nav-item dropdown"
+                th:each="rootCategory : ${rootCategories}">
+
+                <!-- Корневая категория с подкатегориями -->
+                <a class="category-link nav-link dropdown-toggle"
+                   th:if="${not #lists.isEmpty(rootCategory.children)}"
+                   href="#"
+                   th:attr="data-category=${rootCategory.name}"
+                   th:text="#{'category.' + ${rootCategory.name}}"
+                   data-bs-toggle="dropdown"
+                   role="button"
+                   aria-expanded="false">
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-                    <li>
-                        <a class="dropdown-item"
-                            th:href="@{${category == 'services' ? '/catalog' : '/catalog?category=services'}}" 
-                            th:classappend="${category == 'services'} ? 'active' : ''"
-                            th:text="#{category.all-services}">
-                            Все услуги
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item"
-                            th:href="@{${category == 'offer-service' ? '/catalog' : '/catalog?category=offer-service'}}" 
-                            th:classappend="${category == 'offer-service'} ? 'active' : ''"
-                            th:text="#{category.offer-service}">
-                            Предложения услуг
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item"
-                            th:href="@{${category == 'find-service' ? '/catalog' : '/catalog?category=find-service'}}" 
-                            th:classappend="${category == 'find-service'} ? 'active' : ''"
-                            th:text="#{category.find-service}">
-                            Нужна услуга
+
+                <!-- Корневая категория без подкатегорий -->
+                <a class="category-link nav-link"
+                   th:if="${#lists.isEmpty(rootCategory.children)}"
+                   href="#"
+                   th:attr="data-category=${rootCategory.name}"
+                   th:text="#{'category.' + ${rootCategory.name}}">
+                </a>
+
+                <!-- Подкатегории -->
+                <ul class="dropdown-menu" th:if="${not #lists.isEmpty(rootCategory.children)}">
+                    <li th:each="child : ${rootCategory.children}">
+                        <a class="category-link dropdown-item"
+                           href="#"
+                           th:attr="data-category=${child.name}"
+                           th:text="#{'category.' + ${child.name}}">
                         </a>
                     </li>
                 </ul>
             </li>
-            
-            <!-- Остальные категории -->
-            <li class="nav-item" th:classappend="${category == 'product'} ? 'active' : ''">
-                <a class="nav-link"
-                    th:href="@{${category == 'product' ? '/catalog' : '/catalog?category=product'}}" 
-                    th:text="#{category.product}">
-                    Товары
-                </a>
-            </li>
         </ul>
     </div>
 </div>
-
 <!-- Основной контент -->
 <div class="catalog-container">
     <div class="catalog-layout">
@@ -187,11 +174,10 @@
     function loadSortedCatalog() {
         const params = new URLSearchParams(window.location.search);
 
-        const category = params.get("category") || "all";
+        const category = document.querySelector(".category-link.active")?.getAttribute("data-category") || '';
         const searchQuery = document.querySelector('input[name="searchQuery"]')?.value || "";
         const hasReviews = document.querySelector('input[name="hasReviews"]')?.checked;
 
-        // Получаем выбранную сортировку
         const activeSort = document.querySelector(".sort-link.active")?.getAttribute("data-sort") || "date";
 
         const queryString = new URLSearchParams({
@@ -200,6 +186,9 @@
             searchQuery,
             hasReviews: hasReviews ? "on" : ""
         });
+
+        const newUrl = window.location.pathname + "?" + queryString.toString();
+        window.history.pushState({}, "", newUrl);
 
         fetch(`/catalog/sort?${queryString.toString()}`, {
             headers: {
@@ -213,20 +202,73 @@
             .catch(error => console.error("Ошибка при сортировке:", error));
     }
 
+    function getCategoryFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('category') || null; // если нет, то пустая строка
+    }
+
+    function categoryControl(e) {
+        e.preventDefault();
+        document.querySelectorAll(".category-link").forEach(btn => btn.classList.remove("active"));
+        this.classList.add("active");
+    }
+
+    function updateActiveCategories() {
+
+        const currentCategory = getCategoryFromUrl();
+
+        // Найдём все элементы с data-category
+        const menuItems = document.querySelectorAll('#categoryMenu [data-category]');
+
+        console.log(menuItems)
+
+        // Сбросим класс active у всех
+        menuItems.forEach(item => item.classList.remove('active'));
+
+        // Найдём и активируем нужный пункт меню
+        let activeItem = null;
+
+        menuItems.forEach(item => {
+            if (item.getAttribute('data-category') === currentCategory) {
+                activeItem = item;
+            }
+        });
+
+        if (activeItem) {
+            activeItem.classList.add('active');
+
+            // Добавим active родителю, если это вложенный пункт
+            const parentLi = activeItem.closest('li.nav-item.dropdown');
+            if (parentLi) {
+                parentLi.classList.add('active');
+            }
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
-        // Клики по сортировке
+        // Поддержка кликов по категориям
+        updateActiveCategories();
+
+        // Поддержка сортировки, поиска, фильтра
         document.querySelectorAll(".sort-link").forEach(link => {
             link.addEventListener("click", function (e) {
                 e.preventDefault();
-
                 document.querySelectorAll(".sort-link").forEach(btn => btn.classList.remove("active"));
                 this.classList.add("active");
-
                 loadSortedCatalog();
             });
         });
 
-        // Перехват формы поиска
+        // Поддержка сортировки, поиска, фильтра
+        document.querySelectorAll(".category-link").forEach(link => {
+            link.addEventListener("click", function (e) {
+                e.preventDefault();
+                document.querySelectorAll(".category-link").forEach(btn => btn.classList.remove("active"));
+                this.classList.add("active");
+                loadSortedCatalog();
+            });
+        });
+
         const searchForm = document.getElementById("searchForm");
         if (searchForm) {
             searchForm.addEventListener("submit", function (e) {
@@ -235,7 +277,6 @@
             });
         }
 
-        // Отслеживаем изменение фильтра hasReviews
         const reviewsCheckbox = document.querySelector('input[name="hasReviews"]');
         if (reviewsCheckbox) {
             reviewsCheckbox.addEventListener("change", function () {
@@ -243,7 +284,47 @@
             });
         }
     });
+
+    window.addEventListener("popstate", function () {
+        loadSortedCatalog();
+    });
 </script>
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Функция для получения параметра category из URL
+        function getCategoryFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('category') || ''; // если нет, то пустая строка
+        }
+
+        const currentCategory = getCategoryFromUrl();
+
+        // Найдём все элементы с data-category
+        const menuItems = document.querySelectorAll('#categoryMenu [data-category]');
+
+        // Сбросим класс active у всех
+        menuItems.forEach(item => item.classList.remove('active'));
+
+        // Найдём элемент, у которого data-category == currentCategory
+        let activeItem = null;
+
+        menuItems.forEach(item => {
+            if (item.getAttribute('data-category') === currentCategory) {
+            activeItem = item;
+            }
+        });
+
+        if (activeItem) {
+            activeItem.classList.add('active');
+
+            // Если это вложенный пункт (выпадающее меню), добавим active родителю
+            const parentLi = activeItem.closest('li.nav-item.dropdown');
+            if (parentLi) {
+                parentLi.classList.add('active');
+            }
+        }
+    });
+</script> -->
 <!-- Файл общих импортов -->
 <th:block th:replace="~{fragments/global-imports :: globalImports}"/>
 </body>
