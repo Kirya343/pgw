@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import org.kirya343.config.LocalisationConfig.LanguageUtils;
 import org.kirya343.main.model.Category;
 import org.kirya343.main.model.DTOs.CategoryDTO;
 import org.kirya343.main.repository.CategoryRepository;
@@ -90,7 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void deleteCategory(Long id) {
+    public void deleteCategory(Long id)  {
         Category category = getCategoryById(id);
         
         if (!category.getChildren().isEmpty()) {
@@ -99,6 +100,14 @@ public class CategoryServiceImpl implements CategoryService {
         
         if (!category.getListings().isEmpty()) {
             throw new IllegalStateException("Cannot delete category with associated listings");
+        }
+
+        for (String lang : LanguageUtils.SUPPORTED_LANGUAGES) {
+            try {
+                removeCategoryTranslation(category.getName(), lang);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         categoryRepository.delete(category);
@@ -199,6 +208,39 @@ public class CategoryServiceImpl implements CategoryService {
             writer.newLine();
             writer.write(lineToAdd);
         }
+    }
+
+    public void removeCategoryTranslation(String categoryName, String lang) throws IOException {
+        String key = "category." + categoryName;
+
+        // Формируем путь к файлу локализации
+        String filename = "src/main/resources/lang/categories/categories_" + lang + ".properties";
+        File file = new File(filename);
+
+        if (!file.exists()) {
+            return; // Файл не существует — нечего удалять
+        }
+
+        // Загружаем свойства
+        Properties props = new Properties();
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
+            props.load(reader);
+        }
+
+        // Удаляем ключ, если он есть
+        if (!props.containsKey(key)) {
+            return; // Ничего не делаем — ключа нет
+        }
+
+        props.remove(key);
+
+        // Перезаписываем файл без удалённого ключа
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(file, false), StandardCharsets.UTF_8))) {
+            props.store(writer, null); // Сохраняем обновлённые свойства
+        }
+
+        System.out.println("Успешно удалён перевод(" + lang + "): " + key);
     }
 
     @Override

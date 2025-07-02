@@ -74,7 +74,7 @@ public class AdminCategoriesController {
                 redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при удалении локации, вы не являетесь админом");
                 return "redirect:/error";
             }
-            categoryRepository.deleteById(id);
+            categoryService.deleteCategory(id);
             redirectAttributes.addFlashAttribute("successMessage", "Локация успешно удалена");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при удалении локации");
