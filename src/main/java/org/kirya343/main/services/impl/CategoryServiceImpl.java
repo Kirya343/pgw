@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.kirya343.config.LocalisationConfig.LanguageUtils;
-import org.kirya343.main.model.Category;
 import org.kirya343.main.model.DTOs.CategoryDTO;
+import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.repository.CategoryRepository;
 import org.kirya343.main.services.CategoryService;
 import org.springframework.stereotype.Service;

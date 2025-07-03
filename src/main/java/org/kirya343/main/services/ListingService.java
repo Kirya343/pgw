@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.kirya343.main.model.DTOs.ListingDTO;
-import org.kirya343.main.model.Category;
+import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.springframework.data.domain.Page;

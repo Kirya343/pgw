@@ -3,8 +3,8 @@ package org.kirya343.main.controller;
 import java.util.List;
 import java.util.Locale;
 
-import org.kirya343.main.model.Category;
 import org.kirya343.main.model.Listing;
+import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.repository.CategoryRepository;
 import org.kirya343.main.services.CategoryService;
 import org.kirya343.main.services.ListingService;

@@ -3,8 +3,8 @@ package org.kirya343.main.controller.components;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.kirya343.main.model.Category;
 import org.kirya343.main.model.DTOs.CategoryDTO;
+import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.repository.CategoryRepository;
 import org.kirya343.main.services.CategoryService;
 import org.springframework.web.bind.annotation.GetMapping;

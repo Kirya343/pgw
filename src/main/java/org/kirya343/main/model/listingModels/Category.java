@@ -1,7 +1,9 @@
-package org.kirya343.main.model;
+package org.kirya343.main.model.listingModels;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.kirya343.main.model.Listing;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

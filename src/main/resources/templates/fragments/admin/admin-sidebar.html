@@ -81,4 +81,12 @@
         th:classappend="${activePage == 'admin-categories'} ? ' active'">
         <i class="fas fa-users"></i> Категории
     </a>
+
+    <div class="admin-nav-title">Организация</div>
+
+    <a href="/admin/tasks" 
+        class="admin-nav-item" 
+        th:classappend="${activePage == 'admin-tasks'} ? ' active'">
+        <i class="fas fa-tasks"></i> Задачи
+    </a>
 </nav>
