@@ -2,9 +2,7 @@ package org.kirya343.main.controller;
 
 import org.kirya343.main.model.Category;
 import org.kirya343.main.model.DTOs.CategoryDTO;
-import org.kirya343.main.model.listingModels.Location;
 import org.kirya343.main.repository.CategoryRepository;
-import org.kirya343.main.repository.LocationRepository;
 import org.kirya343.main.services.CategoryService;
 import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.RoleCheckService;

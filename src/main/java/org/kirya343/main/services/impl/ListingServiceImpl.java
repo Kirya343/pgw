@@ -1,6 +1,5 @@
 package org.kirya343.main.services.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -15,7 +14,6 @@ import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.listingModels.ListingTranslation;
-import org.kirya343.main.repository.CategoryRepository;
 import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.ListingRepository;
 import org.kirya343.main.repository.ListingTranslationRepository;
@@ -40,7 +38,6 @@ public class ListingServiceImpl implements ListingService {
     private final ConversationRepository conversationRepository;
     private final ListingTranslationRepository listingTranslationRepository;
     private final FavoriteListingService favoriteListingService;
-    private final CategoryRepository categoryRepository;
     private final CategoryService categoryService;
     private final ListingMapper listingMapper;
     
