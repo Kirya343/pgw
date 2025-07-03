@@ -110,35 +110,11 @@
         </aside>
 
         <main class="catalog-main">
-            <!-- <div th:if="${category == 'find-help'}" class="listings-grid">
-                <div th:each="resume : ${resumes}" class="resume-card">
-                    <a th:href="@{'/resume/' + ${resume.id}}" class="resume-link">
-                        <img th:src="@{${resume.user.avatarUrl}}"
-                                class="resume-avatar"
-                                alt="Аватар"
-                                th:onerror="this.src='/images/avatar-placeholder.png'">
-                        <div class="resume-info">
-                            <h3 th:text="${resume.profession}">Специальность</h3>
-                            <div class="resume-meta">
-                                <span class="resume-education" th:text="#{'education.' + ${resume.education}}">Образование</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div> -->
-
-            <!-- <div th:unless="${category == 'find-help'}" class="listings-grid">
-                <th:block th:each="listing : ${listings}" th:insert="fragments/cards/listing-card :: listingCard(${listing})">
-                </th:block>
-            </div> -->
+            
             <div id="catalog-content">
                 <div th:replace="~{fragments/public/catalog-fragments :: content}"></div>
             </div>
-            <!-- Если нет объявлений -->
-            <div th:if="${category == 'find-help' and #lists.isEmpty(resumes)}" class="no-listings">
-                <p th:text="#{no-resumes}">Резюме не найдено.</p>
-            </div>
-            <div th:if="${category != 'find-help' and #lists.isEmpty(listings)}" class="no-listings">
+            <div th:if="${#lists.isEmpty(listings)}" class="no-listings">
                 <p th:text="#{no-listings}">Объявлений не найдено.</p>
             </div>
 
@@ -263,9 +239,17 @@
         document.querySelectorAll(".category-link").forEach(link => {
             link.addEventListener("click", function (e) {
                 e.preventDefault();
-                document.querySelectorAll(".category-link").forEach(btn => btn.classList.remove("active"));
-                this.classList.add("active");
-                loadSortedCatalog();
+
+                const isActive = this.classList.contains("active");
+
+                if (isActive) {
+                    document.querySelectorAll(".category-link").forEach(btn => btn.classList.remove("active"));
+                    loadSortedCatalog();
+                } else {
+                    document.querySelectorAll(".category-link").forEach(btn => btn.classList.remove("active"));
+                    this.classList.add("active");
+                    loadSortedCatalog();
+                }
             });
         });
 

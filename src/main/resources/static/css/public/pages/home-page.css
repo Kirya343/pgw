@@ -1,8 +1,4 @@
-@import url(../components/footer.css);
 @import url(../components/base.css);
-@import url(../components/header.css);
-@import url(../components/lang-switcher.css);
-@import url(../../variables.css);
 
 .hero {
     /*background: linear-gradient(rgba(0, 0, 0, 0.6), url('/images/hero-bg.jpg') no-repeat center;*/

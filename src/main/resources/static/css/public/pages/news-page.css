@@ -1,8 +1,4 @@
-@import url(../components/footer.css);
 @import url(../components/base.css);
-@import url(../components/header.css);
-@import url(../components/lang-switcher.css);
-@import url(../../variables.css);
 
 .news-container {
     padding: 2rem 0;

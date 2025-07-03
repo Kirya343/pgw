@@ -1,18 +1,14 @@
 package org.kirya343.main.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import org.kirya343.main.model.Category;
 import org.kirya343.main.model.Listing;
-import org.kirya343.main.model.Resume;
 import org.kirya343.main.repository.CategoryRepository;
 import org.kirya343.main.services.CategoryService;
 import org.kirya343.main.services.ListingService;
-import org.kirya343.main.services.ResumeService;
 import org.kirya343.main.services.components.AuthService;
-import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,9 +31,7 @@ public class CatalogController {
 
     private final ListingService listingService;
     private final CategoryRepository categoryRepository;
-    private final ResumeService resumeService;
     private final AuthService authService;
-    private final MessageSource messageSource;
     private final CategoryService categoryService;
 
     @GetMapping
@@ -66,17 +60,7 @@ public class CatalogController {
         Page<Listing> listingsPage = listingService.getListingsSorted(categoryType, sortBy, pageable, searchQuery, hasReviews, locale);
         listingService.localizeCatalogListings(listingsPage.getContent(), locale);
 
-        List<Resume> resumes = new ArrayList<>();
-
-        if ("find-help".equals(category)) {
-            // Получаем опубликованные резюме
-            resumes = resumeService.findPublishedResumes(pageable);
-        }
-
-        model.addAttribute("resumes", resumes);
-
         List<Listing> filteredListings = listingsPage.getContent().stream()
-                //.filter(listing -> !available || listing.isAvailable())
                 .filter(listing -> !hasReviews || (listing.getReviews() != null && !listing.getReviews().isEmpty()))
                 .toList();
 
@@ -84,27 +68,19 @@ public class CatalogController {
         model.addAttribute("listings", filteredListings);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", listingsPage.getTotalPages());
+
+        model.addAttribute("hasReviews", hasReviews);
         model.addAttribute("category", category);
         model.addAttribute("sortBy", sortBy);
-        model.addAttribute("hasReviews", hasReviews);
+        model.addAttribute("searchQuery", searchQuery);
         
         List<Category> rootCategories = categoryService.getRootCategories();
         model.addAttribute("rootCategories", rootCategories);
 
         // Переменная для отображения активной страницы
-        model.addAttribute("searchQuery", searchQuery);
         model.addAttribute("activePage", "catalog");
 
         authService.validateAndAddAuthentication(model, oauth2User);
-
-        List<CategoryTab> categories = List.of(
-            new CategoryTab("services", messageSource.getMessage("category.service", null, locale), 
-                "services".equals(category) || "offer-service".equals(category) || "find-service".equals(category)),
-            new CategoryTab("product", messageSource.getMessage("category.product", null, locale), 
-                "product".equals(category))
-        );
-
-        model.addAttribute("categories", categories);
 
         return "catalog";
     }
@@ -150,6 +126,4 @@ public class CatalogController {
         return "catalog"; // fallback для обычной загрузки
     }   
 
-    // Вспомогательный класс для представления вкладок категорий
-    private record CategoryTab(String id, String title, boolean active) {}
 }

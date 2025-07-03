@@ -194,7 +194,16 @@ function updateSingleConversation(conversation) {
 
 // Функция для отправки сообщения
 function sendMessage() {
-    const messageText = document.getElementById('message-input').value;
+    // Проверяем, есть ли выбранный диалог
+    if (!currentConversationId) {
+        alert("Пожалуйста, выберите диалог для отправки сообщения");
+        return;
+    }
+
+    const messageText = document.getElementById('message-input').value.trim();
+    
+    // Проверяем, что сообщение не пустое
+    if (!messageText) return;
 
     const message = {
         text: messageText,
@@ -207,10 +216,25 @@ function sendMessage() {
 
     // Очищаем поле ввода
     document.getElementById('message-input').value = '';
-
     document.getElementById('message-input').focus();
 }
 
+function updateMessageInputState() {
+    const messageInput = document.getElementById('message-input');
+    const sendBtn = document.getElementById('send-btn');
+    
+    if (!currentConversationId) {
+        // Блокируем ввод и кнопку, если диалог не выбран
+        messageInput.disabled = true;
+        messageInput.placeholder = "Выберите диалог для отправки сообщения";
+        sendBtn.disabled = true;
+    } else {
+        // Разблокируем, если диалог выбран
+        messageInput.disabled = false;
+        messageInput.placeholder = "Напишите сообщение...";
+        sendBtn.disabled = false;
+    }
+}
 
 // Функция для отображения нового сообщения на странице
 function showMessage(message) {
@@ -255,6 +279,9 @@ function handleDialogClick() {
     // Проверяем, что выбран новый разговор
     if (currentConversationId !== selectedId) {
         currentConversationId = selectedId;
+
+        // Обновляем состояние поля ввода
+        updateMessageInputState();
 
         // Снимаем выделение со всех, добавляем на выбранный
         document.querySelectorAll('.dialog-item').forEach(d => d.classList.remove('active'));
@@ -307,6 +334,9 @@ function moveConversationToTop(conversationId) {
 }
 
 function initializeEventHandlers() {
+    // Обновляем состояние поля ввода
+    updateMessageInputState();
+
     // Обработчик кнопки отправки
     document.getElementById('send-btn').addEventListener('click', sendMessage);
 
@@ -314,6 +344,10 @@ function initializeEventHandlers() {
     document.getElementById('message-input').addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
+            if (!currentConversationId) {
+                alert("Пожалуйста, выберите диалог для отправки сообщения");
+                return;
+            }
             sendMessage();
         }
     });

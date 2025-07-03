@@ -1,9 +1,4 @@
-@import url(../components/lang-switcher.css);
-@import url(../components/footer.css);
 @import url(../components/base.css);
-@import url(../components/header.css);
-@import url(../components/breadcrumbs.css);
-@import url(../../variables.css);
 
 .seller-actions .btn,
 .seller-actions form,

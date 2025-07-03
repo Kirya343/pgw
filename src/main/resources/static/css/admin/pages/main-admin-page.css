@@ -1,7 +1,5 @@
 @import url(../../public/components/base.css);
-@import url(../../admin/components/buttons.css); 
 @import url(../../admin/components/admin-base.css); 
-@import url(../../variables.css);
 
 /* Основные стили админки */
 .admin-layout {
