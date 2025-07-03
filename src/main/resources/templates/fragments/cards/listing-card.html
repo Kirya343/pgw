@@ -74,38 +74,32 @@
     </div>
 </article>
 
-<article th:each="similarListing : ${similarListings}" 
-        class="listing-card hover-animation-card" th:if="${similarListing.localizedTitle != null and similarListing.localizedDescription != null}" 
-        th:fragment="similarListingCard(similarListing)" th:onclick="window.location.href = '/listing/' + [[${similarListing.id}]]">
-    <img th:src="@{${similarListing.imagePath ?: '/images/default-listing.png'}}"
-            class="listing-img"
+<article th:each="listing : ${similarListings}" 
+         class="listing-card hover-animation-card" 
+         th:fragment="similarListingCard(similarListing)"
+         th:onclick="window.location.href = '/listing/' + [[${listing.id}]]"
+         th:if="${(user != null and user.role != null and user.role.name() == 'ADMIN') or !listing.testMode}">
+    <img th:src="@{${listing.imagePath}}"
+            class="listing-img" th:onerror="this.src='/images/default-listing.png'"
             alt="Изображение объявления">
+
     <div class="listing-card-body">
-        <h3 class="card-title">
-            <a th:href="@{/listing/{id}(id=${similarListing.id})}"
-                th:text="${similarListing.localizedTitle}">
-                Название
-            </a>
-        </h3>
-        <p class="card-text" th:text="${#strings.abbreviate(listing.localizedDescription, 100)}">Описание</p>
+        <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
+        <p class="card-text" th:text="${#strings.length(listing.localizedDescription) > 100} ? ${#strings.substring(listing.localizedDescription, 0, 100)} + '...' : ${listing.localizedDescription}">Описание</p>
         <div class="listing-card-footer">
             <div>
-                <span class="price" th:switch="${similarListing.priceType}">
-                    <span th:case="'negotiable'" th:text="#{price.negotiable}">Договорная</span>
-                    <span th:case="'per_hour'" th:text="${similarListing.price} + ' ' + #{price.per-hour}">Цена</span>
-                    <span th:case="'per_day'" th:text="${similarListing.price} + ' ' + #{price.per-day}">Цена</span>
-                    <span th:case="'fixed'" th:text="${similarListing.price} + ' ' + #{price.fixed}">Цена</span>
-                    <span th:case="*">Цена не указана</span>
-                </span>
-                <div class="listing-rating">
+                <!-- компонент для отображение цены (с типом) -->
+                <span th:replace="~{fragments/small-components :: priceTypes}"></span>
+                <div class="rating">
                     <th:block th:each="i : ${#numbers.sequence(1,5)}">
                         <i class="fa"
-                            th:classappend="${similarListing.averageRating >= i} ? 'fa-star' :
-                                (${similarListing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                            th:classappend="${listing.averageRating >= i} ? 'fa-star' :
+                                    (${listing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
                     </th:block>
                 </div>
             </div>
-            <span class="location" th:text="${similarListing.location.name}">Локация</span>
+            <span class="partner-sign" th:if="${listing.author.role.name() == 'BUSINESS'}" th:text="#{partner}"></span>
+            <span class="listing-location" th:text="${listing.location.name}">Локация</span>
         </div>
     </div>
 </article>
