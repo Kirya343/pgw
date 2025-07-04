@@ -3,7 +3,7 @@ package org.kirya343.config;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -19,10 +19,14 @@ public class LocalisationConfig implements WebMvcConfigurer {
 
     @Bean
     public MessageSource messageSource() {
-        ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        source.setBasenames("lang/messages", "lang/categories/categories");
-        source.setDefaultEncoding("UTF-8");
-        return source;
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasenames(
+            "classpath:lang/messages",                     // старое местоположение
+            "file:dinamic-lang/categories/categories"      // новое местоположение
+        );
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setCacheSeconds(3600); // обновление кэша каждый час
+        return messageSource;
     }
 
     @Bean

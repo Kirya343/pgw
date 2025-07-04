@@ -182,7 +182,7 @@ public class CategoryServiceImpl implements CategoryService {
         String lineToAdd = key + "=" + translation;
 
         // Формируем путь к файлу локализации
-        String filename = "src/main/resources/lang/categories/categories_" + lang + ".properties";
+        String filename = "dinamic-lang/categories/categories_" + lang + ".properties";
         File file = new File(filename);
 
         // Убедимся, что файл существует
@@ -214,7 +214,7 @@ public class CategoryServiceImpl implements CategoryService {
         String key = "category." + categoryName;
 
         // Формируем путь к файлу локализации
-        String filename = "src/main/resources/lang/categories/categories_" + lang + ".properties";
+        String filename = "dinamic-lang/categories/categories_" + lang + ".properties";
         File file = new File(filename);
 
         if (!file.exists()) {
