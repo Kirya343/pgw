@@ -25,7 +25,7 @@ public class LocalisationConfig implements WebMvcConfigurer {
             "file:dinamic-lang/categories/categories"      // новое местоположение
         );
         messageSource.setDefaultEncoding("UTF-8");
-        messageSource.setCacheSeconds(3600); // обновление кэша каждый час
+        messageSource.setCacheSeconds(300); // обновление кэша каждый час
         return messageSource;
     }
 
