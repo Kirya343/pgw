@@ -88,7 +88,7 @@ li {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: auto;
+    height: 100%;
 }
 
 .card-body {

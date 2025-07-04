@@ -27,7 +27,7 @@
             <span> / </span>
             <span href="/admin/locations">Управление категориями</span>
         </nav>
-        <div class="mb-4">
+        <div class="card mb-4">
             <div class="d-flex justify-content-between align-items-center">
                 <h2>Список категорий</h2>
                 <button onclick="openModal()" class="btn-admin btn-admin-primary">
@@ -49,15 +49,17 @@
                     <td th:text="${category.name}">Название</td>
                     <td th:text="${category.parent != null ? category.parent.name : '—'}">Родительская категория</td>
                     <td>
-                        <a th:href="@{/admin/categories/view/{id}(id=${category.id})}" 
-                            class="btn-admin btn-admin-primary mr-1">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <a th:href="@{/admin/categories/{id}/delete(id=${category.id})}" 
-                            class="btn-admin btn-admin-danger"
-                            onclick="return confirm('Удалить эту локацию?');">
-                            <i class="fas fa-trash"></i>
-                        </a>
+                        <div class="button-actions">
+                            <a th:href="@{/admin/categories/view/{id}(id=${category.id})}" 
+                                class="btn-admin btn-admin-primary mr-1">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a th:href="@{/admin/categories/{id}/delete(id=${category.id})}" 
+                                class="btn-admin btn-admin-danger"
+                                onclick="return confirm('Удалить эту локацию?');">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(categories)}">
@@ -81,9 +83,9 @@
 </div>
 
 <!-- Модальное окно -->
-<div id="locationModal" class="modal-overlay">
-    <div class="location-modal">
-        <div class="location-modal-content">
+<div id="adminModal" class="modal-overlay">
+    <div class="admin-modal">
+        <div class="admin-modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2>Добавить категорию</h2>
             <form method="post" action="/admin/categories/add" onsubmit="return collectTranslations()">
@@ -99,8 +101,10 @@
                     </div>
                 </div>
 
-                <label for="categoryName">Название категории:</label>
-                <input type="text" id="categoryName" name="categoryName" required>
+                <div class="form-group">
+                    <label for="categoryName">Название категории:</label>
+                    <input type="text" id="categoryName" name="categoryName" required>
+                </div>
 
                 <div class="form-group">
                     <label>Родительская категория (необязательно)</label>
@@ -138,7 +142,7 @@
                     <input type="hidden" id="parentCategoryId" name="parentCategoryId">
                 </div>
 
-                <div id="translations-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div class="form-group" id="translations-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <!-- JS сгенерирует поля здесь -->
                 </div>
 
@@ -168,23 +172,7 @@
     // допустим, получаешь categories из fetch и вызываешь:
     document.getElementById('treeContainer').appendChild(buildTree(categories));
 </script>
-<script>
-    function openModal() {
-        document.getElementById("locationModal").style.display = "flex";
-    }
-
-    function closeModal() {
-        document.getElementById("locationModal").style.display = "none";
-    }
-
-  // Закрытие по клику вне окна
-    window.onclick = function(event) {
-        const modal = document.getElementById("locationModal");
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-</script>
+<script src="/js/components/admin-modal.js"></script>
 <script>
     const supportedLanguages = ['ru', 'fi', 'en', 'it'];
 

@@ -63,15 +63,17 @@
                             </span>
                         </td>
                         <td>
-                            <a th:href="@{/admin/listings/view/{id}(id=${listing.id})}" 
-                               class="btn-admin btn-admin-primary mr-1">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a th:href="@{/admin/listings/delete/{id}(id=${listing.id})}" 
-                               class="btn-admin btn-admin-danger"
-                               onclick="return confirm('Удалить это объявление?');">
-                                <i class="fas fa-trash"></i>
-                            </a>
+                            <div class="button-actions">
+                                <a th:href="@{/admin/listings/view/{id}(id=${listing.id})}" 
+                                class="btn-admin btn-admin-primary mr-1">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a th:href="@{/admin/listings/delete/{id}(id=${listing.id})}" 
+                                class="btn-admin btn-admin-danger"
+                                onclick="return confirm('Удалить это объявление?');">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(listings)}">

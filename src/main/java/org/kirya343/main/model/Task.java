@@ -27,30 +27,48 @@ public class Task {
     @Column(length = 2000)
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "executor_id")
-    private User executor;
-
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     private LocalDateTime deadline;
 
+    private LocalDateTime completed;
+
     public enum Status {
-        NEW,
-        IN_PROGRESS,
-        COMPLETED,
-        CANCELED
+        NEW("Новая"),
+        IN_PROGRESS("В процессе"),
+        COMPLETED("Завершена"),
+        CANCELED("Отменена");
+
+        private final String displayName;
+
+        Status(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
     }
 
     public enum TaskType {
-        DEVELOPMENT,         // Разработка
-        CONTENT_UPDATE,      // Дополнение контента
-        MODERATION,          // Модерация
-        DESIGN,              // Дизайн
-        TESTING,             // Тестирование
-        MAINTENANCE,         // Техническое обслуживание
-        SUPPORT              // Поддержка пользователей
+        DEVELOPMENT("Разработка"),
+        CONTENT_UPDATE("Дополнение контента"),
+        MODERATION("Модерация"),
+        DESIGN("Дизайн"),
+        TESTING("Тестирование"),
+        MAINTENANCE("Обслуживание"),
+        SUPPORT("Поддержка");
+
+        private final String displayName;
+
+        TaskType(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
     }
 
     @Enumerated(EnumType.STRING)
@@ -58,4 +76,12 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     private TaskType taskType;
+
+    @ManyToOne
+    @JoinColumn(name = "executor_id")
+    private User executor;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
 }
