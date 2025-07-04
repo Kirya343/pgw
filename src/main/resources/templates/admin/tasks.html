@@ -35,7 +35,23 @@
 
             </div>
             <div class="task-container">
-                <div th:replace></div>
+                <div class="tasks-list-container">
+                    <article class="task-item" th:each="task : ${tasks}">
+                        <span th:text="${task.id}"></span>
+                        <span th:text="${task.name}"></span>
+                        <span th:text="${task.status}"></span>
+                    </article>
+                </div>
+                <div class="tasks-per-user-container">
+                    <div th:if="${user.tasks != null and !user.tasks.isEmpty()}" th:each="user : ${executors}" class="tasks-by-user">
+                        <h4 th:text="${user.name}"></h4>
+                        <article class="task-item" th:each="task : ${user.tasks}">
+                            <span th:text="${task.id}"></span>
+                            <span th:text="${task.name}"></span>
+                            <span th:text="${task.status}"></span>
+                        </article>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

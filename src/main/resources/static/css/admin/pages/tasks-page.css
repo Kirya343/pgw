@@ -2,5 +2,49 @@
 @import url(main-admin-page.css);
 
 .task-container {
-    
+    margin: 1rem 3rem;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 4px;
+    border-color: var(--primary);
+    display: flex;
+    flex-direction: row;
+    height: 400px;
+    width: auto;
+}
+
+.tasks-list-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.tasks-per-user-container {
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-width: 0 0 0 2px;
+    border-color: var(--primary);
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: auto;
+}
+
+.tasks-by-user {
+    padding: 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+    padding: 0.5rem;
+    border-width: 0 0 1px 0;
+    border-color: var(--border-color);
+    border-style: solid;
 }
