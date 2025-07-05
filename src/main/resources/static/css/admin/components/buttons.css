@@ -6,6 +6,13 @@
     cursor: pointer;
     transition: all 0.2s;
     font-size: 0.9rem;
+    height: 100%;
+}
+
+.button-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
 }
 
 .btn-admin-primary {
@@ -24,6 +31,15 @@
 
 .btn-admin-danger:hover {
     background-color: #dc2626;
+}
+
+.btn-admin-confirm {
+    background-color: #56d661;
+    color: var(--white);
+}
+
+.btn-admin-confirm:hover {
+    background-color: #40b64a;
 }
 
 .btn-admin-secondary {

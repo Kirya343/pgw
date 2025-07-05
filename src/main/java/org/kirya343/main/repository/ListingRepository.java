@@ -3,9 +3,9 @@ package org.kirya343.main.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.kirya343.main.model.Category;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.listingModels.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;

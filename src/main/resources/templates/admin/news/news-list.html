@@ -62,15 +62,17 @@
                             </span>
                         </td>
                         <td>
-                            <a th:href="@{/admin/news/edit/{id}(id=${news.id})}" 
-                               class="btn-admin btn-admin-primary mr-1">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a th:href="@{/admin/news/delete/{id}(id=${news.id})}" 
-                               class="btn-admin btn-admin-danger"
-                               onclick="return confirm('Удалить эту новость?');">
-                                <i class="fas fa-trash"></i>
-                            </a>
+                            <div class="button-actions">
+                                <a th:href="@{/admin/news/edit/{id}(id=${news.id})}" 
+                                class="btn-admin btn-admin-primary mr-1">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a th:href="@{/admin/news/delete/{id}(id=${news.id})}" 
+                                class="btn-admin btn-admin-danger"
+                                onclick="return confirm('Удалить эту новость?');">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(newsList)}">

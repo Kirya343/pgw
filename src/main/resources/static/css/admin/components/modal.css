@@ -11,14 +11,14 @@
     display: none;
 }
 
-.location-modal {
+.admin-modal {
     z-index: 1000;
     padding: 1.5rem;
     border-radius: var(--radius);
     background-color: white;
 }
 
-.location-modal-content {
+.admin-modal-content {
     background-color: #fff;
     margin: 10% auto;
     padding: 20px;
@@ -28,16 +28,16 @@
     position: relative;
 }
 
-.location-modal-content h2 {
+.admin-modal-content h2 {
     margin-top: 0;
 }
 
-.location-modal-content label {
+.admin-modal-content label {
     display: block;
     margin-top: 10px;
 }
 
-.location-modal-content input {
+.admin-modal-content input {
     width: 100%;
     padding: 8px;
     margin-top: 5px;

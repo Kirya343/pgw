@@ -8,11 +8,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import org.kirya343.main.model.Category;
 import org.kirya343.main.model.DTOs.ListingForm;
 import org.kirya343.main.model.DTOs.TranslationDTO;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.model.listingModels.Image;
 import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.kirya343.main.model.listingModels.Location;

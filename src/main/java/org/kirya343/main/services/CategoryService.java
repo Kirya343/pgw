@@ -3,8 +3,8 @@ package org.kirya343.main.services;
 import java.io.IOException;
 import java.util.List;
 
-import org.kirya343.main.model.Category;
 import org.kirya343.main.model.DTOs.CategoryDTO;
+import org.kirya343.main.model.listingModels.Category;
 
 public interface CategoryService {
     Category createCategory(CategoryDTO dto, List<String> translations) throws IOException;

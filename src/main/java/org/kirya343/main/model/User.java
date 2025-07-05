@@ -47,6 +47,9 @@ public class User {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Listing> listings = new ArrayList<>();
 
+    @OneToMany(mappedBy = "executor")
+    private List<Task> tasks = new ArrayList<>();
+
     @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Conversation> conversationsStarted = new ArrayList<>();
 

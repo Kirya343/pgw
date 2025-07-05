@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.model.listingModels.Image;
 import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.kirya343.main.model.listingModels.Location;

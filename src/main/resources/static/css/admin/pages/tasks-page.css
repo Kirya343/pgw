@@ -1,0 +1,119 @@
+@import url(../../public/components/base.css);
+@import url(main-admin-page.css);
+
+.task-container {
+    margin: 1rem 3rem;
+    border-style: solid;
+    border-width: 4px;
+    border-radius: var(--radius);
+    border-color: var(--primary);
+    display: flex;
+    flex-direction: row;
+    height: 400px;
+    width: auto;
+}
+
+.tasks-list-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.tasks-per-user-container {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: auto;
+}
+
+.left-border-tasks {
+    border-style: solid;
+    border-width: 0 0 0 2px;
+    border-color: var(--primary);
+}
+
+.tasks-by-user {
+    padding: 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.tasks-list-header {
+    background-color: var(--primary);
+    color: var(--light);
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.tasks-list-header h3 {
+    margin: 0;
+}
+
+.task-item {
+    border-radius: 9px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-width: 0 0 1px 0;
+    border-color: var(--border-color);
+    border-style: solid;
+    min-width: 400px;
+    cursor: pointer;
+    position: relative;
+    min-height: 50px;
+}
+
+.task-text-item {
+    white-space: nowrap;       /* Запрещает перенос строк */
+    overflow: hidden;          /* Обрезает переполнение */
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+.task-item:hover {
+    background-color: var(--light-gray);
+}
+
+.task-details {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background-color: white;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 300px;
+    max-width: 100%;
+    
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-60px);
+    transition: all 0.3s ease;
+
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Показывать при наведении */
+.task-item:hover .task-details {
+    transform: translateY(60px);
+    opacity: 1;
+    visibility: visible;
+}
+
+.task-detail {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.task-detail-label {
+    font-weight: 600;
+}

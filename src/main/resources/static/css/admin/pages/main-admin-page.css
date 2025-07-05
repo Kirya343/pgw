@@ -4,7 +4,12 @@
 /* Основные стили админки */
 .admin-layout {
     display: flex;
-    min-height: 100vh;
+}
+
+.admin-main {
+    flex: 1;
+    padding: 2rem;
+    height: 100%;
 }
 
 h1 {
@@ -24,12 +29,6 @@ h2 {
     top: 0;
     height: 100vh;
     overflow-y: auto;
-}
-
-.admin-main {
-    flex: 1;
-    padding: 2rem;
-    background-color: #f8f9fa;
 }
 
 .admin-header {
@@ -174,10 +173,6 @@ h2 {
 
 .admin-table tr:hover {
     background-color: rgba(99, 102, 241, 0.05);
-}
-
-.btn-admin-danger {
-    margin-left: 1rem;
 }
 
 /* Формы */
