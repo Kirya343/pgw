@@ -29,6 +29,7 @@
     text-align: center;
     display: flex;
     flex-direction: column;
+    overflow: auto;
 }
 
 .tasks-list-header {
