@@ -2,11 +2,10 @@
 @import url(main-admin-page.css);
 
 .task-container {
-    margin: 1rem 3rem;
     border-style: solid;
     border-width: 4px;
     border-radius: var(--radius);
-    border-color: var(--primary);
+    border-color: var(--primary-light);
     display: flex;
     flex-direction: row;
     height: 400px;
@@ -22,7 +21,7 @@
 .left-border-tasks {
     border-style: solid;
     border-width: 0 0 0 2px;
-    border-color: var(--primary);
+    border-color: var(--primary-light);
 }
 
 .tasks-by-user {
@@ -33,7 +32,7 @@
 }
 
 .tasks-list-header {
-    background-color: var(--primary);
+    background-color: var(--primary-light);
     color: var(--light);
     text-align: center;
     padding: 0.5rem;

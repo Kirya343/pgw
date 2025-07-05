@@ -50,3 +50,10 @@
 .btn-admin-secondary:hover {
     background-color: #d1d5db;
 }
+
+.btn-overlay {
+    position: absolute;
+    z-index: 10;
+    height: auto;
+    transform: translateY(-18px) translateX(-5px);
+}
