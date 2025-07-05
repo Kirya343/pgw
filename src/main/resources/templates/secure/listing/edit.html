@@ -95,7 +95,7 @@
                 <!-- Цена -->
                 <div class="form-group">
                     <label for="price" th:text="#{listing.editing.price}">Цена</label>
-                    <input type="number" id="price" name="listing.price" th:value="${listing.price}" step="0.01" required>
+                    <input type="number" id="price" name="price" th:value="${listing.price}" step="0.01" required>
                 </div>
 
                 <div class="form-group">
@@ -120,7 +120,8 @@
                         <option value="" disabled selected th:text="#{listing.editing.category.select}">Выберите категорию</option>
                         <option th:each="cat : ${rootCategories}"
                                 th:value="${cat.id}"
-                                th:text="${cat.name}">
+                                th:with="key='category.' + ${cat.name}" 
+                                th:text="#{${key}}">
                         </option>
                     </select>
                     
@@ -143,7 +144,7 @@
                     </select> 
                     
                     <!-- Скрытое поле для ID конечной категории -->
-                    <input type="hidden" id="finalCategoryId" name="categoryId" required th:value="${categoryId}">
+                    <input type="hidden" id="finalCategoryId" name="categoryId" required th:value="${listing.category.id}">
                     <div id="categoryError" class="text-danger" style="display: none;"></div>
                 </div>
 

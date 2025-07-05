@@ -95,7 +95,8 @@
                         <option value="" disabled selected th:text="#{listing.editing.category.select}">Выберите категорию</option>
                         <option th:each="cat : ${rootCategories}"
                                 th:value="${cat.id}"
-                                th:text="${cat.name}">
+                                th:with="key='category.' + ${cat.name}" 
+                                th:text="#{${key}}">
                         </option>
                     </select>
                     

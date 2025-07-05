@@ -12,4 +12,5 @@ public class CategoryDTO {
     private String name;
     private Long parentId; // ID родительской категории (null для корневых)
     private boolean leaf; // Является ли конечной категорией
+    private String translate;
 }

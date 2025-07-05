@@ -232,6 +232,7 @@ public class OwnListingController {
             @RequestParam(value = "active", defaultValue = "false") boolean active,
             @RequestParam(value = "testMode", defaultValue = "false") boolean testMode,
             @RequestParam String locationName,
+            @RequestParam Long categoryId,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
@@ -294,7 +295,7 @@ public class OwnListingController {
             // Обновляем остальные поля
             existingListing.setPrice(listing.getPrice());
             existingListing.setPriceType(listing.getPriceType());
-            existingListing.setCategory(listing.getCategory());
+            existingListing.setCategory(categoryService.getCategoryById(categoryId));
             existingListing.setLocation(location);
             existingListing.setActive(active);
             existingListing.setTestMode(testMode);
