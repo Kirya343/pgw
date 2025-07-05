@@ -31,58 +31,60 @@
             <span href="/admin/tasks">Задачи</span>
         </nav>
         <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h2>Задачи</h2>
+            <div class="card-body">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2>Задачи</h2>
+                    </div>
+                    <button onclick="openModal()" class="btn-admin btn-admin-primary btn-overlay">
+                        <i class="fas fa-plus"></i> Добавить задачу
+                    </button>
                 </div>
-                <button onclick="openModal()" class="btn-admin btn-admin-primary">
-                    <i class="fas fa-plus"></i> Добавить задачу
-                </button>
-            </div>
-            
-            <div class="task-container">
-                <div class="tasks-list-container">
-                    <div class="tasks-list-header">
-                        <h3>Новые задачи</h3>
+                
+                <div class="task-container">
+                    <div class="tasks-list-container">
+                        <div class="tasks-list-header">
+                            <h3>Новые задачи</h3>
+                        </div>
+                        <div class="tasks-by-user">
+                            <article th:each="task : ${tasks}" th:if="${task.status == T(org.kirya343.main.model.Task.Status).NEW}">
+                                <div th:replace="~{fragments/admin/tasks :: taskItem(NEW)}"></div>
+                            </article>
+                        </div>
                     </div>
-                    <div class="tasks-by-user">
-                        <article th:each="task : ${tasks}" th:if="${task.status == T(org.kirya343.main.model.Task.Status).NEW}">
-                            <div th:replace="~{fragments/admin/tasks :: taskItem(NEW)}"></div>
-                        </article>
-                    </div>
-                </div>
-                <div class="tasks-list-container left-border-tasks">
-                    <div class="tasks-list-header">
-                        <h3>Задачи в работе</h3>
-                    </div>
-                    <div th:if="${executor.tasks != null and !executor.tasks.isEmpty()}" th:each="executor : ${executors}" class="tasks-by-user">
-                        <h4 th:text="${executor.name}"></h4>
-                        <article th:each="task : ${executor.tasks}" th:if="${task.status == T(org.kirya343.main.model.Task.Status).IN_PROGRESS}">
-                            <div th:replace="~{fragments/admin/tasks :: taskItem(IN_PROGRESS)}"></div>
-                        </article>
+                    <div class="tasks-list-container left-border-tasks">
+                        <div class="tasks-list-header">
+                            <h3>Задачи в работе</h3>
+                        </div>
+                        <div th:if="${executor.tasks != null and !executor.tasks.isEmpty()}" th:each="executor : ${executors}" class="tasks-by-user">
+                            <h4 th:text="${executor.name}"></h4>
+                            <article th:each="task : ${executor.tasks}" th:if="${task.status == T(org.kirya343.main.model.Task.Status).IN_PROGRESS}">
+                                <div th:replace="~{fragments/admin/tasks :: taskItem(IN_PROGRESS)}"></div>
+                            </article>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="task-container" style="margin-bottom: 10rem;">
-                <div class="tasks-list-container">
-                    <div class="tasks-list-header">
-                        <h3>Отменённые задачи</h3>
+                <div class="task-container" style="margin-bottom: 500px;">
+                    <div class="tasks-list-container">
+                        <div class="tasks-list-header">
+                            <h3>Отменённые задачи</h3>
+                        </div>
+                        <div class="tasks-by-user">
+                            <article th:each="task : ${tasks}" th:if="${task.status == T(org.kirya343.main.model.Task.Status).CANCELED}">
+                                <div th:replace="~{fragments/admin/tasks :: taskItem(CANCELED)}"></div>
+                            </article>
+                        </div>
                     </div>
-                    <div class="tasks-by-user">
-                        <article th:each="task : ${tasks}" th:if="${task.status == T(org.kirya343.main.model.Task.Status).CANCELED}">
-                            <div th:replace="~{fragments/admin/tasks :: taskItem(CANCELED)}"></div>
-                        </article>
-                    </div>
-                </div>
-                <div class="tasks-list-container left-border-tasks">
-                    <div class="tasks-list-header">
-                        <h3>Выполненные задачи</h3>
-                    </div>
-                    <div class="tasks-by-user">
-                        <article th:each="task : ${tasks}" th:if="${task.status == T(org.kirya343.main.model.Task.Status).COMPLETED}">
-                            <div th:replace="~{fragments/admin/tasks :: taskItem(COMPLETED)}"></div>
-                        </article>
+                    <div class="tasks-list-container left-border-tasks">
+                        <div class="tasks-list-header">
+                            <h3>Выполненные задачи</h3>
+                        </div>
+                        <div class="tasks-by-user">
+                            <article th:each="task : ${tasks}" th:if="${task.status == T(org.kirya343.main.model.Task.Status).COMPLETED}">
+                                <div th:replace="~{fragments/admin/tasks :: taskItem(COMPLETED)}"></div>
+                            </article>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -95,7 +97,7 @@
     <div class="admin-modal">
         <div class="admin-modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Добавить локацию</h2>
+            <h2>Добавить задачу</h2>
             <form method="post" style="gap: 0.5rem" action="/admin/tasks/create">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             
@@ -106,7 +108,7 @@
             
             <div class="form-group">
                 <label for="taskDescription">Описание(как можно подробнее):</label>
-                <input type="text" id="taskDescription" name="taskDescription" required>
+                <textarea id="taskDescription" name="taskDescription" rows="2"></textarea>
             </div>
 
             <div class="form-group">

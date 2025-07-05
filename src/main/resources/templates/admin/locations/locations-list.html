@@ -27,46 +27,50 @@
             <span> / </span>
             <span href="/admin/locations">Управление локациями</span>
         </nav>
-        <div class="mb-4">
-            <div class="d-flex justify-content-between align-items-center">
-                <h2>Список локаций</h2>
-                <button onclick="openModal()" class="btn-admin btn-admin-primary">
-                    <i class="fas fa-plus"></i> Добавить локацию
-                </button>
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2>Список локаций</h2>
+                        <button onclick="openModal()" class="btn-admin btn-admin-primary btn-overlay">
+                            <i class="fas fa-plus"></i> Добавить локацию
+                        </button>
+                    </div>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Страна</th>
+                        <th>Город</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="location : ${locations}">
+                        <td th:text="${location.id}">0</td>
+                        <td th:text="${location.country}">Страна</td>
+                        <td th:text="${location.city}">Город</td>
+                        <td>
+                            <div class="button-actions">
+                                <a th:href="@{/admin/locations/view/{id}(id=${location.id})}" 
+                                    class="btn-admin btn-admin-primary mr-1">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a th:href="@{/admin/locations/{id}/delete(id=${location.id})}" 
+                                    class="btn-admin btn-admin-danger"
+                                    onclick="return confirm('Удалить эту локацию?');">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(locations)}">
+                        <td colspan="6" class="text-center">Нет локаций</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-            <table class="admin-table">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Страна</th>
-                    <th>Город</th>
-                    <th>Действия</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="location : ${locations}">
-                    <td th:text="${location.id}">0</td>
-                    <td th:text="${location.country}">Страна</td>
-                    <td th:text="${location.city}">Город</td>
-                    <td>
-                        <div class="button-actions">
-                            <a th:href="@{/admin/locations/view/{id}(id=${location.id})}" 
-                                class="btn-admin btn-admin-primary mr-1">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a th:href="@{/admin/locations/{id}/delete(id=${location.id})}" 
-                                class="btn-admin btn-admin-danger"
-                                onclick="return confirm('Удалить эту локацию?');">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(locations)}">
-                    <td colspan="6" class="text-center">Нет локаций</td>
-                </tr>
-                </tbody>
-            </table>
         </div>
     </main>
 </div>
