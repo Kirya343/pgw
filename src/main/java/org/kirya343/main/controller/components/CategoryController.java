@@ -1,6 +1,7 @@
 package org.kirya343.main.controller.components;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.kirya343.main.model.DTOs.CategoryDTO;
@@ -49,9 +50,9 @@ public class CategoryController {
     }
 
     @GetMapping("/children/{parentId}")
-    public List<CategoryDTO> getChildCategories(@PathVariable Long parentId) {
+    public List<CategoryDTO> getChildCategories(@PathVariable Long parentId, Locale locale) {
         return categoryService.getChildCategories(parentId).stream()
-                .map(categoryService::toDTO)
+                .map(category -> categoryService.toDTO(category, locale))
                 .collect(Collectors.toList());
     }
 
@@ -61,9 +62,9 @@ public class CategoryController {
     }
 
     @GetMapping("/path/{categoryId}")
-    public List<CategoryDTO> getCategoryPath(@PathVariable Long categoryId) {
+    public List<CategoryDTO> getCategoryPath(@PathVariable Long categoryId, Locale locale) {
         return categoryService.getCategoryPath(categoryId).stream()
-                .map(categoryService::toDTO)
+                .map(category -> categoryService.toDTO(category, locale))
                 .collect(Collectors.toList());
     }
 }

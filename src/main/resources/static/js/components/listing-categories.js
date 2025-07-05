@@ -25,7 +25,7 @@ function loadSubcategories(parentId, targetSelectId) {
                 console.log(`[loadSubcategories] Добавляю категорию ${index + 1}/${categories.length}:`, cat);
                 const option = document.createElement('option');
                 option.value = cat.id;
-                option.textContent = cat.name;
+                option.textContent = cat.translate;
                 option.dataset.isLeaf = cat.leaf;
                 select.appendChild(option);
             });
@@ -60,7 +60,7 @@ function loadSubcategories(parentId, targetSelectId) {
             return response.json();
         })
         .then(path => {
-            const pathText = path.map(c => c.name).join(' / ');
+            const pathText = path.map(c => c.translate).join(' / ');
             document.getElementById('categoryPath').textContent = pathText;
         })
         .catch(error => {
@@ -155,7 +155,7 @@ function restoreCategoryPath(categoryId) {
                             children.forEach(child => {
                                 const option = document.createElement('option');
                                 option.value = child.id;
-                                option.textContent = child.name;
+                                option.textContent = child.translate;
                                 option.selected = child.id === category.id;
                                 select.appendChild(option);
                             });
@@ -178,7 +178,7 @@ function restoreCategoryPath(categoryId) {
             const finalCategory = path[path.length - 1];
             document.getElementById('finalCategoryId').value = finalCategory.id;
 
-            const pathText = path.map(c => c.name).join(' / ');
+            const pathText = path.map(c => c.translate).join(' / ');
             document.getElementById('categoryPath').textContent = pathText;
         })
         .catch(err => {

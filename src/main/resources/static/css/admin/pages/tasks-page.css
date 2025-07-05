@@ -19,13 +19,6 @@
     width: 100%;
 }
 
-.tasks-per-user-container {
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    width: auto;
-}
-
 .left-border-tasks {
     border-style: solid;
     border-width: 0 0 0 2px;

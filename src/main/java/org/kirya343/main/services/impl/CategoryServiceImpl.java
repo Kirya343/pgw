@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.kirya343.config.LocalisationConfig.LanguageUtils;
@@ -18,6 +19,7 @@ import org.kirya343.main.model.DTOs.CategoryDTO;
 import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.repository.CategoryRepository;
 import org.kirya343.main.services.CategoryService;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final MessageSource messageSource;
 
     @Override
     @Transactional
@@ -171,9 +174,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO toDTO(Category category) {
+    public CategoryDTO toDTO(Category category, Locale locale) {
         Long parentId = category.getParent() != null ? category.getParent().getId() : null;
-        return new CategoryDTO(category.getId(), category.getName(), parentId, category.isLeaf());
+        System.out.println("Перевод категории " + category.getName() + ": " + messageSource.getMessage("category." + category.getName(), null, locale));
+        return new CategoryDTO(category.getId(), category.getName(), parentId, category.isLeaf(), messageSource.getMessage("category." + category.getName(), null, locale));
     }
 
     @Override

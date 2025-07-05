@@ -2,6 +2,7 @@ package org.kirya343.main.services;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import org.kirya343.main.model.DTOs.CategoryDTO;
 import org.kirya343.main.model.listingModels.Category;
@@ -17,7 +18,7 @@ public interface CategoryService {
     List<Category> getRootCategories();
     boolean isLeafCategory(Long categoryId);
     List<Category> getCategoryPath(Long categoryId);
-    CategoryDTO toDTO(Category category);
+    CategoryDTO toDTO(Category category, Locale locale);
 
     //метод получения всех дочерних категорий
     List<Category> getAllDescendants(Category parent);
