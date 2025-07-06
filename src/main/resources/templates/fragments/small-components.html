@@ -16,3 +16,13 @@
     <label for="image" class="btn btn-outline-primary" th:text="#{listing.editing.image.button.select}">Выбрать файл</label>
     <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
 </div>
+
+<!-- Компонент для отсчёта времени -->
+<span th:fragment="timeCounter(duration)" th:if="${duration != null}" th:text="
+    ${duration.toDays() >= 1} ?
+        ${duration.toDays()} + ' д.' :
+    (${duration.toHours() >= 1} ?
+        ${duration.toHours()} + ' ч.' :
+    (${duration.toMinutes() >= 1} ?
+        ${duration.toMinutes()} + ' мин.' :
+        ${duration.getSeconds()} + ' сек.'))"></span>

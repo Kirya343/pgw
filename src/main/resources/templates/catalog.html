@@ -111,9 +111,7 @@
 
         <main class="catalog-main">
             
-            <div id="catalog-content">
-                <div th:replace="~{fragments/public/catalog-fragments :: content}"></div>
-            </div>
+            <div id="catalog-content"></div>
             <div th:if="${#lists.isEmpty(listings)}" class="no-listings">
                 <p th:text="#{no-listings}">Объявлений не найдено.</p>
             </div>
@@ -224,6 +222,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         // Поддержка кликов по категориям
         updateActiveCategories();
+        loadSortedCatalog();
 
         // Поддержка сортировки, поиска, фильтра
         document.querySelectorAll(".sort-link").forEach(link => {

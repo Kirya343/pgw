@@ -1,4 +1,4 @@
-<div th:fragment="taskItem(status)" class="task-item">
+<div th:fragment="taskItem(status)" class="task-item" th:attr="task-id=${task.id}">
     <span th:text="${task.id}" class="task-text-item"></span>
     <span th:text="${task.name}" class="task-text-item"></span>
     <span th:text="${task.taskType.displayName}" class="task-text-item"></span>
@@ -30,11 +30,13 @@
             <i class="fas fa-edit"></i>
         </a>
     </div>
-
-    <div th:replace="~{fragments/admin/tasks :: taskDetails}"></div>
 </div>
 
 <div th:fragment="taskDetails" class="task-details">
+    <p class="task-detail">
+        <label class="task-detail-label">Название:</label> 
+        <span th:text="${task.name}"></span>
+    </p>
     <p class="task-detail">
         <label class="task-detail-label">Описание:</label> 
         <span th:text="${task.description}"></span>
@@ -52,17 +54,67 @@
         <label class="task-detail-label">Выполнил:</label> 
         <span th:text="${task.executor.name}"></span>
     </p>
+    <p class="task-detail" th:if="${task.status == T(org.kirya343.main.model.Task.Status).IN_PROGRESS}">
+        <label class="task-detail-label">Выполняющий:</label> 
+        <span th:text="${task.executor.name}"></span>
+    </p>
     <br>
     <p class="task-detail">
         <label class="task-detail-label">Создана:</label> 
-        <span th:text="${#temporals.format(task.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+        <span th:text="${#temporals.format(task.createdAt, 'HH:mm dd.MM.yyyy')}"></span>
     </p>
     <p class="task-detail" th:if="${task.completed == null}">
-        <label class="task-detail-label">Дедлайн:</label> 
-        <span th:text="${#temporals.format(task.deadline, 'dd.MM.yyyy HH:mm')}"></span>
+        <label class="task-detail-label">Дедлайн через:</label> 
+        <span th:replace="fragments/small-components :: timeCounter(${task.duration})"></span>
     </p>
     <p class="task-detail" th:if="${task.completed != null}">
         <label class="task-detail-label">Завершена:</label> 
-        <span th:text="${#temporals.format(task.completed, 'dd.MM.yyyy HH:mm')}"></span>
+        <span th:text="${#temporals.format(task.completed, 'HH:mm dd.MM.yyyy')}"></span>
     </p>
 </div>
+
+<table class="admin-table" th:fragment="taskTable(status)">
+    <tbody>
+    <tr th:each="task : ${executor != null} ? ${executor.tasks} : ${tasks}" th:if="${task.status == T(org.kirya343.main.model.Task.Status).valueOf(status)}" class="task-item" th:attr="task-id=${task.id}">
+        <td th:text="'#' + ${task.id}">#0000</td>
+        <td th:text="${task.name}">Имя</td>
+        <td th:text="${task.taskType.displayName}">email@example.com</td>
+        <td>
+            <span th:replace="fragments/small-components :: timeCounter(${task.duration})"></span>
+        </td>
+        <td>
+            <div class="button-actions">
+                <form th:action="@{/admin/tasks/{id}/pickup(id=${task.id})}" method="post" style="display:inline;" th:if="${status == 'CANCELED' or status == 'NEW'}">
+                    <button type="submit"
+                            class="btn-admin btn-admin-primary"
+                            onclick="return confirm('Взять задачу?');">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </form>
+                <form th:action="@{/admin/tasks/{id}/confirm(id=${task.id})}" method="post" style="display:inline;" th:if="${user == executor and status == 'IN_PROGRESS'}">
+                    <button type="submit"
+                            class="btn-admin btn-admin-confirm"
+                            onclick="return confirm('Задача выполнена?');">
+                        <i class="fas fa-check"></i>
+                    </button>
+                </form>
+                <form th:action="@{/admin/tasks/{id}/cancel(id=${task.id})}" method="post" style="display:inline;" th:if="${(user == executor and status == 'IN_PROGRESS') or (status == 'NEW')}">
+                    <button type="submit"
+                            class="btn-admin btn-admin-danger"
+                            onclick="return confirm('Отменить эту задачу?');">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+                <a th:href="@{/admin/tasks/{id}(id=${task.id})/update}" 
+                    class="btn-admin btn-admin-primary mr-1" 
+                    th:if="${user == executor and status == 'IN_PROGRESS'}">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </div>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(tasks)}">
+        <td colspan="6" class="text-center">Нет задач</td>
+    </tr>
+    </tbody>
+</table>
