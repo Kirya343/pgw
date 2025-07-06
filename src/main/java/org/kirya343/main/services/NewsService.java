@@ -2,6 +2,7 @@ package org.kirya343.main.services;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.kirya343.main.model.News;
@@ -28,4 +29,6 @@ public interface NewsService {
     long countAll();
     long countPublished();
     Page<News> findSimilarNews(News currentNews, Pageable pageable);
+
+    void localizeNews(News news, Locale locale);
 }

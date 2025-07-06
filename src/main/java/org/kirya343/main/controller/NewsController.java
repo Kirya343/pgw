@@ -1,9 +1,12 @@
 package org.kirya343.main.controller;
 
+import java.util.Locale;
+import java.util.Map;
+
 import org.kirya343.main.model.News;
+import org.kirya343.main.services.NewsService;
 import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.StatService;
-import org.kirya343.main.services.NewsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,9 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.Locale;
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,19 +41,7 @@ public class NewsController {
             String excerpt = null;
             String content = null;
 
-            if ("fi".equals(locale.getLanguage())) {
-                title = news.getTitleFi();
-                excerpt = news.getExcerptFi();
-                content = news.getContentFi();
-            } else if ("ru".equals(locale.getLanguage())) {
-                title = news.getTitleRu();
-                excerpt = news.getExcerptRu();
-                content = news.getContentRu();
-            } else if ("en".equals(locale.getLanguage())) {
-                title = news.getTitleEn();
-                excerpt = news.getExcerptEn();
-                content = news.getContentEn();
-            }
+            newsService.localizeNews(news, locale);
 
             // Сохраняем в транзиентные поля
             news.setLocalizedTitle(title);
@@ -107,19 +95,7 @@ public class NewsController {
         String excerpt = null;
         String content = null;
 
-        if ("fi".equals(locale.getLanguage())) {
-            title = news.getTitleFi();
-            excerpt = news.getExcerptFi();
-            content = news.getContentFi();
-        } else if ("ru".equals(locale.getLanguage())) {
-            title = news.getTitleRu();
-            excerpt = news.getExcerptRu();
-            content = news.getContentRu();
-        } else if ("en".equals(locale.getLanguage())) {
-            title = news.getTitleEn();
-            excerpt = news.getExcerptEn();
-            content = news.getContentEn();
-        }
+        newsService.localizeNews(news, locale);
 
         news.setLocalizedTitle(title);
         news.setLocalizedExcerpt(excerpt);
