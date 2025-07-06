@@ -1,19 +1,29 @@
 package org.kirya343.main.controller;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.kirya343.main.model.DTOs.NewsForm;
+import org.kirya343.main.model.DTOs.NewsTranslationDTO;
 import org.kirya343.main.model.News;
+import org.kirya343.main.model.NewsTranslation;
 import org.kirya343.main.services.NewsService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -42,31 +52,37 @@ public class AdminNewsController {
     @PostMapping("/create")
     public String createNews(
         @ModelAttribute News news,
-        @RequestParam(value = "titleRu", required = false) String titleRu,
-        @RequestParam(value = "titleFi", required = false) String titleFi,
-        @RequestParam(value = "titleEn", required = false) String titleEn,
-        @RequestParam(value = "contentRu", required = false) String contentRu,
-        @RequestParam(value = "contentFi", required = false) String contentFi,
-        @RequestParam(value = "contentEn", required = false) String contentEn,
-        @RequestParam(value = "excerptRu", required = false) String excerptRu,
-        @RequestParam(value = "excerptFi", required = false) String excerptFi,
-        @RequestParam(value = "excerptEn", required = false) String excerptEn,
+        @ModelAttribute NewsForm form,
         @RequestParam(required = false) MultipartFile imageFile,
         @RequestParam(required = false, defaultValue = "false") boolean removeImage,
         @AuthenticationPrincipal OAuth2User oauth2User,
         RedirectAttributes redirectAttributes
     ) {
         try {
-            // Устанавливаем данные на основе параметров
-            news.setTitleRu(titleRu);
-            news.setTitleFi(titleFi);
-            news.setTitleEn(titleEn);
-            news.setContentRu(contentRu);
-            news.setContentFi(contentFi);
-            news.setContentEn(contentEn);
-            news.setExcerptRu(excerptRu);
-            news.setExcerptFi(excerptFi);
-            news.setExcerptEn(excerptEn);
+            
+            // Получаем новые переводы из формы
+            Map<String, NewsTranslationDTO> translationDTOs = form.getTranslations();
+
+            Map<String, NewsTranslation> NewsTranslations = new HashMap<>();
+            news.getCommunities().clear();
+
+            for (Map.Entry<String, NewsTranslationDTO> entry : translationDTOs.entrySet()) {
+                String lang = entry.getKey();
+                NewsTranslationDTO dto = entry.getValue();
+
+                System.out.println("LANG: " + lang + ", DTO: " + dto);
+
+                NewsTranslation translation = new NewsTranslation();
+                translation.setLanguage(lang);
+                translation.setTitle(dto.getTitle());
+                translation.setShortDescription(dto.getShortDescription());
+                translation.setDescription(dto.getDescription());
+
+                NewsTranslations.put(lang, translation);
+                news.getCommunities().add(lang);
+            }
+
+            news.setTranslations(NewsTranslations);
 
             news.setPublishDate(LocalDateTime.now());
             news.setPublished(true); // Или false, если ты хочешь добавить модерацию

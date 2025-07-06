@@ -1,12 +1,29 @@
 package org.kirya343.main.model;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKey;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import lombok.Getter;
+import lombok.Setter;
 
 @Setter
 @Getter
@@ -18,29 +35,14 @@ public class News {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Заголовки на разных языках
-    @Column(nullable = false)
-    private String titleRu;
-    @Column(nullable = false)
-    private String titleFi;
-    @Column(nullable = false)
-    private String titleEn;
+    @OneToMany(mappedBy = "news", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @MapKey(name = "language") // ключ — это язык (например, "ru")
+    private Map<String, NewsTranslation> translations = new HashMap<>();
 
-    // контент на разных языках
-    @Column(length = 2000, columnDefinition = "TEXT")
-    private String contentRu;
-    @Column(length = 2000, columnDefinition = "TEXT")
-    private String contentFi;
-    @Column(length = 2000, columnDefinition = "TEXT")
-    private String contentEn;
-
-    // контент на разных языках
-    @Column(length = 2000, columnDefinition = "TEXT")
-    private String excerptRu;
-    @Column(length = 2000, columnDefinition = "TEXT")
-    private String excerptFi;
-    @Column(length = 2000, columnDefinition = "TEXT")
-    private String excerptEn;
+    @ElementCollection
+    @CollectionTable(name = "news_communities", joinColumns = @JoinColumn(name = "news_id"))
+    @Column(name = "language")
+    private List<String> communities = new ArrayList<>();
 
     @Column
     private String imageUrl;

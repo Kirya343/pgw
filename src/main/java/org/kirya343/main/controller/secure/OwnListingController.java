@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.kirya343.main.model.DTOs.ListingForm;
-import org.kirya343.main.model.DTOs.TranslationDTO;
+import org.kirya343.main.model.DTOs.ListingTranslationDTO;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.listingModels.Category;
@@ -103,14 +103,14 @@ public class OwnListingController {
             listing.setCategory(categoryService.getCategoryById(categoryId));
 
             // Получаем новые переводы из формы
-            Map<String, TranslationDTO> translationDTOs = form.getTranslations();
+            Map<String, ListingTranslationDTO> translationDTOs = form.getTranslations();
 
             Map<String, ListingTranslation> listingTranslations = new HashMap<>();
             listing.getCommunities().clear();
 
-            for (Map.Entry<String, TranslationDTO> entry : translationDTOs.entrySet()) {
+            for (Map.Entry<String, ListingTranslationDTO> entry : translationDTOs.entrySet()) {
                 String lang = entry.getKey();
-                TranslationDTO dto = entry.getValue();
+                ListingTranslationDTO dto = entry.getValue();
 
                 System.out.println("LANG: " + lang + ", DTO: " + dto);
 
@@ -254,7 +254,7 @@ public class OwnListingController {
                    .orElseThrow(() -> new IllegalArgumentException("Location not found: " + locationName));
 
             // Получаем новые переводы из формы
-            Map<String, TranslationDTO> translationDTOs = form.getTranslations();
+            Map<String, ListingTranslationDTO> translationDTOs = form.getTranslations();
 
             // Чистим communities
             existingListing.getCommunities().clear();
@@ -270,9 +270,9 @@ public class OwnListingController {
             currentTranslations.entrySet().removeIf(entry -> !translationDTOs.containsKey(entry.getKey()));
 
             // Обновляем или добавляем переводы
-            for (Map.Entry<String, TranslationDTO> entry : translationDTOs.entrySet()) {
+            for (Map.Entry<String, ListingTranslationDTO> entry : translationDTOs.entrySet()) {
                 String lang = entry.getKey();
-                TranslationDTO dto = entry.getValue();
+                ListingTranslationDTO dto = entry.getValue();
 
                 if (currentTranslations.containsKey(lang)) {
                     ListingTranslation existingTranslation = currentTranslations.get(lang);

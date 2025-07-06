@@ -1,6 +1,9 @@
 package org.kirya343.main.services.impl;
 
+import org.kirya343.config.LocalisationConfig.LanguageUtils;
+import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.News;
+import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.kirya343.main.repository.NewsRepository;
 import org.kirya343.main.services.StorageService;
 import org.springframework.data.domain.Page;
@@ -16,7 +19,11 @@ import lombok.RequiredArgsConstructor;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+
+import org.kirya343.main.model.NewsTranslation;
 
 @Service
 @RequiredArgsConstructor
@@ -117,4 +124,42 @@ public class NewsServiceImpl implements NewsService {
     public Page<News> findSimilarNews(News currentNews, Pageable pageable) {
         return newsRepository.findSimilarNews(currentNews.getId(), pageable);
     }
+
+    @Override
+    public void localizeNews(News news, Locale locale) {
+        String lang = locale.getLanguage();
+        Map<String, NewsTranslation> translations = news.getTranslations();
+
+        NewsTranslation selected = translations.get(lang);
+
+        // fallback, если нужного языка нет
+        if (selected == null || isBlank(selected.getTitle()) || isBlank(selected.getShortDescription()) || isBlank(selected.getDescription())) {
+            // Приоритет: fi > ru > en
+            for (String fallbackLang : LanguageUtils.SUPPORTED_LANGUAGES) {
+                selected = translations.get(fallbackLang);
+                if (selected != null && !isBlank(selected.getTitle()) && !isBlank(selected.getShortDescription()) && !isBlank(selected.getDescription())) {
+                    break;
+                }
+            }
+        }
+
+        if (selected != null) {
+            news.setLocalizedTitle(safe(selected.getTitle()));
+            news.setLocalizedExcerpt(safe(selected.getDescription()));
+            news.setLocalizedContent(safe(selected.getDescription()));
+        } else {
+            news.setLocalizedTitle(null);
+            news.setLocalizedExcerpt(null);
+            news.setLocalizedContent(null);
+        }
+    }
+
+    private String safe(String value) {
+    return (value != null && !value.isBlank()) ? value : null;
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
 }

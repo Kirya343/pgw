@@ -6,6 +6,6 @@ import java.util.Map;
 import lombok.Data;
 
 @Data
-public class ListingForm {
-    private Map<String, ListingTranslationDTO> translations = new HashMap<>();
+public class NewsForm {
+    private Map<String, NewsTranslationDTO> translations = new HashMap<>();
 }

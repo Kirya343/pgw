@@ -33,48 +33,52 @@
 
         <div class="card">
             <div class="card-body">
-                <form th:action="${news.id != null} ? @{/admin/news/edit/{id}(id=${news.id})} : @{/admin/news/create}" 
-                      method="post" th:object="${news}" enctype="multipart/form-data">
-                    <!-- Заголовки -->
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">Заголовок (русский)</label>
-                        <input type="text" class="admin-form-control" name="titleRu" th:value="*{titleRu}" required>
-                    </div>
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">Заголовок (финский)</label>
-                        <input type="text" class="admin-form-control" name="titleFi" th:value="*{titleFi}">
-                    </div>
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">Заголовок (английский)</label>
-                        <input type="text" class="admin-form-control" name="titleEn" th:value="*{titleEn}">
-                    </div>
+                <form id="newsForm" th:action="${news.id != null} ? @{/admin/news/edit/{id}(id=${news.id})} : @{/admin/news/create}" 
+                    method="post" th:object="${news}" enctype="multipart/form-data">
 
-                    <!-- Краткое описание -->
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">Краткое описание (русский)</label>
-                        <textarea class="admin-form-control" name="excerptRu" rows="2" th:text="*{excerptRu}"></textarea>
-                    </div>
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">Краткое описание (финский)</label>
-                        <textarea class="admin-form-control" name="excerptFi" rows="2" th:text="*{excerptFi}"></textarea>
-                    </div>
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">Краткое описание (английский)</label>
-                        <textarea class="admin-form-control" name="excerptEn" rows="2" th:text="*{excerptEn}"></textarea>
-                    </div>
+                    <div class="form-group">
+                        <button id="addLangBtn" class="btn btn-primary" type="button" th:text="#{listing.editing.language.add}">Добавить язык</button>
+            
+                        <div id="languageIndicators" style="margin-top: 15px; display:flex; gap: 20px;"></div>
 
-                    <!-- Контент -->
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">Содержание (русский)</label>
-                        <textarea class="admin-form-control" name="contentRu" rows="6" th:text="*{contentRu}"></textarea>
-                    </div>
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">Содержание (финский)</label>
-                        <textarea class="admin-form-control" name="contentFi" rows="6" th:text="*{contentFi}"></textarea>
-                    </div>
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">Содержание (английский)</label>
-                        <textarea class="admin-form-control" name="contentEn" rows="6" th:text="*{contentEn}"></textarea>
+                        <div id="languageSelectorContainer" style="display:none; margin-top:10px;">
+                            <select id="languageSelect"> 
+                                <option value="" disabled selected th:text="#{listing.editing.language.select}">Выберите язык</option>
+                                <option value="ru">Русский</option>
+                                <option value="fi">Suomi</option>
+                                <option value="en">English</option>
+                                <option value="it">Italiano</option>
+                            </select>
+
+                            <div id="languageFields" class="languageFields">
+                                <br>
+                                <span th:text="#{listing.editing.title}"></span>
+                                    <span>(</span>
+                                    <span id="langLabel"></span>
+                                    <span>):</span>
+                                <input class="languageFields-item" type="text" id="titleInput" name="titles" /><br>
+
+                                <label class="languageFields-item">
+                                    <span>Краткое описание</span>
+                                    <span>(</span>
+                                    <span id="langLabelShortDesc"></span>
+                                    <span>):</span>
+                                </label>
+                                <textarea class="languageFields-item" id="shortDescriptionInput" name="shortDescriptions" rows="2"></textarea><br>
+
+
+                                <label class="languageFields-item">
+                                    <span th:text="#{listing.editing.description}"></span>
+                                    <span>(</span>
+                                    <span id="langLabelDesc"></span>
+                                    <span>):</span>
+                                </label>
+                                <textarea class="languageFields-item" id="descriptionInput" name="descriptions" rows="4"></textarea><br>
+
+                                <button id="okBtn" class="btn btn-outline-primary" type="button">ОК</button>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="admin-form-group">
@@ -116,5 +120,6 @@
 
 <script src="/js/components/update-filename.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/components/toggle-language-fields-for-news.js"></script>
 </body>
 </html>
