@@ -47,22 +47,6 @@ public class CatalogController {
             HttpServletRequest request,
             @AuthenticationPrincipal OAuth2User oauth2User) {
 
-        /* Category categoryType = categoryRepository.findByName(category);
-
-        Sort sort = switch (sortBy) {
-            case "price" -> Sort.by("price");
-            case "rating" -> Sort.by("rating").descending();
-            case "popularity" -> Sort.by("views").descending();
-            default -> Sort.by("createdAt").descending();
-        }; */
-
-        /* Page<Listing> listingsPage = listingService.getListingsSorted(categoryType, sortBy, pageable, searchQuery, hasReviews, locale);
-        listingService.localizeCatalogListings(listingsPage.getContent(), locale); */
-
-        /* List<Listing> filteredListings = listingsPage.getContent().stream()
-                .filter(listing -> !hasReviews || (listing.getReviews() != null && !listing.getReviews().isEmpty()))
-                .toList(); */
-
         // Добавляем данные в модель
         model.addAttribute("currentPage", page);
 
