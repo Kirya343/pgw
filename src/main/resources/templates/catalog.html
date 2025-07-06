@@ -112,7 +112,8 @@
         <main class="catalog-main">
             
             <div id="catalog-content"></div>
-            <div th:if="${#lists.isEmpty(listings)}" class="no-listings">
+
+            <div class="no-listings" id="noListings" style="display: none;">
                 <p th:text="#{no-listings}">Объявлений не найдено.</p>
             </div>
 
@@ -144,7 +145,7 @@
 <script src="/js/react/catalog-page.js"></script>
 
 <!-- Сортировка без перезагрузки -->
-<script>
+<script th:inline="javascript">
     function loadSortedCatalog() {
         const params = new URLSearchParams(window.location.search);
 
@@ -172,6 +173,15 @@
             .then(response => response.text())
             .then(html => {
                 document.querySelector("#catalog-content").innerHTML = html;
+
+                const listings = /*[[${listings != null ? listings.content : {}}]]*/ [];
+                
+                console.log(listings)
+                if (listings.length === 0) {
+                    document.getElementById("noListings").style.display = "block";
+                } else {
+                    document.getElementById("noListings").style.display = "none";
+                }
             })
             .catch(error => console.error("Ошибка при сортировке:", error));
     }
@@ -272,42 +282,6 @@
         loadSortedCatalog();
     });
 </script>
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Функция для получения параметра category из URL
-        function getCategoryFromUrl() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('category') || ''; // если нет, то пустая строка
-        }
-
-        const currentCategory = getCategoryFromUrl();
-
-        // Найдём все элементы с data-category
-        const menuItems = document.querySelectorAll('#categoryMenu [data-category]');
-
-        // Сбросим класс active у всех
-        menuItems.forEach(item => item.classList.remove('active'));
-
-        // Найдём элемент, у которого data-category == currentCategory
-        let activeItem = null;
-
-        menuItems.forEach(item => {
-            if (item.getAttribute('data-category') === currentCategory) {
-            activeItem = item;
-            }
-        });
-
-        if (activeItem) {
-            activeItem.classList.add('active');
-
-            // Если это вложенный пункт (выпадающее меню), добавим active родителю
-            const parentLi = activeItem.closest('li.nav-item.dropdown');
-            if (parentLi) {
-                parentLi.classList.add('active');
-            }
-        }
-    });
-</script> -->
 <!-- Файл общих импортов -->
 <th:block th:replace="~{fragments/global-imports :: globalImports}"/>
 </body>
