@@ -12,7 +12,6 @@ import org.kirya343.main.services.chat.ChatService;
 import org.kirya343.main.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -21,7 +20,6 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.socket.messaging.SessionConnectedEvent;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -68,8 +66,7 @@ public class ChatWebSocketController {
         NotificationDTO notification = new NotificationDTO(
                 "Новое сообщение",
                 sender.getName() + ": " + message.getText(),
-                "/chat/" + conversation.getId(),
-                conversation.getId()
+                "/secure/messengerconversationId=" + conversation.getId()
         );
 
         if (isUserOnline(receiverSub)) {
@@ -79,33 +76,13 @@ public class ChatWebSocketController {
                     notification
             );
         } else {
-            notificationService.saveOfflineNotification(receiverSub, notification);
+            notificationService.saveOfflineChatNotification(receiverSub, notification);
         }
     }
 
     // Проверка активности пользователя
     private boolean isUserOnline(String userSub) {
         return simpUserRegistry.getUser(userSub) != null;
-    }
-
-    @EventListener
-    public void handleWebSocketConnectListener(SessionConnectedEvent event) {
-        Principal principal = event.getUser();
-        if (principal != null) {
-            String username = principal.getName();
-            List<NotificationDTO> notifications = notificationService.loadPendingNotifications(username);
-
-            if (!notifications.isEmpty()) {
-                notifications.forEach(notification -> {
-                    messagingTemplate.convertAndSendToUser(
-                            username,
-                            "/queue/notifications",
-                            notification
-                    );
-                });
-                notificationService.clearNotifications(username);
-            }
-        }
     }
 
     @MessageMapping("/chat.loadMessages/{conversationId}")
@@ -192,19 +169,4 @@ public class ChatWebSocketController {
         // Можно сразу вернуть текущий список или просто подтвердить подписку
         return null; // Реальная логика будет в сервисе
     } */
-
-    @MessageMapping("/notifications.requestPending")
-    public void requestPendingNotifications(Principal principal) {
-        String username = principal.getName();
-        List<NotificationDTO> pending = notificationService.loadPendingNotifications(username);
-
-        if (!pending.isEmpty()) {
-            messagingTemplate.convertAndSendToUser(
-                    username,
-                    "/queue/notifications",
-                    pending
-            );
-            notificationService.clearNotifications(username);
-        }
-    }
 }
