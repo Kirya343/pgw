@@ -33,6 +33,8 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     @Query("SELECT l FROM Listing l WHERE l.active = true")
     List<Listing> findListByActiveTrue();
 
+    List<Listing> findListByActiveTrueAndTestModeFalse();
+
     Page<Listing> findByCategoryAndActiveTrue(String category, Pageable pageable);
     @Query("SELECT l FROM Listing l WHERE l.active = true AND l.category = :category")
     Page<Listing> findActiveByCategory(@Param("category") String category, Pageable pageable);
