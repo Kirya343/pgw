@@ -49,15 +49,29 @@ public class SitemapController {
         // Инфо
         sb.append("<url>\n");
         sb.append("<loc>").append(baseUrl).append("/info").append("/</loc>\n");
-        sb.append("<changefreq>weekly</changefreq>\n");
+        sb.append("<changefreq>daily</changefreq>\n");
         sb.append("<priority>1.0</priority>\n");
+        sb.append("</url>\n");
+
+        // Условия пользования
+        sb.append("<url>\n");
+        sb.append("<loc>").append(baseUrl).append("/privacy-policy").append("/</loc>\n");
+        sb.append("<changefreq>monthly</changefreq>\n");
+        sb.append("<priority>0.3</priority>\n");
+        sb.append("</url>\n");
+
+        // Политика конфиденциальности
+        sb.append("<url>\n");
+        sb.append("<loc>").append(baseUrl).append("/terms").append("/</loc>\n");
+        sb.append("<changefreq>monthly</changefreq>\n");
+        sb.append("<priority>0.3</priority>\n");
         sb.append("</url>\n");
 
         // Новости
         sb.append("<url>\n");
         sb.append("<loc>").append(baseUrl).append("/news").append("/</loc>\n");
         sb.append("<changefreq>daily</changefreq>\n");
-        sb.append("<priority>1.0</priority>\n");
+        sb.append("<priority>0.8</priority>\n");
         sb.append("</url>\n");
 
         for (News newsItem : news) {
