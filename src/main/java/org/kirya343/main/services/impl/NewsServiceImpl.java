@@ -1,9 +1,7 @@
 package org.kirya343.main.services.impl;
 
 import org.kirya343.config.LocalisationConfig.LanguageUtils;
-import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.News;
-import org.kirya343.main.model.listingModels.ListingTranslation;
 import org.kirya343.main.repository.NewsRepository;
 import org.kirya343.main.services.StorageService;
 import org.springframework.data.domain.Page;

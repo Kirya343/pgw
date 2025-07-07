@@ -38,7 +38,20 @@
                 </div>
             </div>
 
-            <!-- Кнопка Новостей (активная) -->
+            <!-- Кнопка Уведомлений -->
+            <button class="nav-link" id="notificationBtn" th:if="${isAuthenticated}">
+                <i class="fa fa-bell fa-lg" aria-hidden="true"></i>
+            </button>
+
+            <!-- Выпадающее окно с уведомлениями -->
+            <div id="notificationDropdown" class="notification-center-dropdown hidden">
+                <div class="notification-center-header">Уведомления</div>
+                <div id="notificationList" class="notification-center-list">
+                    <p class="no-notifications">Загрузка...</p>
+                </div>
+            </div>
+
+            <!-- Кнопка Новостей -->
             <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
 
             <!-- Для неавторизованных пользователей -->
@@ -57,4 +70,57 @@
             </a>
         </div>
     </nav>
+    <script th:inline="javascript" defer>
+        document.addEventListener('DOMContentLoaded', () => {
+            const notificationBtn = document.getElementById('notificationBtn');
+            const dropdown = document.getElementById('notificationDropdown');
+            const list = document.getElementById('notificationList');
+
+            notificationBtn.addEventListener('click', () => {
+                dropdown.classList.toggle('visible');
+
+                const userId = /*[[${user != null ? user.id : ''}]]*/ '';
+
+                /* if (!userId) return; */
+
+                fetch(`/api/notifications/for-user/${userId}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Ошибка при загрузке уведомлений");
+                        return response.json(); // Предполагается, что сервер возвращает JSON
+                    })
+                    .then(notifications => {
+                        console.log(notifications)
+                        list.innerHTML = '';
+                        if (notifications.length === 0) {
+                            list.innerHTML = '<p class="no-notifications">Нет уведомлений</p>';
+                        } else {
+                            notifications.forEach(n => {
+                                const item = document.createElement('a');
+                                item.href = n.link || '#';
+                                item.className = `notification-center-item ${n.importance.toLowerCase()}`;
+                                item.innerHTML = `
+                                    <div class="notification-content">
+                                        <strong>${n.title}</strong><br>
+                                        <span>${n.content}</span>
+                                    </div>
+                                `;
+                                list.appendChild(item);
+                            });
+                        }
+                        list.dataset.loaded = 'true';
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        list.innerHTML = '<p class="no-notifications">Ошибка загрузки</p>';
+                    });
+            });
+
+            // Закрытие окна при клике вне
+            document.addEventListener('click', (e) => {
+                if (!dropdown.contains(e.target) && !notificationBtn.contains(e.target)) {
+                    dropdown.classList.remove('visible');
+                }
+            });
+        });
+    </script>
 </div>

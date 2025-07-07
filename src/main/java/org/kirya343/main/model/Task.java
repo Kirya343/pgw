@@ -1,5 +1,6 @@
 package org.kirya343.main.model;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 @Data
@@ -84,4 +86,12 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;
+
+    @Transient // чтобы Hibernate не пытался сохранять это поле в БД
+    public Duration getDuration() {
+        if (createdAt != null && deadline != null) {
+            return Duration.between(createdAt, deadline);
+        }
+        return null;
+    }
 }

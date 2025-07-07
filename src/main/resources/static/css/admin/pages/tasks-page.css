@@ -1,6 +1,10 @@
 @import url(../../public/components/base.css);
 @import url(main-admin-page.css);
 
+.task-add-btn {
+    transform: translateY(-18px) translateX(311px);
+}
+
 .task-container {
     border-style: solid;
     border-width: 4px;
@@ -10,6 +14,7 @@
     flex-direction: row;
     height: 400px;
     width: auto;
+    z-index: 5;
 }
 
 .tasks-list-container {
@@ -44,19 +49,8 @@
 }
 
 .task-item {
-    border-radius: 9px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 2rem;
-    justify-content: space-between;
-    padding: 0.5rem;
-    border-width: 0 0 1px 0;
-    border-color: var(--border-color);
-    border-style: solid;
     min-width: 400px;
     cursor: pointer;
-    position: relative;
     min-height: 50px;
 }
 
@@ -71,11 +65,11 @@
     background-color: var(--light-gray);
 }
 
+.task-details-container {
+    width: 300px;
+}
+
 .task-details {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
     background-color: white;
     padding: 1rem;
     border: 1px solid var(--border-color);
@@ -86,19 +80,18 @@
     
     visibility: hidden;
     opacity: 0;
-    transform: translateY(-60px);
-    transition: all 0.3s ease;
+    transform: translateY(-30px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
 
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
-/* Показывать при наведении */
-.task-item:hover .task-details {
-    transform: translateY(60px);
-    opacity: 1;
+.task-details.active {
     visibility: visible;
+    opacity: 1;
+    transform: translateY(0); /* <- нормальное положение */
 }
 
 .task-detail {
@@ -109,4 +102,20 @@
 
 .task-detail-label {
     font-weight: 600;
+}
+
+.global-tasks-container {
+    display: flex; 
+    flex-direction: row;
+    width: 100%;
+    gap: 1rem;
+}
+
+.admin-table td {
+    padding: 0.5rem;
+    max-width: 240px;
+    white-space: nowrap;    
+    overflow: hidden;        
+    text-overflow: ellipsis;
+    text-align: left;
 }

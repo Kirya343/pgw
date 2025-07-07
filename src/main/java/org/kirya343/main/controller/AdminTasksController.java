@@ -1,6 +1,5 @@
 package org.kirya343.main.controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import org.kirya343.main.repository.TaskRepository;
 import org.kirya343.main.repository.UserRepository;
 import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.AuthService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,6 +42,7 @@ public class AdminTasksController {
 
         List<Task> tasks = taskRepository.findAll();
         List<User> executors = userRepository.findByRole(Role.ADMIN);
+
         model.addAttribute("tasks", tasks);
         model.addAttribute("taskTypes", TaskType.values());
         model.addAttribute("executors", executors);
@@ -53,13 +55,14 @@ public class AdminTasksController {
                                 @RequestParam String taskName,
                                 @RequestParam String taskDescription,
                                 @RequestParam String taskType,
-                                @RequestParam LocalDate deadline,
+                                @RequestParam LocalDateTime deadline,
                                 Model model) {
         Task task = new Task();
         task.setName(taskName);
         task.setDescription(taskDescription);
         task.setTaskType(TaskType.valueOf(taskType));
         task.setStatus(Status.NEW);
+        task.setDeadline(deadline);
         task.setAuthor(userService.findUserFromOAuth2(oauth2User));
 
         taskRepository.save(task);
@@ -111,5 +114,14 @@ public class AdminTasksController {
     @PostMapping("/{id}/delete")
     public String deleteTask(@PathVariable Long id, Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
         return "redirect:/admin/tasks";
+    }
+
+    @GetMapping("/{id}/details")
+    public String getTaskDetailsFragment(@PathVariable Long id, Model model) {
+        System.out.println("Поиск деталей задачи id: " + id);
+        Task task = taskRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        model.addAttribute("task", task);
+        return "fragments/admin/tasks :: taskDetails"; // путь и имя фрагмента
     }
 }

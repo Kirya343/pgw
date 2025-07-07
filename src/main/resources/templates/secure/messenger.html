@@ -75,7 +75,7 @@
                     </div>
 
                     <!-- Если нет диалогов -->
-                    <div th:if="${#lists.isEmpty(conversations)}" class="no-dialogs">
+                    <div th:if="${#lists.isEmpty(conversations)}" class="no-dialogs" id="no-dialogs">
                         <p th:text="#{my.messages.no-messages}">У вас пока нет сообщений.</p>
                         <p th:text="#{my.messages.start.dialog}">Начните общение, ответив на объявление или отправив сообщение пользователю.</p>
                     </div>

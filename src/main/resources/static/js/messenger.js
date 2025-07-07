@@ -1,4 +1,6 @@
-//let currentConversationId = null; // глобально
+const params = new URLSearchParams(window.location.search);
+let conversationIdFromUrl = params.get('conversationId') || null;
+
 let currentSubscription = null;
 
 let conversationsSubscription = null;
@@ -15,16 +17,18 @@ function connect() {
 
         // Подписка на обновления по списку разговоров
         stompClient.subscribe("/user/queue/conversations", function(message) {
-            const conversations = JSON.parse(message.body);
-            renderConversations(conversations); // твоя функция для рендера
+            const conversation = JSON.parse(message.body);
+            addConversationToList(conversation);
         });
+
+        subscribeToConversationsUpdates();
 
         // Подписка на обновление информации о собеседнике
         stompClient.subscribe('/user/queue/interlocutorInfo', function (message) {
             const interlocutorInfo = JSON.parse(message.body);
-            if (interlocutorInfo && interlocutorInfo.interlocutorName && interlocutorInfo.interlocutorAvatar) {
-                document.getElementById('interlocutorName').innerText = interlocutorInfo.interlocutorName;
-                document.getElementById('interlocutorAvatar').src = interlocutorInfo.interlocutorAvatar;
+            if (interlocutorInfo && interlocutorInfo.name && interlocutorInfo.avatar) {
+                document.getElementById('interlocutorName').innerText = interlocutorInfo.name;
+                document.getElementById('interlocutorAvatar').src = interlocutorInfo.avatar;
             }
         });
 
@@ -88,42 +92,30 @@ function setupChatSubscription(conversationId) {
 
 
 // Пример функции для рендеринга списка разговоров:
+function addConversationToList(conversation) {
 
-function renderConversations(conversations) {
     const container = document.querySelector(".dialogs-list");
-    container.innerHTML = "";
 
-    if (conversations.length === 0) {
-        container.innerHTML = `
-            <div class="no-dialogs">
-                <p>У вас пока нет сообщений.</p>
-            </div>
-        `;
-        return;
+    const noDialogs = document.getElementById("no-dialogs");
+    if (noDialogs) {
+        noDialogs.style.display = 'none';
     }
 
-    // Сортируем диалоги по дате последнего сообщения (если frontend получает несортированные данные)
-    const sortedConversations = [...conversations].sort((a, b) => {
-        const dateA = a.lastMessageTime ? new Date(a.lastMessageTime) : new Date(a.createdAt);
-        const dateB = b.lastMessageTime ? new Date(b.lastMessageTime) : new Date(b.createdAt);
-        return dateB - dateA; // Сортировка по убыванию
-    });
+    updateSingleConversation(conversation);
 
-    // Рендерим отсортированные диалоги
-    sortedConversations.forEach(conversation => {
-        updateSingleConversation(conversation);
-    });
-
-    // Подписываемся на обновления
-    subscribeToConversationsUpdates();
-
-    // Инициализируем обработчики кликов
+    // Снова инициализируем обработчики кликов
     initializeDialogClickListeners();
 
     // Автовыбор первого диалога (теперь это будет самый активный)
-    if (sortedConversations.length > 0) {
+    if (conversationIdFromUrl) {
+        if (conversation.id == conversationIdFromUrl) {
+            let firstDialog = container.querySelector(`[data-conversation-id="${conversation.id}"]`);
+            if (firstDialog) firstDialog.click();
+        }
+    } else { 
         const firstDialog = document.querySelector('.dialog-item');
-        if (firstDialog) firstDialog.click();
+        firstDialog.getAttribute('data-conversation-id')
+        if (firstDialog != currentConversationId) firstDialog.click();
     }
 }
 
@@ -171,13 +163,13 @@ function updateSingleConversation(conversation) {
     // Обновляем содержимое диалога
     dialogItem.innerHTML = `
         <div class="dialog-avatar">
-            <img src="${conversation.interlocutorAvatar}" 
+            <img src="${conversation.avatar}" 
                  onerror="this.src='/images/avatar-placeholder.png'" 
                  alt="Аватар">
         </div>
         <div class="dialog-content">
             <div class="dialog-header">
-                <h4>${conversation.interlocutorName}</h4>
+                <h4>${conversation.name}</h4>
                 <span class="dialog-time">${formattedDate}</span>
             </div>
             <p class="dialog-preview">${conversation.lastMessagePreview || ""}</p>
@@ -213,7 +205,7 @@ function sendMessage() {
 
     // Отправляем сообщение через STOMP
     stompClient.send("/app/chat.send", {}, JSON.stringify(message));
-
+    
     // Очищаем поле ввода
     document.getElementById('message-input').value = '';
     document.getElementById('message-input').focus();
