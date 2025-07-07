@@ -15,6 +15,8 @@ import org.springframework.stereotype.Repository;
 public interface NewsRepository extends JpaRepository<News, Long> {
     // Для списка новостей
     Page<News> findByPublishedTrueOrderByPublishDateDesc(Pageable pageable);
+
+    List<News> findByPublishedTrue();
     
     // Для похожих новостей (используем JPQL для надежности)
     @Query("SELECT n FROM News n WHERE n.published = true AND n.id <> :excludeId ORDER BY n.publishDate DESC")
