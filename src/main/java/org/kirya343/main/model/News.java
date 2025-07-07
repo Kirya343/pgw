@@ -18,15 +18,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKey;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
+@Data
 @Entity
 @Table(name = "news")
 public class News {
@@ -46,6 +45,10 @@ public class News {
 
     @Column
     private String imageUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

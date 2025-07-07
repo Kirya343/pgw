@@ -16,6 +16,7 @@ public interface NewsService {
     Optional<News> findById(Long id);
     News save(News news);
     void deleteById(Long id);
+    News getNewsById(Long id);
 
     // Метод для сохранения с обработкой изображения
     News save(News news, MultipartFile imageFile, boolean removeImage) throws IOException;

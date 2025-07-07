@@ -52,7 +52,7 @@
 
                             <div id="languageFields" class="languageFields">
                                 <br>
-                                <span th:text="#{listing.editing.title}"></span>
+                                <span>Заголовок</span>
                                     <span>(</span>
                                     <span id="langLabel"></span>
                                     <span>):</span>
@@ -68,7 +68,7 @@
 
 
                                 <label class="languageFields-item">
-                                    <span th:text="#{listing.editing.description}"></span>
+                                    <span>Описание</span>
                                     <span>(</span>
                                     <span id="langLabelDesc"></span>
                                     <span>):</span>
@@ -118,6 +118,16 @@
     </main>
 </div>
 
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+document.addEventListener('DOMContentLoaded', () => {
+    const existingTranslations = /*[[${translationsJson}]]*/ '{}';
+    const translationsObj = JSON.parse(existingTranslations);
+    loadTranslations(translationsObj);
+});
+/*]]>*/
+</script>
 <script src="/js/components/update-filename.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/components/toggle-language-fields-for-news.js"></script>

@@ -160,4 +160,9 @@ public class NewsServiceImpl implements NewsService {
         return value == null || value.isBlank();
     }
 
+    @Override
+    public News getNewsById(Long id) {
+        return newsRepository.findById(id).orElse(null);
+    }
+
 }
