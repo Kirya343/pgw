@@ -47,11 +47,15 @@ public class AdminNewsController {
     }
 
     @GetMapping("/create")
-    public String createNewsForm(Model model) {
+    public String createNewsForm(
+            @RequestParam(required = false, defaultValue = "false") boolean published, 
+            Model model) {
+        
         News news = new News();
         news.setPublishDate(LocalDateTime.now());
         model.addAttribute("news", news);
         model.addAttribute("newsForm", new NewsForm());
+        model.addAttribute("published", published);
         model.addAttribute("activePage", "admin-news");
         return "admin/news/news-edit";
     }
@@ -62,6 +66,7 @@ public class AdminNewsController {
         @ModelAttribute NewsForm form,
         @RequestParam(required = false) MultipartFile imageFile,
         @RequestParam(required = false, defaultValue = "false") boolean removeImage,
+        @RequestParam(required = false, defaultValue = "false") boolean published, //
         @AuthenticationPrincipal OAuth2User oauth2User,
         RedirectAttributes redirectAttributes
     ) {
@@ -93,7 +98,7 @@ public class AdminNewsController {
             news.setTranslations(newsTranslations);
 
             news.setPublishDate(LocalDateTime.now());
-            news.setPublished(true); // Или false, если ты хочешь добавить модерацию
+            news.setPublished(published); // Или false, если ты хочешь добавить модерацию
 
             // Получаем имя автора
             User author = userService.findUserFromOAuth2(oauth2User);
@@ -109,11 +114,14 @@ public class AdminNewsController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editNewsForm(@PathVariable Long id, Model model) throws JsonProcessingException {
+    public String editNewsForm(@PathVariable Long id,
+        @RequestParam(required = false, defaultValue = "false") boolean published, 
+        Model model) throws JsonProcessingException {
         try {
             News news = newsService.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Новость не найдена"));
             model.addAttribute("news", news);
+            model.addAttribute("published", published);
             model.addAttribute("activePage", "admin-news");
 
             Map<String, Map<String, String>> translationsMap = new HashMap<>();
@@ -144,6 +152,7 @@ public class AdminNewsController {
                            @ModelAttribute NewsForm form,
                            @RequestParam(required = false) MultipartFile imageFile,
                            @RequestParam(required = false, defaultValue = "false") boolean removeImage,
+                           @RequestParam(required = false, defaultValue = "false") boolean published, 
                            @AuthenticationPrincipal OAuth2User oauth2User,
                            RedirectAttributes redirectAttributes) {
         try {
@@ -173,7 +182,7 @@ public class AdminNewsController {
             news.setTranslations(newsTranslations);
 
             news.setPublishDate(LocalDateTime.now());
-            news.setPublished(true); // Или false, если ты хочешь добавить модерацию
+            news.setPublished(published); // Или false, если ты хочешь добавить модерацию
 
             // Получаем имя автора
             User author = userService.findUserFromOAuth2(oauth2User);
