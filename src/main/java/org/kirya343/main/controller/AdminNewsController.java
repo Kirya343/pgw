@@ -9,7 +9,9 @@ import org.kirya343.main.model.DTOs.NewsForm;
 import org.kirya343.main.model.DTOs.NewsTranslationDTO;
 import org.kirya343.main.model.News;
 import org.kirya343.main.model.NewsTranslation;
+import org.kirya343.main.model.User;
 import org.kirya343.main.services.NewsService;
+import org.kirya343.main.services.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -31,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminNewsController {
 
     private final NewsService newsService;
+    private final UserService userService;
 
     @GetMapping
     public String newsList(Model model) {
@@ -45,6 +51,7 @@ public class AdminNewsController {
         News news = new News();
         news.setPublishDate(LocalDateTime.now());
         model.addAttribute("news", news);
+        model.addAttribute("newsForm", new NewsForm());
         model.addAttribute("activePage", "admin-news");
         return "admin/news/news-edit";
     }
@@ -63,7 +70,7 @@ public class AdminNewsController {
             // Получаем новые переводы из формы
             Map<String, NewsTranslationDTO> translationDTOs = form.getTranslations();
 
-            Map<String, NewsTranslation> NewsTranslations = new HashMap<>();
+            Map<String, NewsTranslation> newsTranslations = new HashMap<>();
             news.getCommunities().clear();
 
             for (Map.Entry<String, NewsTranslationDTO> entry : translationDTOs.entrySet()) {
@@ -77,19 +84,20 @@ public class AdminNewsController {
                 translation.setTitle(dto.getTitle());
                 translation.setShortDescription(dto.getShortDescription());
                 translation.setDescription(dto.getDescription());
+                translation.setNews(news);
 
-                NewsTranslations.put(lang, translation);
+                newsTranslations.put(lang, translation);
                 news.getCommunities().add(lang);
             }
 
-            news.setTranslations(NewsTranslations);
+            news.setTranslations(newsTranslations);
 
             news.setPublishDate(LocalDateTime.now());
             news.setPublished(true); // Или false, если ты хочешь добавить модерацию
 
             // Получаем имя автора
-            String authorName = oauth2User.getAttribute("name");
-            news.setAuthor(authorName != null ? authorName : "Админ");
+            User author = userService.findUserFromOAuth2(oauth2User);
+            news.setAuthor(author);
 
             newsService.save(news, imageFile, removeImage);
             redirectAttributes.addFlashAttribute("successMessage", "Новость успешно создана");
@@ -101,12 +109,29 @@ public class AdminNewsController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editNewsForm(@PathVariable Long id, Model model) {
+    public String editNewsForm(@PathVariable Long id, Model model) throws JsonProcessingException {
         try {
             News news = newsService.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Новость не найдена"));
             model.addAttribute("news", news);
             model.addAttribute("activePage", "admin-news");
+
+            Map<String, Map<String, String>> translationsMap = new HashMap<>();
+            news.getTranslations().forEach((lang, translation) -> {
+                Map<String, String> data = new HashMap<>();
+                data.put("title", translation.getTitle());
+                data.put("shortDescription", translation.getShortDescription());
+                data.put("description", translation.getDescription());
+                translationsMap.put(lang, data);
+            });
+
+
+            ObjectMapper mapper = new ObjectMapper();
+            String translationsJson = mapper.writeValueAsString(translationsMap);
+
+            model.addAttribute("translationsJson", translationsJson);
+
+
             return "admin/news/news-edit";
         } catch (IllegalArgumentException e) {
             return "redirect:/admin/news";
@@ -116,15 +141,46 @@ public class AdminNewsController {
     @PostMapping("/edit/{id}")
     public String updateNews(@PathVariable Long id,
                            @ModelAttribute News news,
+                           @ModelAttribute NewsForm form,
                            @RequestParam(required = false) MultipartFile imageFile,
                            @RequestParam(required = false, defaultValue = "false") boolean removeImage,
                            @AuthenticationPrincipal OAuth2User oauth2User,
                            RedirectAttributes redirectAttributes) {
         try {
-            news.setId(id);
-            String authorName = oauth2User.getAttribute("name");
-            news.setAuthor(authorName != null ? authorName : "Админ");
+            // Получаем новые переводы из формы
+            Map<String, NewsTranslationDTO> translationDTOs = form.getTranslations();
+
+            Map<String, NewsTranslation> newsTranslations = new HashMap<>();
+            news.getCommunities().clear();
+
+            for (Map.Entry<String, NewsTranslationDTO> entry : translationDTOs.entrySet()) {
+                String lang = entry.getKey();
+                NewsTranslationDTO dto = entry.getValue();
+
+                System.out.println("LANG: " + lang + ", DTO: " + dto);
+
+                NewsTranslation translation = new NewsTranslation();
+                translation.setLanguage(lang);
+                translation.setTitle(dto.getTitle());
+                translation.setShortDescription(dto.getShortDescription());
+                translation.setDescription(dto.getDescription());
+                translation.setNews(news);
+
+                newsTranslations.put(lang, translation);
+                news.getCommunities().add(lang);
+            }
+
+            news.setTranslations(newsTranslations);
+
+            news.setPublishDate(LocalDateTime.now());
+            news.setPublished(true); // Или false, если ты хочешь добавить модерацию
+
+            // Получаем имя автора
+            User author = userService.findUserFromOAuth2(oauth2User);
+            news.setAuthor(author);
+
             newsService.save(news, imageFile, removeImage);
+            
             redirectAttributes.addFlashAttribute("successMessage", "Новость успешно обновлена");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при обновлении новости");

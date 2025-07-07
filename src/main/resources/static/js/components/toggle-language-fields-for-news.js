@@ -3,6 +3,7 @@ const languageSelectorContainer = document.getElementById('languageSelectorConta
 const languageSelect = document.getElementById('languageSelect');
 const languageFields = document.getElementById('languageFields');
 const langLabel = document.getElementById('langLabel');
+const langLabelShortDesc = document.getElementById('langLabelShortDesc');
 const langLabelDesc = document.getElementById('langLabelDesc');
 const titleInput = document.getElementById('titleInput');
 const shortDescriptionInput = document.getElementById('shortDescriptionInput');
