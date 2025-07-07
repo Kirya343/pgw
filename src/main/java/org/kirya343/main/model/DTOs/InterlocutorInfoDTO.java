@@ -1,19 +1,11 @@
 package org.kirya343.main.model.DTOs;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Setter
-@Getter
+@Data
+@AllArgsConstructor
 public class InterlocutorInfoDTO {
-    private String interlocutorName;
-    private String interlocutorAvatar;
-
-    public InterlocutorInfoDTO() {}
-
-    public InterlocutorInfoDTO(String interlocutorName, String interlocutorAvatar) {
-        this.interlocutorName = interlocutorName;
-        this.interlocutorAvatar = interlocutorAvatar;
-    }
-
+    private String name;
+    private String avatar;
 }

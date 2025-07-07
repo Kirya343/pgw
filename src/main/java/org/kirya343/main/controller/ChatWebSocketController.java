@@ -40,13 +40,13 @@ public class ChatWebSocketController {
 
     @MessageMapping("/chat.send")
     public void sendMessage(MessageDTO messageDTO, Principal principal) throws AccessDeniedException {
-        // Получаем отправителя
+
         User sender = userService.findBySub(principal.getName());
-        // Получаем беседу
+
         Conversation conversation = chatService.getConversationById(messageDTO.getConversationId());
-        // Сохраняем сообщение в базу
+
         Message message = chatService.sendMessage(conversation, sender, messageDTO.getText());
-        // Отправляем сообщение всем подписчикам
+
         messagingTemplate.convertAndSend("/topic/messages/" + messageDTO.getConversationId(),
                 new MessageDTO(
                         message.getId(),
@@ -61,7 +61,6 @@ public class ChatWebSocketController {
 
         // Отправка уведомления получателю
         User receiver = message.getReceiver();
-        String receiverSub = receiver.getSub();
 
         NotificationDTO notification = new NotificationDTO(
                 "Новое сообщение",
@@ -69,20 +68,23 @@ public class ChatWebSocketController {
                 "/secure/messengerconversationId=" + conversation.getId()
         );
 
-        if (isUserOnline(receiverSub)) {
+        chatService.notifyConversationUpdate(message.getConversation().getId(), sender);
+        chatService.notifyConversationUpdate(message.getConversation().getId(), receiver);
+
+        if (isUserOnline(receiver)) {
             messagingTemplate.convertAndSendToUser(
-                    receiverSub,
+                    receiver.getSub(),
                     "/queue/notifications",
                     notification
             );
         } else {
-            notificationService.saveOfflineChatNotification(receiverSub, notification);
+            notificationService.saveOfflineChatNotification(receiver.getSub(), notification);
         }
     }
 
     // Проверка активности пользователя
-    private boolean isUserOnline(String userSub) {
-        return simpUserRegistry.getUser(userSub) != null;
+    private boolean isUserOnline(User user) {
+        return simpUserRegistry.getUser(user.getSub()) != null;
     }
 
     @MessageMapping("/chat.loadMessages/{conversationId}")
@@ -124,27 +126,32 @@ public class ChatWebSocketController {
         // Уведомляем об обновлении
         chatService.notifyConversationUpdate(markAsReadDTO.getConversationId(), user);
     }
+
     @MessageMapping("/getConversations")
-    @SendToUser("/queue/conversations")
-    public List<ConversationDTO> getConversations(Principal principal) {
+    public void getConversations(Principal principal) {
         User user = userService.findBySub(principal.getName());
         List<Conversation> conversations = chatService.getUserConversations(user);
 
-        // Сортируем по дате последнего сообщения (новые сверху)
-        return conversations.stream()
-                .sorted((c1, c2) -> {
-                    LocalDateTime date1 = c1.getLastMessage() != null ? c1.getLastMessage().getSentAt() : c1.getCreatedAt();
-                    LocalDateTime date2 = c2.getLastMessage() != null ? c2.getLastMessage().getSentAt() : c2.getCreatedAt();
-                    return date2.compareTo(date1); // Сортировка по убыванию
-                })
-                .map(conv -> chatMapper.convertToDTO(conv, user))
-                .toList();
+        conversations.stream()
+            .sorted((c1, c2) -> {
+                LocalDateTime date1 = c1.getLastMessage() != null ? c1.getLastMessage().getSentAt() : c1.getCreatedAt();
+                LocalDateTime date2 = c2.getLastMessage() != null ? c2.getLastMessage().getSentAt() : c2.getCreatedAt();
+                return date2.compareTo(date1);
+            })
+            .map(conv -> chatMapper.convertToDTO(conv, user))
+            .forEach(dto -> {
+                messagingTemplate.convertAndSendToUser(
+                    principal.getName(),
+                    "/queue/conversations",
+                    dto
+                );
+            });
     }
 
     @Transactional
     @MessageMapping("/chat.getInterlocutorInfo")
     @SendToUser("/queue/interlocutorInfo")
-    public UserDTO getInterlocutorInfo(ConversationRequest request, Principal principal) {
+    public InterlocutorInfoDTO getInterlocutorInfo(ConversationRequest request, Principal principal) {
         User currentUser = userService.findBySub(principal.getName());
         Long conversationId = request.getConversationId();
 
@@ -153,13 +160,13 @@ public class ChatWebSocketController {
             throw new AccessDeniedException("No access to this conversation");
         }
 
-        User interlocutorName = conversation.getOtherParticipant(currentUser);
-        if (interlocutorName == null) {
+        User interlocutor = conversation.getOtherParticipant(currentUser);
+        if (interlocutor == null) {
             throw new AccessDeniedException("No access to this conversation");
         }
-        String interlocutorAvatar = interlocutorName.getAvatarUrl() != null ? interlocutorName.getAvatarUrl() : "/images/avatar-placeholder.png";
+        String avatar = interlocutor.getAvatarUrl() != null ? interlocutor.getAvatarUrl() : "/images/avatar-placeholder.png";
 
-        return new UserDTO(interlocutorName, interlocutorAvatar);
+        return new InterlocutorInfoDTO(interlocutor.getName(), avatar);
     }
 
     /* @MessageMapping("/chat.subscribeToConversations")

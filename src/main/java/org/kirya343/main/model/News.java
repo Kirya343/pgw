@@ -47,9 +47,6 @@ public class News {
     @Column
     private String imageUrl;
 
-    @Column(nullable = false)
-    private String author;
-
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime publishDate;
