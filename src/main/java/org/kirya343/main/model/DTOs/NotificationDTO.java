@@ -1,18 +1,12 @@
 package org.kirya343.main.model.DTOs;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class NotificationDTO {
     private String title;
     private String message;
-    private String url;
-    private Long conversationId;
-
-    public NotificationDTO(String title, String message, String url, Long conversationId) {
-        this.title = title;
-        this.message = message;
-        this.url = url;
-        this.conversationId = conversationId;
-    }
+    private String link;
 }

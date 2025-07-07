@@ -81,6 +81,9 @@ header {
     padding: 0.5rem 1rem;
     color: var(--dark);
     display: block;
+    background: transparent;
+    border: none;
+    cursor: pointer;
 }
 
 .nav-link:hover {
@@ -184,6 +187,68 @@ header {
     height: 20px;
     margin-right: 0.5rem;
     object-fit: cover;
+}
+
+.notification-center-item {
+    padding: 10px;
+    border-bottom: 1px solid var(--light-gray);
+    font-size: 14px;
+    border-left: 5px solid var(--light-gray);
+    display: block;
+}
+
+.notification-center-item:last-child {
+    border-bottom: none;
+}
+
+/* Цвета по важности */
+.notification-center-item.info {
+    border-left-color: #2196f3; /* синий */
+}
+
+.notification-center-item.warning {
+    border-left-color: #ff9800; /* оранжевый */
+}
+
+.notification-center-item.error {
+    border-left-color: #f3473b; /* красный */
+}
+
+.notification-center-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    width: 300px;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: var(--radius);
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    transition: all 0.2s;
+}
+
+.notification-center-dropdown.visible {
+    display: flex;
+}
+
+.notification-center-header {
+    padding: 10px;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-center-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-bottom: 1rem;
+}
+
+.no-notifications {
+    padding: 10px;
+    text-align: center;
+    color: #999;
 }
 
 /* Адаптивность */
