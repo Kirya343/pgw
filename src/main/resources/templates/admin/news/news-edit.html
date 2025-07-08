@@ -83,18 +83,21 @@
 
                     <div class="admin-form-group">
                         <label class="admin-form-label">Изображение</label>
-                        <div class="admin-form-control">
-                            <input type="file" id="image" name="imageFile" accept="image/*" onchange="updateFileName()">
-                            <label for="image" class="btn btn-outline-primary" th:text="#{listing.editing.image.button.select}">Выбрать файл</label>
-                            <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
-                        </div>
-                        <div th:if="${news.imageUrl != null}" class="mt-2">
-                            <img th:src="@{${news.imageUrl}}" alt="Текущее изображение" style="max-height: 200px;">
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" id="removeImage" name="removeImage">
-                                <label class="form-check-label" for="removeImage">Удалить текущее изображение</label>
+
+                        <div class="image-gallery">
+                            <div class="image-gallery-grid" id="imageGallery"> <!-- style="max-height: 250px; max-width: 250px; margin-bottom: 30px;" --> 
+                                <!-- тут мог быть стиль, но я не разобралась -->
                             </div>
                         </div>
+
+                        <div class="admin-form-control">
+                            <input type="file" id="image" name="imageFile" accept="image/*" onchange="handleSingleImageUpload(this)">
+                            <label for="image" class="btn btn-outline-primary" th:text="#{listing.editing.image.button.select}">Выбрать файл</label>
+                        </div>
+
+                        <input type="hidden" id="existingImageUrl" value="@{${news.imageUrl}}"> <!-- здесь вставить правильный url для изображения (я хз как) -->
+                        <input type="hidden" id="deletedImages" name="deletedImages" value="">
+                        
                     </div>
 
                     <div class="admin-form-group">
