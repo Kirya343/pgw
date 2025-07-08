@@ -89,7 +89,7 @@
                             <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
                         </div>
                         <div th:if="${news.imageUrl != null}" class="mt-2">
-                            <img th:src="@{'/' + ${news.imageUrl}}" alt="Текущее изображение" style="max-height: 200px;">
+                            <img th:src="@{${news.imageUrl}}" alt="Текущее изображение" style="max-height: 200px;">
                             <div class="form-check mt-2">
                                 <input class="form-check-input" type="checkbox" id="removeImage" name="removeImage">
                                 <label class="form-check-label" for="removeImage">Удалить текущее изображение</label>

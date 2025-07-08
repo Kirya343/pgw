@@ -36,18 +36,8 @@ public class NewsController {
         Map<String, Object> siteStats = statService.getSiteStats(locale);
 
         // Интегрируем логику локализации описания и названия
-        for (News news : newsPage.getContent()) {
-            //String title = null;
-            //String excerpt = null;
-            //String content = null;
-
+        for (News news : newsPage.getContent())
             newsService.localizeNews(news, locale);
-
-            // Сохраняем в транзиентные поля
-            //news.setLocalizedTitle(title);
-            //news.setLocalizedExcerpt(excerpt);
-            //news.setLocalizedContent(content);
-        }
 
         authService.validateAndAddAuthentication(model, oauth2User);
 
@@ -75,10 +65,10 @@ public class NewsController {
         // Получаем 3 похожие новости
         Page<News> similarNews = newsService.findSimilarNews(news, PageRequest.of(0, 3));
 
-        similarNews.forEach(similar -> setLocalizedTitleAndExcerptAndContent(similar, locale));
+        similarNews.forEach(similar -> newsService.localizeNews(similar, locale));
 
         // 3. Локализация названия и описания
-        setLocalizedTitleAndExcerptAndContent(news, locale);
+        newsService.localizeNews(news, locale);
 
         // Добавляем атрибуты в модель
         model.addAttribute("news", news);
@@ -88,9 +78,5 @@ public class NewsController {
         authService.validateAndAddAuthentication(model, oauth2User);
 
         return "news-view";
-    }
-
-    private void setLocalizedTitleAndExcerptAndContent(News news, Locale locale) {
-        newsService.localizeNews(news, locale);
     }
 }

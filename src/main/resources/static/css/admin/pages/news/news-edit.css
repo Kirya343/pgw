@@ -33,3 +33,27 @@ textarea.admin-form-control {
     min-height: 100px;
     resize: vertical;
 }
+
+.indicator {
+padding: 5px 10px;
+border-radius: 5px;
+font-weight: bold;
+color: white;
+}
+
+.indicator.green { background-color: green; }
+.indicator.yellow { background-color: goldenrod; }
+
+.delete-cross {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: -10px;
+    right: -8px;
+    padding: auto;
+    background-color: var(--danger);
+    color: var(--white);
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+}
