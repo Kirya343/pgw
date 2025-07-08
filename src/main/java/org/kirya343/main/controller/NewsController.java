@@ -37,16 +37,16 @@ public class NewsController {
 
         // Интегрируем логику локализации описания и названия
         for (News news : newsPage.getContent()) {
-            String title = null;
-            String excerpt = null;
-            String content = null;
+            //String title = null;
+            //String excerpt = null;
+            //String content = null;
 
             newsService.localizeNews(news, locale);
 
             // Сохраняем в транзиентные поля
-            news.setLocalizedTitle(title);
-            news.setLocalizedExcerpt(excerpt);
-            news.setLocalizedContent(content);
+            //news.setLocalizedTitle(title);
+            //news.setLocalizedExcerpt(excerpt);
+            //news.setLocalizedContent(content);
         }
 
         authService.validateAndAddAuthentication(model, oauth2User);
@@ -91,14 +91,6 @@ public class NewsController {
     }
 
     private void setLocalizedTitleAndExcerptAndContent(News news, Locale locale) {
-        String title = null;
-        String excerpt = null;
-        String content = null;
-
         newsService.localizeNews(news, locale);
-
-        news.setLocalizedTitle(title);
-        news.setLocalizedExcerpt(excerpt);
-        news.setLocalizedContent(content);
     }
 }
