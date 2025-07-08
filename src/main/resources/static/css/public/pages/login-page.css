@@ -1,5 +1,41 @@
-@import url(../components/lang-switcher.css);
+@import url(../components/base.css);
 /* login-page.css */
+.error-message {
+    color: #dc3545;
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+.terms-checkbox {
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+}
+.terms-checkbox input {
+    margin-right: 10px;
+}
+.btn-google {
+    background: #4285F4;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    width: 100%;
+    margin-top: 10px;
+}
+.btn-google:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+.user-info img{
+    margin: 1rem auto;
+}
+
+.btn {
+    margin-bottom: 0.5rem;
+}
 
 body {
     margin: 0;

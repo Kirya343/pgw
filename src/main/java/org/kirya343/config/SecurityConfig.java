@@ -24,6 +24,8 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -129,6 +131,11 @@ public class SecurityConfig {
         handler.setDefaultTargetUrl("/catalog");
         handler.setAlwaysUseDefaultTargetUrl(false);
         return handler;
+    }
+
+    @Bean
+    public RequestCache requestCache() {
+        return new HttpSessionRequestCache();
     }
 
     @Bean

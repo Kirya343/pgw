@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 import org.kirya343.main.services.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -25,11 +26,10 @@ public class LoginController {
         }
 
         return "redirect:/oauth2/authorization/google";
-        //return "login";
     }
 
     @GetMapping("/loginSuccess")
-    public String loginSuccess(OAuth2AuthenticationToken authentication, HttpServletRequest request) {
+    public String loginSuccess(@AuthenticationPrincipal OAuth2User oAuth2User, OAuth2AuthenticationToken authentication, HttpServletRequest request) {
 
         OAuth2User oauth2User = authentication.getPrincipal();
 
@@ -44,7 +44,7 @@ public class LoginController {
     }
 
     @GetMapping("/register")
-    public String registerPage(HttpServletRequest request, Model model) {
+    public String registerPage(@AuthenticationPrincipal OAuth2User oAuth2User, HttpServletRequest request, Model model) {
         OAuth2User oauth2User = (OAuth2User) request.getSession().getAttribute("oauth2User");
 
         if (oauth2User == null) {
@@ -67,10 +67,10 @@ public class LoginController {
             return "redirect:/login?error=no_auth_data";
         }
 
-        // Регистрируем только при явном подтверждении (POST)
         userService.registerUserFromOAuth2(oauth2User);
         request.getSession().removeAttribute("oauth2User");
 
-        return "redirect:/catalog";
+        // Теперь нужно пройти OAuth2 вход повторно, чтобы Spring сам создал сессию
+        return "redirect:/oauth2/authorization/google";
     }
 }
