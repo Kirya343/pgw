@@ -36,7 +36,7 @@
                 <!-- Мета-данные теперь после изображения -->
                 <div class="news-meta">
                     <span class="news-date" th:text="${#temporals.format(news.publishDate, 'dd.MM.yyyy')}">01.01.2023</span>
-                    <span class="news-author" th:if="${news.author != null}" th:text="'Автор: ' + ${news.author}">Автор: Администратор</span>
+                    <span class="news-author" th:if="${news.author.name != null}" th:text="'Автор: ' + ${news.author.name}">Автор: Администратор</span>
                 </div>
             </div>
 
