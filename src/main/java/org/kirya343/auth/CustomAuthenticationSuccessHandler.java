@@ -1,4 +1,4 @@
-package org.kirya343.auth;
+/* package org.kirya343.auth;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,4 +25,4 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
             super.onAuthenticationSuccess(request, response, authentication);
         }
     }
-}
+} */

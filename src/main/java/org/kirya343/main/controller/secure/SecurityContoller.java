@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 
@@ -42,10 +47,28 @@ public class SecurityContoller {
     }
 
     @PostMapping("/delete-account")
-    public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal OAuth2User oauth2User) {
+    public String deleteAccount(@AuthenticationPrincipal OAuth2User oauth2User,
+                                HttpServletRequest request,
+                                HttpServletResponse response) throws ServletException {
         User user = userService.findUserFromOAuth2(oauth2User);
         userService.deleteById(user.getId());
-        return ResponseEntity.ok().build();
+
+        // Завершаем текущую сессию
+        request.logout();
+
+        // Инвалидируем сессию и удаляем куки (на всякий случай)
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        // Удаляем куку
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return "redirect:/catalog";
     }
 
     @PostMapping("/delete-listings")

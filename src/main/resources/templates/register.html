@@ -5,79 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{title.register}">Регистрация | WorkSwap</title>
     <link href="/css/public/pages/login-page.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="icon" href="/favicon.ico">
-    <style>
-        .error-message {
-            color: #dc3545;
-            margin-top: 5px;
-            font-size: 0.9em;
-        }
-        .terms-checkbox {
-            margin: 15px 0;
-            display: flex;
-            align-items: center;
-        }
-        .terms-checkbox input {
-            margin-right: 10px;
-        }
-        .btn-google {
-            background: #4285F4;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-            width: 100%;
-            margin-top: 10px;
-        }
-        .btn-google:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-        }
-    </style>
 </head>
 <body>
-<div class="login-container">
-    <h2 th:text="#{register.label}">Регистрация</h2>
+<div style="gap: 1rem;">
+    <a href="/catalog" class="btn btn-primary">
+        <i class="fa fa-angle-left fa-lg" aria-hidden="true"></i>
+        <span th:text="#{register.do.not.want}"></span>
+    </a>
+    <div class="login-container">
+        <h2 th:text="#{register.label}">Регистрация</h2>
 
-    <!-- Отображение ошибок -->
-    <div th:if="${error}" class="error-message">
-        <p th:text="${error}">Ошибка регистрации</p>
+        <!-- Отображение ошибок -->
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}">Ошибка регистрации</p>
+        </div>
+
+        <!-- Блок с данными пользователя -->
+        <div th:if="${name}" class="user-info">
+            <p th:text="#{register.welcome} + ' ' + ${name}">Добро пожаловать!</p>
+            <img th:if="${picture}" th:src="${picture}" alt="Аватар" style="width: 64px; border-radius: 50%">
+            <p th:text="${email}">example@email.com</p>
+        </div>
+
+        <!-- Форма регистрации -->
+        <form th:action="@{/register}" method="post" onsubmit="return validateForm()">
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+
+            <div class="terms-checkbox">
+                <input type="checkbox" id="terms" name="acceptTerms" required>
+                <label for="terms">
+                    <span th:text="#{register.checkbox.acceptTerms}"></span>
+                    <a href="/terms" target="_blank" th:text="#{register.checkbox.terms}" class="text-link"></a>
+                    <span th:text="#{register.checkbox.and}"></span>
+                    <a href="/privacy-policy" target="_blank" th:text="#{register.checkbox.privacyPolicy}" class="text-link"></a>
+                </label>
+            </div>
+            <div id="terms-error" class="error-message" style="display: none;" th:text="#{register.need.agree}">
+                Необходимо принять условия пользования
+            </div>
+
+            <div class="form-footer">
+                <p th:text="#{register.after}">После подтверждения регистрации вы будете перенаправлены в каталог.</p>
+                <button type="submit" class="btn-google" id="submitBtn" th:text="#{register.finish}">Завершить регистрацию</button>
+            </div>
+        </form>
     </div>
-
-    <!-- Блок с данными пользователя -->
-    <div th:if="${name}" class="user-info">
-        <p th:text="#{register.welcome} + ' ' + ${name}">Добро пожаловать!</p>
-        <img th:if="${picture}" th:src="${picture}" alt="Аватар" style="width: 64px; border-radius: 50%">
-        <p th:text="${email}">example@email.com</p>
-    </div>
-
-    <!-- Форма регистрации -->
-    <form th:action="@{/register}" method="post" onsubmit="return validateForm()">
-        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
-
-        <div class="terms-checkbox">
-            <input type="checkbox" id="terms" name="acceptTerms" required>
-            <label for="terms">
-                <span th:text="#{register.checkbox.acceptTerms}"></span>
-                <a href="/terms" target="_blank" th:text="#{register.checkbox.terms}"></a>
-                <span th:text="#{register.checkbox.and}"></span>
-                <a href="/privacy-policy" target="_blank" th:text="#{register.checkbox.privacyPolicy}"></a>
-            </label>
-        </div>
-        <div id="terms-error" class="error-message" style="display: none;" th:text="#{register.need.agree}">
-            Необходимо принять условия пользования
-        </div>
-
-        <div class="form-footer">
-            <p th:text="#{register.after}">После подтверждения регистрации вы будете перенаправлены в каталог.</p>
-            <button type="submit" class="btn-google" id="submitBtn" th:text="#{register.finish}">Завершить регистрацию</button>
-        </div>
-    </form>
 </div>
 <!-- Языковой переключатель -->
-<div th:replace="fragments/language-switch :: langSwitcher"></div>
+<th:block th:replace="~{fragments/global-imports :: globalImports}" />
 <script>
     // Валидация формы перед отправкой
     function validateForm() {

@@ -377,6 +377,7 @@
 
     .sorting-sidebar-top {
         display: inline-block;
+        position: static;
         min-width: 100%;
         margin-bottom: 20px;
     }
