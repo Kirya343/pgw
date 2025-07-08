@@ -1,19 +1,5 @@
 package org.kirya343.main.services.impl;
 
-import org.kirya343.config.LocalisationConfig.LanguageUtils;
-import org.kirya343.main.model.News;
-import org.kirya343.main.repository.NewsRepository;
-import org.kirya343.main.services.StorageService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.kirya343.main.services.NewsService;
-
-import lombok.RequiredArgsConstructor;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +7,20 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import org.kirya343.config.LocalisationConfig.LanguageUtils;
+import org.kirya343.main.model.News;
 import org.kirya343.main.model.NewsTranslation;
+import org.kirya343.main.repository.NewsRepository;
+import org.kirya343.main.services.NewsService;
+import org.kirya343.main.services.StorageService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -143,7 +142,7 @@ public class NewsServiceImpl implements NewsService {
 
         if (selected != null) {
             news.setLocalizedTitle(safe(selected.getTitle()));
-            news.setLocalizedExcerpt(safe(selected.getDescription()));
+            news.setLocalizedExcerpt(safe(selected.getShortDescription()));
             news.setLocalizedContent(safe(selected.getDescription()));
         } else {
             news.setLocalizedTitle(null);
@@ -163,6 +162,35 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public News getNewsById(Long id) {
         return newsRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void localizeNewsIfLangPass(News news, Locale locale) {
+        String lang = locale.getLanguage();
+        Map<String, NewsTranslation> translations = news.getTranslations();
+
+        NewsTranslation selected = translations.get(lang);
+
+        // fallback, если нужного языка нет
+        if (selected == null || isBlank(selected.getTitle()) || isBlank(selected.getDescription())) {
+            // Приоритет: fi > ru > en
+            for (String fallbackLang : LanguageUtils.SUPPORTED_LANGUAGES) {
+                selected = translations.get(fallbackLang);
+                if (selected != null && !isBlank(selected.getTitle()) && !isBlank(selected.getDescription())) {
+                    break;
+                }
+            }
+        }
+
+        if (selected != null) {
+            news.setLocalizedTitle(safe(selected.getTitle()));
+            news.setLocalizedExcerpt(safe(selected.getShortDescription()));
+            news.setLocalizedContent(safe(selected.getDescription()));
+        } else {
+            news.setLocalizedTitle(null);
+            news.setLocalizedExcerpt(null);
+            news.setLocalizedContent(null);
+        }
     }
 
 }

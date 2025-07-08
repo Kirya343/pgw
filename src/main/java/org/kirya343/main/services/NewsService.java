@@ -32,4 +32,5 @@ public interface NewsService {
     Page<News> findSimilarNews(News currentNews, Pageable pageable);
 
     void localizeNews(News news, Locale locale);
+    void localizeNewsIfLangPass(News news, Locale locale);
 }
