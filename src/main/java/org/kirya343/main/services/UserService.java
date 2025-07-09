@@ -1,6 +1,7 @@
 package org.kirya343.main.services;
 
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.User.UserParamType;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.List;
@@ -17,14 +18,12 @@ public interface UserService {
     User findBySub(String sub);
     User findUserFromOAuth2(OAuth2User oauth2User);
 
+    User findUser(String param, UserParamType paramType);
+
     // Регистрирация пользователя из OAuth2
     void registerUserFromOAuth2(OAuth2User oauth2User);
 
     // Управление пользователями
     User save(User user);
     void deleteById(Long id);
-
-    // Обновление пользователя
-    void setAvatarUrl(Long userId, String avatarUrl);
-    void setRole(Long userId, String role);
 }

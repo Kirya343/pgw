@@ -1,7 +1,8 @@
 package org.kirya343.main.services.chat;
 
 import jakarta.transaction.Transactional;
-import org.kirya343.main.controller.mappers.ChatMapper;
+import lombok.RequiredArgsConstructor;
+
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.DTOs.ConversationDTO;
 import org.kirya343.main.model.chat.Conversation;
@@ -9,30 +10,28 @@ import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.MessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.kirya343.main.services.ListingService;
+import org.kirya343.main.services.UserService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ChatService {
 
-    @Autowired
-    private ConversationRepository conversationRepository;
-
-    @Autowired
-    private MessageRepository messageRepository;
-
-    @Autowired
-    private ChatMapper chatMapper;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private final ConversationRepository conversationRepository;
+    private final MessageRepository messageRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final UserService userService;
+    private final ListingService listingService;
 
     public Conversation getOrCreateConversation(User user1, User user2, Listing listing) {
         if (listing != null) {
@@ -68,29 +67,29 @@ public class ChatService {
         return conversations;
     }
 
-    public List<ConversationDTO> getConversationsForUser(User user) {
+    public List<ConversationDTO> getConversationsForUser(User user, Locale locale) {
         List<Conversation> conversations = conversationRepository.findByUser1OrUser2(user, user);
         return conversations.stream()
-                .map(conv -> chatMapper.convertToDTO(conv, user))
+                .map(conv -> convertToDTO(conv, user, locale))
                 .collect(Collectors.toList());
     }
 
-    public void notifyConversationUpdate(Long conversationId, User user) {
+    public void notifyConversationUpdate(Long conversationId, User user, Locale locale) {
         Conversation conversation = getConversationById(conversationId);
-        ConversationDTO dto = chatMapper.convertToDTO(conversation, user);
+        ConversationDTO conversationDto = convertToDTO(conversation, user, locale);
 
         // Определяем, есть ли новые сообщения
         boolean hasNewMessage = conversation.getMessages().stream()
                 .anyMatch(msg -> !msg.isRead() && msg.getReceiver().equals(user));
 
         // Устанавливаем флаг нового сообщения
-        dto.setHasNewMessage(hasNewMessage);
+        conversationDto.setHasNewMessage(hasNewMessage);
 
         // Отправляем обновление конкретному пользователю
         messagingTemplate.convertAndSendToUser(
                 user.getSub(),
                 "/queue/conversations.updates",
-                dto
+                conversationDto
         );
     }
 
@@ -122,7 +121,7 @@ public class ChatService {
         Message message = new Message();
         message.setConversation(conversation);
         message.setSender(sender);
-        message.setReceiver(conversation.getOtherParticipant(sender));
+        message.setReceiver(conversation.getInterlocutor(sender));
         message.setText(text);
         message.setSentAt(LocalDateTime.now());
 
@@ -144,5 +143,36 @@ public class ChatService {
     @Transactional
     public void markMessagesAsRead(Long conversationId, User reader) {
         messageRepository.markMessagesAsRead(conversationId, reader.getId());
+    }
+
+    public ConversationDTO convertToDTO(Conversation conversation, User currentUser, Locale locale) {
+        User interlocutor = userService.findById(conversation.getInterlocutor(currentUser).getId());
+
+        ConversationDTO dto = new ConversationDTO();
+        dto.setId(conversation.getId());
+        dto.setInterlocutorName(interlocutor.getName());
+        dto.setInterlocutorAvatar(interlocutor.getAvatarUrl());
+        dto.setUnreadCount(getUnreadMessageCount(conversation, currentUser));
+        dto.setListing(listingService.convertToDTO(conversation.getListing(), locale));
+
+        // Обработка последнего сообщения
+        Message lastMessage = conversation.getLastMessage();
+        if (lastMessage != null) {
+            dto.setLastMessagePreview(lastMessage.getText());
+            dto.setLastMessageTime(lastMessage.getSentAt());
+            dto.setFormattedLastMessageTime(
+                    lastMessage.getSentAt().format(DateTimeFormatter.ofPattern("HH:mm"))
+            );
+        } else {
+            dto.setLastMessageTime(conversation.getCreatedAt());
+        }
+
+        // Определяем, есть ли новые сообщения
+        boolean hasNewMessage = conversation.getMessages().stream()
+                .filter(msg -> msg.getReceiver().equals(currentUser))
+                .anyMatch(msg -> !msg.isRead());
+        dto.setHasNewMessage(hasNewMessage);
+
+        return dto;
     }
 }

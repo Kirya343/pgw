@@ -63,7 +63,7 @@
             <!-- Для авторизованных пользователей -->
             <a th:if="${isAuthenticated}" th:href="@{/secure/account}" class="account-link">
                 <img th:src="${user.avatarUrl}"
-                        class="account-avatar"
+                        class="avatar p32-avatar"
                         alt="Аватар"
                         th:onerror="this.src='/images/avatar-placeholder.png'">
                 <span th:text="${user.name}">Пользователь</span>

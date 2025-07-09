@@ -10,6 +10,7 @@ import org.kirya343.main.services.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.kirya343.main.model.User.UserParamType;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,6 +35,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findBySub(String sub) {
         return userRepository.findBySub(sub).orElse(null);
+    }
+
+    @Override 
+    public User findUser(String param, UserParamType paramType) {
+        switch (paramType) {
+            case ID:
+                return userRepository.findById(Long.parseLong(param)).orElse(null);
+            case EMAIL:
+                return userRepository.findByEmail(param).orElse(null);
+            case NAME:
+                return userRepository.findByName(param).orElse(null); // если есть такой метод
+            case SUB:
+                return userRepository.findBySub(param).orElse(null);
+            default:
+                throw new IllegalArgumentException("Unknown param type: " + paramType);
+        }
     }
 
     @Override
@@ -84,41 +101,13 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        // Обновляем информацию, если пользователь найден
-        String oauthName = oauth2User.getAttribute("name");
-        if ((user.getName() == null || user.getName().isBlank())
-                && oauthName != null && !oauthName.isBlank()) {
-            user.setName(oauthName);
-        }
-
-        String oauthPicture = oauth2User.getAttribute("picture");
-        if (user.getPicture() == null && oauthPicture != null && !oauthPicture.isBlank()) {
-            user.setPicture(oauthPicture);
-        }
-
         return user;
-    }
-
-    @Override
-    @Transactional
-    public void setAvatarUrl(Long userId, String avatarUrl) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setAvatarUrl(avatarUrl);
     }
 
     @Override
     @Transactional
     public User save(User user) {
         return userRepository.save(user);
-    }
-
-    @Override
-    @Transactional
-    public void setRole(Long userId, String role) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setRole(Role.USER);
     }
 
     @Override

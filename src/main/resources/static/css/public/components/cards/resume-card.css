@@ -13,19 +13,12 @@
     transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: row;
+    gap: 1rem;
 }
 
 .resume-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 12px var(--shadow-color);
-}
-
-.resume-avatar {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 15px;
 }
 
 .resume-info {

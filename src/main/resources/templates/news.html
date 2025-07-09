@@ -75,37 +75,6 @@
                     </article>
                 </div>
             </main>
-
-            <!-- Боковая панель с чатом -->
-<!--            <aside class="news-sidebar">-->
-<!--                <div class="chat-container">-->
-<!--                    <h3 class="chat-title" th:text="#{news.chat.title}">Чат сообщества</h3>-->
-
-<!--                    &lt;!&ndash; Список сообщений &ndash;&gt;-->
-<!--                    <div class="chat-messages" id="chatMessages">-->
-<!--                        <div th:each="message : ${chatMessages}" class="message" th:classappend="${message.isCurrentUser} ? 'current-user' : 'other-user'">-->
-<!--                            <div class="message-header">-->
-<!--                                <img th:src="@{${message.avatarPath}}"-->
-<!--                                     th:onerror="this.src='/images/avatar-placeholder.jpg'"-->
-<!--                                     class="message-avatar">-->
-<!--                                <span class="message-author" th:text="${message.author}">Пользователь</span>-->
-<!--                                <span class="message-time" th:text="${#temporals.format(message.timestamp, 'HH:mm')}">12:00</span>-->
-<!--                            </div>-->
-<!--                            <div class="message-content" th:text="${message.content}">Текст сообщения</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-
-<!--                    &lt;!&ndash; Форма отправки сообщения &ndash;&gt;-->
-<!--                    <form class="chat-form" id="chatForm" th:if="${isAuthenticated}">-->
-<!--                        <input type="text" class="chat-input" id="chatInput" placeholder="Введите сообщение..." th:attr="placeholder=#{news.chat.placeholder}">-->
-<!--                        <button type="submit" class="chat-send-btn" th:text="#{news.chat.send}">Отправить</button>-->
-<!--                    </form>-->
-<!--                    <div class="chat-login-prompt" th:unless="${isAuthenticated}">-->
-<!--                        <p th:text="#{news.chat.login_prompt}">Войдите, чтобы участвовать в чате</p>-->
-<!--                        <a href="/login" class="btn btn-primary" th:text="#{header.login}">Вход</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </aside>-->
         </div>
     </div>
 </div>

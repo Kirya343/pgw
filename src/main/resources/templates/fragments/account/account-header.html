@@ -13,9 +13,7 @@
             </nav>
             <div class="account-manager">
                 <div class="profile-card">
-                    <div class="profile-avatar">
-                        <img th:src="@{${user.avatarUrl}}" onerror="this.src='/images/avatar-placeholder.png'" alt="Аватар">
-                    </div>
+                    <img class="profile-avatar avatar p100-avatar" th:src="@{${user.avatarUrl}}" onerror="this.src='/images/avatar-placeholder.png'" alt="Аватар">
                     <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
                     <p class="profile-rating">
                 <span th:each="i : ${#numbers.sequence(1,5)}">

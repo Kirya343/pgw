@@ -1,5 +1,7 @@
 package org.kirya343.main.controller.secure;
 
+import java.util.Locale;
+
 import org.kirya343.main.model.*;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.services.*;
@@ -25,12 +27,14 @@ public class MessengerController {
     @GetMapping("/secure/messenger")
     public String messengerPage(@RequestParam(required = false) Long conversationId,
                                 @AuthenticationPrincipal OAuth2User oauth2User,
-                                Model model) {
+                                Model model, 
+                                Locale locale) {
 
         authService.validateAndAddAuthentication(model, oauth2User);
 
         // Переменная для отображения активной страницы
         model.addAttribute("activePage", "messenger");
+        model.addAttribute("locale", locale.toString());
 
         return "secure/messenger";
     }

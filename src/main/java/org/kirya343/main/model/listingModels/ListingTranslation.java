@@ -18,7 +18,7 @@ public class ListingTranslation {
     @Column(length = 2000)
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "listing_id")
     private Listing listing;
 }

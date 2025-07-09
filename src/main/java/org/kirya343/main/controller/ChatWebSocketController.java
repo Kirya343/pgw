@@ -3,7 +3,6 @@ package org.kirya343.main.controller;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-import org.kirya343.main.controller.mappers.ChatMapper;
 import org.kirya343.main.model.DTOs.*;
 import org.kirya343.main.model.chat.*;
 import org.kirya343.main.model.User;
@@ -13,6 +12,7 @@ import org.kirya343.main.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Controller
@@ -35,11 +36,11 @@ public class ChatWebSocketController {
     private final SimpUserRegistry simpUserRegistry;
     private final ChatService chatService;
     private final UserService userService;
-    private final ChatMapper chatMapper;
     private final NotificationService notificationService;
 
     @MessageMapping("/chat.send")
-    public void sendMessage(MessageDTO messageDTO, Principal principal) throws AccessDeniedException {
+    public void sendMessage(MessageDTO messageDTO, Principal principal, @Header("locale") String lang) throws AccessDeniedException {
+        Locale locale = Locale.of(lang);
 
         User sender = userService.findBySub(principal.getName());
 
@@ -68,8 +69,8 @@ public class ChatWebSocketController {
                 "/secure/messengerconversationId=" + conversation.getId()
         );
 
-        chatService.notifyConversationUpdate(message.getConversation().getId(), sender);
-        chatService.notifyConversationUpdate(message.getConversation().getId(), receiver);
+        chatService.notifyConversationUpdate(message.getConversation().getId(), sender, locale);
+        chatService.notifyConversationUpdate(message.getConversation().getId(), receiver, locale);
 
         if (isUserOnline(receiver)) {
             messagingTemplate.convertAndSendToUser(
@@ -118,17 +119,19 @@ public class ChatWebSocketController {
     }
 
     @MessageMapping("/chat.markAsRead")
-    public void markAsRead(MarkAsReadDTO markAsReadDTO, Principal principal) {
+    public void markAsRead(MarkAsReadDTO markAsReadDTO, Principal principal, @Header("locale") String lang) {
+        Locale locale = Locale.of(lang);
         User user = userService.findBySub(principal.getName());
         Long conversationId = markAsReadDTO.getConversationId();
 
         chatService.markMessagesAsRead(conversationId, user);
         // Уведомляем об обновлении
-        chatService.notifyConversationUpdate(markAsReadDTO.getConversationId(), user);
+        chatService.notifyConversationUpdate(markAsReadDTO.getConversationId(), user, locale);
     }
 
     @MessageMapping("/getConversations")
-    public void getConversations(Principal principal) {
+    public void getConversations(Principal principal, @Header("locale") String lang) {
+        Locale locale = Locale.of(lang);
         User user = userService.findBySub(principal.getName());
         List<Conversation> conversations = chatService.getUserConversations(user);
 
@@ -138,7 +141,7 @@ public class ChatWebSocketController {
                 LocalDateTime date2 = c2.getLastMessage() != null ? c2.getLastMessage().getSentAt() : c2.getCreatedAt();
                 return date2.compareTo(date1);
             })
-            .map(conv -> chatMapper.convertToDTO(conv, user))
+            .map(conv -> chatService.convertToDTO(conv, user, locale))
             .forEach(dto -> {
                 messagingTemplate.convertAndSendToUser(
                     principal.getName(),
@@ -160,7 +163,7 @@ public class ChatWebSocketController {
             throw new AccessDeniedException("No access to this conversation");
         }
 
-        User interlocutor = conversation.getOtherParticipant(currentUser);
+        User interlocutor = conversation.getInterlocutor(currentUser);
         if (interlocutor == null) {
             throw new AccessDeniedException("No access to this conversation");
         }
