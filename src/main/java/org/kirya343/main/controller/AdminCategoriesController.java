@@ -1,5 +1,6 @@
 package org.kirya343.main.controller;
 
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.DTOs.CategoryDTO;
 import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.repository.CategoryRepository;
@@ -68,7 +69,7 @@ public class AdminCategoriesController {
     @GetMapping("/{id}/delete")
     public String deleteCategory(@PathVariable Long id, RedirectAttributes redirectAttributes, @AuthenticationPrincipal OAuth2User oAuth2User) {
         try {
-            if (!roleCheckService.hasRoleAdmin(userService.findUserFromOAuth2(oAuth2User))) {
+            if (!roleCheckService.hasRoleAdmin(userService.findUser(oAuth2User.getAttribute("email"), SearchParamType.EMAIL))) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при удалении локации, вы не являетесь админом");
                 return "redirect:/error";
             }

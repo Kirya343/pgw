@@ -10,9 +10,9 @@ import org.kirya343.main.model.User;
 import org.kirya343.main.model.User.Role;
 import org.kirya343.main.repository.TaskRepository;
 import org.kirya343.main.repository.UserRepository;
+import org.kirya343.main.services.TaksService;
 import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.AuthService;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +34,7 @@ public class AdminTasksController {
     private final UserRepository userRepository;
     private final AuthService authService;
     private final UserService userService;
+    private final TaksService taksService;
 
     @GetMapping
     public String adminTasks(Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
@@ -77,8 +77,7 @@ public class AdminTasksController {
 
     @PostMapping("/{id}/pickup")
     public String pickupTask(@PathVariable Long id, Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
-        Task task = taskRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Задача с id " + id + " не найдена"));
+        Task task = taksService.findTask(id.toString(), "ID");
 
         task.setExecutor(userService.findUserFromOAuth2(oauth2User));
         task.setStatus(Status.IN_PROGRESS);
@@ -90,8 +89,7 @@ public class AdminTasksController {
 
     @PostMapping("/{id}/confirm")
     public String confirmTask(@PathVariable Long id, Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
-        Task task = taskRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Задача с id " + id + " не найдена"));
+        Task task = taksService.findTask(id.toString(), "ID");
         
         task.setStatus(Status.COMPLETED);
         task.setCompleted(LocalDateTime.now());
@@ -102,8 +100,7 @@ public class AdminTasksController {
 
     @PostMapping("/{id}/cancel")
     public String cancelTask(@PathVariable Long id, Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
-        Task task = taskRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Задача с id " + id + " не найдена"));
+        Task task = taksService.findTask(id.toString(), "ID");
         
         task.setStatus(Status.CANCELED);
 
@@ -118,9 +115,7 @@ public class AdminTasksController {
 
     @GetMapping("/{id}/details")
     public String getTaskDetailsFragment(@PathVariable Long id, Model model) {
-        System.out.println("Поиск деталей задачи id: " + id);
-        Task task = taskRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Task task = taksService.findTask(id.toString(), "ID");
         model.addAttribute("task", task);
         return "fragments/admin/tasks :: taskDetails"; // путь и имя фрагмента
     }

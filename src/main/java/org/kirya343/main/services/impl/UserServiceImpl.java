@@ -3,6 +3,7 @@ package org.kirya343.main.services.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.User.Role;
 import org.kirya343.main.repository.UserRepository;
@@ -10,7 +11,6 @@ import org.kirya343.main.services.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.kirya343.main.model.User.UserParamType;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,26 +19,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
 
-    @Override
-    public List<User> findAll() {
-        return userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
-    }
-
-    @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-    }
-
-    @Override
-    public User findBySub(String sub) {
-        return userRepository.findBySub(sub).orElse(null);
-    }
-
     @Override 
-    public User findUser(String param, UserParamType paramType) {
+    public User findUser(String param, SearchParamType paramType) {
         switch (paramType) {
             case ID:
                 return userRepository.findById(Long.parseLong(param)).orElse(null);
@@ -54,18 +39,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUserFromOAuth2(OAuth2User oauth2User) {
+        User user = findUser(oauth2User.getAttribute("email"), SearchParamType.EMAIL);
+        return user;
+    }
+
+    @Override
     @Transactional
     public void registerUserFromOAuth2(OAuth2User oauth2User) {
-        String email = oauth2User.getAttribute("email");
-        String sub = oauth2User.getAttribute("sub");
-
-        // Проверка наличия email
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException("Email пользователя не найден.");
-        }
 
         // Проверяем, существует ли пользователь с таким email
-        User existingUser = userRepository.findByEmail(email).orElse(null);
+        User existingUser = findUser(oauth2User.getAttribute("email"), SearchParamType.EMAIL);
 
         if (existingUser != null) {
             throw new RuntimeException("Пользователь с таким email уже зарегистрирован.");
@@ -73,8 +57,8 @@ public class UserServiceImpl implements UserService {
 
         // Создаем нового пользователя
         User newUser = new User(); 
-        newUser.setEmail(email); // Устанавливаем email пользователя
-        newUser.setSub(sub); // Устанавливаем sub для идентификации пользователя в OAuth2
+        newUser.setEmail(oauth2User.getAttribute("email")); // Устанавливаем email пользователя
+        newUser.setSub(oauth2User.getAttribute("sub")); // Устанавливаем sub для идентификации пользователя в OAuth2
         newUser.setEnabled(true); // Устанавливаем пользователя как активного
         newUser.setRole(Role.USER); // Устанавливаем роль по умолчанию
         newUser.setTermsAccepted(true); // Устанавливаем значение по умолчанию
@@ -88,20 +72,9 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
     @Override
-    @Transactional
-    public User findUserFromOAuth2(OAuth2User oauth2User) {
-        String email = oauth2User.getAttribute("email");
-        User user = userRepository.findByEmail(email).orElse(null);
-
-        // Возвращаем null вместо исключения, если пользователь не найден
-        if (user == null) {
-            System.out.println("Пытались найти пользователя, не нашли");
-            return null;
-        }
-
-        return user;
+    public List<User> findAll() {
+        return userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     @Override
@@ -111,17 +84,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
-    @Override
     public List<User> getRecentUsers(int count) {
         return userRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, count)).getContent();
     }
 
     @Override
     public void deleteById(Long id) {
-        User user = findById(id);
+        User user = findUser(id.toString(), SearchParamType.ID);
         userRepository.delete(user);
     }
 }

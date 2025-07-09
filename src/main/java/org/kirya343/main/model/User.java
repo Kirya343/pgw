@@ -107,11 +107,4 @@ public class User {
             return this.level >= other.level;
         }
     }
-
-    public enum UserParamType { 
-        ID,
-        EMAIL,
-        NAME,
-        SUB
-    }
 }

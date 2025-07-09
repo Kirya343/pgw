@@ -28,6 +28,7 @@ public class TomcatConfig {
 
     @PostConstruct
     public void logMultipartSettings() {
+        System.out.println("======= MultipartConfigElement Settings =======");
         System.out.println("Max file size: " + multipartConfigElement.getMaxFileSize());
         System.out.println("Max request size: " + multipartConfigElement.getMaxRequestSize());
         System.out.println("File size threshold: " + multipartConfigElement.getFileSizeThreshold());
@@ -37,6 +38,7 @@ public class TomcatConfig {
     public void logTomcatSettings() {
         ServerProperties.Tomcat tomcat = serverProperties.getTomcat();
 
+        System.out.println("======= Tomcat Settings =======");
         System.out.println("Tomcat max-swallow-size: " + tomcat.getMaxSwallowSize());
         System.out.println("Tomcat max-part-count: " + tomcat.getMaxPartCount());
         System.out.println("Tomcat max-http-form-post-size: " + tomcat.getMaxHttpFormPostSize());

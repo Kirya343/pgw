@@ -3,6 +3,7 @@ package org.kirya343.main.controller.components;
 import org.kirya343.main.model.DTOs.MessageDTO;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.chat.Message;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.chat.ChatService;
 import org.kirya343.main.services.UserService;
@@ -29,7 +30,7 @@ public class ChatRestController {
 
     @GetMapping("/conversation/{conversationId}/messages")
     public ResponseEntity<List<MessageDTO>> getConversationMessages(@PathVariable Long conversationId, Principal principal) {
-        User currentUser = userService.findBySub(principal.getName());
+        User currentUser = userService.findUser(principal.getName(), SearchParamType.SUB);
 
         Conversation conversation = chatService.getConversationById(conversationId);
 

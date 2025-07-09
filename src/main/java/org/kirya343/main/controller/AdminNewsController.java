@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.kirya343.main.model.DTOs.NewsForm;
 import org.kirya343.main.model.DTOs.NewsTranslationDTO;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.News;
 import org.kirya343.main.model.NewsTranslation;
 import org.kirya343.main.model.User;
@@ -118,8 +119,7 @@ public class AdminNewsController {
         @RequestParam(required = false, defaultValue = "false") boolean published, 
         Model model) throws JsonProcessingException {
         try {
-            News news = newsService.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Новость не найдена"));
+            News news = newsService.findNews(id.toString(), SearchParamType.ID);
             model.addAttribute("news", news);
             model.addAttribute("published", published);
             model.addAttribute("activePage", "admin-news");

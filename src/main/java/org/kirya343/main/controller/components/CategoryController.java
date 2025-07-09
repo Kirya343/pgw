@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.kirya343.main.model.DTOs.CategoryDTO;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.repository.CategoryRepository;
 import org.kirya343.main.services.CategoryService;
@@ -28,10 +29,7 @@ public class CategoryController {
     // Создание новой категории
     @PostMapping
     public Category createCategory(@RequestBody CategoryDTO dto) {
-        Category parent = dto.getParentId() != null ? 
-            categoryRepository.findById(dto.getParentId())
-                .orElseThrow(() -> new RuntimeException("Parent category not found")) 
-            : null;
+        Category parent = categoryService.findCategory(dto.getParentId().toString(), SearchParamType.ID);
         
         Category category = new Category(dto.getName(), parent);
         category.setLeaf(dto.isLeaf());

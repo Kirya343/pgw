@@ -78,7 +78,7 @@ public class AccountController {
             RedirectAttributes redirectAttributes) {
 
         try {
-            User currentUser = userService.findByEmail(oAuth2User.getAttribute("email"));
+            User currentUser = userService.findUserFromOAuth2(oAuth2User);
 
             // Обновляем основные данные
             currentUser.setName(updatedUser.getName() != null ? updatedUser.getName() : currentUser.getName());

@@ -52,9 +52,12 @@
 
             <!-- Содержимое новости -->
             <div class="news-content">
-                <div  class="news-text" th:text="${news.localizedContent}">
+                <!-- <div  class="news-text" th:text="${news.localizedContent}">
                     Полное содержание новости. Может содержать HTML разметку.
-                </div>
+                </div> -->
+                <div class="news-content markdown-body" th:utext="${htmlContent}"></div>
+                <!-- Временно в шаблоне -->
+                <!-- <div th:text="${htmlContent}"></div> -->
             </div>
 
             <!-- Кнопки для админа -->

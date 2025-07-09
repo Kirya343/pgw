@@ -3,6 +3,7 @@ package org.kirya343.main.controller.secure;
 import java.util.Locale;
 
 import org.kirya343.main.model.*;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.services.*;
 import org.kirya343.main.services.chat.ChatService;
@@ -45,7 +46,7 @@ public class MessengerController {
                                @AuthenticationPrincipal OAuth2User oauth2User) {
 
         User currentUser = userService.findUserFromOAuth2(oauth2User);
-        User seller = userService.findById(sellerId);
+        User seller = userService.findUser(sellerId.toString(), SearchParamType.ID);
 
         if (seller == null || currentUser == null || currentUser.equals(seller)) {
             return "redirect:/catalog";

@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import org.kirya343.config.LocalisationConfig.LanguageUtils;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.News;
 import org.kirya343.main.model.NewsTranslation;
 import org.kirya343.main.repository.NewsRepository;
@@ -29,6 +29,16 @@ public class NewsServiceImpl implements NewsService {
     private final NewsRepository newsRepository;
     private final StorageService storageService;
 
+    @Override 
+    public News findNews(String param, SearchParamType paramType) {
+        switch (paramType) {
+            case ID:
+                return newsRepository.findById(Long.parseLong(param)).orElse(null);
+            default:
+                throw new IllegalArgumentException("Unknown param type: " + paramType);
+        }
+    }
+
     // Основные CRUD операции
     @Override
     public List<News> findAll() {
@@ -38,11 +48,6 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public Page<News> findAll(Pageable pageable) {
         return newsRepository.findAll(pageable);
-    }
-
-    @Override
-    public Optional<News> findById(Long id) {
-        return newsRepository.findById(id);
     }
 
     @Override

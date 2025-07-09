@@ -1,6 +1,7 @@
 package org.kirya343.main.controller;
 
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.services.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -31,7 +32,7 @@ public class AdminUsersController {
     @GetMapping("/view/{id}")
     public String currentUser(@PathVariable Long id, Model model) {
         try {
-            User user = userService.findById(id);
+            User user = userService.findUser(id.toString(), SearchParamType.ID);
             model.addAttribute("user", user);
             model.addAttribute("activePage", "admin-users");
             return "admin/users/view-user";

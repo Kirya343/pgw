@@ -3,6 +3,7 @@ package org.kirya343.main.controller.components;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.DTOs.FullNotificationDTO;
 import org.kirya343.main.repository.NotificationRepository;
@@ -25,7 +26,7 @@ public class NotificationController {
 
     @GetMapping("/for-user/{id}")
     public List<FullNotificationDTO> getNotification(@PathVariable Long id, @AuthenticationPrincipal OAuth2User oauth2User) {
-        User user = userService.findById(id);
+        User user = userService.findUser(id.toString(), SearchParamType.ID);
         if (oauth2User != null) {
             User principal = userService.findUserFromOAuth2(oauth2User);
 

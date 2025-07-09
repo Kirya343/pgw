@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class ApiController {
     public ResponseEntity<?> acceptTerms(Principal principal) {
         String sub = principal.getName();
 
-        User user = userService.findBySub(sub);
+        User user = userService.findUser(sub, SearchParamType.ID);
         
         user.setTermsAcceptanceDate(LocalDateTime.now());
         user.setTermsAccepted(true);

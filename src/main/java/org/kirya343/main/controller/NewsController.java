@@ -3,10 +3,12 @@ package org.kirya343.main.controller;
 import java.util.Locale;
 import java.util.Map;
 
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.News;
 import org.kirya343.main.services.NewsService;
 import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.StatService;
+import org.kirya343.main.someClasses.MarkdownService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +28,8 @@ public class NewsController {
     private final NewsService newsService;
     private final StatService statService;
     private final AuthService authService;
+
+    private final MarkdownService markdownService; 
 
     @GetMapping("/news")
     public String getNews(@RequestParam(defaultValue = "0") int page,
@@ -55,8 +59,10 @@ public class NewsController {
                          Locale locale,
                          Model model) {
         // Получаем новость по ID
-        News news = newsService.findById(id)
-            .orElseThrow();
+        News news = newsService.findNews(id.toString(), SearchParamType.ID);
+
+        // Преобразуем Markdown в HTML
+        
 
         // Проверяем, является ли пользователь администратором
         boolean isAdmin = oauth2User != null && 
@@ -70,10 +76,15 @@ public class NewsController {
         // 3. Локализация названия и описания
         newsService.localizeNews(news, locale);
 
+        String htmlContent = markdownService.markdownToHtml(news.getLocalizedContent());
+        System.out.println("Твой html контент: "+ htmlContent);
+
         // Добавляем атрибуты в модель
         model.addAttribute("news", news);
         model.addAttribute("similarNews", similarNews);
         model.addAttribute("isAdmin", isAdmin);
+
+        model.addAttribute("htmlContent", htmlContent); // Добавляем HTML-версию
         
         authService.validateAndAddAuthentication(model, oauth2User);
 
