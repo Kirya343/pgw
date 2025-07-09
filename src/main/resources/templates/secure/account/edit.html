@@ -119,6 +119,18 @@
 
                 <!-- О себе -->
                 <div class="form-section">
+                    <h3 th:text="#{profile.editing.bio}">Языки которыми я владею</h3>
+                    <div class="form-group">
+                        <div id="myLangsContainer">
+                            <button class="lang-select-btn" name="ru">Русский</button>
+                            <button class="lang-select-btn" name="fi">Suomi</button>
+                            <button class="lang-select-btn" name="en">English</button>
+                            <button class="lang-select-btn" name="it">Italiano</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
                     <h3 th:text="#{profile.editing.bio}">О себе</h3>
                     <div class="form-group">
                         <label for="bio" th:text="#{profile.editing.bio.short}">Краткая информация</label>

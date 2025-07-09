@@ -22,4 +22,20 @@ document.querySelectorAll('.avatar-option').forEach(option => {
 document.addEventListener('DOMContentLoaded', function() {
     const currentType = document.querySelector('input[name="avatarType"]').value;
     document.querySelector(`.avatar-option[data-type="${currentType}"]`).click();
+    document.getElementById('myLangsContainer').innerHTML = `
+            <div class="notification-header">
+                <strong>${notification.title}</strong>
+                <button class="close-notification" style="
+                    background: none;
+                    border: none;
+                    font-size: 18px;
+                    cursor: pointer;
+                    color: #888;
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                ">&times;</button>
+            </div>
+            <div class="notification-body">${notification.message}</div>
+        `;
 });
