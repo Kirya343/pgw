@@ -56,27 +56,6 @@ public class User {
     @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Conversation> conversationsReceived = new ArrayList<>();
 
-    public enum Role {
-        USER(1),
-        PREMIUM(2),
-        BUSINESS(3),
-        ADMIN(4);
-
-        private final int level;
-
-        Role(int level) {
-            this.level = level;
-        }
-
-        public int getLevel() {
-            return level;
-        }
-
-        public boolean isAtLeast(Role other) {
-            return this.level >= other.level;
-        }
-    }
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -105,4 +84,34 @@ public class User {
     // соц сети
 
     private boolean telegramConnected = false; // Подключен ли Telegram
+
+    // Енумы 
+    
+    public enum Role {
+        USER(1),
+        PREMIUM(2),
+        BUSINESS(3),
+        ADMIN(4);
+
+        private final int level;
+
+        Role(int level) {
+            this.level = level;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+        public boolean isAtLeast(Role other) {
+            return this.level >= other.level;
+        }
+    }
+
+    public enum UserParamType { 
+        ID,
+        EMAIL,
+        NAME,
+        SUB
+    }
 }

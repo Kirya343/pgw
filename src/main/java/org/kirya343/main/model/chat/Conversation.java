@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.kirya343.main.services.components.AvatarService;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
-import org.kirya343.main.services.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,19 +37,6 @@ public class Conversation {
     @JoinColumn(name = "listing_id")
     private Listing listing;
 
-
-    public User getOtherParticipant(User user) {
-        if (user == null || user1 == null || user2 == null) {
-            return null;
-        }
-        if (user1.equals(user)) {
-            return user2;
-        } else if (user2.equals(user)) {
-            return user1;
-        }
-        return null;
-    }
-
     @Transient
     private long unreadCount;
 
@@ -64,30 +49,16 @@ public class Conversation {
     @Transient
     private transient User interlocutor; // Временное поле для хранения собеседника
 
-    // Метод для получения актуальных данных собеседника
-    public User getInterlocutor(User currentUser, UserService userService) {
-        if (interlocutor == null) {
-            interlocutor = userService.findById(
-                    user1.equals(currentUser) ? user2.getId() : user1.getId()
-            );
+    public User getInterlocutor(User user) {
+        if (user == null || user1 == null || user2 == null) {
+            return null;
+        }
+        if (user1.equals(user)) {
+            interlocutor = user2;
+        } else if (user2.equals(user)) {
+            interlocutor = user1;
         }
         return interlocutor;
-    }
-
-    // Метод для получения имени с актуальными данными
-    public String getInterlocutorName(User currentUser, UserService userService) {
-        return getInterlocutor(currentUser, userService).getName();
-    }
-
-    // Метод для получения аватарки через сервис
-    public String getInterlocutorAvatar(User currentUser, UserService userService, AvatarService avatarService) {
-        return avatarService.resolveAvatarPath(getInterlocutor(currentUser, userService));
-    }
-
-
-    // Получить собеседника
-    public User getInterlocutor(User currentUser) {
-        return user1.equals(currentUser) ? user2 : user1;
     }
 
     // Получить последнее сообщение

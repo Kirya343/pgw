@@ -163,13 +163,13 @@ function updateSingleConversation(conversation) {
     // Обновляем содержимое диалога
     dialogItem.innerHTML = `
         <div class="dialog-avatar">
-            <img src="${conversation.avatar}" 
+            <img src="${conversation.interlocutorAvatar}" 
                  onerror="this.src='/images/avatar-placeholder.png'" 
                  alt="Аватар">
         </div>
         <div class="dialog-content">
             <div class="dialog-header">
-                <h4>${conversation.name}</h4>
+                <h4>${conversation.interlocutorName}</h4>
                 <span class="dialog-time">${formattedDate}</span>
             </div>
             <p class="dialog-preview">${conversation.lastMessagePreview || ""}</p>

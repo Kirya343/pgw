@@ -6,11 +6,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.kirya343.config.LocalisationConfig.LanguageUtils;
-import org.kirya343.main.controller.mappers.ListingMapper;
-import org.kirya343.main.model.DTOs.ListingDTO;
 import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.DTOs.ListingDTO;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.model.listingModels.ListingTranslation;
@@ -20,6 +19,7 @@ import org.kirya343.main.repository.ListingTranslationRepository;
 import org.kirya343.main.services.CategoryService;
 import org.kirya343.main.services.FavoriteListingService;
 import org.kirya343.main.services.ListingService;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -39,7 +38,6 @@ public class ListingServiceImpl implements ListingService {
     private final ListingTranslationRepository listingTranslationRepository;
     private final FavoriteListingService favoriteListingService;
     private final CategoryService categoryService;
-    private final ListingMapper listingMapper;
     
     @Override
     public Page<Listing> findByCategory(String category, Pageable pageable) {
@@ -350,10 +348,28 @@ public class ListingServiceImpl implements ListingService {
         return value == null || value.isBlank();
     }
 
-    @Transactional
-    public ListingDTO getListingDtoById(Long id) {
-        Listing listing = listingRepository.findWithTranslationsById(id).orElseThrow();
-        Map<String, ListingTranslation> translations = listing.getTranslations(); // теперь работает
-        return listingMapper.convertToDTO(listing, translations);
+    public ListingDTO convertToDTO(Listing listing, Locale locale) {
+        if (listing == null) {
+            return null;
+        }
+
+        ListingDTO dto = new ListingDTO();
+        dto.setId(listing.getId());
+        dto.setPrice(listing.getPrice());
+        dto.setPriceType(listing.getPriceType());
+        dto.setCategory(listing.getCategory() != null ? listing.getCategory().getName() : null);
+        dto.setLocation(listing.getLocation() != null ? listing.getLocation().getName() : null);
+        dto.setRating(listing.getRating());
+        dto.setViews(listing.getViews());
+        dto.setCreatedAt(listing.getCreatedAt());
+        dto.setActive(listing.isActive());
+        dto.setImagePath(listing.getImagePath());
+
+        localizeListingIfLangPass(listing, locale);
+
+        dto.setLocalizedTitle(listing.getLocalizedTitle());
+        dto.setLocalizedDescription(listing.getLocalizedDescription());
+
+        return dto;
     }
 }

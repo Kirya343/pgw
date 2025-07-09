@@ -30,8 +30,6 @@ public interface ListingService {
     // Методы для работы с похожими объявлениями
     List<Listing> findSimilarListings(Category category, Long excludeId, Locale locale);
 
-    ListingDTO getListingDtoById(Long id);
-
     // Методы для работы с объявлениями
     void deleteListing(Long id);
     void save(Listing listing);
@@ -48,4 +46,7 @@ public interface ListingService {
     List<Listing> localizeCatalogListings(List<Listing> listings, Locale locale);
 
     Page<Listing> findListingsByCategoryAndCommunity(Category category, Locale locale, Pageable pageable);
+
+    // Конвертация в дто для чата
+    ListingDTO convertToDTO(Listing listing, Locale locale);
 }
