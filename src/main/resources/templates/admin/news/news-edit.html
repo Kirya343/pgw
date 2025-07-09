@@ -72,6 +72,7 @@
                                     <span>(</span>
                                     <span id="langLabelDesc"></span>
                                     <span>):</span>
+                                    <small class="text-muted">Поддерживается Markdown: **жирный**, *курсив*, ***жирный курсив***, >цитата, - пункты, заголовки: -/= на след.строке</small>
                                 </label>
                                 <textarea class="languageFields-item" id="descriptionInput" name="descriptions" rows="4"></textarea><br>
 
@@ -102,7 +103,6 @@
                         
                         <!-- Скрытые поля для управления изображением -->
                         <input type="hidden" id="existingImageUrl" name="existingImageUrl" th:value="@{${news.imageUrl}}"> 
-                                                                                            <!--вот тут нужен url -->
                         <input type="hidden" id="imageAction" name="imageAction" value="keep">
                     </div>
 
