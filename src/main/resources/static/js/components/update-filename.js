@@ -54,87 +54,43 @@ function handleImageUpload(input) {
     }
 }
 
-// Функция для загрузки и отображения изображения
-function handleSingleImageUpload(input, existingImageUrl = null) {
-    const imageGallery = document.getElementById('imageGallery');
-    imageGallery.innerHTML = '';
-
-    // Если передано существующее изображение - показываем его
-    if (existingImageUrl) {
-        const imageContainer = document.createElement('div');
-        imageContainer.className = 'col-md-3 mb-3 image-item';
-        imageContainer.innerHTML = `
-            <div class="card">
-                <img src="${existingImageUrl}" class="card-img-top img-thumbnail">
-                <div class="card-body p-2">
-                    <button type="button" class="btn btn-outline-danger btn-sm w-100 delete-temp-btn">
-                        Удалить
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        imageGallery.appendChild(imageContainer);
-        
-        imageContainer.querySelector('.delete-temp-btn').addEventListener('click', function() {
-            imageGallery.removeChild(imageContainer);
-            if (input) input.value = '';
-            // Здесь можно добавить вызов API для удаления изображения на сервере
-        });
-    }
-
-    // Обработка нового изображения (если загружают новое)
-    if (input && input.files && input.files.length === 1) {
-        const file = input.files[0];
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            // Очищаем предыдущее изображение
-            imageGallery.innerHTML = '';
-            
-            const imageContainer = document.createElement('div');
-            imageContainer.className = 'col-md-3 mb-3 image-item';
-            imageContainer.innerHTML = `
-                <div class="card">
-                    <img src="${e.target.result}" class="card-img-top img-thumbnail">
-                    <div class="card-body p-2">
-                        <button type="button" class="btn btn-outline-danger btn-sm w-100 delete-temp-btn">
-                            Удалить
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            imageGallery.appendChild(imageContainer);
-            
-            imageContainer.querySelector('.delete-temp-btn').addEventListener('click', function() {
-                imageGallery.removeChild(imageContainer);
-                input.value = '';
-            });
-        };
-        
-        reader.readAsDataURL(file);
-    } else if (input && input.files && input.files.length > 1) {
-        alert('Пожалуйста, выберите только одно изображение!');
-        input.value = '';
-    }
-}
-
 // При загрузке страницы редактирования
 document.addEventListener('DOMContentLoaded', function() {
-    const imageUrl = document.getElementById('existingImageUrl').value; // Предполагаем, что сервер передает URL
+    const imageUrl = document.getElementById('existingImageUrl').value;
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const deleteBtn = document.getElementById('deleteImageBtn');
+    const fileInput = document.getElementById('image');
+    const imageAction = document.getElementById('imageAction');
     
+    // Инициализация при загрузке страницы
     if (imageUrl) {
-        handleSingleImageUpload(null, imageUrl);
+        imagePreview.src = imageUrl;
+        previewContainer.style.display = 'block';
     }
     
-    // Навешиваем обработчик на input file
-    const uploadInput = document.getElementById('imageUpload');
-    if (uploadInput) {
-        uploadInput.addEventListener('change', function() {
-            handleSingleImageUpload(this);
-        });
-    }
+    // Обработка выбора нового изображения
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                previewContainer.style.display = 'block';
+                imageAction.value = 'update'; // Помечаем, что изображение обновлено
+            };
+            
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+    
+    // Обработка удаления изображения
+    deleteBtn.addEventListener('click', function() {
+        imagePreview.src = '';
+        previewContainer.style.display = 'none';
+        fileInput.value = '';
+        imageAction.value = 'delete'; // Помечаем, что изображение нужно удалить
+    });
 });
 
 // Установка основного изображения для существующих

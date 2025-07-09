@@ -83,21 +83,27 @@
 
                     <div class="admin-form-group">
                         <label class="admin-form-label">Изображение</label>
-
-                        <div class="image-gallery">
-                            <div class="image-gallery-grid" id="imageGallery"> <!-- style="max-height: 250px; max-width: 250px; margin-bottom: 30px;" --> 
-                                <!-- тут мог быть стиль, но я не разобралась -->
-                            </div>
-                        </div>
-
-                        <div class="admin-form-control">
-                            <input type="file" id="image" name="imageFile" accept="image/*" onchange="handleSingleImageUpload(this)">
-                            <label for="image" class="btn btn-outline-primary" th:text="#{listing.editing.image.button.select}">Выбрать файл</label>
-                        </div>
-
-                        <input type="hidden" id="existingImageUrl" value="@{${news.imageUrl}}"> <!-- здесь вставить правильный url для изображения (я хз как) -->
-                        <input type="hidden" id="deletedImages" name="deletedImages" value="">
                         
+                        <!-- Контейнер для превью изображения -->
+                        <div class="image-preview-container" id="imagePreviewContainer" style="display: none;">
+                            <img id="imagePreview" src="" class="image-preview">
+                            <button type="button" id="deleteImageBtn" class="btn btn-outline-danger btn-sm">
+                                Удалить
+                            </button>
+                        </div>
+                        
+                        <!-- Поле для загрузки нового изображения -->
+                        <div class="admin-form-control">
+                            <input type="file" id="image" name="imageFile" accept="image/*" style="display: none;">
+                            <label for="image" class="btn btn-outline-primary">
+                                Выбрать файл
+                            </label>
+                        </div>
+                        
+                        <!-- Скрытые поля для управления изображением -->
+                        <input type="hidden" id="existingImageUrl" name="existingImageUrl" value="/news-images/image-for-news_9_bee4f2b9-25b2-4332-81a9-00e1c19880e0.webp"> 
+                                                                                            <!-- а вот тут нужен url -->
+                        <input type="hidden" id="imageAction" name="imageAction" value="keep">
                     </div>
 
                     <div class="admin-form-group">

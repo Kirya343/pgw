@@ -57,3 +57,17 @@ color: white;
     text-align: center;
     cursor: pointer;
 }
+
+.image-preview-container {
+        margin-bottom: 15px;
+        text-align: left;
+}
+
+.image-preview {
+    max-width: 250px;
+    max-height: 250px;
+    display: block;
+    margin: 0 0 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
