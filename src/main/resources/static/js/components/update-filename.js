@@ -54,6 +54,45 @@ function handleImageUpload(input) {
     }
 }
 
+// При загрузке страницы редактирования
+document.addEventListener('DOMContentLoaded', function() {
+    const imageUrl = document.getElementById('existingImageUrl').value;
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const deleteBtn = document.getElementById('deleteImageBtn');
+    const fileInput = document.getElementById('image');
+    const imageAction = document.getElementById('imageAction');
+    
+    // Инициализация при загрузке страницы
+    if (imageUrl) {
+        imagePreview.src = imageUrl;
+        previewContainer.style.display = 'block';
+    }
+    
+    // Обработка выбора нового изображения
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                previewContainer.style.display = 'block';
+                imageAction.value = 'update'; // Помечаем, что изображение обновлено
+            };
+            
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+    
+    // Обработка удаления изображения
+    deleteBtn.addEventListener('click', function() {
+        imagePreview.src = '';
+        previewContainer.style.display = 'none';
+        fileInput.value = '';
+        imageAction.value = 'delete'; // Помечаем, что изображение нужно удалить
+    });
+});
+
 // Установка основного изображения для существующих
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('set-main-btn') && e.target.hasAttribute('data-image-path')) {

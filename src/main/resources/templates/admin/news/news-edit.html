@@ -83,18 +83,27 @@
 
                     <div class="admin-form-group">
                         <label class="admin-form-label">Изображение</label>
+                        
+                        <!-- Контейнер для превью изображения -->
+                        <div class="image-preview-container" id="imagePreviewContainer" style="display: none;">
+                            <img id="imagePreview" src="" class="image-preview">
+                            <button type="button" id="deleteImageBtn" class="btn btn-outline-danger btn-sm">
+                                Удалить
+                            </button>
+                        </div>
+                        
+                        <!-- Поле для загрузки нового изображения -->
                         <div class="admin-form-control">
-                            <input type="file" id="image" name="imageFile" accept="image/*" onchange="updateFileName()">
-                            <label for="image" class="btn btn-outline-primary" th:text="#{listing.editing.image.button.select}">Выбрать файл</label>
-                            <span class="file-name" th:text="#{listing.editing.image.file.not.selected}">Файл не выбран</span>
+                            <input type="file" id="image" name="imageFile" accept="image/*" style="display: none;">
+                            <label for="image" class="btn btn-outline-primary">
+                                Выбрать файл
+                            </label>
                         </div>
-                        <div th:if="${news.imageUrl != null}" class="mt-2">
-                            <img th:src="@{'/' + ${news.imageUrl}}" alt="Текущее изображение" style="max-height: 200px;">
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" id="removeImage" name="removeImage">
-                                <label class="form-check-label" for="removeImage">Удалить текущее изображение</label>
-                            </div>
-                        </div>
+                        
+                        <!-- Скрытые поля для управления изображением -->
+                        <input type="hidden" id="existingImageUrl" name="existingImageUrl" th:value="@{${news.imageUrl}}"> 
+                                                                                            <!--вот тут нужен url -->
+                        <input type="hidden" id="imageAction" name="imageAction" value="keep">
                     </div>
 
                     <div class="admin-form-group">
