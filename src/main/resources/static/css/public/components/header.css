@@ -90,10 +90,6 @@ header {
     color: var(--primary);
 }
 
-.btn-outline-primary {
-    margin-right: 0.5rem;
-}
-
 .nav-buttons {
     display: flex;
     align-items: center;
@@ -166,20 +162,12 @@ header {
     padding: 0.5rem 1rem;
     border-radius: var(--radius);
     transition: all 0.2s;
+    gap: 0.5rem;
 }
 
 .account-link:hover {
     background-color: rgba(99, 102, 241, 0.1);
     color: var(--primary);
-}
-
-.account-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    margin-right: 0.5rem;
-    object-fit: cover;
-    border: 1px solid var(--border-color);
 }
 
 .logo {

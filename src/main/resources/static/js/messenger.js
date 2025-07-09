@@ -1,4 +1,7 @@
 const params = new URLSearchParams(window.location.search);
+
+const userLocale = /*[[${locale}]]*/ 'en';
+
 let conversationIdFromUrl = params.get('conversationId') || null;
 
 let currentSubscription = null;
@@ -46,11 +49,11 @@ function getInterlocutorInfo(conversationId) {
 // Функция для получения списка диалогов с сервера
 function loadConversations() {
     if (stompClient && stompClient.connected) {
-        stompClient.send("/app/getConversations", {}, JSON.stringify({}));
+        stompClient.send("/app/getConversations", {"locale": userLocale}, JSON.stringify({}));
     } else {
         // Если соединения нет, переподключаемся
         connect(function () {
-            stompClient.send("/app/getConversations", {}, JSON.stringify({}));
+            stompClient.send("/app/getConversations", {"locale": userLocale}, JSON.stringify({}));
         });
     }
 }
@@ -162,11 +165,9 @@ function updateSingleConversation(conversation) {
 
     // Обновляем содержимое диалога
     dialogItem.innerHTML = `
-        <div class="dialog-avatar">
-            <img src="${conversation.interlocutorAvatar}" 
-                 onerror="this.src='/images/avatar-placeholder.png'" 
-                 alt="Аватар">
-        </div>
+        <img class="avatar p50-avatar" src="${conversation.interlocutorAvatar}" 
+                onerror="this.src='/images/avatar-placeholder.png'" 
+                alt="Аватар">
         <div class="dialog-content">
             <div class="dialog-header">
                 <h4>${conversation.interlocutorName}</h4>
@@ -204,7 +205,7 @@ function sendMessage() {
     };
 
     // Отправляем сообщение через STOMP
-    stompClient.send("/app/chat.send", {}, JSON.stringify(message));
+    stompClient.send("/app/chat.send", {"locale": userLocale}, JSON.stringify(message), userLocale);
     
     // Очищаем поле ввода
     document.getElementById('message-input').value = '';
@@ -297,9 +298,9 @@ function handleDialogClick() {
         setupChatSubscription(currentConversationId);
 
         // Отправляем на сервер, что мы прочитали сообщения
-        stompClient.send("/app/chat.markAsRead", {}, JSON.stringify({
+        stompClient.send("/app/chat.markAsRead", {"locale": userLocale}, JSON.stringify({
             conversationId: currentConversationId
-        }));
+        }), userLocale);
 
         // Получаем информацию о собеседнике
         getInterlocutorInfo(currentConversationId);

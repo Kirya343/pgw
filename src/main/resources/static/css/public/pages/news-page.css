@@ -200,13 +200,6 @@
     gap: 0.5rem;
 }
 
-.message-avatar {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
 .message-author {
     font-weight: 500;
     font-size: 0.9rem;

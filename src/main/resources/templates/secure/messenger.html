@@ -47,7 +47,7 @@
                          th:each="conversation : ${conversations}"
                          th:attr="data-conversation-id=${conversation.id}">
 
-                        <div class="dialog-avatar">
+                        <div class="avatar p50-avatar">
                             <img th:src="@{${conversation.interlocutorAvatar}}"
                                  alt="Аватар">
                         </div>
@@ -87,7 +87,7 @@
                          data-conversation-id="${selectedConversation.id}">
                         <div class="chat-header">
                             <div class="chat-user">
-                                <img class="dialog-avatar" id="interlocutorAvatar" onerror="this.src='/images/avatar-placeholder.png'" src="/images/avatar-placeholder.png" alt="Avatar" />
+                                <img class="avatar p50-avatar" id="interlocutorAvatar" onerror="this.src='/images/avatar-placeholder.png'" src="/images/avatar-placeholder.png" alt="Avatar" />
                                 <div>
                                     <h4 id="interlocutorName"></h4>
                                     <p class="user-status"></p>

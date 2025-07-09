@@ -12,6 +12,7 @@ import org.kirya343.main.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -38,7 +39,8 @@ public class ChatWebSocketController {
     private final NotificationService notificationService;
 
     @MessageMapping("/chat.send")
-    public void sendMessage(MessageDTO messageDTO, Principal principal, Locale locale) throws AccessDeniedException {
+    public void sendMessage(MessageDTO messageDTO, Principal principal, @Header("locale") String lang) throws AccessDeniedException {
+        Locale locale = Locale.of(lang);
 
         User sender = userService.findBySub(principal.getName());
 
@@ -117,7 +119,8 @@ public class ChatWebSocketController {
     }
 
     @MessageMapping("/chat.markAsRead")
-    public void markAsRead(MarkAsReadDTO markAsReadDTO, Principal principal, Locale locale) {
+    public void markAsRead(MarkAsReadDTO markAsReadDTO, Principal principal, @Header("locale") String lang) {
+        Locale locale = Locale.of(lang);
         User user = userService.findBySub(principal.getName());
         Long conversationId = markAsReadDTO.getConversationId();
 
@@ -127,7 +130,8 @@ public class ChatWebSocketController {
     }
 
     @MessageMapping("/getConversations")
-    public void getConversations(Principal principal, Locale locale) {
+    public void getConversations(Principal principal, @Header("locale") String lang) {
+        Locale locale = Locale.of(lang);
         User user = userService.findBySub(principal.getName());
         List<Conversation> conversations = chatService.getUserConversations(user);
 

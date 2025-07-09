@@ -1,10 +1,9 @@
 <aside class="listing-sidebar" th:fragment="authorInfoSidebar">
     <div class="seller-card hover-animation-card" th:if="${listing.author != null}" style="cursor: pointer;" th:onclick="window.location.href = '/profile/' + [[${listing.author.id}]]">
-        <div class="seller-avatar">
-            <img th:src="@{${listing.author.avatarUrl}}"
-                    th:onerror="this.src='/images/avatar-placeholder.png'"
-                    alt="Аватар продавца">
-        </div>
+        <img class="seller-avatar avatar p100-avatar" 
+            th:src="@{${listing.author.avatarUrl}}"
+            th:onerror="this.src='/images/avatar-placeholder.png'"
+            alt="Аватар продавца">
         <div class="seller-info">
             <h4 th:text="${listing.author.name ?: 'Неизвестный автор'}">Иван Иванов</h4>
             <div class="seller-rating">
@@ -58,11 +57,10 @@
 
 <aside class="resume-sidebar" th:fragment="authorInfoSidebarResume">
     <div class="seller-card hover-animation-card" style="cursor: pointer;" th:onclick="window.location.href = '/profile/' + [[${resume.user.id}]]">
-        <div class="seller-avatar">
-            <img th:src="@{${resume.user.avatarUrl}}"
-                    th:onerror="this.src='/images/avatar-placeholder.png'"
-                    alt="Аватар кандидата">
-        </div>
+        <img class="seller-avatar avatar p100-avatar"
+            th:src="@{${resume.user.avatarUrl}}"
+            th:onerror="this.src='/images/avatar-placeholder.png'"
+            alt="Аватар кандидата">
         <div class="seller-info">
             <h3 th:text="${resume.user.name}">Иван Иванов</h3>
             <div class="seller-rating">
@@ -115,11 +113,10 @@
 
 <aside class="listing-sidebar" th:fragment="profileInfoSidebar">
     <div class="seller-card" th:if="${profileUser != null}">
-        <div class="seller-avatar">
-            <img th:src="@{${profileUser.avatarUrl}}"
-                th:onerror="this.src='/images/avatar-placeholder.png'"
-                alt="Аватар продавца">
-        </div>
+        <img class="seller-avatar avatar p100-avatar"
+            th:src="@{${profileUser.avatarUrl}}"
+            th:onerror="this.src='/images/avatar-placeholder.png'"
+            alt="Аватар продавца">
         <div class="seller-info">
             <h4 th:text="${profileUser.name ?: 'Неизвестный автор'}">Иван Иванов</h4>
             <div class="seller-rating">
@@ -165,7 +162,7 @@
     
     <div class="resume-card hover-animation-card" th:if="${resume != null and resume.published}" th:onclick="window.location.href = '/resume/' + [[${resume.id}]]">
         <img th:src="@{${profileUser.avatarUrl}}"
-                class="resume-avatar"
+                class="avatar p70-avatar"
                 alt="Аватар"
                 th:onerror="this.src='/images/avatar-placeholder.png'">
         <div class="resume-info">

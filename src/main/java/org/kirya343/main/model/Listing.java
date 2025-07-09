@@ -35,7 +35,7 @@ public class Listing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @MapKey(name = "language") // ключ — это язык (например, "ru")
     private Map<String, ListingTranslation> translations = new HashMap<>();
 
@@ -43,7 +43,7 @@ public class Listing {
     private double price;
     private String priceType; // "час", "фиксированная" и т.д.
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 

@@ -21,7 +21,7 @@ public class LocalisationConfig implements WebMvcConfigurer {
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasenames(
-            "classpath:lang/messages",                     // старое местоположение
+            "classpath:lang/messages",     // старое местоположение
             "file:dinamic-lang/categories/categories"      // новое местоположение
         );
         messageSource.setDefaultEncoding("UTF-8");
@@ -33,7 +33,7 @@ public class LocalisationConfig implements WebMvcConfigurer {
     public LocaleResolver localeResolver() {
         CookieLocaleResolver resolver = new CookieLocaleResolver("locale");
         resolver.setDefaultLocale(Locale.forLanguageTag("ru"));
-         resolver.setCookieMaxAge(Duration.ofDays(30));
+        resolver.setCookieMaxAge(Duration.ofDays(30));
         return resolver;
     }
 
@@ -44,8 +44,9 @@ public class LocalisationConfig implements WebMvcConfigurer {
         return interceptor;
     }
 
+    @SuppressWarnings("null")
     @Override
-    public void addInterceptors(@SuppressWarnings("null") InterceptorRegistry registry) {
+    public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
     }
 

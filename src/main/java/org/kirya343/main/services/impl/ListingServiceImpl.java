@@ -19,7 +19,6 @@ import org.kirya343.main.repository.ListingTranslationRepository;
 import org.kirya343.main.services.CategoryService;
 import org.kirya343.main.services.FavoriteListingService;
 import org.kirya343.main.services.ListingService;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -348,6 +348,8 @@ public class ListingServiceImpl implements ListingService {
         return value == null || value.isBlank();
     }
 
+    @Override
+    @Transactional
     public ListingDTO convertToDTO(Listing listing, Locale locale) {
         if (listing == null) {
             return null;
@@ -357,8 +359,8 @@ public class ListingServiceImpl implements ListingService {
         dto.setId(listing.getId());
         dto.setPrice(listing.getPrice());
         dto.setPriceType(listing.getPriceType());
-        dto.setCategory(listing.getCategory() != null ? listing.getCategory().getName() : null);
-        dto.setLocation(listing.getLocation() != null ? listing.getLocation().getName() : null);
+        dto.setCategory(listing.getCategory().getName());
+        dto.setLocation(listing.getLocation().getName());
         dto.setRating(listing.getRating());
         dto.setViews(listing.getViews());
         dto.setCreatedAt(listing.getCreatedAt());

@@ -19,7 +19,7 @@
             <h1>Управление объявлениями</h1>
             <div class="admin-user">
                 <span>Администратор</span>
-                <img src="/images/avatar-placeholder.png" alt="Аватар" class="admin-user-avatar">
+                <img src="/images/avatar-placeholder.png" alt="Аватар" class="avatar p40-avatar">
             </div>
         </header>
         <nav class="breadcrumbs">
@@ -50,7 +50,7 @@
                     <tr th:each="listing : ${listings}">
                         <td th:text="${listing.id}">#0000</td>
                         <td>
-                            <img th:src="@{${listing.imagePath}}" th:onerror="this.src='/images/default-listing.png'" alt="Изображение" class="users-avatars">
+                            <img th:src="@{${listing.imagePath}}" th:onerror="this.src='/images/default-listing.png'" alt="Изображение" class="avatar p23-avatar">
                         </td>
                         <td th:text="${listing.localizedTitle}">Имя</td>
                         <td th:text="${listing.author.name}">Email</td>
