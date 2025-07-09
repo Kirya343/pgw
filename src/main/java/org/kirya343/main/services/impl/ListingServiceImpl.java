@@ -10,6 +10,7 @@ import org.kirya343.main.model.FavoriteListing;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.DTOs.ListingDTO;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.model.listingModels.ListingTranslation;
@@ -39,6 +40,17 @@ public class ListingServiceImpl implements ListingService {
     private final FavoriteListingService favoriteListingService;
     private final CategoryService categoryService;
     
+    @Override 
+    public Listing findListing(String param, String paramType) {
+        SearchParamType searchParamType = SearchParamType.valueOf(paramType);
+        switch (searchParamType) {
+            case ID:
+                return listingRepository.findById(Long.parseLong(param)).orElse(null);
+            default:
+                throw new IllegalArgumentException("Unknown param type: " + paramType);
+        }
+    }
+
     @Override
     public Page<Listing> findByCategory(String category, Pageable pageable) {
         return listingRepository.findByCategory(category, pageable);

@@ -1,5 +1,6 @@
 package org.kirya343.main.services.impl;
 
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.Notification;
 import org.kirya343.main.model.DTOs.FullNotificationDTO;
 import org.kirya343.main.model.DTOs.NotificationDTO;
@@ -33,10 +34,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void saveOfflineChatNotification(String sub, NotificationDTO dto) {
 
-        String email = userService.findBySub(sub).getEmail();
+        String email = userService.findUser(sub, SearchParamType.ID).getEmail();
 
         Notification notification = new Notification();
-        notification.setRecipient(userService.findBySub(sub));
+        notification.setRecipient(userService.findUser(sub, SearchParamType.ID));
         notification.setTitle(dto.getTitle());
         notification.setContent(dto.getMessage());
         notification.setLink(dto.getLink());

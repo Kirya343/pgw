@@ -1,6 +1,7 @@
 package org.kirya343.main.controller;
 
 import org.kirya343.main.model.Listing;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.Resume;
 import org.kirya343.main.model.Review;
 import org.kirya343.main.model.User;
@@ -33,7 +34,7 @@ public class ProfileController {
     @GetMapping("/{id}")
     public String getProfile(@PathVariable Long id, Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
         
-        User profileUser = userService.findById(id);
+        User profileUser = userService.findUser(id.toString(), SearchParamType.ID);
 
         List<Listing> listings = listingService.localizeActiveAccountListings(profileUser, locale);
 
@@ -72,7 +73,7 @@ public class ProfileController {
                             @RequestHeader(value = "referer", required = false) String referer) {
 
         // Находим объявление по ID
-        User profile = userService.findById(id);
+        User profile = userService.findUser(id.toString(), SearchParamType.ID);
         if (profile == null) {
             return "redirect:/catalog"; // Если объявление не найдено, перенаправляем на каталог
         }

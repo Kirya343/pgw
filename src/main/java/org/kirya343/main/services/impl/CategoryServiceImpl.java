@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.kirya343.config.LocalisationConfig.LanguageUtils;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.DTOs.CategoryDTO;
 import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.repository.CategoryRepository;
@@ -33,6 +34,16 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final MessageSource messageSource;
 
+    @Override 
+    public Category findCategory(String param, SearchParamType paramType) {
+        switch (paramType) {
+            case ID:
+                return categoryRepository.findById(Long.parseLong(param)).orElse(null);
+            default:
+                throw new IllegalArgumentException("Unknown param type: " + paramType);
+        }
+    }
+
     @Override
     @Transactional
     public Category createCategory(CategoryDTO dto, List<String> translations) throws IOException {
@@ -42,10 +53,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category parent = null;
         if (dto.getParentId() != null) {
-            parent = categoryRepository.findById(dto.getParentId())
-                .orElseThrow(() -> new RuntimeException("Parent category not found with id: " + dto.getParentId()));
-            
-            if (parent.isLeaf()) {
+                        
+            if (findCategory(dto.getParentId().toString(), SearchParamType.ID).isLeaf()) {
                 throw new IllegalStateException("Cannot add subcategory to a leaf category");
             }
         }

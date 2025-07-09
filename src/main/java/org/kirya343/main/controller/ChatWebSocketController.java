@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.kirya343.main.model.DTOs.*;
 import org.kirya343.main.model.chat.*;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.NotificationService;
 import org.kirya343.main.services.chat.ChatService;
@@ -42,7 +43,7 @@ public class ChatWebSocketController {
     public void sendMessage(MessageDTO messageDTO, Principal principal, @Header("locale") String lang) throws AccessDeniedException {
         Locale locale = Locale.of(lang);
 
-        User sender = userService.findBySub(principal.getName());
+        User sender = userService.findUser(principal.getName(), SearchParamType.ID);
 
         Conversation conversation = chatService.getConversationById(messageDTO.getConversationId());
 
@@ -93,7 +94,7 @@ public class ChatWebSocketController {
     public List<MessageDTO> loadMessagesForConversation(@DestinationVariable Long conversationId, Principal principal) {
         logger.info("Получение сообщений для разговора с ID: {}", conversationId);
 
-        User currentUser = userService.findBySub(principal.getName());
+        User currentUser = userService.findUser(principal.getName(), SearchParamType.ID);
 
         // Получаем разговор по ID
         Conversation conversation = chatService.getConversationById(conversationId);
@@ -121,7 +122,7 @@ public class ChatWebSocketController {
     @MessageMapping("/chat.markAsRead")
     public void markAsRead(MarkAsReadDTO markAsReadDTO, Principal principal, @Header("locale") String lang) {
         Locale locale = Locale.of(lang);
-        User user = userService.findBySub(principal.getName());
+        User user = userService.findUser(principal.getName(), SearchParamType.ID);
         Long conversationId = markAsReadDTO.getConversationId();
 
         chatService.markMessagesAsRead(conversationId, user);
@@ -132,7 +133,7 @@ public class ChatWebSocketController {
     @MessageMapping("/getConversations")
     public void getConversations(Principal principal, @Header("locale") String lang) {
         Locale locale = Locale.of(lang);
-        User user = userService.findBySub(principal.getName());
+        User user = userService.findUser(principal.getName(), SearchParamType.ID);
         List<Conversation> conversations = chatService.getUserConversations(user);
 
         conversations.stream()
@@ -155,7 +156,7 @@ public class ChatWebSocketController {
     @MessageMapping("/chat.getInterlocutorInfo")
     @SendToUser("/queue/interlocutorInfo")
     public InterlocutorInfoDTO getInterlocutorInfo(ConversationRequest request, Principal principal) {
-        User currentUser = userService.findBySub(principal.getName());
+        User currentUser = userService.findUser(principal.getName(), SearchParamType.ID);
         Long conversationId = request.getConversationId();
 
         Conversation conversation = chatService.getConversationById(conversationId);

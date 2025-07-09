@@ -6,8 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 import org.kirya343.main.exceptions.UserNotRegisteredException;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.User;
-import org.kirya343.main.repository.UserRepository;
+import org.kirya343.main.services.UserService;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +33,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 import java.util.Set;
 
 @Configuration
@@ -40,7 +40,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -112,14 +112,12 @@ public class SecurityConfig {
         return userRequest -> {
             OidcUser oidcUser = new OidcUserService().loadUser(userRequest);
             String email = oidcUser.getEmail();
-            Optional<User> optionalUser = userRepository.findByEmail(email);
-            if (optionalUser.isEmpty()) {
-            // Сохраняем данные пользователя в сессии перед выбросом исключения
+            User user = userService.findUser(email, SearchParamType.EMAIL);
+            if (user == null) {
                 HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
                 request.getSession().setAttribute("oauth2User", oidcUser);
                 throw new UserNotRegisteredException(email);
             }
-            User user = optionalUser.get();
             Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
             return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
         };

@@ -11,6 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ListingService {
+
+    Listing findListing(String param, String paramType);
+
     Page<Listing> findByCategory(String category, Pageable pageable);
     List<Listing> getListingsByUser(User user); // добавили метод
 

@@ -3,6 +3,7 @@ package org.kirya343.main.controller;
 import java.util.Locale;
 import java.util.Map;
 
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.News;
 import org.kirya343.main.services.NewsService;
 import org.kirya343.main.services.components.AuthService;
@@ -55,8 +56,7 @@ public class NewsController {
                          Locale locale,
                          Model model) {
         // Получаем новость по ID
-        News news = newsService.findById(id)
-            .orElseThrow();
+        News news = newsService.findNews(id.toString(), SearchParamType.ID);
 
         // Проверяем, является ли пользователь администратором
         boolean isAdmin = oauth2User != null && 

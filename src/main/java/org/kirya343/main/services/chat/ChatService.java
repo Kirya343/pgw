@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.DTOs.ConversationDTO;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.chat.Message;
 import org.kirya343.main.model.User;
@@ -146,7 +147,7 @@ public class ChatService {
     }
 
     public ConversationDTO convertToDTO(Conversation conversation, User currentUser, Locale locale) {
-        User interlocutor = userService.findById(conversation.getInterlocutor(currentUser).getId());
+        User interlocutor = userService.findUser(conversation.getInterlocutor(currentUser).getId().toString(), SearchParamType.ID);
 
         ConversationDTO dto = new ConversationDTO();
         dto.setId(conversation.getId());

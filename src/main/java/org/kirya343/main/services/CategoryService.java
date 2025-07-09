@@ -5,9 +5,13 @@ import java.util.List;
 import java.util.Locale;
 
 import org.kirya343.main.model.DTOs.CategoryDTO;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.listingModels.Category;
 
 public interface CategoryService {
+
+    Category findCategory(String param, SearchParamType paramType);
+
     Category createCategory(CategoryDTO dto, List<String> translations) throws IOException;
     List<Category> getCategoryTree();
     Category getCategoryById(Long id);

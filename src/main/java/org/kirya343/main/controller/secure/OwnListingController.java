@@ -10,6 +10,7 @@ import java.util.Objects;
 
 import org.kirya343.main.model.DTOs.ListingForm;
 import org.kirya343.main.model.DTOs.ListingTranslationDTO;
+import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.listingModels.Category;
@@ -92,7 +93,7 @@ public class OwnListingController {
         }
         try {
             String email = oauth2User.getAttribute("email");
-            User currentUser = userService.findByEmail(email);
+            User currentUser = userService.findUser(email, SearchParamType.EMAIL);
             Location location = locationRepository.findByName(locationName)
                    .orElseThrow(() -> new IllegalArgumentException("Location not found: " + locationName));
             listing.setLocation(location);
