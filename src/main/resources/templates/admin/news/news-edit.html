@@ -101,8 +101,8 @@
                         </div>
                         
                         <!-- Скрытые поля для управления изображением -->
-                        <input type="hidden" id="existingImageUrl" name="existingImageUrl" value="/news-images/image-for-news_9_bee4f2b9-25b2-4332-81a9-00e1c19880e0.webp"> 
-                                                                                            <!-- а вот тут нужен url -->
+                        <input type="hidden" id="existingImageUrl" name="existingImageUrl" th:value="@{${news.imageUrl}}"> 
+                                                                                            <!--вот тут нужен url -->
                         <input type="hidden" id="imageAction" name="imageAction" value="keep">
                     </div>
 
