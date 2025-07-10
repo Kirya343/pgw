@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import org.kirya343.main.model.DTOs.ListingDTO;
 import org.kirya343.main.model.listingModels.Category;
+import org.kirya343.main.model.listingModels.Location;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.springframework.data.domain.Page;
@@ -25,10 +26,13 @@ public interface ListingService {
     Page<Listing> findActiveByCategory(String category, Pageable pageable);
     Listing getListingById(Long id);
     Listing getListingByIdWithAuthorAndReviews(Long id);
+
     List<Listing> findByCategory(Category category);
+    List<Listing> findByLocation(Location location);
+
     List<Listing> findActiveByCommunity(String community);
     List<Listing> getRecentListings(int count);
-    Page<Listing> getListingsSorted(Category category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, List<String> languages);
+    Page<Listing> getListingsSorted(Category category, String sortBy, Pageable pageable, Location location, String searchQuery, boolean hasReviews, List<String> languages);
 
     // Методы для работы с похожими объявлениями
     List<Listing> findSimilarListings(Category category, Long excludeId, Locale locale);

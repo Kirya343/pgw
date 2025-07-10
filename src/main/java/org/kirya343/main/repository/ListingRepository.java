@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.listingModels.Category;
+import org.kirya343.main.model.listingModels.Location;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -42,7 +43,10 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     List<Listing> findByCategoryAndIdNot(@Param("category") Category category, @Param("excludeId") Long excludeId, Pageable pageable);
 
     @Query("SELECT l FROM Listing l WHERE l.category IN :categories")
-    List<Listing> findByCategory(@Param("categories") List<Category> categories);
+    List<Listing> findByCategories(@Param("categories") List<Category> categories);
+    
+    @Query("SELECT l FROM Listing l WHERE l.location IN :locations")
+    List<Listing> findByLocations(@Param("locations") List<Location> locations);
 
     @Query("SELECT l FROM Listing l JOIN l.communities c WHERE c = :language AND l.active = true ")
     List<Listing> findByCommunityAndActiveTrue(@Param("language") String language);

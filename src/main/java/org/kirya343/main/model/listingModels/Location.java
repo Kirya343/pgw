@@ -1,5 +1,8 @@
 package org.kirya343.main.model.listingModels;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -10,12 +13,28 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String country; // Например: "Финляндия", "Россия"
-
     @Column(nullable = false, unique = true)
-    private String city; // Например: "Куопио", "Санкт-Петербург"
+    private String name;
 
-    @Column(nullable = false, unique = true)
-    private String name; // Например: "Финляндия, Копио", "Россия, Санкт-Петербург"
+    private boolean country;
+
+    @ManyToOne
+    @JoinColumn(name = "country_id")
+    private Location countryLocation;
+
+    @OneToMany(mappedBy = "countryLocation", cascade = CascadeType.ALL)
+    private List<Location> cities = new ArrayList<>();
+
+    @Transient
+    private String fullName;
+
+    public String getFullName() {
+        String locationName;
+        if (isCountry()) {
+            locationName = name.toString();
+        } else {
+            locationName = countryLocation.getName() + ", " + name;
+        }
+        return locationName;
+    }
 }

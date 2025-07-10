@@ -7,7 +7,9 @@ import java.util.Locale;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.listingModels.Category;
+import org.kirya343.main.model.listingModels.Location;
 import org.kirya343.main.repository.CategoryRepository;
+import org.kirya343.main.repository.LocationRepository;
 import org.kirya343.main.services.CategoryService;
 import org.kirya343.main.services.ListingService;
 import org.kirya343.main.services.UserService;
@@ -36,6 +38,7 @@ public class CatalogController {
     private final AuthService authService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final LocationRepository locationRepository;
 
     @GetMapping
     public String showCatalog(
@@ -76,6 +79,7 @@ public class CatalogController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String searchQuery,
             @RequestParam(required = false, defaultValue = "false") boolean hasReviews,
+            @RequestParam(required = false) String location,
             @AuthenticationPrincipal OAuth2User oauth2User,
             Model model,
             HttpServletRequest request,
@@ -83,9 +87,16 @@ public class CatalogController {
     ) {
         User user = null;
         List<String> languages = new ArrayList<>();
+        Location locationType = null;
         if (oauth2User != null) {
             user = userService.findUserFromOAuth2(oauth2User);
             languages = user.getLanguages();
+        }
+
+        if (location == null && user != null) {
+            locationType = user.getLocation();
+        } else {
+            locationType = locationRepository.findByName(location);
         }
         String lang = locale.getLanguage();
 
@@ -97,7 +108,7 @@ public class CatalogController {
 
         Category categoryType = categoryRepository.findByName(category);
 
-        Page<Listing> listingsPage = listingService.getListingsSorted(categoryType, sortBy, pageable, searchQuery, hasReviews, languages);
+        Page<Listing> listingsPage = listingService.getListingsSorted(categoryType, sortBy, pageable, locationType, searchQuery, hasReviews, languages);
 
         System.out.println("Found listings: " + listingsPage.getTotalElements());
 
