@@ -17,11 +17,13 @@ import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.model.chat.Conversation;
 import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.model.listingModels.ListingTranslation;
+import org.kirya343.main.model.listingModels.Location;
 import org.kirya343.main.repository.ConversationRepository;
 import org.kirya343.main.repository.ListingRepository;
 import org.kirya343.main.services.CategoryService;
 import org.kirya343.main.services.FavoriteListingService;
 import org.kirya343.main.services.ListingService;
+import org.kirya343.main.services.LocationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -42,6 +44,7 @@ public class ListingServiceImpl implements ListingService {
     private final ConversationRepository conversationRepository;
     private final FavoriteListingService favoriteListingService;
     private final CategoryService categoryService;
+    private final LocationService locationService;
     private static final Logger logger = LoggerFactory.getLogger(ListingService.class);
     
     @Override 
@@ -154,7 +157,15 @@ public class ListingServiceImpl implements ListingService {
     @Override
     public List<Listing> findByCategory(Category category) {
         List<Category> categories = categoryService.getAllDescendants(category);
-        List<Listing> listings = listingRepository.findByCategory(categories);
+        List<Listing> listings = listingRepository.findByCategories(categories);
+        logger.info("Найдены объявления: " + listings.size());
+        return listings;
+    }
+
+    @Override
+    public List<Listing> findByLocation(Location location) {
+        List<Location> locations = locationService.getAllDescendants(location);
+        List<Listing> listings = listingRepository.findByLocations(locations);
         logger.info("Найдены объявления: " + listings.size());
         return listings;
     }
@@ -167,7 +178,7 @@ public class ListingServiceImpl implements ListingService {
     }
 
     @Override
-    public Page<Listing> getListingsSorted(Category category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, List<String> languages) {
+    public Page<Listing> getListingsSorted(Category category, String sortBy, Pageable pageable, Location location, String searchQuery, boolean hasReviews, List<String> languages) {
         Sort sort;
 
         logger.info("[GetListingsSorted] Языки для поиска: " + languages);
@@ -208,14 +219,22 @@ public class ListingServiceImpl implements ListingService {
         // Фильтруем по категории
 
         List<Listing> filteredByCategory = listingsByLanguages;
-        if (searchQuery != null && !searchQuery.isBlank()) {
+        if (category != null) {
             List<Listing> categoryResults = findByCategory(category);
             filteredByCategory.retainAll(categoryResults); // оставляем только те, которые есть и там, и там
         }
 
+        // Фильтруем по локации
+
+        List<Listing> filteredByLocation = filteredByCategory;
+        if (location != null) {
+            List<Listing> locationResults = findByLocation(location);
+            filteredByLocation.retainAll(locationResults); // оставляем только те, которые есть и там, и там
+        }
+
         // Фильтруем по поиску
 
-        List<Listing> filteredBySearch = filteredByCategory;
+        List<Listing> filteredBySearch = filteredByLocation;
         if (searchQuery != null && !searchQuery.isBlank()) {
             List<Listing> searchResults = searchListings(searchQuery);
             filteredBySearch.retainAll(searchResults); // оставляем только те, которые есть и там, и там

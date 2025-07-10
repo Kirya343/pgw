@@ -1,6 +1,5 @@
 package org.kirya343.config;
 
-import org.kirya343.main.someClasses.CustomLocaleResolver;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,6 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
 
 @Configuration
 public class LocalisationConfig implements WebMvcConfigurer {
@@ -37,10 +35,6 @@ public class LocalisationConfig implements WebMvcConfigurer {
         resolver.setCookieMaxAge(Duration.ofDays(30));
         return resolver;
     }
-    /* @Bean
-    public LocaleResolver localeResolver() {
-        return new CustomLocaleResolver();
-    } */
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {

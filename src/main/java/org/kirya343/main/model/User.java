@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.kirya343.main.model.chat.Conversation;
+import org.kirya343.main.model.listingModels.Location;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,6 +46,10 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_languages", joinColumns = @JoinColumn(name = "user_id"))
     private List<String> languages = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Listing> listings = new ArrayList<>();
