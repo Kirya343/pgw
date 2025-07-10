@@ -28,6 +28,13 @@
     background-color: var(--light-background);
 }
 
+.listing-main-content {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
 /* Макет страницы */
 .listing-layout {
     max-width: 1200px;
@@ -57,7 +64,8 @@
 
 /* Галерея изображений */
 .listing-gallery {
-    margin-bottom: 2rem;
+    flex: 0 0 650px;
+    margin-bottom: 0;
     border-radius: var(--radius);
     overflow: hidden;
     background: var(--white);
@@ -86,7 +94,7 @@
 
 .main-image {
     width: 100%;
-    height: 400px;
+    height: 500px;
     overflow: hidden;
 }
 
@@ -127,9 +135,10 @@
 
 /* Основное содержимое */
 .listing-content {
+    flex: 1;
     display: flex;
     gap: 2rem;
-    margin-bottom: 3rem;
+    margin-bottom: 0;
 }
 
 .listing-details {
@@ -265,10 +274,25 @@ input[type="number"] {
     display: flex;
 }
 
+.listing-sidebar {
+    width: 650px;
+    margin-bottom: 2rem;
+}
+
 
 /* Адаптивность */
 @media (max-width: 992px) {
-    .listing-content {
+
+    .listing-main-content {
+        flex-direction: column;
+    }
+
+    .listing-gallery {
+        flex: 1;
+        width: 100%;
+    }
+    
+    .listing-content {  
         flex-direction: column;
     }
 
