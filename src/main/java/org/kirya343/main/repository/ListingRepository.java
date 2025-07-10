@@ -42,10 +42,10 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     List<Listing> findByCategoryAndIdNot(@Param("category") Category category, @Param("excludeId") Long excludeId, Pageable pageable);
 
     @Query("SELECT l FROM Listing l WHERE :language MEMBER OF l.communities AND l.category IN :categories AND l.active = true")
-    Page<Listing> findByCategoryAndLanguageAndActiveTrue(@Param("categories") List<Category> categories, @Param("language") String language, Pageable pageable);
+    List<Listing> findByCategoryAndLanguageAndActiveTrue(@Param("categories") List<Category> categories, @Param("language") String language);
 
     @Query("SELECT l FROM Listing l JOIN l.communities c WHERE c = :language AND l.active = true ")
-    Page<Listing> findByCommunityAndActiveTrue(@Param("language") String language, Pageable pageable);
+    List<Listing> findByCommunityAndActiveTrue(@Param("language") String language);
 
     // Новый метод для оптимизированной загрузки
     @Query("SELECT DISTINCT l FROM Listing l " +

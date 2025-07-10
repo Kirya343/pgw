@@ -1,8 +1,11 @@
 package org.kirya343.main.services.impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.kirya343.config.LocalisationConfig.LanguageUtils;
@@ -148,25 +151,25 @@ public class ListingServiceImpl implements ListingService {
     }
 
     @Override
-    public Page<Listing> findActiveByCategoryAndCommunity(String community, Category category, Pageable pageable) {
+    public List<Listing> findActiveByCategoryAndCommunity(String community, Category category) {
         List<Category> categories = categoryService.getAllDescendants(category);
-        Page<Listing> listings = listingRepository.findByCategoryAndLanguageAndActiveTrue(categories, community, pageable);
-        System.out.println("Найдены объявления: " + listings.getNumberOfElements());
+        List<Listing> listings = listingRepository.findByCategoryAndLanguageAndActiveTrue(categories, community);
+        System.out.println("Найдены объявления: " + listings.size());
         return listings;
     }
 
     @Override
-    public Page<Listing> findActiveByCommunity(String community, Pageable pageable) {
-        System.out.println("Finding active listings by community: " + community);
-        if (community == null || community.isBlank()) {
-            return listingRepository.findPageByActiveTrue(pageable); // Если язык не указан — просто все активные
-        }
-        return listingRepository.findByCommunityAndActiveTrue(community.toLowerCase(), pageable);
+    public List<Listing> findActiveByCommunity(String community) {
+        List<Listing> listings = listingRepository.findByCommunityAndActiveTrue(community.toLowerCase());
+        System.out.println("Найдены объявления: " + listings.size());
+        return listings;
     }
 
     @Override
-    public Page<Listing> getListingsSorted(Category category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, Locale locale) {
+    public Page<Listing> getListingsSorted(Category category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, List<String> languages) {
         Sort sort;
+
+        System.out.println("[GetListingsSorted] Языки для поиска: " + languages);
 
         switch (sortBy) {
             case "price":
@@ -186,34 +189,38 @@ public class ListingServiceImpl implements ListingService {
 
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-        String lang = locale.getLanguage();
+        List<Listing> baseListings = new ArrayList<>();
+        Set<Long> addedIds = new HashSet<>(); // для отслеживания уже добавленных объявлений
 
-        // Получаем все объявления по категории (если указана) и языковой аудитории
-        Page<Listing> baseListings;
         if (category == null) {
-            baseListings = findActiveByCommunity(lang, sortedPageable);
+            for (String lang : languages) {
+                System.out.println("[GetListingsSorted] Поиск без категории по языку: " + lang);
+                List<Listing> found = findActiveByCommunity(lang);
+                for (Listing listing : found) {
+                    if (addedIds.add(listing.getId())) { // добавляется только если ID ещё не было
+                        baseListings.add(listing);
+                    }
+                }
+            }
         } else {
-            // Для конкретных категорий ("offer-service", "request-service", "product")
-            baseListings = findListingsByCategoryAndCommunity(category, locale, sortedPageable);
-            System.out.println("[GetListingsSorted] Найдены объявления: " + baseListings.getNumberOfElements());
+            for (String lang : languages) {
+                System.out.println("[GetListingsSorted] Поиск с категорией " + category + " по языку: " + lang);
+                List<Listing> found = findActiveByCategoryAndCommunity(lang, category);
+                for (Listing listing : found) {
+                    if (addedIds.add(listing.getId())) {
+                        baseListings.add(listing);
+                    }
+                }
+            }
         }
+        System.out.println("[GetListingsSorted] Найдены объявления: " + baseListings.size());
 
         // Фильтруем по поиску
-        List<Listing> filtered = baseListings.getContent();
 
+        List<Listing> filtered = baseListings;
         if (searchQuery != null && !searchQuery.isBlank()) {
-            String lowered = searchQuery.toLowerCase();
-            filtered = filtered.stream()
-                .filter(listing -> {
-                    // Получаем перевод по locale
-                    ListingTranslation translation = listing.getTranslations().get(locale.getLanguage());
-
-                    return (translation != null && (
-                            (translation.getTitle() != null && translation.getTitle().toLowerCase().contains(lowered)) ||
-                            (translation.getDescription() != null && translation.getDescription().toLowerCase().contains(lowered))
-                    )) || (listing.getLocation() != null && listing.getLocation().getName().toLowerCase().contains(lowered));
-                })
-                .collect(Collectors.toList());
+            List<Listing> searchResults = searchListings(searchQuery);
+            filtered.retainAll(searchResults); // оставляем только те, которые есть и там, и там
         }
 
         // Фильтруем по наличию отзывов
@@ -230,17 +237,21 @@ public class ListingServiceImpl implements ListingService {
         List<Listing> pageContent = (start <= end) ? filtered.subList(start, end) : List.of();
         Page<Listing> sortedListings = new PageImpl<>(pageContent, sortedPageable, filtered.size());
         System.out.println("[GetListingsSorted Final] Найдены объявления: " + sortedListings.getNumberOfElements());
+
+        int listingCounter = 0;
+        for (Listing listing : pageContent) {
+            listingCounter++;
+            localizeListing(listing, Locale.of("ru"));
+            System.out.println("[GetListingsSorted Final List] Объявление (" + listingCounter + "/" + pageContent.size() + "): " + listing.getLocalizedTitle());
+        }
+
+        listingCounter = 0;
         for (Listing listing : sortedListings) {
-            System.out.println("[GetListingsSorted Final] Объявление: " + listingTranslationRepository.findByListingAndLanguage(listing, "ru").getTitle());
+            listingCounter++;
+            localizeListing(listing, Locale.of("ru"));
+            System.out.println("[GetListingsSorted Final Page] Объявление (" + listingCounter + "/" + sortedListings.getNumberOfElements() + "): " + listing.getLocalizedTitle());
         }
         return sortedListings;
-    }
-
-    @Override
-    public Page<Listing> findListingsByCategoryAndCommunity(Category category, Locale locale, Pageable pageable) {
-        // В зависимости от языка выбираем нужное комьюнити
-        String community = locale.getLanguage();
-        return findActiveByCategoryAndCommunity(community, category, pageable);
     }
 
     @Override

@@ -1,13 +1,16 @@
 package org.kirya343.main.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import org.kirya343.main.model.Listing;
+import org.kirya343.main.model.User;
 import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.repository.CategoryRepository;
 import org.kirya343.main.services.CategoryService;
 import org.kirya343.main.services.ListingService;
+import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.AuthService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +35,7 @@ public class CatalogController {
     private final CategoryRepository categoryRepository;
     private final AuthService authService;
     private final CategoryService categoryService;
+    private final UserService userService;
 
     @GetMapping
     public String showCatalog(
@@ -72,38 +76,36 @@ public class CatalogController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String searchQuery,
             @RequestParam(required = false, defaultValue = "false") boolean hasReviews,
+            @AuthenticationPrincipal OAuth2User oauth2User,
             Model model,
             HttpServletRequest request,
             Locale locale
     ) {
+        User user = null;
+        List<String> languages = new ArrayList<>();
+        if (oauth2User != null) {
+            user = userService.findUserFromOAuth2(oauth2User);
+            languages = user.getLanguages();
+        }
+        String lang = locale.getLanguage();
 
-        System.out.println("=== [AJAX SORTING] ===");
-        System.out.println("Category: " + category);
-        System.out.println("SortBy: " + sortBy);
-        System.out.println("Page: " + page);
-        System.out.println("Locale: " + locale);
-        System.out.println("SearchQuery: " + searchQuery);
+        if (!languages.contains(lang)) {
+            languages.add(lang);
+        }
 
         Pageable pageable = PageRequest.of(page, 12);
 
         Category categoryType = categoryRepository.findByName(category);
 
-        Page<Listing> listingsPage = listingService.getListingsSorted(categoryType, sortBy, pageable, searchQuery, hasReviews, locale);
+        Page<Listing> listingsPage = listingService.getListingsSorted(categoryType, sortBy, pageable, searchQuery, hasReviews, languages);
+
         System.out.println("Found listings: " + listingsPage.getTotalElements());
 
         listingService.localizeCatalogListings(listingsPage.getContent(), locale);
 
         model.addAttribute("listings", listingsPage);
 
-        boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
-        System.out.println("Is AJAX request: " + isAjax);
-
-        if (isAjax) {
-            System.out.println("Returning fragment: ~{fragments/public/catalog-fragments :: content}");
-            return "fragments/public/catalog-fragments :: content"; // HTML-фрагмент, который ты вставляешь в <div id="catalog-content">
-        }
-
-        return "catalog"; // fallback для обычной загрузки
+        return "fragments/public/catalog-fragments :: content";
     }   
 
 }
