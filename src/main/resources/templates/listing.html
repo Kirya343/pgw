@@ -29,7 +29,6 @@
                 <span th:text="${listing.localizedTitle}">Название объявления</span>
             </nav>
 
-
             <!-- Заголовок объявления -->
             <div class="listing-header">
                 <h1 th:text="${listing.localizedTitle}">Название объявления</h1>
@@ -39,87 +38,88 @@
                 </div>
             </div>
 
-            <!-- Галерея изображений -->
-            <div class="listing-gallery">
-                <div class="main-image">
-                    <div class="image-container">
-                        <button class="nav-arrow prev-arrow">&#10094;</button>
-                        <img th:src="${listing.imagePath != null ? listing.imagePath : '/images/default-listing.png'}"
-                            th:onerror="this.src='/images/default-listing.png'"
-                            alt="Основное изображение"
-                            class="clickable-image main-image-view"
-                            id="mainImageView">
-                        <button class="nav-arrow next-arrow">&#10095;</button>
-                    </div>
-                </div>
-                <div class="thumbnails" th:if="${listing.images != null and !listing.images.isEmpty()}">
-                    <div class="thumbnail" th:each="image,iter : ${listing.images}" th:attr="data-index=${iter.index}">
-                        <img th:src="${image.path}"
-                            th:onerror="this.src='/images/default-listing.png'"
-                            alt="Дополнительное изображение"
-                            class="clickable-image thumbnail-img">
-                    </div>
-                </div>
-            </div>
-
-            <div id="fullscreen-modal" class="fullscreen-modal">
-                <span class="close" id="close-modal">&times;</span>
-                <button class="modal-arrow modal-prev">&#10094;</button>
-                <img id="fullscreen-image" src="">
-                <button class="modal-arrow modal-next">&#10095;</button>
-            </div>
-
-            <!-- Информация о предложении -->
-            <div class="listing-content">
-                <div class="listing-details">
-                    <h2 th:text="#{listing.description}">Описание</h2>
-                    <p class="listing-description"
-                       th:text="${listing.localizedDescription ?: 'Нет описания'}">
-                        Полное описание услуги или предложения.
-                    </p>
-
-                    <div class="details-grid">
-                        <div class="detail-item">
-                            <span class="detail-label" th:text="#{listing.price}">Цена:</span>
-                            <!-- компонент для отображение типа цены -->
-                            <span th:replace="fragments/small-components :: priceTypes"></span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label" th:text="#{listing.location}">Локация:</span>
-                            <span class="detail-value" th:text="${listing.location.name ?: 'Хельсинки'}">Хельсинки</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label" th:text="#{listing.category}">Категория:</span>
-                            <!-- компонент для отображение типа категории -->
-                            <span th:replace="fragments/small-components :: categoryTypes"></span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label" th:text="#{listing.rating}">Рейтинг:</span>
-                            <span class="detail-value rating">
-                                <th:block th:each="i : ${#numbers.sequence(1,5)}">
-                                    <i class="fa"
-                                       th:classappend="${listing.averageRating >= i} ? 'fa-star' :
-                                       (${listing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')">
-                                    </i>
-                                </th:block>
-                            </span>
+            <div class="listing-main-content">
+                <!-- Галерея изображений -->
+                <div class="listing-gallery">
+                    <div class="main-image">
+                        <div class="image-container">
+                            <button class="nav-arrow prev-arrow">&#10094;</button>
+                            <img th:src="${listing.imagePath != null ? listing.imagePath : '/images/default-listing.png'}"
+                                th:onerror="this.src='/images/default-listing.png'"
+                                alt="Основное изображение"
+                                class="clickable-image main-image-view"
+                                id="mainImageView">
+                            <button class="nav-arrow next-arrow">&#10095;</button>
                         </div>
                     </div>
-
-                    <div class="listing-features" th:if="${listing.features != null and !listing.features.isEmpty()}">
-                        <h3 th:text="#{listing.features}">Особенности</h3>
-                        <ul class="features-list">
-                            <li th:each="feature : ${listing.features}"
-                                th:text="${feature ?: 'Особенность'}">
-                                Быстрое выполнение
-                            </li>
-                        </ul>
+                    <div class="thumbnails" th:if="${listing.images != null and !listing.images.isEmpty()}">
+                        <div class="thumbnail" th:each="image,iter : ${listing.images}" th:attr="data-index=${iter.index}">
+                            <img th:src="${image.path}"
+                                th:onerror="this.src='/images/default-listing.png'"
+                                alt="Дополнительное изображение"
+                                class="clickable-image thumbnail-img">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Боковая панель с контактами -->
-                <aside th:replace="fragments/public/author-info-sidebar :: authorInfoSidebar"></aside>
+                <div id="fullscreen-modal" class="fullscreen-modal">
+                    <span class="close" id="close-modal">&times;</span>
+                    <button class="modal-arrow modal-prev">&#10094;</button>
+                    <img id="fullscreen-image" src="">
+                    <button class="modal-arrow modal-next">&#10095;</button>
+                </div>
+
+                <!-- Информация о предложении -->
+                <div class="listing-content">
+                    <div class="listing-details">
+                        <h2 th:text="#{listing.description}">Описание</h2>
+                        <p class="listing-description"
+                        th:text="${listing.localizedDescription ?: 'Нет описания'}">
+                            Полное описание услуги или предложения.
+                        </p>
+
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label" th:text="#{listing.price}">Цена:</span>
+                                <!-- компонент для отображение типа цены -->
+                                <span th:replace="fragments/small-components :: priceTypes"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label" th:text="#{listing.location}">Локация:</span>
+                                <span class="detail-value" th:text="${listing.location.name ?: 'Хельсинки'}">Хельсинки</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label" th:text="#{listing.category}">Категория:</span>
+                                <!-- компонент для отображение типа категории -->
+                                <span th:replace="fragments/small-components :: categoryTypes"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label" th:text="#{listing.rating}">Рейтинг:</span>
+                                <span class="detail-value rating">
+                                    <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                                        <i class="fa"
+                                        th:classappend="${listing.averageRating >= i} ? 'fa-star' :
+                                        (${listing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')">
+                                        </i>
+                                    </th:block>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="listing-features" th:if="${listing.features != null and !listing.features.isEmpty()}">
+                            <h3 th:text="#{listing.features}">Особенности</h3>
+                            <ul class="features-list">
+                                <li th:each="feature : ${listing.features}"
+                                    th:text="${feature ?: 'Особенность'}">
+                                    Быстрое выполнение
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <!-- Боковая панель с контактами -->
+            <aside th:replace="fragments/public/author-info-sidebar :: authorInfoSidebar"></aside>
 
             <!-- Отзывы -->
             <!-- Список существующих отзывов -->
