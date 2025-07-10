@@ -65,9 +65,6 @@ public class AccountController {
 
         authService.validateAndAddAuthentication(model, oauth2User);
         List<Location> countries = locationRepository.findByCityFalse();
-        System.out.println("Найдено стран: " + countries.size());
-
-        // Переменная для отображения активной страницы
         model.addAttribute("countries", countries);
         model.addAttribute("activePage", "edit");
 
@@ -81,6 +78,7 @@ public class AccountController {
             @RequestParam(value = "phoneVisible", defaultValue = "false") boolean phoneVisible,
             @RequestParam(value = "emailVisible", defaultValue = "false") boolean emailVisible,
             @RequestParam List<String> languages,
+            @RequestParam Long locationId,
             @AuthenticationPrincipal OAuth2User oAuth2User,
             RedirectAttributes redirectAttributes) {
 
@@ -90,6 +88,9 @@ public class AccountController {
             // Обновляем основные данные
             // currentUser.getLanguages().clear();
             currentUser.setLanguages(languages);
+
+            System.out.println("Id Новой локации пользователя:" + locationId);
+            currentUser.setLocation(locationRepository.findById(locationId).orElse(null));
 
             currentUser.setName(updatedUser.getName() != null ? updatedUser.getName() : currentUser.getName());
             currentUser.setPhone(updatedUser.getPhone() != null ? updatedUser.getPhone() : currentUser.getPhone());

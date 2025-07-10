@@ -36,17 +36,6 @@ public class ApiCategoryController {
         return categoryRepository.save(category);
     }
 
-    // Получение дерева категорий
-    @GetMapping("/tree")
-    public List<Category> getCategoryTree() {
-        return categoryRepository.findByParentIsNull(); // Корневые категории
-    }
-    
-    @GetMapping("/roots")
-    public List<Category> getRootCategories() {
-        return categoryService.getRootCategories();
-    }
-
     @GetMapping("/children/{parentId}")
     public List<CategoryDTO> getChildCategories(@PathVariable Long parentId, Locale locale) {
         return categoryService.getChildCategories(parentId).stream()
