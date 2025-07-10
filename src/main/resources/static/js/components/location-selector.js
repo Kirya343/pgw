@@ -6,6 +6,8 @@ function loadSities(countryId, targetSelectId) {
         return;
     }
 
+    selectCategory(countryId)
+
     fetch(`/api/locations/cities/${countryId}`)
         .then(response => {
             if (!response.ok) {
@@ -41,8 +43,6 @@ function loadSities(countryId, targetSelectId) {
             return response.json();
         })
         .catch(error => {
-            document.getElementById('categoryError').textContent = 'Ошибка загрузки категорий';
-            document.getElementById('categoryError').style.display = 'block';
             console.error('[loadSubcategories] Получена ошибка:', error);
         })
 }
@@ -50,11 +50,15 @@ function loadSities(countryId, targetSelectId) {
 document.addEventListener('DOMContentLoaded', function () {
     const cityId = document.getElementById('locationId').value;
     if (cityId) {
-        restoreCategoryPath(cityId);
+        restoreLocationPath(cityId);
     }
 });
 
-function restoreCategoryPath(cityId) {
+function selectCategory(value) {
+    document.getElementById('locationId').value = value;
+}
+
+function restoreLocationPath(cityId) {
     fetch(`/api/locations/getlocation/${cityId}`)
         .then(response => {
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -94,7 +98,7 @@ function restoreCategoryPath(cityId) {
                     })
                     .then(cities => {
 
-                        // Отрисовываем страну
+                        // Отрисовываем остальные Города
                         cities.forEach((city) => {
                             if (loc.id != city.id) {
                                 console.log(`[loadSubcategories] Добавляю локацию:`, city.name);
@@ -128,9 +132,6 @@ function restoreCategoryPath(cityId) {
                 citySelect.style.display = 'none';
                 citySelect.disabled = true;
             }
-
-            // Обновляем скрытое поле
-            document.getElementById('locationId').value = loc.id;
         })
         .catch(err => {
             console.error('[restoreLocations] Ошибка при восстановлении пути:', err);

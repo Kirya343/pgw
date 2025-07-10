@@ -65,9 +65,6 @@ public class AccountController {
 
         authService.validateAndAddAuthentication(model, oauth2User);
         List<Location> countries = locationRepository.findByCityFalse();
-        System.out.println("Найдено стран: " + countries.size());
-
-        // Переменная для отображения активной страницы
         model.addAttribute("countries", countries);
         model.addAttribute("activePage", "edit");
 
@@ -92,6 +89,7 @@ public class AccountController {
             // currentUser.getLanguages().clear();
             currentUser.setLanguages(languages);
 
+            System.out.println("Id Новой локации пользователя:" + locationId);
             currentUser.setLocation(locationRepository.findById(locationId).orElse(null));
 
             currentUser.setName(updatedUser.getName() != null ? updatedUser.getName() : currentUser.getName());

@@ -63,9 +63,8 @@ public class OwnListingController {
         List<Category> rootCategories = categoryService.getRootCategories();
         model.addAttribute("rootCategories", rootCategories);
         
-        // 2. Добавляем локации (оставляем как было)
-        List<Location> locations = locationRepository.findAllByOrderByNameAsc();
-        model.addAttribute("locations", locations);
+        List<Location> countries = locationRepository.findByCityFalse();
+        model.addAttribute("countries", countries);
         
         // 3. Добавляем пустую форму
         model.addAttribute("listingForm", new ListingForm());
@@ -83,7 +82,7 @@ public class OwnListingController {
             @ModelAttribute ListingForm form,
             @ModelAttribute Listing listing,
             @RequestParam Long categoryId,
-            @RequestParam String locationName,
+            @RequestParam Long locationId,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
     ) {
@@ -94,8 +93,8 @@ public class OwnListingController {
         try {
             String email = oauth2User.getAttribute("email");
             User currentUser = userService.findUser(email, SearchParamType.EMAIL);
-            Location location = locationRepository.findByName(locationName);
-            listing.setLocation(location);
+
+            listing.setLocation(locationRepository.findById(locationId).orElse(null));
             listing.setAuthor(currentUser);
             listing.setCreatedAt(LocalDateTime.now());
             listing.setViews(0);
@@ -191,11 +190,11 @@ public class OwnListingController {
 
             Long categoryId = listing.getCategory().getId();
 
-            List<Location> locations = locationRepository.findAllByOrderByNameAsc();
+            List<Location> countries = locationRepository.findByCityFalse();
 
             model.addAttribute("listing", listing);
             model.addAttribute("categoryId", categoryId);
-            model.addAttribute("locations", locations);
+            model.addAttribute("countries", countries);
 
             // Сформировать Map<String, Map<String, String>> для JSON с переводами
             Map<String, Map<String, String>> translationsMap = new HashMap<>();
@@ -231,7 +230,7 @@ public class OwnListingController {
             @RequestParam(value = "imagePath", required = false) String imagePathParam,
             @RequestParam(value = "active", defaultValue = "false") boolean active,
             @RequestParam(value = "testMode", defaultValue = "false") boolean testMode,
-            @RequestParam String locationName,
+            @RequestParam Long locationId,
             @RequestParam Long categoryId,
             @AuthenticationPrincipal OAuth2User oauth2User,
             RedirectAttributes redirectAttributes
@@ -249,8 +248,6 @@ public class OwnListingController {
                 redirectAttributes.addFlashAttribute("error", "Вы не можете редактировать это объявление");
                 return "redirect:/secure/account";
             }
-
-            Location location = locationRepository.findByName(locationName);
 
             // Получаем новые переводы из формы
             Map<String, ListingTranslationDTO> translationDTOs = form.getTranslations();
@@ -295,7 +292,7 @@ public class OwnListingController {
             existingListing.setPrice(listing.getPrice());
             existingListing.setPriceType(listing.getPriceType());
             existingListing.setCategory(categoryService.getCategoryById(categoryId));
-            existingListing.setLocation(location);
+            existingListing.setLocation(locationRepository.findById(locationId).orElse(null));
             existingListing.setActive(active);
             existingListing.setTestMode(testMode);
 

@@ -126,13 +126,24 @@
 
                 <div class="form-group">
                     <label for="location" th:text="#{listing.editing.location}">Местоположение</label>
-                    <select id="location" name="locationName" class="form-control" required>
-                        <option value="" disabled selected th:text="#{listing.editing.location.select}">Выберите местоположение</option>
-                        <option th:each="loc : ${locations}"
-                                th:value="${loc.name}"
-                                th:text="${loc.name}">
-                        </option>
-                    </select>
+                    <div class="form-group">
+                        <select id="country" class="form-control category-select" required
+                                onchange="loadSities(this.value, 'city')">
+                            <option value="" disabled selected th:text="#{listing.editing.category.select}">Выберите категорию</option>
+                            <option th:each="loc : ${countries}"
+                                    th:value="${loc.id}"
+                                    th:text="${loc.fullName}">
+                            </option>
+                        </select>
+
+                        <select id="city" class="form-control category-select" style="display: none; margin-top: 10px;" onchange="selectCategory(this.value)" disabled>
+                            <option value="" disabled selected>Выберите подкатегорию</option>
+                        </select>
+
+                        <!-- Скрытое поле -->
+                        <input type="hidden" name="locationId" id="locationId" th:value="${listing.location.id}">
+                    </div>
+                    <script src="/js/components/location-selector.js" th:inline="javascript"></script>
                 </div>
 
                 <div class="form-group">
