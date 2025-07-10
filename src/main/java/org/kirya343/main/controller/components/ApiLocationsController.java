@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import org.kirya343.main.model.DTOs.CategoryDTO;
 import org.kirya343.main.model.DTOs.LocationDTO;
 import org.kirya343.main.repository.LocationRepository;
 import org.kirya343.main.services.LocationService;

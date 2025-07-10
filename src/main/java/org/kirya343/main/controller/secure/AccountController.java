@@ -81,6 +81,7 @@ public class AccountController {
             @RequestParam(value = "phoneVisible", defaultValue = "false") boolean phoneVisible,
             @RequestParam(value = "emailVisible", defaultValue = "false") boolean emailVisible,
             @RequestParam List<String> languages,
+            @RequestParam Long locationId,
             @AuthenticationPrincipal OAuth2User oAuth2User,
             RedirectAttributes redirectAttributes) {
 
@@ -90,6 +91,8 @@ public class AccountController {
             // Обновляем основные данные
             // currentUser.getLanguages().clear();
             currentUser.setLanguages(languages);
+
+            currentUser.setLocation(locationRepository.findById(locationId).orElse(null));
 
             currentUser.setName(updatedUser.getName() != null ? updatedUser.getName() : currentUser.getName());
             currentUser.setPhone(updatedUser.getPhone() != null ? updatedUser.getPhone() : currentUser.getPhone());
