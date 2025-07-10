@@ -94,8 +94,7 @@ public class OwnListingController {
         try {
             String email = oauth2User.getAttribute("email");
             User currentUser = userService.findUser(email, SearchParamType.EMAIL);
-            Location location = locationRepository.findByName(locationName)
-                   .orElseThrow(() -> new IllegalArgumentException("Location not found: " + locationName));
+            Location location = locationRepository.findByName(locationName);
             listing.setLocation(location);
             listing.setAuthor(currentUser);
             listing.setCreatedAt(LocalDateTime.now());
@@ -251,8 +250,7 @@ public class OwnListingController {
                 return "redirect:/secure/account";
             }
 
-            Location location = locationRepository.findByName(locationName)
-                   .orElseThrow(() -> new IllegalArgumentException("Location not found: " + locationName));
+            Location location = locationRepository.findByName(locationName);
 
             // Получаем новые переводы из формы
             Map<String, ListingTranslationDTO> translationDTOs = form.getTranslations();

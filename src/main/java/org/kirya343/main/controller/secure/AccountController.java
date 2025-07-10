@@ -1,6 +1,8 @@
 package org.kirya343.main.controller.secure;
 
 import org.kirya343.main.model.User;
+import org.kirya343.main.model.listingModels.Location;
+import org.kirya343.main.repository.LocationRepository;
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.services.*;
 import org.kirya343.main.services.components.AuthService;
@@ -31,6 +33,7 @@ public class AccountController {
     private final StatService statService;
     private final StorageService storageService;
     private final AuthService authService;
+    private final LocationRepository locationRepository;
 
     @GetMapping("/secure/account")
     public String getAccountPage(Model model, @AuthenticationPrincipal OAuth2User oauth2User, Locale locale) {
@@ -61,8 +64,11 @@ public class AccountController {
     public String editProfile(@AuthenticationPrincipal OAuth2User oauth2User, Model model) {
 
         authService.validateAndAddAuthentication(model, oauth2User);
+        List<Location> countries = locationRepository.findByCityFalse();
+        System.out.println("Найдено стран: " + countries.size());
 
         // Переменная для отображения активной страницы
+        model.addAttribute("countries", countries);
         model.addAttribute("activePage", "edit");
 
         return "secure/account/edit";

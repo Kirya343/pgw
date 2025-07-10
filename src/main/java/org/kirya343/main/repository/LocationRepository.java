@@ -7,5 +7,9 @@ import java.util.List;
 public interface LocationRepository extends JpaRepository<Location, Long> {
     List<Location> findAllByOrderByNameAsc();
     Location findByName(String name);
-    List<Location> findByCountryLocation(Location countryLocation);
+
+    List<Location> findByCountry(Location country);
+    List<Location> findByCountryId(Long countryId);
+
+    List<Location> findByCityFalse();
 }

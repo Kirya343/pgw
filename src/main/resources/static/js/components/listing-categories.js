@@ -187,8 +187,3 @@ function restoreCategoryPath(categoryId) {
             document.getElementById('categoryError').style.display = 'block';
         });
 }
-
-
-
-
-

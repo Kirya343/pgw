@@ -16,13 +16,13 @@ public class Location {
     @Column(nullable = false, unique = true)
     private String name;
 
-    private boolean country;
+    private boolean city;
 
     @ManyToOne
     @JoinColumn(name = "country_id")
-    private Location countryLocation;
+    private Location country;
 
-    @OneToMany(mappedBy = "countryLocation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL)
     private List<Location> cities = new ArrayList<>();
 
     @Transient
@@ -30,10 +30,10 @@ public class Location {
 
     public String getFullName() {
         String locationName;
-        if (isCountry()) {
+        if (!isCity()) {
             locationName = name.toString();
         } else {
-            locationName = countryLocation.getName() + ", " + name;
+            locationName = country.getName() + ", " + name;
         }
         return locationName;
     }

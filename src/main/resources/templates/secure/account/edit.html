@@ -113,7 +113,7 @@
 
                 <!-- О себе -->
                 <div class="form-section">
-                    <h3 th:text="#{profile.editing.bio}">Языки которыми я владею</h3>
+                    <h3 th:text="#{profile.editing.my.languages}">Языки которыми я владею</h3>
                     <div class="form-group">
                         <div id="myLangsContainer">
                             <button type="button" class="lang-select-btn" name="ru">Русский</button>
@@ -124,6 +124,31 @@
 
                         <!-- Скрытое поле для отправки -->
                         <input type="hidden" name="languages" id="selectedLanguagesInput" th:value="${user.languages}">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 th:text="#{profile.editing.location}">Моё местоположение</h3>
+                    <div class="form-group">
+                        <div id="myLocContainer">
+                            <!-- Уровень 1: Страны -->
+                            <select id="country" class="form-control category-select" required
+                                    onchange="loadSubcategories(this.value, 'city')">
+                                <option value="" disabled selected th:text="#{listing.editing.category.select}">Выберите категорию</option>
+                                <option th:each="loc : ${countries}"
+                                        th:value="${loc.id}"
+                                        th:text="${loc.fullName}">
+                                </option>
+                            </select>
+
+                            <!-- Уровень 2: Города -->
+                            <select id="city" class="form-control category-select" style="display: none; margin-top: 10px;" disabled>
+                                <option value="" disabled selected>Выберите подкатегорию</option>
+                            </select>
+
+                            <!-- Скрытое поле -->
+                            <input type="hidden" name="locationId" id="locationId" th:value="${user.location.id}">
+                        </div>
                     </div>
                 </div>
 
