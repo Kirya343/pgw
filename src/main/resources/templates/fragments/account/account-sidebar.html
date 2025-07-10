@@ -1,6 +1,6 @@
 <aside class="account-sidebar" th:fragment="sidebar">
     <div class="profile-card">
-        <img class="profile-avatar avatar p100-avatar" th:src="@{${user.avatarUrl}}" onerror="this.src='/images/avatar-placeholder.png'" alt="Аватар">
+        <img th:replace="fragments/small-components :: avatar(user=${user}, size='100', class='profile-avatar')"></img>
         <h4 class="profile-name" th:text="${user.name}">Иван Иванов</h4>
         <p class="profile-rating">
             <span th:each="i : ${#numbers.sequence(1,5)}">

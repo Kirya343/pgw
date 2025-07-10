@@ -19,10 +19,7 @@
             <h1>Задачи</h1>
             <div class="admin-user">
                 <span th:text="${user.name}">Администратор</span>
-                <img th:src="${user.avatarUrl}"
-                        class="avatar p40-avatar"
-                        alt="Аватар"
-                        th:onerror="this.src='/images/avatar-placeholder.png'">
+                <img th:replace="fragments/small-components :: avatar(user=${user}, size='40', class='')"></img>
             </div>
         </header>
         <nav class="breadcrumbs">

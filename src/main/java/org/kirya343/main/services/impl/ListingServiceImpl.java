@@ -224,6 +224,8 @@ public class ListingServiceImpl implements ListingService {
             filteredByCategory.retainAll(categoryResults); // оставляем только те, которые есть и там, и там
         }
 
+        logger.info("Объявления прошли фильтр категории: " + listingsByLanguages.size());
+
         // Фильтруем по локации
 
         List<Listing> filteredByLocation = filteredByCategory;
@@ -231,6 +233,8 @@ public class ListingServiceImpl implements ListingService {
             List<Listing> locationResults = findByLocation(location);
             filteredByLocation.retainAll(locationResults); // оставляем только те, которые есть и там, и там
         }
+
+        logger.info("Объявления прошли фильтр локации: " + listingsByLanguages.size());
 
         // Фильтруем по поиску
 
@@ -240,12 +244,17 @@ public class ListingServiceImpl implements ListingService {
             filteredBySearch.retainAll(searchResults); // оставляем только те, которые есть и там, и там
         }
 
+        logger.info("Объявления прошли фильтр поиска: " + listingsByLanguages.size());
+
         // Фильтруем по наличию отзывов
+
         if (hasReviews) {
             filteredBySearch = filteredBySearch.stream()
                     .filter(l -> l.getReviews() != null && !l.getReviews().isEmpty())
                     .collect(Collectors.toList());
         }
+
+        logger.info("Объявления прошли фильтр наличия отзывов: " + listingsByLanguages.size());
 
         // Возвращаем постранично вручную
         int start = (int) sortedPageable.getOffset();

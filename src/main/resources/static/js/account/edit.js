@@ -22,6 +22,8 @@ document.querySelectorAll('.avatar-option').forEach(option => {
 document.addEventListener('DOMContentLoaded', function() {
     const currentType = document.querySelector('input[name="avatarType"]').value;
     document.querySelector(`.avatar-option[data-type="${currentType}"]`).click();
+
+    hiddenInput.value = Array.from(userLanguages).join(',');
 });
 
 const container = document.getElementById('myLangsContainer');
@@ -50,6 +52,8 @@ container.addEventListener('click', (e) => {
     } else {
         selectedLanguages.add(lang);
     }
+
+    console.log(selectedLanguages)
 
     hiddenInput.value = Array.from(selectedLanguages).join(',');
     }

@@ -19,7 +19,7 @@
             <h1 th:text="${news.id != null} ? 'Редактирование новости' : 'Создание новости'">Редактирование новости</h1>
             <div class="admin-user">
                 <span>Администратор</span>
-                <img src="/images/avatar-placeholder.png" onerror="this.src='/images/avatar-placeholder.png'" alt="Аватар" class="avatar p40-avatar">
+                <img th:replace="fragments/small-components :: avatar(user='', size='40', class='')"></img>
             </div>
         </header>
 
