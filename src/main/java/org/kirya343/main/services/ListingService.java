@@ -25,7 +25,7 @@ public interface ListingService {
     Page<Listing> findActiveByCategory(String category, Pageable pageable);
     Listing getListingById(Long id);
     Listing getListingByIdWithAuthorAndReviews(Long id);
-    List<Listing> findActiveByCategoryAndCommunity(String community, Category category);
+    List<Listing> findByCategory(Category category);
     List<Listing> findActiveByCommunity(String community);
     List<Listing> getRecentListings(int count);
     Page<Listing> getListingsSorted(Category category, String sortBy, Pageable pageable, String searchQuery, boolean hasReviews, List<String> languages);
@@ -38,7 +38,6 @@ public interface ListingService {
     void save(Listing listing);
     Listing saveAndReturn(Listing listing);
     void localizeListing(Listing listing, Locale locale);
-    void localizeListingIfLangPass(Listing listing, Locale locale);
 
     List<Listing> searchListings(String searchQuery);
 

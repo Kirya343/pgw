@@ -1,4 +1,9 @@
 <!-- Сортировочный фрагмент для каталога объявлений -->
-<div class="listings-grid" th:fragment="content" th:unless="${category == 'find-help'}">
-    <article th:replace="~{fragments/cards/listing-card :: listingCard(${listing})}"></article>
+<div th:fragment="content">
+    <div class="listings-grid" th:unless="${category == 'find-help'}">
+        <article th:replace="~{fragments/cards/listing-card :: listingCard(${listing})}"></article>
+    </div>
+    <div class="no-listings" id="noListings" th:if="${listings == null or listings.empty}">
+        <p th:text="#{no-listings}">Объявлений не найдено.</p>
+    </div>
 </div>

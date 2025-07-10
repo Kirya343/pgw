@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -29,6 +30,7 @@ public class Category {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
+    @ToString.Exclude
     private Category parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -36,7 +38,7 @@ public class Category {
 
     @Column(nullable = false)
     private boolean leaf = false; // Является ли конечной категорией
-
+    @ToString.Exclude
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Listing> listings = new ArrayList<>();
 

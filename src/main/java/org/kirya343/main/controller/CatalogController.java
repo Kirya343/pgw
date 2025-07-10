@@ -71,8 +71,8 @@ public class CatalogController {
 
     @GetMapping("/sort")
     public String sortCatalogAjax(
-            @RequestParam String category,
-            @RequestParam String sortBy,
+            @RequestParam(required = false) String category,
+            @RequestParam(defaultValue = "date") String sortBy,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String searchQuery,
             @RequestParam(required = false, defaultValue = "false") boolean hasReviews,

@@ -1,5 +1,6 @@
 package org.kirya343.config;
 
+import org.kirya343.main.someClasses.CustomLocaleResolver;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,10 +33,14 @@ public class LocalisationConfig implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
         CookieLocaleResolver resolver = new CookieLocaleResolver("locale");
-        resolver.setDefaultLocale(Locale.forLanguageTag("ru"));
+        resolver.setDefaultLocale(null);
         resolver.setCookieMaxAge(Duration.ofDays(30));
         return resolver;
     }
+    /* @Bean
+    public LocaleResolver localeResolver() {
+        return new CustomLocaleResolver();
+    } */
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {

@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -15,6 +16,12 @@ public class GlobalExceptionHandler {
     public String handleException(Exception ex) {
         ex.printStackTrace(); // Выведет полную ошибку в консоль
         return "redirect:/error"; // Любая твоя страница
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public String handleNoResourceFoundException(Exception ex) {
+        System.out.println("Не был найден какой-то ресурс");
+        return null;
     }
 
     @ExceptionHandler(RuntimeException.class)
