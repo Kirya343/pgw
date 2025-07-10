@@ -28,7 +28,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String sub; // Уникальный идентификатор от Google
 
-
     @Column(nullable = false, unique = true)
     private String name;
 
@@ -41,8 +40,11 @@ public class User {
     private String avatarUrl;
 
     private boolean phoneVisible = true;  // Скрывать или отображать телефон
-
     private boolean emailVisible = true;  // Скрывать или отображать email
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_languages", joinColumns = @JoinColumn(name = "user_id"))
+    private List<String> languages = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Listing> listings = new ArrayList<>();

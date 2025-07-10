@@ -23,3 +23,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentType = document.querySelector('input[name="avatarType"]').value;
     document.querySelector(`.avatar-option[data-type="${currentType}"]`).click();
 });
+
+const container = document.getElementById('myLangsContainer');
+const hiddenInput = document.getElementById('selectedLanguagesInput');
+const selectedLanguages = new Set();
+
+const userLanguages = document.getElementById('selectedLanguagesInput').value.replace(/[\[\]\s]/g, '').split(',');
+if (userLanguages) {
+    userLanguages.forEach(lang => {
+        
+    const btn = container.querySelector(`.lang-select-btn[name="${lang}"]`);
+    if (btn) {
+        btn.classList.add('active');
+        selectedLanguages.add(lang);
+    }
+    });
+}
+
+container.addEventListener('click', (e) => {
+    if (e.target.classList.contains('lang-select-btn')) {
+    const lang = e.target.name;
+    e.target.classList.toggle('active');
+
+    if (selectedLanguages.has(lang)) {
+        selectedLanguages.delete(lang);
+    } else {
+        selectedLanguages.add(lang);
+    }
+
+    hiddenInput.value = Array.from(selectedLanguages).join(',');
+    }
+});

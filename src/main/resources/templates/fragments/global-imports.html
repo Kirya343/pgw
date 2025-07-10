@@ -36,13 +36,13 @@
     <script th:inline="javascript">
         let currentConversationId = /*[[${selectedConversation?.id}]]*/ '';
         const currentUserId = /*[[${user.id}]]*/ '';
-        document.addEventListener("DOMContentLoaded", function () {
-            connect(); // Подключаем WebSocket после загрузки страницы
-        });
     </script>
     <script>
         // Управление мобильным меню диалогов
         document.addEventListener('DOMContentLoaded', function() {
+
+            connect();
+
             const dialogsToggleBtn = document.getElementById('dialogsToggleBtn');
             const dialogsList = document.querySelector('.dialogs-list');
 

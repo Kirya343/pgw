@@ -8,6 +8,8 @@ import org.kirya343.main.model.News;
 import org.kirya343.main.model.User;
 import org.kirya343.main.repository.ListingRepository;
 import org.kirya343.main.repository.NewsRepository;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-public class SitemapController {
+public class MiscController {
 
     private final ListingRepository listingRepository;
     private final NewsRepository newsRepository;
@@ -103,5 +105,11 @@ public class SitemapController {
 
         sb.append("</urlset>");
         return sb.toString();
+    }
+
+    @GetMapping(value = "/robots.txt", produces = "text/plain")
+    @ResponseBody
+    public Resource getRobotsTxt() {
+        return new FileSystemResource("config/robots.txt");
     }
 }
