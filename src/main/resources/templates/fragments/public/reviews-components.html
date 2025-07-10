@@ -31,10 +31,7 @@
 
 <article th:each="review : ${profileUser != null && profileUser.reviews != null ? profileUser.reviews : (listing != null ? listing.reviews : null)}" class="review-card" th:fragment="reviewCard">
     <div class="review-header">
-        <img class="avatar p50-avatar" th:src="@{${review.author.avatarUrl}}"
-            th:onerror="this.src='/images/avatar-placeholder.png'"
-            alt="Reviewer Avatar">
-        </div>
+        <img th:replace="fragments/small-components :: avatar(user=${review.author}, size='50', class='')"></img>
         <div class="reviewer-info">
             <h4 th:text="${review.author.name ?: 'Аноним'}">Алексей Петров</h4>
             <div class="review-meta">

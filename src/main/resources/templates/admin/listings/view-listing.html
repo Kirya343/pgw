@@ -19,7 +19,7 @@
             <h1>Управление пользователем</h1>
             <div class="admin-user">
                 <span>Администратор</span>
-                <img src="/images/avatar-placeholder.png" onerror="this.src='/images/avatar-placeholder.png'" alt="Аватар" class="avatar p40-avatar">
+                <img th:replace="fragments/small-components :: avatar(user='', size='40', class='')"></img>
             </div>
         </header>
 
@@ -28,7 +28,7 @@
             <span> / </span>
             <a href="/admin/users">Управление пользователями</a>
             <span> / </span>
-            <img th:src="@{${user.avatarUrl}}" th:onerror="this.src='/images/avatar-placeholder.png'" alt="Аватар" class="avatar p23-avatar">
+            <img th:replace="fragments/small-components :: avatar(user=${user}, size='23', class='')"></img>
             <span aria-current="page" th:text="${user.name}"></span>
         </nav>
 

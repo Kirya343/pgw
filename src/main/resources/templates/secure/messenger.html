@@ -43,36 +43,6 @@
             <div class="messenger-container">
                 <!-- Список диалогов -->
                 <div class="dialogs-list">
-                    <div class="dialog-item"
-                         th:each="conversation : ${conversations}"
-                         th:attr="data-conversation-id=${conversation.id}">
-
-                        <div class="avatar p50-avatar">
-                            <img th:src="@{${conversation.interlocutorAvatar}}"
-                                 alt="Аватар">
-                        </div>
-
-                        <div class="dialog-content">
-                            <div class="dialog-header">
-                                <h4 th:text="${conversation.interlocutorName}">Имя собеседника</h4>
-                                <span class="dialog-time" th:text="${conversation.lastMessageTime}">12:30</span>
-                            </div>
-
-                            <p class="dialog-preview" th:text="${conversation.lastMessagePreview}">
-                                Последнее сообщение...
-                            </p>
-
-                            <div class="dialog-meta">
-                                <span th:if="${conversation.unreadCount > 0}"
-                                      class="unread-count"
-                                      th:text="${conversation.unreadCount}">2</span>
-
-                                <span th:if="${conversation.listing != null}"
-                                      class="dialog-listing"
-                                      th:text="'Объявление: ' + ${conversation.listing.localizedTitle}">Объявление: Название</span>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Если нет диалогов -->
                     <div th:if="${#lists.isEmpty(conversations)}" class="no-dialogs" id="no-dialogs">

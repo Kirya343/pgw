@@ -62,10 +62,7 @@
 
             <!-- Для авторизованных пользователей -->
             <a th:if="${isAuthenticated}" th:href="@{/secure/account}" class="account-link">
-                <img th:src="${user.avatarUrl}"
-                        class="avatar p32-avatar"
-                        alt="Аватар"
-                        th:onerror="this.src='/images/avatar-placeholder.png'">
+                <img th:replace="fragments/small-components :: avatar(user=${user}, size='32', class='')"></img>
                 <span th:text="${user.name}">Пользователь</span>
             </a>
         </div>

@@ -19,7 +19,7 @@
             <h1>Управление пользователями</h1>
             <div class="admin-user">
                 <span>Администратор</span>
-                <img src="/images/avatar-placeholder.png" alt="Аватар" class="avatar p40-avatar">
+                <img th:replace="fragments/small-components :: avatar(user='', size='40', class='')"></img>
             </div>
         </header>
         <nav class="breadcrumbs">
@@ -50,7 +50,7 @@
                     <tr th:each="user : ${usersList}">
                         <td th:text="${user.id}">#0000</td>
                         <td>
-                            <img th:src="@{${user.avatarUrl}}" th:onerror="this.src='/images/avatar-placeholder.png'" alt="Аватар" class="avatar p23-avatar">
+                            <img th:replace="fragments/small-components :: avatar(user=${user}, size='23', class='')"></img>
                         </td>
                         <td th:text="${user.name}">Имя</td>
                         <td th:text="${user.email}">Email</td>
