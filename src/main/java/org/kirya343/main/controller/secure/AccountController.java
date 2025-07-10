@@ -74,6 +74,7 @@ public class AccountController {
             @RequestParam("avatarType") String avatarType,
             @RequestParam(value = "phoneVisible", defaultValue = "false") boolean phoneVisible,
             @RequestParam(value = "emailVisible", defaultValue = "false") boolean emailVisible,
+            @RequestParam List<String> languages,
             @AuthenticationPrincipal OAuth2User oAuth2User,
             RedirectAttributes redirectAttributes) {
 
@@ -81,6 +82,9 @@ public class AccountController {
             User currentUser = userService.findUserFromOAuth2(oAuth2User);
 
             // Обновляем основные данные
+            // currentUser.getLanguages().clear();
+            currentUser.setLanguages(languages);
+
             currentUser.setName(updatedUser.getName() != null ? updatedUser.getName() : currentUser.getName());
             currentUser.setPhone(updatedUser.getPhone() != null ? updatedUser.getPhone() : currentUser.getPhone());
             currentUser.setBio(updatedUser.getBio() != null ? updatedUser.getBio() : currentUser.getBio());

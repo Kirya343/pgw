@@ -154,3 +154,14 @@ h2 {
 .upload-controls {
     margin-top: 15px;
 }
+
+.lang-select-btn {
+    padding: 1rem;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.lang-select-btn.active {
+    border-color: var(--primary);
+}

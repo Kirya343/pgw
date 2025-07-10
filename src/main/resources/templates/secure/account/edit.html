@@ -78,33 +78,27 @@
                         <div class="avatar-options">
                             <!-- Вариант 1: Загруженная аватарка -->
                             <div class="avatar-option" data-type="uploaded">
-                                <div class="avatar-preview">
-                                    <img class="avatar p80-avatar" th:if="${user.avatarUrl.startsWith('/avatars/')}"
-                                        th:src="@{${user.avatarUrl}}"
-                                        onerror="this.src='/images/avatar-placeholder.png'"
-                                        alt="Аватар">
+                                <img class="avatar-preview avatar p80-avatar" th:if="${user.avatarUrl.startsWith('/avatars/')}"
+                                    th:src="@{${user.avatarUrl}}"
+                                    onerror="this.src='/images/avatar-placeholder.png'"
+                                    alt="Аватар">
 
-                                    <img class="avatar p80-avatar" th:unless="${user.avatarUrl.startsWith('/avatars/')}"
-                                        src="/images/upload-foto.png"
-                                        alt="Заглушка">
-                                </div>
+                                <img class="avatar-preview avatar p80-avatar" th:unless="${user.avatarUrl.startsWith('/avatars/')}"
+                                    src="/images/upload-foto.png"
+                                    alt="Заглушка">
                                 <span th:text="#{profile.editing.avatar.my}">Моя</span>
                             </div>
 
                             <!-- Вариант 2: Google аватар -->
                             <div class="avatar-option" data-type="google">
-                                <div class="avatar-preview">
-                                    <img class="avatar p80-avatar" th:src="${user.picture}"
-                                         onerror="this.src='/images/avatar-placeholder.png'">
-                                </div>
+                                <img class="avatar-preview avatar p80-avatar" th:src="${user.picture}"
+                                        onerror="this.src='/images/avatar-placeholder.png'">
                                 <span th:text="#{profile.editing.avatar.google}">Google</span>
                             </div>
 
                             <!-- Вариант 3: Стандартная аватарка -->
                             <div class="avatar-option" data-type="default">
-                                <div class="avatar-preview">
-                                    <img class="avatar p80-avatar" src="/images/avatar-placeholder.png">
-                                </div>
+                                <img class="avatar-preview avatar p80-avatar" src="/images/avatar-placeholder.png">
                                 <span th:text="#{profile.editing.avatar.standart}">Стандарт</span>
                             </div>
                         </div>
@@ -122,11 +116,14 @@
                     <h3 th:text="#{profile.editing.bio}">Языки которыми я владею</h3>
                     <div class="form-group">
                         <div id="myLangsContainer">
-                            <button class="lang-select-btn" name="ru">Русский</button>
-                            <button class="lang-select-btn" name="fi">Suomi</button>
-                            <button class="lang-select-btn" name="en">English</button>
-                            <button class="lang-select-btn" name="it">Italiano</button>
+                            <button type="button" class="lang-select-btn" name="ru">Русский</button>
+                            <button type="button" class="lang-select-btn" name="fi">Suomi</button>
+                            <button type="button" class="lang-select-btn" name="en">English</button>
+                            <button type="button" class="lang-select-btn" name="it">Italiano</button>
                         </div>
+
+                        <!-- Скрытое поле для отправки -->
+                        <input type="hidden" name="languages" id="selectedLanguagesInput" th:value="${user.languages}">
                     </div>
                 </div>
 
@@ -149,6 +146,6 @@
 </div>
 <!-- Файл импортов для защищённых страниц -->
 <th:block th:replace="~{fragments/global-imports :: secureImports(${user})}" />
-<script src="/js/account/edit.js"></script>
+<script src="/js/account/edit.js" th:inline="javascript"></script>
 </body>
 </html>
