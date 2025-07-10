@@ -33,16 +33,16 @@ public class AdminLocationsController {
     }
 
     @PostMapping("/add")
-    public String addLocation(@RequestParam String city,
-                                @RequestParam String country,
+    public String addLocation(@RequestParam(required = false) Long countryId,
+                                @RequestParam String locationName,
                                 @AuthenticationPrincipal OAuth2User oauth2User,
                                 RedirectAttributes redirectAttributes) {
         try {
             Location location = new Location();
-            location.setCountry(country);
-            location.setCity(city);
-            location.setName(city + ", " + country);
-            if (locationRepository.findByName(location.getName()).isPresent()) {
+            location.setName(locationName);
+            location.setCity(countryId != null ? true : false);
+            location.setCountry(countryId != null ? locationRepository.findById(countryId).orElse(null) : null);
+            if (locationRepository.findByName(location.getName()) != null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Такая локация уже существует");
                 return "redirect:/admin/locations";
             }

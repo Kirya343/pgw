@@ -78,6 +78,6 @@ public class AdminCategoriesController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при удалении локации");
         }
-        return "redirect:/admin/locations";
+        return "redirect:/admin/categories";
     }
 }
