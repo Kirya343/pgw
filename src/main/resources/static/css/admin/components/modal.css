@@ -27,20 +27,3 @@
     border-radius: 10px;
     position: relative;
 }
-
-.admin-modal-content h2 {
-    margin-top: 0;
-}
-
-.admin-modal-content label {
-    display: block;
-    margin-top: 10px;
-}
-
-.admin-modal-content input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}

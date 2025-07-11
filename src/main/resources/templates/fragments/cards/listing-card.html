@@ -9,8 +9,8 @@
             alt="Изображение объявления">
 
     <div class="listing-card-body">
-        <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
-        <p class="card-text" th:text="${#strings.length(listing.localizedDescription) > 100} ? ${#strings.substring(listing.localizedDescription, 0, 100)} + '...' : ${listing.localizedDescription}">Описание</p>
+        <h3 class="listing-card-title" th:text="${listing.localizedTitle}">Название</h3>
+        <p class="listing-card-text" th:text="${#strings.length(listing.localizedDescription) > 100} ? ${#strings.substring(listing.localizedDescription, 0, 100)} + '...' : ${listing.localizedDescription}">Описание</p>
         <div class="listing-card-footer">
             <div>
                 <!-- компонент для отображение цены (с типом) -->
@@ -41,8 +41,8 @@
             alt="Изображение объявления">
 
     <div class="listing-card-body">
-        <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
-        <p class="card-text" th:text="${#strings.abbreviate(listing.localizedDescription, 100)}">Описание</p>
+        <h3 class="listing-card-title" th:text="${listing.localizedTitle}">Название</h3>
+        <p class="listing-card-text" th:text="${#strings.abbreviate(listing.localizedDescription, 100)}">Описание</p>
         <div class="listing-card-footer">
             <div>
                 <!-- компонент для отображение цены (с типом) -->
@@ -84,8 +84,8 @@
             alt="Изображение объявления">
 
     <div class="listing-card-body">
-        <h3 class="card-title" th:text="${listing.localizedTitle}">Название</h3>
-        <p class="card-text" th:text="${#strings.length(listing.localizedDescription) > 100} ? ${#strings.substring(listing.localizedDescription, 0, 100)} + '...' : ${listing.localizedDescription}">Описание</p>
+        <h3 class="listing-card-title" th:text="${listing.localizedTitle}">Название</h3>
+        <p class="listing-card-text" th:text="${#strings.length(listing.localizedDescription) > 100} ? ${#strings.substring(listing.localizedDescription, 0, 100)} + '...' : ${listing.localizedDescription}">Описание</p>
         <div class="listing-card-footer">
             <div>
                 <!-- компонент для отображение цены (с типом) -->
@@ -100,6 +100,34 @@
             </div>
             <span class="partner-sign" th:if="${listing.author.role.name() == 'BUSINESS'}" th:text="#{partner}"></span>
             <span class="listing-location" th:text="${listing.location.fullName}">Локация</span>
+        </div>
+    </div>
+</article>
+
+<article th:fragment="listingCardPreview" class="listing-card">
+    <img th:src="@{${listing != null ? listing.imagePath : null}}"
+        class="listing-img" 
+        th:onerror="this.src='/images/default-listing.png'"
+        alt="Текущее основное изображение"
+        id="mainImagePreview">
+
+    <div class="listing-card-body">
+        <h3 class="listing-card-title" id="listingCardLabel" th:text="${listing != null ? listing.localizedTitle : null}">Название</h3>
+        <p class="listing-card-text" id="listingCardDesc" th:text="${listing != null ? listing.localizedDescription : ''}">Описание</p>
+        <div class="listing-card-footer">
+            <div>
+                <!-- компонент для отображение цены (с типом) -->
+                <span th:replace="~{fragments/small-components :: priceTypes}"></span>
+                <div class="rating">
+                    <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                        <i class="fa"
+                            th:classappend="${listing.averageRating >= i} ? 'fa-star' :
+                                    (${listing.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
+                    </th:block>
+                </div>
+            </div>
+            <span class="partner-sign" th:if="${user.role.name() == 'BUSINESS'}" th:text="#{partner}"></span>
+            <span class="listing-location" th:text="${listing != null ? listing.location.fullName : null}">Локация</span>
         </div>
     </div>
 </article>

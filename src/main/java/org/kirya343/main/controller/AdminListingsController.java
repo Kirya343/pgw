@@ -2,6 +2,7 @@ package org.kirya343.main.controller;
 
 import org.kirya343.main.model.Listing;
 import org.kirya343.main.services.ListingService;
+import org.kirya343.main.services.components.AuthService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -20,15 +21,17 @@ import java.util.Locale;
 public class AdminListingsController {
 
     private final ListingService listingService;
+    private final AuthService authService;
 
     @GetMapping
-    public String listingsList(Model model) {
+    public String listingsList(Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        authService.validateAndAddAuthentication(model, oauth2User);
+        
         List<Listing> listings = listingService.getAllListings();
 
-        Locale locale = Locale.of("ru");
-
         for (Listing listing : listings) {
-            listingService.localizeListing(listing, locale);
+            listingService.localizeListing(listing, Locale.of("ru"));
         }
 
         model.addAttribute("listings", listings);

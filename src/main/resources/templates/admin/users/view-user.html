@@ -15,20 +15,14 @@
 
     <!-- Основной контент -->
     <main class="admin-main">
-        <header class="admin-header">
-            <h1>Управление пользователем</h1>
-            <div class="admin-user">
-                <span>Администратор</span>
-                <img th:replace="fragments/small-components :: avatar(user='', size='40', class='')"></img>
-            </div>
-        </header>
+        <header th:replace="~{fragments/admin/admin-page-components :: adminHeader}"></header>
 
         <nav class="breadcrumbs">
             <a href="/admin/dashboard">Панель управления</a>
             <span> / </span>
             <a href="/admin/users">Управление пользователями</a>
             <span> / </span>
-            <img th:replace="fragments/small-components :: avatar(user=${user}, size='40', class='')"></img>
+            <img th:replace="fragments/small-components :: avatar(user=${admin}, size='40', class='')"></img>
             <span aria-current="page" th:text="${user.name}"></span>
         </nav>
 

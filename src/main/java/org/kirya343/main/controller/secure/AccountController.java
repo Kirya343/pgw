@@ -64,7 +64,7 @@ public class AccountController {
     public String editProfile(@AuthenticationPrincipal OAuth2User oauth2User, Model model) {
 
         authService.validateAndAddAuthentication(model, oauth2User);
-        List<Location> countries = locationRepository.findByCityFalse();
+        List<Location> countries = locationRepository.findByCity(false);
         model.addAttribute("countries", countries);
         model.addAttribute("activePage", "edit");
 

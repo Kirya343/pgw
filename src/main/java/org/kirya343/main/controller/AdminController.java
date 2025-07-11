@@ -4,7 +4,10 @@ import org.kirya343.main.model.Listing;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.ListingService;
 import org.kirya343.main.services.UserService;
+import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.StatService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +27,7 @@ public class AdminController {
     private final StatService statService;
     private final ListingService listingService;
     private final UserService userService;
+    private final AuthService authService;
 
     @GetMapping
     public String index(Model model) {
@@ -31,7 +35,9 @@ public class AdminController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model) {
+    public String dashboard(Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        authService.validateAndAddAuthentication(model, oauth2User);
 
         Locale locale = Locale.of("ru");
         

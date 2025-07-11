@@ -1,0 +1,14 @@
+<header th:fragment="adminHeader" class="admin-header">
+    <h1 th:if="${activePage == 'dashboard'}">Панель управления</h1>
+    <h1 th:if="${activePage == 'admin-listings'}">Управление объявлениями</h1>
+    <h1 th:if="${activePage == 'admin-resumes'}">Управление резюме</h1>
+    <h1 th:if="${activePage == 'admin-users'}">Управление пользователями</h1>
+    <h1 th:if="${activePage == 'admin-news'}">Управление новостями</h1>
+    <h1 th:if="${activePage == 'admin-locations'}">Управление локациями</h1>
+    <h1 th:if="${activePage == 'admin-categories'}">Управление категориями</h1>
+    <h1 th:if="${activePage == 'admin-tasks'}">Задачи</h1>
+    <div class="admin-user">
+        <span th:text="${admin.name}">Администратор</span>
+        <img th:replace="~{fragments/small-components :: avatar(user=${admin}, size='40', class='')}"></img>
+    </div>
+</header>

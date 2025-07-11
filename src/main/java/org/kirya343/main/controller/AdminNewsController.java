@@ -13,6 +13,7 @@ import org.kirya343.main.model.NewsTranslation;
 import org.kirya343.main.model.User;
 import org.kirya343.main.services.NewsService;
 import org.kirya343.main.services.UserService;
+import org.kirya343.main.services.components.AuthService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -38,9 +39,12 @@ public class AdminNewsController {
 
     private final NewsService newsService;
     private final UserService userService;
+    private final AuthService authService;
 
     @GetMapping
-    public String newsList(Model model) {
+    public String newsList(Model model,
+                           @AuthenticationPrincipal OAuth2User oauth2User) {
+        authService.validateAndAddAuthentication(model, oauth2User);
         List<News> newsList = newsService.findAll();
         model.addAttribute("newsList", newsList);
         model.addAttribute("activePage", "admin-news");
@@ -48,10 +52,11 @@ public class AdminNewsController {
     }
 
     @GetMapping("/create")
-    public String createNewsForm(
-            @RequestParam(required = false, defaultValue = "false") boolean published, 
-            Model model) {
-        
+    public String createNewsForm(@RequestParam(required = false, defaultValue = "false") boolean published, 
+                                 Model model, 
+                                 @AuthenticationPrincipal OAuth2User oauth2User) {
+        authService.validateAndAddAuthentication(model, oauth2User);
+
         News news = new News();
         news.setPublishDate(LocalDateTime.now());
         model.addAttribute("news", news);
@@ -116,8 +121,10 @@ public class AdminNewsController {
 
     @GetMapping("/edit/{id}")
     public String editNewsForm(@PathVariable Long id,
-        @RequestParam(required = false, defaultValue = "false") boolean published, 
-        Model model) throws JsonProcessingException {
+                               @RequestParam(required = false, defaultValue = "false") boolean published, 
+                               Model model, 
+                               @AuthenticationPrincipal OAuth2User oauth2User) throws JsonProcessingException {
+        authService.validateAndAddAuthentication(model, oauth2User);
         try {
             News news = newsService.findNews(id.toString(), SearchParamType.ID);
             model.addAttribute("news", news);

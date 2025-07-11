@@ -16,15 +16,7 @@
     <!-- Основной контент -->
     <main class="admin-main">
 
-        <header class="admin-header">
-            <div>
-                <h1>Панель управления</h1>
-            </div>
-            <div class="admin-user">
-                <span>Администратор</span>
-                <img th:replace="fragments/small-components :: avatar(user='', size='40', class='')"></img>
-            </div>
-        </header>
+        <header th:replace="~{fragments/admin/admin-page-components :: adminHeader}"></header>
 
         <!-- Статистика -->
         <div class="stats-grid">

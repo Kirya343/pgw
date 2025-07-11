@@ -6,6 +6,7 @@ import org.kirya343.main.model.listingModels.Category;
 import org.kirya343.main.repository.CategoryRepository;
 import org.kirya343.main.services.CategoryService;
 import org.kirya343.main.services.UserService;
+import org.kirya343.main.services.components.AuthService;
 import org.kirya343.main.services.components.RoleCheckService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -29,9 +30,12 @@ public class AdminCategoriesController {
     private final RoleCheckService roleCheckService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final AuthService authService;
 
     @GetMapping
-    public String categoryList(Model model, Locale locale) {
+    public String categoryList(Model model, Locale locale, @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        authService.validateAndAddAuthentication(model, oauth2User);
 
         locale = Locale.of("ru");
 

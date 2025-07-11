@@ -13,7 +13,7 @@
 @import url(upload-controls.css);
 @import url(author-info-sidebar.css);
 @import url(reviews.css);
-@import url(data-fiels.css);
+@import url(data-fields.css);
 @import url(animations.css);
 @import url(avatar-types.css);
 @import url(../../variables.css);
@@ -109,12 +109,6 @@ li {
 
 .card-title a:hover {
     color: var(--primary);
-}
-
-.card-text {
-    color: var(--gray);
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
 }
 
 .card-footer {

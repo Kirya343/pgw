@@ -9,6 +9,9 @@ const descriptionInput = document.getElementById('descriptionInput');
 const okBtn = document.getElementById('okBtn');
 const languageIndicators = document.getElementById('languageIndicators');
 
+const listingCardLabel = document.getElementById('listingCardLabel');
+const listingCardDesc = document.getElementById('listingCardDesc');
+
 // Сохраняем введённые данные по языкам
 const languagesData = {};
 
@@ -48,12 +51,6 @@ okBtn.addEventListener('click', () => {
 });
 
 function loadTranslations(translations) {
-    // translations — объект вида:
-    // {
-    //   "ru": { title: "Заголовок на русском", description: "Описание" },
-    //   "en": { title: "Title in English", description: "Description" },
-    //   ...
-    // }
 
     if (!translations) return;
 
@@ -74,6 +71,9 @@ function saveLanguageData() {
 
     const title = titleInput.value.trim();
     const description = descriptionInput.value.trim();
+
+    listingCardLabel.textContent = titleInput.value.trim();
+    listingCardDesc.textContent = descriptionInput.value.trim();
 
     languagesData[currentLanguage] = { title, description };
 

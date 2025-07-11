@@ -22,10 +22,15 @@ public class AuthService {
         if (oauth2User != null) {
             double averageRating = statService.getAverageRating(user);
 
-            roleCheckService.CheckRoles(model, oauth2User);
+            roleCheckService.checkRoles(model, oauth2User);
+
+            if (roleCheckService.hasRoleAdmin(user)) {
+                model.addAttribute("admin", user);
+            }
 
             model.addAttribute("isAuthenticated", true);
             /* model.addAttribute("avatarPath", avatarPath); */
+            System.out.println("Пользователь прошёл авторизацию: " + user.getName());
             model.addAttribute("user", user);
             model.addAttribute("rating", averageRating);
         } else {
