@@ -3,6 +3,7 @@ package org.kirya343.main.controller;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.ModelsSettings.SearchParamType;
 import org.kirya343.main.services.UserService;
+import org.kirya343.main.services.components.AuthService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -20,9 +21,11 @@ import java.util.List;
 public class AdminUsersController {
 
     private final UserService userService;
+    private final AuthService authService;
 
     @GetMapping
-    public String usersList(Model model) {
+    public String usersList(Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
+        authService.validateAndAddAuthentication(model, oauth2User);
         List<User> usersList = userService.findAll();
         model.addAttribute("usersList", usersList);
         model.addAttribute("activePage", "admin-users");
@@ -30,8 +33,9 @@ public class AdminUsersController {
     }
 
     @GetMapping("/view/{id}")
-    public String currentUser(@PathVariable Long id, Model model) {
+    public String currentUser(@PathVariable Long id, Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
         try {
+            authService.validateAndAddAuthentication(model, oauth2User);
             User user = userService.findUser(id.toString(), SearchParamType.ID);
             model.addAttribute("user", user);
             model.addAttribute("activePage", "admin-users");

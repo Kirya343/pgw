@@ -63,7 +63,7 @@ public class OwnListingController {
         List<Category> rootCategories = categoryService.getRootCategories();
         model.addAttribute("rootCategories", rootCategories);
         
-        List<Location> countries = locationRepository.findByCityFalse();
+        List<Location> countries = locationRepository.findByCity(false);
         model.addAttribute("countries", countries);
         
         // 3. Добавляем пустую форму
@@ -188,13 +188,9 @@ public class OwnListingController {
                 return "redirect:/secure/account";
             }
 
-            Long categoryId = listing.getCategory().getId();
-
-            List<Location> countries = locationRepository.findByCityFalse();
-
             model.addAttribute("listing", listing);
-            model.addAttribute("categoryId", categoryId);
-            model.addAttribute("countries", countries);
+            model.addAttribute("categoryId", listing.getCategory().getId());
+            model.addAttribute("countries", locationRepository.findByCity(false));
 
             // Сформировать Map<String, Map<String, String>> для JSON с переводами
             Map<String, Map<String, String>> translationsMap = new HashMap<>();

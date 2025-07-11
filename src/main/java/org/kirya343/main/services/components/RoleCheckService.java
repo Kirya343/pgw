@@ -15,7 +15,7 @@ public class RoleCheckService {
 
     private final UserService userService;
 
-    public void CheckRoles(Model model, OAuth2User oauth2User) {
+    public void checkRoles(Model model, OAuth2User oauth2User) {
         
         User user = userService.findUserFromOAuth2(oauth2User);
 

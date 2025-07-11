@@ -27,11 +27,12 @@
         ${duration.toMinutes()} + ' мин.' :
         ${duration.getSeconds()} + ' сек.'))"></span>
 
-<!-- Компонент для аватаров ${user, size, class} -->
+<!-- Компонент для аватаров ${user, size, class}  th:src="@{${user.avatarUrl}}" -->
 <img th:fragment="avatar(user, size, class)" 
      th:class="${class} + ' avatar p' + ${size} + '-avatar'" 
      th:src="@{${user.avatarUrl}}" 
      style="cursor: pointer;" 
      th:onclick="|window.location.href='/profile/' + ${user.id}|"
      onerror="this.src='/images/avatar-placeholder.png'" 
-     alt="Аватар">
+     alt="Аватар"
+     th:if="${user != null}">
