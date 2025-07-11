@@ -1,4 +1,4 @@
-<nav class="container" th:fragment="accountHeader">
+<nav class="header-container" th:fragment="accountHeader">
     <nav class="navbar">
         <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
         <button class="navbar-toggler">
@@ -12,20 +12,6 @@
                 </button>
             </nav>
             <div class="account-manager">
-                <div class="profile-card">
-                    <img th:replace="fragments/small-components :: avatar(user=${user}, size='100', class='profile-avatar')"></img>
-                    <h4 class="profile-name" th:text="${userName}">Иван Иванов</h4>
-                    <p class="profile-rating">
-                <span th:each="i : ${#numbers.sequence(1,5)}">
-                    <i class="fa"
-                        th:classappend="${user.averageRating >= i} ? 'fa-star' :
-                        (${user.averageRating >= i - 0.5} ? 'fa-star-half-o' : 'fa-star-o')"></i>
-                </span>
-                        (<span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span>)
-                    </p>
-                    <a href="/secure/account/edit" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
-                </div>
-
                 <!-- сайдбар -->
                 <div th:replace="~{fragments/account/account-sidebar :: sidebar-links(${activePage})}"></div>
             </div>

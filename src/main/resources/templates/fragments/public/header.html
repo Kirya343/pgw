@@ -1,12 +1,18 @@
-<div class="container" th:fragment="header(activePage)">
+<div class="header-container" th:fragment="header(activePage)">
     <nav class="navbar">
         <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
         <button class="navbar-toggler">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse">
+            <nav class="navbar-top">
+                <a class="navbar-brand" href="/catalog" th:text="#{brand}">WorkSwap</a>
+                <button id="navbar-toggler" class="navbar-toggler">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </nav>
 
-            <div class="sorting-sidebar-top" th:if="${activePage == 'catalog'}" th:unless="${category == 'find-help'}">
+            <!-- <div class="sorting-sidebar-top" th:if="${activePage == 'catalog'}" th:unless="${category == 'find-help'}">
                 <form id="searchForm" method="get" action="/catalog">
                     <div class="input-group">
                         <input type="text" class="search-input" name="searchQuery" th:value="${searchQuery}"placeholder="Поиск...">
@@ -36,27 +42,29 @@
                         По популярности
                     </a>
                 </div>
-            </div>
+            </div> -->
 
-            <a href="/secure/messenger/chat?sellerId=71" class="nav-link" th:if="${isAuthenticated}">
-                <i class="fa fa-question-circle fa-lg" aria-hidden="true"></i>
-            </a>
+            <div class="header-actions">
+                <a href="/secure/messenger/chat?sellerId=71" class="nav-link" th:if="${isAuthenticated}">
+                    <i class="fa fa-question-circle fa-lg" aria-hidden="true"></i>
+                </a>
 
-            <!-- Кнопка Уведомлений -->
-            <button class="nav-link" id="notificationBtn" th:if="${isAuthenticated}">
-                <i class="fa fa-bell fa-lg" aria-hidden="true"></i>
-            </button>
+                <!-- Кнопка Уведомлений -->
+                <button class="nav-link" id="notificationBtn" th:if="${isAuthenticated}">
+                    <i class="fa fa-bell fa-lg" aria-hidden="true"></i>
+                </button>
 
-            <!-- Выпадающее окно с уведомлениями -->
-            <div id="notificationDropdown" class="notification-center-dropdown hidden">
-                <div class="notification-center-header">Уведомления</div>
-                <div id="notificationList" class="notification-center-list">
-                    <p class="no-notifications">Загрузка...</p>
+                <!-- Выпадающее окно с уведомлениями -->
+                <div id="notificationDropdown" class="notification-center-dropdown hidden">
+                    <div class="notification-center-header">Уведомления</div>
+                    <div id="notificationList" class="notification-center-list">
+                        <p class="no-notifications">Загрузка...</p>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Кнопка Новостей -->
-            <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
+                <!-- Кнопка Новостей -->
+                <a href="/news" class="nav-link" th:text="#{header.news}">Новости</a>
+            </div>
 
             <!-- Для неавторизованных пользователей -->
             <a href="/login" style="display: flex; flex-direction: row" class="btn btn-outline-primary account-link" th:unless="${isAuthenticated}">

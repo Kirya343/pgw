@@ -5,7 +5,19 @@ header {
     background-color: var(--white);
     box-shadow: 0 2px 10px var(--shadow-color);
     height: var(--header-height);
-    padding: 0.4rem 1rem;
+    padding: 0.4rem 2rem;
+}
+
+.header-container {
+    width: 100%;
+    max-width: 1050px;
+    margin: 0 auto;
+}
+
+.header-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .navbar {
@@ -13,10 +25,13 @@ header {
     justify-content: space-between;
     align-items: center;
     height: 100%;
+    z-index: 100;
+    background-color: var(--white);
 }
 
 .navbar-top {
     display: none;
+    z-index: -1;
 }
 
 .navbar-brand {
@@ -246,7 +261,7 @@ header {
     }
 
     .logout-btn {
-        margin-top: 1rem;
+        margin: 1rem;
     }
 
     .navbar-top {
@@ -270,10 +285,10 @@ header {
         width: 100%;
         background-color: var(--white);
         flex-direction: column;
-        padding: 1rem;
+        padding: 0.4rem 1rem;
         box-shadow: 0 2px 5px var(--shadow-color);
         transform: translateY(-900px);
-        transition: transform 0.6s ease;
+        transition: transform 0.5s ease;
     }
 
     .navbar-collapse.show {
