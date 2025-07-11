@@ -94,7 +94,7 @@ public class ChatWebSocketController {
     public List<MessageDTO> loadMessagesForConversation(@DestinationVariable Long conversationId, Principal principal) {
         logger.info("Получение сообщений для разговора с ID: {}", conversationId);
 
-        User currentUser = userService.findUser(principal.getName(), SearchParamType.ID);
+        User currentUser = userService.findUser(principal.getName(), SearchParamType.SUB);
 
         // Получаем разговор по ID
         Conversation conversation = chatService.getConversationById(conversationId);
@@ -122,7 +122,7 @@ public class ChatWebSocketController {
     @MessageMapping("/chat.markAsRead")
     public void markAsRead(MarkAsReadDTO markAsReadDTO, Principal principal, @Header("locale") String lang) {
         Locale locale = Locale.of(lang);
-        User user = userService.findUser(principal.getName(), SearchParamType.ID);
+        User user = userService.findUser(principal.getName(), SearchParamType.SUB);
         Long conversationId = markAsReadDTO.getConversationId();
 
         chatService.markMessagesAsRead(conversationId, user);
@@ -133,7 +133,7 @@ public class ChatWebSocketController {
     @MessageMapping("/getConversations")
     public void getConversations(Principal principal, @Header("locale") String lang) {
         Locale locale = Locale.of(lang);
-        User user = userService.findUser(principal.getName(), SearchParamType.ID);
+        User user = userService.findUser(principal.getName(), SearchParamType.SUB);
         List<Conversation> conversations = chatService.getUserConversations(user);
 
         conversations.stream()
@@ -156,7 +156,7 @@ public class ChatWebSocketController {
     @MessageMapping("/chat.getInterlocutorInfo")
     @SendToUser("/queue/interlocutorInfo")
     public InterlocutorInfoDTO getInterlocutorInfo(ConversationRequest request, Principal principal) {
-        User currentUser = userService.findUser(principal.getName(), SearchParamType.ID);
+        User currentUser = userService.findUser(principal.getName(), SearchParamType.SUB);
         Long conversationId = request.getConversationId();
 
         Conversation conversation = chatService.getConversationById(conversationId);

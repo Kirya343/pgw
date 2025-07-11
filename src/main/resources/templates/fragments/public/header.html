@@ -38,6 +38,10 @@
                 </div>
             </div>
 
+            <a href="/secure/messenger/chat?sellerId=71" class="nav-link" th:if="${isAuthenticated}">
+                <i class="fa fa-question-circle fa-lg" aria-hidden="true"></i>
+            </a>
+
             <!-- Кнопка Уведомлений -->
             <button class="nav-link" id="notificationBtn" th:if="${isAuthenticated}">
                 <i class="fa fa-bell fa-lg" aria-hidden="true"></i>
