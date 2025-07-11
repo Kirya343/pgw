@@ -10,17 +10,25 @@
     height: 100%;
 }
 
-.card-text {
+.listing-card-text {
     flex-grow: 1;
     margin-bottom: 1rem;
     font-size: 0.95rem;
     color: var(--gray);
+    white-space: normal;
+    word-wrap: break-word;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
 }
 
-.card-title {
+.listing-card-title {
     font-weight: 600;
     margin-bottom: 0.5rem;
     font-size: 1.1rem;
+    white-space: normal;
+    overflow: hidden;
 }
 
 .listing-card-footer {
@@ -46,6 +54,8 @@
     transition: all 0.3s ease;
     overflow: hidden; /* Это предотвратит выход изображения за границы */
     position: relative;
+    max-width: 370px;
+    min-width: 250px;
 }
 
 .listing-status {
@@ -113,4 +123,10 @@
     font-weight: 600;
     border-radius: var(--radius);
     margin: 0 1rem;
+}
+
+@media screen {
+    listing-card {
+        max-width: 100%;
+    }
 }

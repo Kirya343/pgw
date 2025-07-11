@@ -132,8 +132,7 @@
                     <h3 th:text="#{profile.editing.location}">Моё местоположение</h3>
                     <p th:text="#{profile.editing.location.why}"></p>
                     <div class="form-group">
-                        <select id="country" class="form-control" required
-                                onchange="loadSities(this.value, 'city')">
+                        <select id="country" class="form-control" onchange="loadSities(this.value, 'city')">
                             <option value="" disabled selected th:text="#{listing.editing.location.select}">Выберите локацию</option>
                             <option th:each="loc : ${countries}"
                                     th:value="${loc.id}"

@@ -188,6 +188,8 @@ public class OwnListingController {
                 return "redirect:/secure/account";
             }
 
+            listingService.localizeListing(listing, locale);
+
             model.addAttribute("listing", listing);
             model.addAttribute("categoryId", listing.getCategory().getId());
             model.addAttribute("countries", locationRepository.findByCity(false));

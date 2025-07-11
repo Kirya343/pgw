@@ -3,13 +3,43 @@
 
 
 .indicator {
-padding: 5px 10px;
-border-radius: 5px;
-font-weight: bold;
-color: white;
+    text-align: center;
+    border-radius: 40%;
+    font-weight: bold;
+    color: white;
+    font-size: smaller;
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+    padding-top: 0.3rem;
+    border: 1px solid var(--border-color);
+}   
+
+.form-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
 }
-.indicator.green { background-color: green; }
-.indicator.yellow { background-color: goldenrod; }
+
+.form-grid {
+    width: 100%;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+}
+
+.indicator.green { background-color: rgb(77 217 77); }
+.indicator.green :hover { background-color: rgb(43, 148, 43); }
+.indicator.yellow { background-color: rgb(207, 187, 0); }
+.indicator.yellow :hover{ background-color: rgb(206, 148, 1); }
+
+.language-indicators {
+    z-index: 100;
+    display: flex;
+    position: absolute;
+    gap: 0.5rem;
+    transform: translateY(-18px) translateX(10px);
+}
 
 .languageFields {
     margin-top:10px; 

@@ -59,10 +59,6 @@ function loadSubcategories(parentId, targetSelectId) {
             }
             return response.json();
         })
-        .then(path => {
-            const pathText = path.map(c => c.translate).join(' / ');
-            document.getElementById('categoryPath').textContent = pathText;
-        })
         .catch(error => {
             document.getElementById('categoryError').textContent = 'Ошибка загрузки категорий';
             document.getElementById('categoryError').style.display = 'block';
@@ -177,9 +173,6 @@ function restoreCategoryPath(categoryId) {
             // Устанавливаем финальную категорию и путь
             const finalCategory = path[path.length - 1];
             document.getElementById('finalCategoryId').value = finalCategory.id;
-
-            const pathText = path.map(c => c.translate).join(' / ');
-            document.getElementById('categoryPath').textContent = pathText;
         })
         .catch(err => {
             console.error('[restoreCategoryPath] Ошибка при восстановлении пути:', err);
