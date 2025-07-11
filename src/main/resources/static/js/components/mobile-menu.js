@@ -1,3 +1,5 @@
-document.querySelector('.navbar-toggler').addEventListener('click', function() {
-    document.querySelector('.navbar-collapse').classList.toggle('show');
+document.querySelectorAll('.navbar-toggler').forEach(select => {
+    select.addEventListener('click', function() {
+        document.querySelector('.navbar-collapse').classList.toggle('show');
+    });
 });

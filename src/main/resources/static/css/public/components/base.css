@@ -57,13 +57,6 @@ img {
     display: block;
 }
 
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
 .row {
     display: flex;
     flex-wrap: wrap;
