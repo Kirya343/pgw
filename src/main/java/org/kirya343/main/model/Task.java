@@ -2,19 +2,12 @@ package org.kirya343.main.model;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -80,12 +73,13 @@ public class Task {
     private TaskType taskType;
 
     @ManyToOne
-    @JoinColumn(name = "executor_id")
     private User executor;
 
     @ManyToOne
-    @JoinColumn(name = "author_id")
     private User author;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskComment> comments = new ArrayList<>(); 
 
     @Transient // чтобы Hibernate не пытался сохранять это поле в БД
     public Duration getDuration() {

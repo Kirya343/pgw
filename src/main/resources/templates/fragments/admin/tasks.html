@@ -50,11 +50,11 @@
         <label class="task-detail-label">Автор:</label> 
         <span th:text="${task.author.name}"></span>
     </p>
-    <p class="task-detail" th:if="${task.status == T(org.kirya343.main.model.Task.Status).COMPLETED}">
+    <p class="task-detail" th:if="${status == 'COMPLETED'}">
         <label class="task-detail-label">Выполнил:</label> 
         <span th:text="${task.executor.name}"></span>
     </p>
-    <p class="task-detail" th:if="${task.status == T(org.kirya343.main.model.Task.Status).IN_PROGRESS}">
+    <p class="task-detail" th:if="${status == 'IN_PROGRESS'}">
         <label class="task-detail-label">Выполняющий:</label> 
         <span th:text="${task.executor.name}"></span>
     </p>
@@ -65,12 +65,42 @@
     </p>
     <p class="task-detail" th:if="${task.completed == null}">
         <label class="task-detail-label">Дедлайн через:</label> 
-        <span th:replace="fragments/small-components :: timeCounter(${task.duration})"></span>
+        <span th:replace="~{fragments/small-components :: timeCounter(${task.duration})}"></span>
     </p>
     <p class="task-detail" th:if="${task.completed != null}">
         <label class="task-detail-label">Завершена:</label> 
         <span th:text="${#temporals.format(task.completed, 'HH:mm dd.MM.yyyy')}"></span>
     </p>
+    <div class="button-actions">
+        <form th:action="@{/admin/tasks/{id}/pickup(id=${task.id})}" method="post" style="display:inline;" th:if="${status == 'CANCELED' or status == 'NEW'}">
+            <button type="submit"
+                    class="btn-admin btn-admin-primary"
+                    onclick="return confirm('Взять задачу?');">
+                <i class="fas fa-download"></i>
+            </button>
+        </form>
+        <form th:action="@{/admin/tasks/{id}/confirm(id=${task.id})}" method="post" style="display:inline;" th:if="${user == executor and status == 'IN_PROGRESS'}">
+            <button type="submit"
+                    class="btn-admin btn-admin-confirm"
+                    onclick="return confirm('Задача выполнена?');">
+                <i class="fas fa-check"></i>
+            </button>
+        </form>
+        <form th:action="@{/admin/tasks/{id}/cancel(id=${task.id})}" method="post" style="display:inline;" th:if="${(user == executor and status == 'IN_PROGRESS') or (status == 'NEW')}">
+            <button type="submit"
+                    class="btn-admin btn-admin-danger"
+                    onclick="return confirm('Отменить эту задачу?');">
+                <i class="fas fa-trash"></i>
+            </button>
+        </form>
+        <button class="btn-admin btn-admin-primary" 
+                th:if="${user == executor and status == 'IN_PROGRESS'}">
+            <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn-admin btn-admin-gold comment-btn" th:attr="task-id=${task.id}">
+            <i class="fa-solid fa-message"></i>
+        </button>
+    </div>
 </div>
 
 <table class="admin-table" th:fragment="taskTable(status)">
@@ -80,10 +110,10 @@
         <td th:text="${task.name}">Имя</td>
         <td th:text="${task.taskType.displayName}">email@example.com</td>
         <td>
-            <span th:replace="fragments/small-components :: timeCounter(${task.duration})"></span>
+            <span th:replace="~{fragments/small-components :: timeCounter(${task.duration})}"></span>
         </td>
         <td>
-            <div class="button-actions">
+            <div class="button-actions task-actions">
                 <form th:action="@{/admin/tasks/{id}/pickup(id=${task.id})}" method="post" style="display:inline;" th:if="${status == 'CANCELED' or status == 'NEW'}">
                     <button type="submit"
                             class="btn-admin btn-admin-primary"
@@ -105,11 +135,10 @@
                         <i class="fas fa-trash"></i>
                     </button>
                 </form>
-                <a th:href="@{/admin/tasks/{id}(id=${task.id})/update}" 
-                    class="btn-admin btn-admin-primary mr-1" 
-                    th:if="${user == executor and status == 'IN_PROGRESS'}">
+                <button class="btn-admin btn-admin-primary" 
+                th:if="${user == executor and status == 'IN_PROGRESS'}">
                     <i class="fas fa-edit"></i>
-                </a>
+                </button>
             </div>
         </td>
     </tr>
@@ -118,3 +147,25 @@
     </tr>
     </tbody>
 </table>
+
+<div th:fragment="taskComments" class="task-comment-card" th:each="comment : ${comments}">
+    <div class="task-comment flex-row">
+        <div class="flex-column">
+            <div class="flex-row" style="gap: 0.5rem">
+                <img th:replace="fragments/small-components :: avatar(user=${comment.author}, size='32', class='')"></img>
+                <span th:text="${comment.author.name}" style="margin: auto 0;"></span>
+            </div>
+            <br>
+            <span th:text="${comment.content}"></span>
+        </div>
+        <div class="button-actions flex-column task-comment-actions" th:if="${admin == comment.author}">
+            <form th:action="@{/admin/tasks/{id}/comment/delete(id=${comment.id})}" method="post" style="display:inline;">
+                <button type="submit"
+                        class="btn-admin btn-admin-danger" style="height: auto; margin-left: 100%;"
+                        onclick="return confirm('Отменить эту задачу?');">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

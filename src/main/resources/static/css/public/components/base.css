@@ -16,6 +16,7 @@
 @import url(data-fields.css);
 @import url(animations.css);
 @import url(avatar-types.css);
+@import url(simple-components.css);
 @import url(../../variables.css);
 
 @import url(cards/listing-card.css);

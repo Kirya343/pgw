@@ -4,15 +4,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.kirya343.main.model.Task;
+import org.kirya343.main.model.TaskComment;
 import org.kirya343.main.model.Task.Status;
 import org.kirya343.main.model.Task.TaskType;
 import org.kirya343.main.model.User;
 import org.kirya343.main.model.User.Role;
 import org.kirya343.main.repository.TaskRepository;
+import org.kirya343.main.repository.TaskCommentRepository;
 import org.kirya343.main.repository.UserRepository;
 import org.kirya343.main.services.TaksService;
 import org.kirya343.main.services.UserService;
 import org.kirya343.main.services.components.AuthService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -35,6 +38,7 @@ public class AdminTasksController {
     private final AuthService authService;
     private final UserService userService;
     private final TaksService taksService;
+    private final TaskCommentRepository taskCommentRepository;
 
     @GetMapping
     public String adminTasks(Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
@@ -117,6 +121,47 @@ public class AdminTasksController {
     public String getTaskDetailsFragment(@PathVariable Long id, Model model) {
         Task task = taksService.findTask(id.toString(), "ID");
         model.addAttribute("task", task);
+        model.addAttribute("status", task.getStatus().toString());
         return "fragments/admin/tasks :: taskDetails"; // путь и имя фрагмента
+    }
+
+    @GetMapping("/{id}/comments")
+    public String getTaskComments(@PathVariable Long id, Model model, @AuthenticationPrincipal OAuth2User oauth2User) {
+        List<TaskComment> comments = taskCommentRepository.findAllByTaskId(id);
+        model.addAttribute("comments", comments);
+        model.addAttribute("admin", userService.findUserFromOAuth2(oauth2User));
+        return "fragments/admin/tasks :: taskComments"; // путь и имя фрагмента
+    }
+
+    @PostMapping("/{id}/comment")
+    public ResponseEntity<?> commentToTask(@PathVariable Long id,
+                                            @RequestParam String commentContent, 
+                                            Model model, 
+                                            @AuthenticationPrincipal OAuth2User oauth2User) {
+        Task task = taksService.findTask(id.toString(), "ID");
+
+        TaskComment comment = new TaskComment();
+        
+        comment.setTask(task);
+        comment.setAuthor(userService.findUserFromOAuth2(oauth2User));
+        comment.setContent(commentContent);
+
+        taskCommentRepository.save(comment);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/comment/delete")
+    public String deleteCommentToTask(@PathVariable Long id,
+                                            Model model, 
+                                            @AuthenticationPrincipal OAuth2User oauth2User) {
+
+        TaskComment comment = taskCommentRepository.findById(id).orElse(null);
+        
+        if (comment.getAuthor() != userService.findUserFromOAuth2(oauth2User)) {
+            return "redirect:/admin/tasks";
+        }
+
+        taskCommentRepository.delete(comment);
+        return "redirect:/admin/tasks";
     }
 }

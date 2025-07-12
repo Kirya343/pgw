@@ -33,13 +33,22 @@
     background-color: #dc2626;
 }
 
+.btn-admin-gold {
+    background-color: #d89e00;
+    color: var(--white);
+}
+
+.btn-admin-gold:hover {
+    background-color: #a87c01;
+}
+
 .btn-admin-confirm {
-    background-color: #56d661;
+    background-color: #45df52;
     color: var(--white);
 }
 
 .btn-admin-confirm:hover {
-    background-color: #40b64a;
+    background-color: #26b332;
 }
 
 .btn-admin-secondary {

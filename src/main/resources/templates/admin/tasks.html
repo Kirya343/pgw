@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <title>Задачи | WorkSwap Admin</title>
     <link href="/css/admin/pages/tasks-page.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -33,14 +35,17 @@
                     </button>
                 </div>
                 <div class="global-tasks-container">
-                    <div class="task-details-container" id="taskDetailsContainer"></div>
-                    <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="task-details-container" id="taskDetailsContainer"></div>
+                        <div class="task-comments-container" id="taskCommentsContainer"></div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; width: 80%;">
                         <div class="task-container">
                             <div class="tasks-list-container">
                                 <div class="tasks-list-header">
                                     <h3>Новые задачи</h3>
                                 </div>
-                                <div class="tasks-by-user" >
+                                <div class="tasks-list">
                                     <table th:replace="~{fragments/admin/tasks :: taskTable(NEW)}"></table>
                                 </div>
                             </div>
@@ -55,12 +60,12 @@
                             </div>
                         </div>
 
-                        <div class="task-container" style="margin-bottom: 500px;">
+                        <div class="task-container">
                             <div class="tasks-list-container">
                                 <div class="tasks-list-header">
                                     <h3>Отменённые задачи</h3>
                                 </div>
-                                <div class="tasks-by-user">
+                                <div class="tasks-list">
                                     <table th:replace="~{fragments/admin/tasks :: taskTable(CANCELED)}"></table>
                                 </div>
                             </div>
@@ -68,7 +73,7 @@
                                 <div class="tasks-list-header">
                                     <h3>Выполненные задачи</h3>
                                 </div>
-                                <div class="tasks-by-user" >
+                                <div class="tasks-list">
                                     <table th:replace="~{fragments/admin/tasks :: taskTable(COMPLETED)}"></table>
                                 </div>
                             </div>
@@ -95,7 +100,8 @@
             </div>
             
             <div class="form-group">
-                <label for="taskDescription">Описание(как можно подробнее):</label>
+                <label for="taskDescription">Описание:</label>
+                <p>(как можно подробнее)</p>
                 <textarea id="taskDescription" name="taskDescription" rows="2"></textarea>
             </div>
 
@@ -146,11 +152,92 @@
                         requestAnimationFrame(() => {
                             newDetails.classList.add('active');
                         });
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert("Не удалось загрузить задачу.");
+
+                        // ⬇️ Здесь — правильное место для привязки обработчика
+                        const commentBtns = taskDetails.querySelectorAll('.comment-btn');
+                        commentBtns.forEach(btn => {
+                            btn.addEventListener('click', () => {
+                                const taskId = btn.getAttribute('task-id');
+                                if (!taskId) return;
+
+                                console.log('Нажата кнопка комментария для задачи', taskId);
+
+                                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+                                const taskComments = document.getElementById('taskCommentsContainer');
+                                taskComments.insertAdjacentHTML('beforeend', `
+                                    <div class="task-comment-card new-comment">
+                                        <form id="commentForm">
+                                            <input type="hidden" name="_csrf" value="${csrfToken}" />
+                                            <div class="form-group">
+                                                <div class="task-comment">
+                                                    <textarea name="commentContent" required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-actions">
+                                            <button type="submit"
+                                                    class="btn-admin btn-admin-primary">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            </div>
+                                        </form>
+                                    </div>`);
+                                
+                                const newComment = taskComments.querySelector('.new-comment');
+                                newComment.classList.remove('active');
+                                requestAnimationFrame(() => {
+                                    newComment.classList.add('active');
+                                    
+                                });
+                                // После вставки формы — вешаешь обработчик
+                                const form = document.querySelector('#commentForm');
+                                form.addEventListener('submit', function(e) {
+                                    e.preventDefault(); // <-- предотврати стандартную отправку
+
+                                    const formData = new FormData(form);
+                                    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+
+                                    fetch(`/admin/tasks/${taskId}/comment`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': csrfToken
+                                        },
+                                        body: formData
+                                    }).then(res => {
+                                        if (!res.ok) throw new Error("Ошибка отправки комментария");
+                                        item.click();
+                                        // optionally обновить список комментариев
+                                    }).catch(err => {
+                                        console.error(err);
+                                        alert("Ошибка");
+                                    });
+                                });
+                            });
+                        });
                     });
+
+                fetch(`/admin/tasks/${taskId}/comments`)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Ошибка при загрузке данных");
+                        return response.text();
+                    })
+                    .then(html => {
+                        const taskComments = document.getElementById('taskCommentsContainer');
+                        // Очистить, вставить HTML, и подождать до следующего кадра
+                        taskComments.innerHTML = html;
+                        const newComments = taskComments.querySelectorAll('.task-comment-card');
+
+                        // Сброс класса (на случай повторного вызова)
+                        newComments.forEach(comment => {
+                            comment.classList.remove('active');
+
+                            // Запустить анимацию через requestAnimationFrame
+                            requestAnimationFrame(() => {
+                                comment.classList.add('active');
+                            });
+                        });
+                    })
             });
         });
     });
