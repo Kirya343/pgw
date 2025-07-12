@@ -172,12 +172,6 @@ public class StatServiceImpl implements StatService {
         saveStat(IntervalType.DAILY);
     }
 
-    @Override
-    @Scheduled(fixedRate = 30 * 24 * 60 * 60 * 1000) // 5 минут (5 * 60 * 1000)
-    public void createMonthStatSnapshot() {
-        saveStat(IntervalType.MONTHLY);
-    }
-
     private void saveStat(IntervalType intervalType) {
         List<Listing> listings = listingRepository.findAll();
         for (Listing listing : listings) {
