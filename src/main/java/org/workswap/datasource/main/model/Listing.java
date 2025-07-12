@@ -23,12 +23,12 @@ public class Listing {
     private Long id;
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @MapKey(name = "language") // ключ — это язык (например, "ru")
+    @MapKey(name = "language") 
     private Map<String, ListingTranslation> translations = new HashMap<>();
 
     @PositiveOrZero
     private double price;
-    private String priceType; // "час", "фиксированная" и т.д.
+    private String priceType;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")

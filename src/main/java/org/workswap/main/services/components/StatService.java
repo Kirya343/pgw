@@ -10,8 +10,8 @@ public interface StatService {
     int getMonthlyResponses(User user);
     int getMonthlyDeals(User user);
     int getTotalViews(User user);
-    int getTotalResponses(User user); // Можно под фейковые данные
-    int getCompletedDeals(User user); // Тоже можно имитировать
+    int getTotalResponses(User user); 
+    int getCompletedDeals(User user); 
     double getAverageRating(User user); 
     Map<String, Object> getSiteStats(Locale locale);
     Map<String, Object> getUserStats(User user, Locale locale);
