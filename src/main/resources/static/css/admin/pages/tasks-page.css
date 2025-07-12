@@ -23,6 +23,14 @@
     width: 100%;
 }
 
+.tasks-list {
+    padding: 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
 .left-border-tasks {
     border-style: solid;
     border-width: 0 0 0 2px;
@@ -34,7 +42,6 @@
     text-align: center;
     display: flex;
     flex-direction: column;
-    overflow: auto;
 }
 
 .tasks-list-header {
@@ -52,6 +59,7 @@
     min-width: 400px;
     cursor: pointer;
     min-height: 50px;
+    position: relative;
 }
 
 .task-text-item {
@@ -65,8 +73,36 @@
     background-color: var(--light-gray);
 }
 
+.task-actions {
+    position: absolute;
+    display: none;
+    right: 0.5rem;
+    transform: translateY(-1rem);
+}
+
+.task-item:hover .task-actions {
+    display: block;
+}
+
+.task-comment-actions {
+    position: absolute;
+    display: none;
+    right: 3.5rem;
+    transform: translateY(-0.5rem);
+}
+
+.task-comment-card:hover .task-comment-actions {
+    display: block;
+}
+
 .task-details-container {
     width: 300px;
+}
+.task-comments-container {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    gap: 0.5rem;
 }
 
 .task-details {
@@ -88,7 +124,35 @@
     overflow-wrap: break-word;
 }
 
+
+
 .task-details.active {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0); /* <- нормальное положение */
+}
+
+.task-comment-card {
+    background-color: white;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 300px;
+    max-width: 100%;
+    position: relative;
+    
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-30px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.task-comment-card.active {
     visibility: visible;
     opacity: 1;
     transform: translateY(0); /* <- нормальное положение */

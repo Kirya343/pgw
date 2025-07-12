@@ -16,6 +16,7 @@
     padding: 1.5rem;
     border-radius: var(--radius);
     background-color: white;
+    width: 500px;
 }
 
 .admin-modal-content {

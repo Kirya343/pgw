@@ -165,7 +165,7 @@ h2 {
 }
 
 .admin-table tr:hover {
-    background-color: rgba(99, 102, 241, 0.05);
+    background-color: rgba(99, 102, 241, 0.11);
 }
 
 /* Формы */
