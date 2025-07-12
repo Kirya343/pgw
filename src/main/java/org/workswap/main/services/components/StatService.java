@@ -15,4 +15,9 @@ public interface StatService {
     double getAverageRating(User user); 
     Map<String, Object> getSiteStats(Locale locale);
     Map<String, Object> getUserStats(User user, Locale locale);
+
+    void create5minStatSnapshot();
+    void createHourStatSnapshot();
+    void createDayStatSnapshot();
+    void createMonthStatSnapshot();
 }

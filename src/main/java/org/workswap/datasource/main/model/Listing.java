@@ -34,7 +34,6 @@ public class Listing {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    private double rating;
     private int views;
     
     @PastOrPresent
@@ -54,6 +53,9 @@ public class Listing {
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
     private List<Review> reviews;
+
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<FavoriteListing> favorites;
 
     private double averageRating;
 

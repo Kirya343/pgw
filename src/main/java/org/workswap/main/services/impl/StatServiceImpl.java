@@ -7,12 +7,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.workswap.datasource.main.model.Listing;
 import org.workswap.datasource.main.model.User;
 import org.workswap.datasource.main.repository.ListingRepository;
 import org.workswap.datasource.main.repository.ResumeRepository;
 import org.workswap.datasource.main.repository.UserRepository;
+import org.workswap.datasource.stats.model.StatSnapshot;
+import org.workswap.datasource.stats.model.StatSnapshot.IntervalType;
+import org.workswap.datasource.stats.repository.StatsRepository;
 import org.workswap.main.services.components.StatService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,7 @@ public class StatServiceImpl implements StatService {
     private final UserRepository userRepository;
     private final ListingRepository listingRepository;
     private final ResumeRepository resumeRepository;
+    private final StatsRepository statsRepository;
 
     @Override
     public int getTotalViews(User user) {
@@ -49,7 +54,7 @@ public class StatServiceImpl implements StatService {
         List<Listing> listings = user.getListings();
         if (listings.isEmpty()) return 0.0;
         return listings.stream()
-                .mapToDouble(Listing::getRating)
+                .mapToDouble(Listing::getAverageRating)
                 .average()
                 .orElse(0.0);
     }
@@ -101,7 +106,7 @@ public class StatServiceImpl implements StatService {
                     LocalDate createdAt = listing.getCreatedAt().toLocalDate();
                     return createdAt.getMonthValue() == currentMonth && createdAt.getYear() == currentYear;
                 })
-                .mapToInt(listing -> listing.getRating() > 4.0 ? 1 : 0) // Пример: если рейтинг больше 4, считаем сделку завершенной
+                .mapToInt(listing -> listing.getAverageRating() > 4.0 ? 1 : 0) // Пример: если рейтинг больше 4, считаем сделку завершенной
                 .sum();
     }
 
@@ -147,5 +152,42 @@ public class StatServiceImpl implements StatService {
         stats.put("completedDeals", numberFormat.format(completedDeals));
 
         return stats;
+    }
+
+    @Override
+    @Scheduled(fixedRate = 5 * 60 * 1000) // 5 минут (5 * 60 * 1000)
+    public void create5minStatSnapshot() {
+        saveStat(IntervalType.FIVE_MINUTES);
+    }
+
+    @Override
+    @Scheduled(fixedRate = 60 * 60 * 1000) // 5 минут (5 * 60 * 1000)
+    public void createHourStatSnapshot() {
+        saveStat(IntervalType.HOURLY);
+    }
+
+    @Override
+    @Scheduled(fixedRate = 24 * 60 * 60 * 1000) // 5 минут (5 * 60 * 1000)
+    public void createDayStatSnapshot() {
+        saveStat(IntervalType.DAILY);
+    }
+
+    @Override
+    @Scheduled(fixedRate = 30 * 24 * 60 * 60 * 1000) // 5 минут (5 * 60 * 1000)
+    public void createMonthStatSnapshot() {
+        saveStat(IntervalType.MONTHLY);
+    }
+
+    private void saveStat(IntervalType intervalType) {
+        List<Listing> listings = listingRepository.findAll();
+        for (Listing listing : listings) {
+            StatSnapshot stat = new StatSnapshot();
+            stat.setViews(listing.getViews());
+            stat.setRating(listing.getAverageRating());
+            stat.setListingId(listing.getId());
+            stat.setFavorites(listing.getFavorites().size());
+            stat.setIntervaType(intervalType);
+            statsRepository.save(stat);
+        }
     }
 }

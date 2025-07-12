@@ -15,7 +15,7 @@ public class StatSnapshot  {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long listing_id;
+    private Long listingId;
     
     public enum IntervalType {
         FIVE_MINUTES,
