@@ -17,17 +17,28 @@ spring:
     suffix: .html
     cache: false # Для разработки
   datasource:
-    url: jdbc:mysql://89.35.130.222:3306/s156_PGWSite?useSSL=false&serverTimezone=UTC
+    jdbc-url: jdbc:mysql://89.35.130.222:3306/s156_PGWSite?useSSL=false&serverTimezone=UTC
     username: u156_kOg0BtJwSj
     password: IY+BHWniVPjzVtreUER+@KwS
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      connection-timeout: 30000
-      maximum-pool-size: 10
-      minimum-idle: 5
-      idle-timeout: 600000
-      max-lifetime: 1800000
-      auto-commit: false
+      connectionTimeout: 30000
+      minimumIdle: 2
+      maximumPoolSize: 10
+      idleTimeout: 600000
+      maxLifetime: 1800000 
+  statistics-datasource:
+    jdbc-url: jdbc:mysql://89.35.130.222:3306/s156_WorkSwap_Statistic?useSSL=false&serverTimezone=UTC
+    username: u156_CaJhtIAXUw
+    password: hYcuB@iC=UK5.u8H80F4IkD^
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connectionTimeout: 30000
+      maximumPoolSize: 10
+      minimumIdle: 5
+      idleTimeout: 600000
+      maxLifetime: 1800000
+      autoCommit: false
   mvc:
     static-path-pattern: /**
   servlet:
@@ -38,12 +49,12 @@ spring:
       file-size-threshold: 2MB      # Порог после которого данные пишутся на диск (0 — сразу на диск)
   jpa:
     hibernate:
-        ddl-auto: update
+      ddl-auto: update
     properties:
-        format_sql: true
-        connection:
-          isolation: 2 # READ_COMMITTED
-    show-sql: true
+      format_sql: true
+      connection:
+        isolationLevel: 2 # READ_COMMITTED
+    show-sql: false
   messages:
     basename: lang/messages
     encoding: UTF-8
