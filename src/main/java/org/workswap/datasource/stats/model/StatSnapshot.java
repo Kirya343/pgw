@@ -21,7 +21,7 @@ public class StatSnapshot  {
         FIVE_MINUTES,
         HOURLY,
         DAILY,
-        MONTHLY
+        WEEKLY
     }
 
     private int views;

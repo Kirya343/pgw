@@ -16,13 +16,11 @@ import org.workswap.datasource.main.model.listingModels.Location;
 import org.workswap.datasource.main.repository.LocationRepository;
 import org.workswap.main.services.*;
 import org.workswap.main.services.components.AuthService;
-import org.workswap.main.services.components.StatService;
 
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,7 +28,6 @@ public class AccountController {
 
     private final UserService userService;
     private final ListingService listingService;
-    private final StatService statService;
     private final StorageService storageService;
     private final AuthService authService;
     private final LocationRepository locationRepository;
@@ -46,16 +43,13 @@ public class AccountController {
 
         List<Listing> listings = listingService.localizeAccountListings(user, locale);
 
-        Map<String, Object> userStats = statService.getUserStats(user, locale);
-
         authService.validateAndAddAuthentication(model, oauth2User);
 
         // Передаем данные в модель
         model.addAttribute("listings", listings);
-        model.addAttribute("stats", userStats);
 
         // Переменная для отображения активной страницы
-        model.addAttribute("activePage", "account");
+        model.addAttribute("activePage", "statistic");
 
         return "secure/account";
     }
@@ -68,7 +62,7 @@ public class AccountController {
         model.addAttribute("countries", countries);
         model.addAttribute("activePage", "edit");
 
-        return "secure/account/edit";
+        return "secure/account-edit";
     }
     @PostMapping("/secure/account/update")
     public String updateProfile(

@@ -39,32 +39,6 @@
                 <p th:text="#{my.listings.no-listings}">У вас пока нет объявлений.</p>
                 <a href="/secure/listing/create" class="btn btn-primary" th:text="#{my.listings.create.new}">Создать первое объявление</a>
             </div>
-            <!-- Статистика -->
-            <div class="stats-section">
-                <h3 th:text="#{statistic}">Статистика</h3>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value">
-                            <span th:text="${stats.totalViews}">0</span></div>
-                        <div class="stat-label" th:text="#{statistic.views}">Просмотры</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">
-                            <span th:text="${stats.totalResponses}">0</span></div>
-                        <div class="stat-label" th:text="#{statistic.responses}">Отклики</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">
-                            <span th:text="${stats.completedDeals}">0</span></div>
-                        <div class="stat-label" th:text="#{statistic.deals}">Завершённые сделки</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">
-                            <span th:text="${#numbers.formatDecimal(user.averageRating, 1, 1)}">0.0</span></div>
-                        <div class="stat-label" th:text="#{statistic.rating}">Средний рейтинг</div>
-                    </div>
-                </div>
-            </div>
         </main>
     </div>
 </div>

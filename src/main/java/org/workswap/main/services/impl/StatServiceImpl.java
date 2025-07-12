@@ -1,7 +1,9 @@
 package org.workswap.main.services.impl;
 
 import java.text.NumberFormat;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -167,14 +169,39 @@ public class StatServiceImpl implements StatService {
     }
 
     @Override
-    @Scheduled(fixedRate = 24 * 60 * 60 * 1000) // 5 минут (5 * 60 * 1000)
+    @Scheduled(cron = "0 0 0 * * *", zone = "Europe/Helsinki")
     public void createDayStatSnapshot() {
         saveStat(IntervalType.DAILY);
     }
 
+    @Override
+    @Scheduled(cron = "0 0 0 * * SUN", zone = "Europe/Helsinki")
+    public void createWeekStatSnapshot() {
+        saveStat(IntervalType.WEEKLY);
+    }
+
+
     private void saveStat(IntervalType intervalType) {
+        Duration checkWindow;
+
+        // Устанавливаем окно времени для каждого интервала
+        switch (intervalType) {
+            case FIVE_MINUTES -> checkWindow = Duration.ofMinutes(5);
+            case HOURLY -> checkWindow = Duration.ofHours(1);
+            case DAILY -> checkWindow = Duration.ofDays(1);
+            case WEEKLY -> checkWindow = Duration.ofDays(7); // для недельного (можно менять)
+            default -> throw new IllegalArgumentException("Unknown interval: " + intervalType);
+        }
+
+        LocalDateTime since = LocalDateTime.now().minus(checkWindow);
         List<Listing> listings = listingRepository.findAll();
+
         for (Listing listing : listings) {
+            long count = statsRepository.countRecentSnapshots(listing.getId(), intervalType, since);
+            if (count > 0) {
+                continue; // уже есть снапшот за этот период
+            }
+
             StatSnapshot stat = new StatSnapshot();
             stat.setViews(listing.getViews());
             stat.setRating(listing.getAverageRating());

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title th:text="#{title.statistic}">Личный кабинет | WorkSwap</title>
+    <link href="/css/public/pages/statistic-page.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<header>
+    <!-- Хедер страниц аккаунта -->
+    <nav th:replace="~{fragments/account/account-header :: accountHeader}"></nav>
+</header>
+
+<!-- Основной контент -->
+<div class="account-container">
+    <div class="account-layout">
+        <!-- Сайдбар меню -->
+        <aside th:replace="~{fragments/account/account-sidebar :: sidebar}"></aside>
+
+        <!-- Основное содержимое -->
+        <main class="account-main">
+            <div class="account-header">
+                <h2 th:text="#{my.statistic}">Моя статистика</h2>
+                <a href="/secure/listing/create" class="btn btn-primary" th:text="#{my.listings.create}">Добавить новое</a>
+            </div>
+
+            <div class="stats-grid">
+                <div th:each="listing : ${listings}" class="stat-block">
+                    <div class="card stat-card">
+                        <div class="card-body" style="padding: 0.5rem;">
+                            <div class="card-header">
+                                <h3 th:text="${listing.localizedTitle}"></h3>
+                            </div>
+                            <div class="stat-actions">
+                                <input hidden th:value="${listing.id}" id="listingId">
+                                <select name="interval" id="interval" class="interval">
+                                    <option th:each="type : ${intervalTypes}"
+                                            th:value="${type}"
+                                            th:text="${type}">
+                                    </option>
+                                </select>
+                                <select name="days" id="daysSelect" class="days-select">
+                                    <option value="1">1 день</option>
+                                    <option value="3">3 дня</option>
+                                    <option value="7">7 дней</option>
+                                    <option value="15">15 дней</option>
+                                    <option value="30">30 дней</option>
+                                </select>
+                            </div>
+                            <canvas class="stats-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<!-- Подключаем Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const statBlocks = document.querySelectorAll('.stat-block');
+
+    statBlocks.forEach(block => {
+        const listingId = block.querySelector('#listingId').value;
+        const intervalSelect = block.querySelector('.interval');
+        const daysSelect = block.querySelector('.days-select');
+        const canvas = block.querySelector('.stats-chart');
+
+        let chartInstance = null;
+
+        function loadStatistic() {
+            const interval = intervalSelect.value;
+            const days = daysSelect.value;
+
+            fetch(`/api/stats/views?listingId=${listingId}&interval=${interval}&days=${days}`)
+                .then(response => {
+                    if (!response.ok) throw new Error("Ошибка при загрузке данных");
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+
+                    const labels = data.map(point => point.x);
+                    const values = data.map(point => point.y);
+
+                    const ctx = canvas.getContext('2d');
+
+                    if (chartInstance) {
+                        chartInstance.data.labels = labels;
+                        chartInstance.data.datasets[0].data = values;
+                        chartInstance.update();
+                    } else {
+                        const minValue = Math.min(...values);
+                        const maxValue = Math.max(...values);
+
+                        const suggestedMax = Math.ceil(maxValue - (maxValue - minValue) * 1.2);
+                        console.log(suggestedMax)
+                        const range = maxValue - minValue;
+                        const suggestedMin = minValue - range * 0.25;
+
+                        chartInstance = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Просмотры',
+                                    data: values,
+                                    borderColor: 'rgba(99, 102, 241, 1)',
+                                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                                    fill: true,
+                                    tension: 0.1,
+
+                                    pointRadius: 6, 
+                                    pointBackgroundColor: 'rgba(75, 192, 192, 0)', 
+                                    pointBorderColor: 'rgba(75, 192, 192, 0)',    
+                                    pointHoverRadius: 10,
+
+                                    borderWidth: 4
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    x: { display: false },
+                                    y: {
+                                        title: { display: true, text: 'Просмотры' },
+                                        beginAtZero: false,
+                                        suggestedMin: suggestedMin,
+                                        suggestedMax: suggestedMax,
+                                        ticks: {
+                                        // Ограничиваем метки целыми числами
+                                        callback: function(value) {
+                                            if (Number.isInteger(value) && value > 0) {
+                                                return value;
+                                            }
+                                            return null; // скрыть дробные метки
+                                        }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                })
+                .catch(console.error);
+        }
+
+        // Привязка событий
+        intervalSelect.addEventListener('change', loadStatistic);
+        daysSelect.addEventListener('change', loadStatistic);
+
+        // Инициализация графика при загрузке
+        loadStatistic();
+    });
+});
+</script>
+<!-- Файл импортов для защищённых страниц -->
+<th:block th:replace="~{fragments/global-imports :: secureImports(${user})}" />
+</body>
+</html>

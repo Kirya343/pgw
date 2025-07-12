@@ -18,7 +18,7 @@
 
     <button th:if="${!user.telegramConnected}" class="telegram-button" id="connectTelegram" th:text="#{telegramm.connect}">Подключить Telegram</button>
 
-    <script>
+    <script th:if="${!user.telegramConnected}">
         document.getElementById('connectTelegram').addEventListener('click', async () => {
             try {
                 const response = await fetch('/api/telegram/connect', {

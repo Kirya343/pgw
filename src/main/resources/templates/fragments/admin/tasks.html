@@ -105,7 +105,7 @@
 
 <table class="admin-table" th:fragment="taskTable(status)">
     <tbody>
-    <tr th:each="task : ${executor != null} ? ${executor.tasks} : ${tasks}" th:if="${task.status == T(org.kirya343.main.model.Task.Status).valueOf(status)}" class="task-item" th:attr="task-id=${task.id}">
+    <tr th:each="task : ${executor != null} ? ${executor.tasks} : ${tasks}" th:if="${task.status == T(org.workswap.datasource.main.model.Task.Status).valueOf(status)}" class="task-item" th:attr="task-id=${task.id}">
         <td th:text="'#' + ${task.id}">#0000</td>
         <td th:text="${task.name}">Имя</td>
         <td th:text="${task.taskType.displayName}">email@example.com</td>

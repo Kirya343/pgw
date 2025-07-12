@@ -19,4 +19,5 @@ public interface StatService {
     void create5minStatSnapshot();
     void createHourStatSnapshot();
     void createDayStatSnapshot();
+    void createWeekStatSnapshot();
 }
