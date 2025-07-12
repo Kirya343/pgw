@@ -386,7 +386,7 @@ public class ListingServiceImpl implements ListingService {
         dto.setPriceType(listing.getPriceType());
         dto.setCategory(listing.getCategory().getName());
         dto.setLocation(listing.getLocation().getName());
-        dto.setRating(listing.getRating());
+        dto.setRating(listing.getAverageRating());
         dto.setViews(listing.getViews());
         dto.setCreatedAt(listing.getCreatedAt());
         dto.setActive(listing.isActive());
