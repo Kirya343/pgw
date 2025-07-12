@@ -98,7 +98,7 @@ public class OwnListingController {
             listing.setAuthor(currentUser);
             listing.setCreatedAt(LocalDateTime.now());
             listing.setViews(0);
-            listing.setRating(0.0);
+            listing.setAverageRating(0.0);
             listing.setCategory(categoryService.getCategoryById(categoryId));
 
             // Получаем новые переводы из формы
